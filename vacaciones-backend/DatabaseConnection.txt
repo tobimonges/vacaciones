@@ -1,0 +1,6 @@
+spring.application.name=vacaciones
+spring.datasource.url=jdbc:postgresql://localhost:5432/estacionamientos
+spring.datasource.username=user
+spring.datasource.password=password
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
