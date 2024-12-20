@@ -1,4 +1,4 @@
 package bootcamp.vacaciones.models;
 
-public class solicitud {
+public class SolicitudModel {
 }
