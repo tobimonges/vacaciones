@@ -19,6 +19,10 @@ public class SolicitudModel {
     @Column(unique = true, nullable = false)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private UsuarioModel usuario;
+
     @Column(nullable = false)
     private LocalDate fechaInicio;
 
@@ -27,5 +31,7 @@ public class SolicitudModel {
 
     @Column(nullable = false)
     private Boolean estado;
+
+
 
 }
