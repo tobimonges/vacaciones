@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/solicitudes")
+@RequestMapping("/api")
 public class SolicitudController {
     private final SolicitudService solicitudService;
     public SolicitudController(SolicitudService solicitudService) {
@@ -16,7 +16,7 @@ public class SolicitudController {
         this.solicitudService = solicitudService;
     }
 
-    @GetMapping
+    @GetMapping("/solicitudes")
     public ResponseEntity<List<SolicitudModel>> obtenerSolicitudes() {
         return ResponseEntity.ok(solicitudService.listarSolicitudes());
     }
