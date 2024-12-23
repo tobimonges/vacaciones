@@ -43,6 +43,26 @@ public class SolicitudService {
         solicitudRepository.delete(solicitud);
     }
 
+    public SolicitudModel editarSolicitud(Long id, SolicitudModel nuevaSolicitud) {
+        Integer id_int = Math.toIntExact(id);
+        SolicitudModel solicitudExistente = solicitudRepository.findById(id_int)
+                // Miramos si existe la solicitud
+                .orElseThrow(() -> new IllegalArgumentException("La solicitud no fue encontrada."));
+
+        // Validacion de fecha
+        if (nuevaSolicitud.getFechaInicio().isAfter(nuevaSolicitud.getFechaFin())) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin.");
+        }
+
+        // Actualizacion de los datos
+        solicitudExistente.setFechaInicio(nuevaSolicitud.getFechaInicio());
+        solicitudExistente.setFechaFin(nuevaSolicitud.getFechaFin());
+        solicitudExistente.setEstado(nuevaSolicitud.getEstado());
+
+        return solicitudRepository.save(solicitudExistente);
+    }
+
+
 
 
 
