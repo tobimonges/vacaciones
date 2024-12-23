@@ -12,22 +12,36 @@ public class UsuarioModel {
     private Long id;
     private String nombre;
     private String apellido;
+
     @Column(nullable = false,unique = true, name = "nro_cedula")
     private int nroCedula;
+
     private String correo;
+
     private String contrasena;
+
     private String telefono;
+
     @Column(name="fecha_ingreso",unique = true, nullable = false)
     private LocalDateTime fechaIngreso;
+
     private String antiguedad;
+
     @Column(name="dias_vacaciones")
     private int diasVacaciones;
+
     private boolean estado;
+
+    @ManyToOne
+    @JoinColumn(name = "id_rol", nullable = false)
+    private RolModel rol;
 
     public UsuarioModel() {
     }
 
-    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono, LocalDateTime fechaIngreso, String antiguedad, int diasVacaciones, boolean estado) {
+    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
+                        String contrasena, String telefono, LocalDateTime fechaIngreso,
+                        String antiguedad, int diasVacaciones, boolean estado, RolModel rol) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -39,6 +53,7 @@ public class UsuarioModel {
         this.antiguedad = antiguedad;
         this.diasVacaciones = diasVacaciones;
         this.estado = estado;
+        this.rol = rol;
     }
 
     public Long getId() {
@@ -127,5 +142,13 @@ public class UsuarioModel {
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public RolModel getRol() {
+        return rol;
+    }
+
+    public void setRol(RolModel rol) {
+        this.rol = rol;
     }
 }
