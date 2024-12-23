@@ -12,6 +12,7 @@ import java.util.List;
 public class SolicitudController {
     private final SolicitudService solicitudService;
     public SolicitudController(SolicitudService solicitudService) {
+
         this.solicitudService = solicitudService;
     }
 
@@ -21,7 +22,7 @@ public class SolicitudController {
     }
 
     @PostMapping("/{usuarioId}")
-    public ResponseEntity<SolicitudModel> crearSolicitud(@PathVariable Integer usuarioId, @RequestBody SolicitudModel solicitud) {
+    public ResponseEntity<SolicitudModel> crearSolicitud(@PathVariable Long usuarioId, @RequestBody SolicitudModel solicitud) {
         try {
             SolicitudModel newSolicitud = solicitudService.crearSolicitud(usuarioId, solicitud);
             return ResponseEntity.ok(newSolicitud);

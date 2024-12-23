@@ -9,7 +9,7 @@ public class UsuarioModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private Long idUsuario;
+    private Long id;
     private String nombre;
     private String apellido;
     @Column(nullable = false,unique = true, name = "nro_cedula")
@@ -27,8 +27,8 @@ public class UsuarioModel {
     public UsuarioModel() {
     }
 
-    public UsuarioModel(Long idUsuario, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono, LocalDateTime fechaIngreso, String antiguedad, int diasVacaciones, boolean estado) {
-        this.idUsuario = idUsuario;
+    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono, LocalDateTime fechaIngreso, String antiguedad, int diasVacaciones, boolean estado) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.nroCedula = nroCedula;
@@ -41,12 +41,12 @@ public class UsuarioModel {
         this.estado = estado;
     }
 
-    public Long getIdUsuario() {
-        return idUsuario;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {

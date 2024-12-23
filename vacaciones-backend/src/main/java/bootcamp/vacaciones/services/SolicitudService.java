@@ -19,7 +19,7 @@ public class SolicitudService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public SolicitudModel crearSolicitud(Integer usuarioId, SolicitudModel solicitud) {
+    public SolicitudModel crearSolicitud(Long usuarioId, SolicitudModel solicitud) {
     if (!usuarioRepository.existsById(usuarioId)) {
         throw new IllegalArgumentException("Usuario no encontrado");
     }
