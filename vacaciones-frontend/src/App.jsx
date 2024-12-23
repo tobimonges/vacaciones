@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const handleLogin = (e) => {
+    e.preventDefault();
+    alert("Inicio de sesión exitoso");
+    //aca tengo que redirigir al menu principal o ver a donde
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container">
+      <div className="loginBox">
+        <h2 className="header">Sistema de Vacaciones</h2>
+        <form onSubmit={handleLogin}>
+          <div className="inputGroup">
+            <img src="/avatar.svg" alt="Usuario" className="icon" />
+            <input
+              type="text"
+              placeholder="Usuario"
+              className="input"
+              required
+            />
+          </div>
+          <div className="inputGroup">
+            <img
+              src="/cerrar-con-llave.svg"
+              alt="Contraseña"
+              className="icon"
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              className="input"
+              required
+            />
+          </div>
+          <button type="submit" className="button">
+            Iniciar sesión
+          </button>
+          <div className="forgotPassword">
+            <a href="#" className="link">
+              Olvidaste tu contraseña?
+            </a>
+          </div>
+        </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
