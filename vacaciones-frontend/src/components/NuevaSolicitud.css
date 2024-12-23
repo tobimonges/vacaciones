@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ocupa toda la pantalla */
+}
+
+.DatePicker {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Espaciado entre los DatePickers */
+  padding: 2rem;
+  background-color: rgb(255, 255, 255);
+  border-radius: 8px;
+}
