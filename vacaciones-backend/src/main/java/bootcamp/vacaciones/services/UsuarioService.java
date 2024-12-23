@@ -13,4 +13,8 @@ public class UsuarioService {
     public List<UsuarioModel> getUsuario() {
         return usuarioRepository.findAll();
     }
+
+    public UsuarioModel crearUsuario(UsuarioModel usuario) {
+        return usuarioRepository.save(usuario);
+    }
 }
