@@ -32,10 +32,23 @@ public class SolicitudService {
     solicitud.setFechaFin(solicitud.getFechaFin());
 
     return solicitudRepository.save(solicitud);
-}
+
+    }
+
+    public void cancelarSolicitud(Long id) {
+        Integer id_int = Math.toIntExact(id);
+        SolicitudModel solicitud = solicitudRepository.findById(id_int)
+            .orElseThrow(() -> new IllegalArgumentException("La solicitud no se encontro!!."));
+
+        solicitudRepository.delete(solicitud);
+    }
+
+
 
 
     public List<SolicitudModel> listarSolicitudes() {
         return solicitudRepository.findAll();
     }
 }
+
+
