@@ -12,7 +12,7 @@ public class RolModel {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nombre;
+    private String nombre;  //ADMIN, FUNCIONARIO, INVITADO
 
     public RolModel() {
     }
