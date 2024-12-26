@@ -1,9 +1,9 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import "./App.css";
+import "./Login.css";
 
-function App() {
+function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
     alert("Inicio de sesión exitoso");
@@ -55,4 +55,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
