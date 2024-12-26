@@ -1,10 +1,21 @@
-import * as React from "react";
+// src/components/NuevaSolicitud.jsx
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import "./NuevaSolicitud.css"; // Importa el archivo CSS
+import { useNavigate } from "react-router-dom";
+import "./NuevaSolicitud.css"; // Asegúrate de que este archivo existe y tiene estilos adecuados
 import "dayjs/locale/es";
+
+// Supongamos que tienes un contexto de autenticación para obtener el usuario actual
+// Si no, puedes obtener el usuarioId de otra manera, como localStorage o props
+// Aquí, para el ejemplo, usaremos un usuarioId estático
+// Reemplaza esto con tu lógica real para obtener el usuario autenticado
+// Por ejemplo, usando un contexto de autenticación
+//import { useAuth } from "../context/AuthContext"; // Asegúrate de tener este contexto implementado ////////////////////////////////////////
 
 const today = dayjs(); // Fecha actual
 
@@ -45,50 +56,130 @@ function countValidDays(start, end) {
 }
 
 export default function NuevaSolicitud() {
-  const [startDate, setStartDate] = React.useState(today);
-  const [endDate, setEndDate] = React.useState(null); // Inicialmente sin fecha seleccionada
+  //  const { usuario } = useAuth(); // Obtener el usuario desde el contexto de autenticación //////////////////////////////////////
+  // const usuarioId = usuario?.id; // Asegúrate de que el usuario esté autenticado y tenga un ID //////////////////////////////////
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(null); // Inicialmente sin fecha seleccionada
+  const [validDays, setValidDays] = useState(0);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const validDays = countValidDays(startDate, endDate);
+  // Calcular días válidos cada vez que cambian las fechas
+  useEffect(() => {
+    const days = countValidDays(startDate, endDate);
+    setValidDays(days);
+  }, [startDate, endDate]);
+
+  // Función para manejar el envío del formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validaciones
+    if (!usuarioId) {
+      setError("Usuario no autenticado.");
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      setError("Por favor, selecciona ambas fechas.");
+      return;
+    }
+
+    // Construir el objeto solicitud
+    const solicitud = {
+      fechaInicio: startDate.format("YYYY-MM-DD"),
+      fechaFin: endDate.format("YYYY-MM-DD"),
+      diasSeleccionados: validDays,
+    };
+
+    try {
+      // URL del backend para crear una nueva solicitud
+      const urlBase = "http://localhost:8080/vacaciones"; // Reemplaza con tu URL de backend
+
+      // Realizar la solicitud POST
+      await axios.post(`${urlBase}?usuarioId=${usuarioId}`, solicitud);
+
+      // Redirigir a la lista de solicitudes después de crear
+      navigate("/");
+    } catch (err) {
+      // Manejo de errores
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Error al crear la solicitud.");
+      }
+    }
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <div className="container">
         <div className="DatePicker">
           <h4>Nueva Solicitud</h4>
+          {error && <p className="error">{error}</p>}
           <p>Tienes seleccionados {validDays} día(s)</p>
-          <DatePicker
-            label="Fecha de inicio"
-            value={startDate}
-            onChange={(newValue) => {
-              setStartDate(newValue);
-              // Opcional: Si la fecha de inicio cambia, podrías resetear la fecha de fin
-              if (endDate && newValue && endDate.isBefore(newValue, "day")) {
-                setEndDate(null);
-              }
-            }}
-            shouldDisableDate={(date) => {
-              return (
-                date.isBefore(today, "day") || // No puede ser antes de hoy
-                isWeekend(date) || // No puede ser fin de semana
-                isDisabledDate(date) // No puede ser una fecha deshabilitada
-              );
-            }}
-            format="DD/MM/YYYY"
-          />
-          <DatePicker
-            label="Fecha de fin"
-            value={endDate}
-            onChange={(newValue) => setEndDate(newValue)}
-            shouldDisableDate={(date) => {
-              return (
-                (startDate && date.isBefore(startDate, "day")) || // No puede ser anterior a la fecha de inicio
-                isWeekend(date) || // No puede ser fin de semana
-                isDisabledDate(date) // No puede ser una fecha deshabilitada
-              );
-            }}
-            format="DD/MM/YYYY"
-            disabled={!startDate} // Deshabilita si no hay fecha de inicio seleccionada
-          />
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <DatePicker
+                label="Fecha de inicio"
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                  // Resetear la fecha de fin si es anterior a la nueva fecha de inicio
+                  if (
+                    endDate &&
+                    newValue &&
+                    endDate.isBefore(newValue, "day")
+                  ) {
+                    setEndDate(null);
+                  }
+                }}
+                shouldDisableDate={(date) => {
+                  return (
+                    date.isBefore(today, "day") || // No puede ser antes de hoy
+                    isWeekend(date) || // No puede ser fin de semana
+                    isDisabledDate(date) // No puede ser una fecha deshabilitada
+                  );
+                }}
+                format="DD/MM/YYYY"
+                renderInput={(params) => (
+                  <input
+                    {...params}
+                    required
+                    className="form-control"
+                    placeholder="Selecciona la fecha de inicio"
+                  />
+                )}
+              />
+            </div>
+            <div className="mb-3">
+              <DatePicker
+                label="Fecha de fin"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                shouldDisableDate={(date) => {
+                  return (
+                    (startDate && date.isBefore(startDate, "day")) || // No puede ser anterior a la fecha de inicio
+                    isWeekend(date) || // No puede ser fin de semana
+                    isDisabledDate(date) // No puede ser una fecha deshabilitada
+                  );
+                }}
+                format="DD/MM/YYYY"
+                disabled={!startDate} // Deshabilita si no hay fecha de inicio seleccionada
+                renderInput={(params) => (
+                  <input
+                    {...params}
+                    required
+                    className="form-control"
+                    placeholder="Selecciona la fecha de fin"
+                  />
+                )}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Crear Solicitud
+            </button>
+          </form>
         </div>
       </div>
     </LocalizationProvider>
