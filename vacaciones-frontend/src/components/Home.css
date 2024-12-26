@@ -1,0 +1,64 @@
+/* Home.css */
+
+/* Contenedor Principal */
+.calendar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
+    box-sizing: border-box;
+}
+
+/* Tarjeta del Calendario */
+.calendar-card {
+    text-align: center;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    max-width: 800px;
+    width: 90%;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Títulos y Textos */
+.calendar-title {
+    margin-bottom: 10px;
+    color: #4f46e5;
+}
+
+.calendar-text {
+    margin: 5px 0;
+    color: #6b7280;
+}
+
+.calendar-selected-days {
+    margin-top: 10px;
+    color: #10b981;
+}
+
+/* Contenedor de los DatePickers */
+.calendar-pickers-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Día Seleccionado */
+.calendar-day-selected {
+    background-color: #2563eb !important;
+    color: #fff !important;
+}
+
+/* Día al Pasar el Ratón */
+.calendar-day:hover {
+    background-color: #dbeafe;
+    transition: background 0.3s ease-in-out;
+}
