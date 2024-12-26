@@ -2,13 +2,14 @@ package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
 public class UsuarioService implements IUsuarioService{
-
-    UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
     public List<UsuarioModel> listarUsuarios() {
@@ -19,7 +20,7 @@ public class UsuarioService implements IUsuarioService{
     public UsuarioModel buscarUsuarioPorCedula(int nroCedula){
         return usuarioRepository.findByNroCedula(nroCedula);
     }
-
+    @Override
     public int obtenerDiasVacacionesPorCedula(int nroCedula){
         UsuarioModel usuario = usuarioRepository.findByNroCedula(nroCedula);
         if(usuario == null){
