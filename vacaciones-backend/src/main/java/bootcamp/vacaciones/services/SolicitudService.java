@@ -19,7 +19,7 @@ public class SolicitudService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public SolicitudModel crearSolicitud(Integer usuarioId, SolicitudModel solicitud) {
+    public SolicitudModel crearSolicitud(Long usuarioId, SolicitudModel solicitud) {
     if (!usuarioRepository.existsById(usuarioId)) {
         throw new IllegalArgumentException("Usuario no encontrado");
     }
@@ -32,10 +32,43 @@ public class SolicitudService {
     solicitud.setFechaFin(solicitud.getFechaFin());
 
     return solicitudRepository.save(solicitud);
-}
+
+    }
+
+    public void cancelarSolicitud(Long id) {
+        Integer id_int = Math.toIntExact(id);
+        SolicitudModel solicitud = solicitudRepository.findById(id_int)
+            .orElseThrow(() -> new IllegalArgumentException("La solicitud no se encontro!!."));
+
+        solicitudRepository.delete(solicitud);
+    }
+
+    public SolicitudModel editarSolicitud(Long id, SolicitudModel nuevaSolicitud) {
+        Integer id_int = Math.toIntExact(id);
+        SolicitudModel solicitudExistente = solicitudRepository.findById(id_int)
+                // Miramos si existe la solicitud
+                .orElseThrow(() -> new IllegalArgumentException("La solicitud no fue encontrada."));
+
+        // Validacion de fecha
+        if (nuevaSolicitud.getFechaInicio().isAfter(nuevaSolicitud.getFechaFin())) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin.");
+        }
+
+        // Actualizacion de los datos
+        solicitudExistente.setFechaInicio(nuevaSolicitud.getFechaInicio());
+        solicitudExistente.setFechaFin(nuevaSolicitud.getFechaFin());
+        solicitudExistente.setEstado(nuevaSolicitud.getEstado());
+
+        return solicitudRepository.save(solicitudExistente);
+    }
+
+
+
 
 
     public List<SolicitudModel> listarSolicitudes() {
         return solicitudRepository.findAll();
     }
 }
+
+
