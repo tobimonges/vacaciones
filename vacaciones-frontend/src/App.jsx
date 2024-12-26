@@ -16,26 +16,30 @@ function App() {
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin}>
           <div className="inputGroup">
-            <img src="/avatar.svg" alt="Usuario" className="icon" />
-            <input
-              type="text"
-              placeholder="Usuario"
-              className="input"
-              required
-            />
+            <div className="iconWrap">
+              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <input
+                type="text"
+                placeholder="Usuario"
+                className="input"
+                required
+              />
+            </div>
           </div>
           <div className="inputGroup">
-            <img
-              src="/cerrar-con-llave.svg"
-              alt="Contraseña"
-              className="icon"
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              className="input"
-              required
-            />
+            <div className="iconWrap">
+              <img
+                src="/cerrar-con-llave.svg"
+                alt="Contraseña"
+                className="icon"
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                className="input"
+                required
+              />
+            </div>
           </div>
           <button type="submit" className="button">
             Iniciar sesión

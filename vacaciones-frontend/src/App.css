@@ -11,10 +11,10 @@
   padding: 20px;
   border-radius: 10px;
   background: #ffffff;
-  background: #ffffff;
-  background: linear-gradient(180deg, #ffffff 0%, #e2d6d6 20%);
-  background: -webkit-linear-gradient(180deg, #ffffff 0%, #e2d6d6 20%);
-  background: -moz-linear-gradient(180deg, #ffffff 0%, #e2d6d6 20%);
+  background: #f1e7e7;
+  background: linear-gradient(90deg, #f1e7e7 0%, #f5f5dc 80%);
+  background: -webkit-linear-gradient(90deg, #f1e7e7 0%, #f5f5dc 80%);
+  background: -moz-linear-gradient(90deg, #f1e7e7 0%, #f5f5dc 80%);
   box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
   -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
@@ -41,6 +41,18 @@
   width: 25px;
   height: 20px;
   margin-bottom: 8px;
+  margin-top: 10px;
+  margin-left: -6pxx;
+}
+
+.iconWrap {
+  display: flex;
+  width: 75%;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin-right: 5px;
+  padding: 20px;
 }
 
 .input {
@@ -50,11 +62,19 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.input:hover {
+  border-color: #666;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .forgotPassword {
   text-align: center;
   margin-bottom: 20px;
+  margin-top: 5px;
 }
 
 .link {
@@ -62,6 +82,11 @@
   color: #333;
   text-decoration: none;
   margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.link:hover {
+  color: #666;
 }
 
 .button {
@@ -74,7 +99,13 @@
   cursor: pointer;
   font-size: 16px;
   margin: 0 auto;
+  margin-top: 20px;
   display: block;
+  transition: all 0.4s ease;
+}
+
+.button:hover {
+  background-color: #666;
 }
 
 h3 {
