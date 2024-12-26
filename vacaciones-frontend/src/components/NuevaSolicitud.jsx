@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import "./NuevaSolicitud"; // Importa el archivo CSS
+import "./NuevaSolicitud.css"; // Importa el archivo CSS
 import "dayjs/locale/es";
 
 const today = dayjs(); // Fecha actual
@@ -24,6 +24,9 @@ const isDisabledDate = (date) => {
 };
 
 function countValidDays(start, end) {
+  // Si alguna de las fechas es null, retornamos 0
+  if (!start || !end) return 0;
+
   // Si la fecha de fin es anterior a la de inicio, retornamos 0
   if (end.isBefore(start, "day")) return 0;
 
@@ -38,15 +41,15 @@ function countValidDays(start, end) {
     // Avanzamos un día
     currentDate = currentDate.add(1, "day");
   }
-
   return count;
 }
 
-export default function DateRangeValidationWithDisabledDates() {
+export default function NuevaSolicitud() {
   const [startDate, setStartDate] = React.useState(today);
-  const [endDate, setEndDate] = React.useState(today.add(7, "day"));
+  const [endDate, setEndDate] = React.useState(null); // Inicialmente sin fecha seleccionada
 
   const validDays = countValidDays(startDate, endDate);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <div className="container">
@@ -56,7 +59,13 @@ export default function DateRangeValidationWithDisabledDates() {
           <DatePicker
             label="Fecha de inicio"
             value={startDate}
-            onChange={(newValue) => setStartDate(newValue)}
+            onChange={(newValue) => {
+              setStartDate(newValue);
+              // Opcional: Si la fecha de inicio cambia, podrías resetear la fecha de fin
+              if (endDate && newValue && endDate.isBefore(newValue, "day")) {
+                setEndDate(null);
+              }
+            }}
             shouldDisableDate={(date) => {
               return (
                 date.isBefore(today, "day") || // No puede ser antes de hoy
@@ -72,12 +81,13 @@ export default function DateRangeValidationWithDisabledDates() {
             onChange={(newValue) => setEndDate(newValue)}
             shouldDisableDate={(date) => {
               return (
-                date.isBefore(startDate, "day") || // No puede ser anterior a la fecha de inicio
+                (startDate && date.isBefore(startDate, "day")) || // No puede ser anterior a la fecha de inicio
                 isWeekend(date) || // No puede ser fin de semana
                 isDisabledDate(date) // No puede ser una fecha deshabilitada
               );
             }}
             format="DD/MM/YYYY"
+            disabled={!startDate} // Deshabilita si no hay fecha de inicio seleccionada
           />
         </div>
       </div>

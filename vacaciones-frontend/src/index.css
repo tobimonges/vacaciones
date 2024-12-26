@@ -1,14 +1,23 @@
-:root {
+/* index.css */
+
+/* Asegura que html, body y #root ocupen toda la altura y ancho */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Elimina el display:flex y place-items:center del body si lo tienes */
+body {
+  /* display: flex; */ /* Comenta o elimina esta línea */
+  /* place-items: center; */ /* Comenta o elimina esta línea */
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }

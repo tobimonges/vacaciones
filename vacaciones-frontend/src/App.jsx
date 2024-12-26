@@ -1,30 +1,25 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import NuevaSolicitud from "./components/NuevaSolicitud";
+import "./App.css"; // Importa el CSS de App
 
 function App() {
   return (
     <Router>
-      <div>
-        {/* Barra de navegación */}
-        <nav style={{ padding: "10px", background: "#f0f0f0" }}>
-          <ul style={{ display: "flex", gap: "20px" }}>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/NuevaSolicitud">Nueva solicitud</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-          </ul>
+      <div className="app-container">
+        <nav className="navbar">
+          <Link to="/">Home</Link>
+          <Link to="/NuevaSolicitud">Nueva solicitud</Link>
+          {/* Puedes agregar más enlaces de navegación aquí */}
         </nav>
 
         {/* Rutas definidas */}
-        <Routes>
-          <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
-        </Routes>
+        <div className="content">
+          <Routes>
+            <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
+            {/* Puedes agregar más rutas aquí */}
+          </Routes>
+        </div>
       </div>
     </Router>
   );
