@@ -57,7 +57,7 @@ function countValidDays(start, end) {
 
 export default function NuevaSolicitud() {
   //  const { usuario } = useAuth(); // Obtener el usuario desde el contexto de autenticación //////////////////////////////////////
-  // const usuarioId = usuario?.id; // Asegúrate de que el usuario esté autenticado y tenga un ID //////////////////////////////////
+  const usuarioId = 3; // Asegúrate de que el usuario esté autenticado y tenga un ID //////////////////////////////////
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(null); // Inicialmente sin fecha seleccionada
   const [validDays, setValidDays] = useState(0);
@@ -87,14 +87,15 @@ export default function NuevaSolicitud() {
 
     // Construir el objeto solicitud
     const solicitud = {
-      fechaInicio: startDate.format("YYYY-MM-DD"),
-      fechaFin: endDate.format("YYYY-MM-DD"),
-      diasSeleccionados: validDays,
+      fechaInicio: new Date(startDate.format("YYYY-MM-DD")),
+      fechaFin: new Date(endDate.format("YYYY-MM-DD")),
+      estado: false,
+      //diasSeleccionados: validDays,
     };
 
     try {
       // URL del backend para crear una nueva solicitud
-      const urlBase = "http://localhost:8080/vacaciones"; // Reemplaza con tu URL de backend
+      const urlBase = "http://localhost:8080/vacaciones/solicitudes"; // Reemplaza con tu URL de backend
 
       // Realizar la solicitud POST
       await axios.post(`${urlBase}?usuarioId=${usuarioId}`, solicitud);
@@ -106,6 +107,7 @@ export default function NuevaSolicitud() {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
+        console.log(solicitud);
         setError("Error al crear la solicitud.");
       }
     }
@@ -141,7 +143,7 @@ export default function NuevaSolicitud() {
                     isDisabledDate(date) // No puede ser una fecha deshabilitada
                   );
                 }}
-                format="DD/MM/YYYY"
+                format="YYYY-MM-DD"
                 renderInput={(params) => (
                   <input
                     {...params}
@@ -164,7 +166,7 @@ export default function NuevaSolicitud() {
                     isDisabledDate(date) // No puede ser una fecha deshabilitada
                   );
                 }}
-                format="DD/MM/YYYY"
+                format="YYYY-MM-DD"
                 disabled={!startDate} // Deshabilita si no hay fecha de inicio seleccionada
                 renderInput={(params) => (
                   <input
