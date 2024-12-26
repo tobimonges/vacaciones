@@ -1,7 +1,8 @@
 package bootcamp.vacaciones.models;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 @Entity
 @Table(name="usuarios")
@@ -15,19 +16,19 @@ public class UsuarioModel {
 
     @Column(nullable = false,unique = true, name = "nro_cedula")
     private int nroCedula;
-
+    @Column(nullable = false,unique = true, name = "correo")
     private String correo;
 
     private String contrasena;
 
     private String telefono;
 
-    @Column(name="fecha_ingreso",unique = true, nullable = false)
-    private LocalDateTime fechaIngreso;
+    @Column(name="fecha_ingreso", nullable = false)
+    private LocalDate fechaIngreso;
 
+    @Column(name="antiguedad" , insertable = false, updatable = false)
     private String antiguedad;
-
-    @Column(name="dias_vacaciones")
+    @Column(name="dias_vacaciones", insertable = false, updatable = false)
     private int diasVacaciones;
 
     private boolean estado;
@@ -40,7 +41,7 @@ public class UsuarioModel {
     }
 
     public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
-                        String contrasena, String telefono, LocalDateTime fechaIngreso,
+                        String contrasena, String telefono, LocalDate fechaIngreso,
                         String antiguedad, int diasVacaciones, boolean estado, RolModel rol) {
         this.id = id;
         this.nombre = nombre;
@@ -112,11 +113,11 @@ public class UsuarioModel {
         this.telefono = telefono;
     }
 
-    public LocalDateTime getFechaIngreso() {
+    public LocalDate getFechaIngreso() {
         return fechaIngreso;
     }
 
-    public void setFechaIngreso(LocalDateTime fechaIngreso) {
+    public void setFechaIngreso(LocalDate fechaIngreso) {
         this.fechaIngreso = fechaIngreso;
     }
 
