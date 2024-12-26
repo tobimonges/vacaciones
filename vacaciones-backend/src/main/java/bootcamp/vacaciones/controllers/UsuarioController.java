@@ -1,5 +1,6 @@
 package bootcamp.vacaciones.controllers;
 
+//import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.services.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -22,8 +24,25 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
+    @GetMapping("/usuarios")
+    public ResponseEntity<Optional<UsuarioModel>> obtenerUsuarioPorCedula(@RequestParam("nroCedula") int nroCedula){
+        Optional<UsuarioModel> usuario = Optional.ofNullable(usuarioService.buscarUsuarioPorCedula(nroCedula));
+        return usuario.isPresent()
+                ? ResponseEntity.ok(usuario)
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
+    }
+
+    @GetMapping("/dias/disponibles")
+    public ResponseEntity<Integer> obtenerDiasDisponibles(@RequestParam("nroCedula") int nroCedula) {
+        int diasVacaciones = usuarioService.obtenerDiasVacacionesPorCedula(nroCedula);
+        return ResponseEntity.ok(diasVacaciones);
+    }
+
     @PostMapping("/usuarios")
     public UsuarioModel guardarUsuario(@RequestBody UsuarioModel usuario) {
+        //RolModel rol = rolRepository.findById(usuario.getRol().getId())
+        //        .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
+        //usuario.setRol(rol);
         return usuarioService.guardarUsuario(usuario);
     }
 

@@ -9,6 +9,10 @@ public interface IUsuarioService {
 
     UsuarioModel buscarUsuarioPorId(Long idUsuario);
 
+    UsuarioModel buscarUsuarioPorCedula(int nroCedula);
+
+    int obtenerDiasVacacionesPorCedula(int nroCedula);
+
     UsuarioModel guardarUsuario(UsuarioModel usuario);
 
     void eliminarUsuario(UsuarioModel usuario);
