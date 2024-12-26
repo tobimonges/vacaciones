@@ -56,18 +56,17 @@ public class SolicitudController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la solicitud.");
         }
     }
-
-    @PutMapping("solicitudes/{id}")
-    public ResponseEntity<?> editarSolicitud(
-            @PathVariable Long id,
-            @RequestBody SolicitudModel nuevaSolicitud) {
-        try {
-            SolicitudModel solicitudActualizada = solicitudService.editarSolicitud(id, nuevaSolicitud);
-            return ResponseEntity.ok(solicitudActualizada);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al editar la solicitud.");
+    @PutMapping("/solicitudes/{id}")
+    public ResponseEntity<SolicitudModel> actualizarSolicitud(@PathVariable Long id, @RequestBody SolicitudModel solicitudRecibida) {
+        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(id);
+        if (solicitud == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            solicitud.setFechaInicio(solicitudRecibida.getFechaInicio());
+            solicitud.setFechaFin(solicitudRecibida.getFechaFin());
+            solicitud.setEstado(solicitudRecibida.getEstado());
+            solicitudService.guardarSolicitud(solicitud.getUsuario().getId(), solicitud);
+            return ResponseEntity.ok(solicitud);
         }
     }
 }

@@ -1,13 +1,11 @@
 package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.SolicitudModel;
-import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.SolicitudRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -61,25 +59,6 @@ public class SolicitudService implements ISolicitudService {
         }
     }
 
-
-    public SolicitudModel editarSolicitud(Long id, SolicitudModel nuevaSolicitud) {
-        Integer id_int = Math.toIntExact(id);
-        SolicitudModel solicitudExistente = solicitudRepository.findById(id_int)
-                // Miramos si existe la solicitud
-                .orElseThrow(() -> new IllegalArgumentException("La solicitud no fue encontrada."));
-
-        // Validacion de fecha
-        if (nuevaSolicitud.getFechaInicio().isAfter(nuevaSolicitud.getFechaFin())) {
-            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin.");
-        }
-
-        // Actualizacion de los datos
-        solicitudExistente.setFechaInicio(nuevaSolicitud.getFechaInicio());
-        solicitudExistente.setFechaFin(nuevaSolicitud.getFechaFin());
-        solicitudExistente.setEstado(nuevaSolicitud.getEstado());
-
-        return solicitudRepository.save(solicitudExistente);
-    }
 }
 
 
