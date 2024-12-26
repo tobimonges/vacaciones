@@ -12,4 +12,5 @@ public interface IUsuarioService {
     UsuarioModel guardarUsuario(UsuarioModel usuario);
 
     void eliminarUsuario(UsuarioModel usuario);
+
 }
