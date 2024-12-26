@@ -92,8 +92,8 @@
 .button {
   width: 50%;
   padding: 10px;
-  background-color: #333;
-  color: #ccc;
+  background-color: #fdca40;
+  color: black;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -105,7 +105,7 @@
 }
 
 .button:hover {
-  background-color: #666;
+  background-color: #b88a0e;
 }
 
 h3 {

@@ -14,7 +14,7 @@ function Login() {
     <div className="container">
       <div className="loginBox">
         <h2 className="header">Sistema de Vacaciones</h2>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} action="login" method="post">
           <div className="inputGroup">
             <div className="iconWrap">
               <img src="/avatar.svg" alt="Usuario" className="icon" />
