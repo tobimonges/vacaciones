@@ -4,23 +4,42 @@ import reactLogo from "./assets/react.svg";
 import "./Login.css";
 import NuevaSolicitud from "./components/NuevaSolicitud";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
-  let navigate = useNavigate();
-  const [usuario, setUsusario] = useState("");
+  const navigate = useNavigate();
+  const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (usuario === "admin" && password === "1234") {
+    try {
+      const respuesta = await axios.post("http://localhost:5173/login", {
+        usuario,
+        password,
+      });
+
+      if (respuesta.data.success) {
+        alert("Inicio de sesión exitoso");
+        navigate("/NuevaSolicitud");
+      } else {
+        alert("Credenciales incorrectas.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al iniciar sesión");
+    }
+  };
+  /* if (usuario === "admin" && password === "1234") {
       alert("Inicio de sesión exitoso");
       navigate("/NuevaSolicitud");
       // navigate("/NuevaSolicitud"); // Redirige al usuario a la página NuevaSolicitud
     } else {
       alert("Credenciales incorrectas.");
     }
-  };
+  } */
+
   return (
     <div className="container">
       <div className="loginBox">
@@ -34,7 +53,7 @@ function Login() {
                 placeholder="Usuario"
                 className="input"
                 value={usuario}
-                onChange={(e) => setUsusario(e.target.value)}
+                onChange={(e) => setUsuario(e.target.value)}
                 required
               />
             </div>
