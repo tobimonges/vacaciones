@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -26,6 +29,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setAllowCredentials(true);
+                    return configuration;
+                }))
                 // Deshabilita CSRF solo si estás haciendo pruebas; en producción se recomienda habilitarlo
                 .csrf(csrf -> csrf.disable())
                 .exceptionHandling(exceptions -> exceptions
@@ -38,7 +49,7 @@ public class SecurityConfig {
                 // Autorizamos requests
                 .authorizeHttpRequests(auth -> {
                     // Ejemplo: Rutas que solo puede acceder un ROLE_ADMIN
-                    auth.requestMatchers("/admin/**").hasRole("AD MIN");
+                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     // Rutas que solo puede acceder un ROLE_FUNCIONARIO
                     auth.requestMatchers("/funcionario/**").hasRole("FUNCIONARIO");
                     // Rutas que solo puede acceder un ROLE_INVITADO
