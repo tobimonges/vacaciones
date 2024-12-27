@@ -1,6 +1,6 @@
 // src/components/NuevaSolicitud.jsx
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -47,29 +47,60 @@ function countValidDays(start, end) {
   }
   return count;
 }
-
 export default function NuevaSolicitud() {
-  //  const { usuario } = useAuth(); // Obtener el usuario desde el contexto de autenticación //////////////////////////////////////
-  const usuarioId = 3; // Asegúrate de que el usuario esté autenticado y tenga un ID //////////////////////////////////
+  const usuarioId = 3; // ID del usuario autenticado
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(null); // Inicialmente sin fecha seleccionada
   const [validDays, setValidDays] = useState(0);
+  const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] =
+    useState(null);
   const [error, setError] = useState("");
+  const [warning, setWarning] = useState(""); // Mensaje de advertencia para validación
   const navigate = useNavigate();
 
-  // Calcular días válidos cada vez que cambian las fechas
+  // Calcular días válidos cada vez que cambien las fechas
   useEffect(() => {
     const days = countValidDays(startDate, endDate);
     setValidDays(days);
-  }, [startDate, endDate]);
+
+    // Verificar si los días seleccionados exceden los disponibles
+    if (
+      diasVacacionesDisponibles !== null &&
+      days > diasVacacionesDisponibles
+    ) {
+      setWarning("No puedes seleccionar más días de los disponibles.");
+    } else {
+      setWarning(""); // Limpiar la advertencia si es válido
+    }
+  }, [startDate, endDate, diasVacacionesDisponibles]);
+
+  // Obtener días de vacaciones disponibles desde el backend
+  useEffect(() => {
+    const fetchDiasVacaciones = async () => {
+      try {
+        const urlBase = `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`;
+        const auth = {
+          username: "admin@empresa.com",
+          password: "admin123",
+        };
+        const response = await axios.get(urlBase, { auth });
+        setDiasVacacionesDisponibles(response.data);
+      } catch (err) {
+        console.error("Error al obtener días de vacaciones disponibles:", err);
+        setError("No se pudo obtener la información de días de vacaciones.");
+      }
+    };
+
+    fetchDiasVacaciones();
+  }, [usuarioId]);
 
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validaciones
-    if (!usuarioId) {
-      setError("Usuario no autenticado.");
+    if (validDays > diasVacacionesDisponibles) {
+      setError("No puedes seleccionar más días de los disponibles.");
       return;
     }
 
@@ -83,29 +114,20 @@ export default function NuevaSolicitud() {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
       estado: false,
-      //diasSeleccionados: validDays,
     };
 
     try {
-      // URL del backend para crear una nueva solicitud, incluyendo usuarioId en el path
-      const urlBase = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`; // Aquí incluimos el usuarioId en el path
-      // Agregar credenciales para autenticación básica
+      const urlBase = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`;
       const auth = {
-        username: "admin@empresa.com", // Reemplaza con tu nombre de usuario
-        password: "admin123", // Reemplaza con tu contraseña
+        username: "admin@empresa.com",
+        password: "admin123",
       };
-      // Realizar la solicitud POST con autenticación básica
-      await axios.post(urlBase, solicitud, {
-        auth, // Agregamos las credenciales de autenticación básica
-      });
-      // Redirigir a la lista de solicitudes después de crear
+      await axios.post(urlBase, solicitud, { auth });
       navigate("/");
     } catch (err) {
-      // Manejo de errores
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        console.log(solicitud);
         setError("Error al crear la solicitud.");
       }
     }
@@ -117,7 +139,12 @@ export default function NuevaSolicitud() {
         <div className="DatePicker">
           <h4>Nueva Solicitud</h4>
           {error && <p className="error">{error}</p>}
+          <p>
+            Tienes <strong>{diasVacacionesDisponibles}</strong> días de
+            vacaciones disponibles.
+          </p>
           <p>Tienes seleccionados {validDays} día(s)</p>
+          {warning && <p className="warning">{warning}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <DatePicker
@@ -125,7 +152,6 @@ export default function NuevaSolicitud() {
                 value={startDate}
                 onChange={(newValue) => {
                   setStartDate(newValue);
-                  // Resetear la fecha de fin si es anterior a la nueva fecha de inicio
                   if (
                     endDate &&
                     newValue &&
@@ -136,9 +162,9 @@ export default function NuevaSolicitud() {
                 }}
                 shouldDisableDate={(date) => {
                   return (
-                    date.isBefore(today, "day") || // No puede ser antes de hoy
-                    isWeekend(date) || // No puede ser fin de semana
-                    isDisabledDate(date) // No puede ser una fecha deshabilitada
+                    date.isBefore(today, "day") ||
+                    isWeekend(date) ||
+                    isDisabledDate(date)
                   );
                 }}
                 format="YYYY-MM-DD"
@@ -159,13 +185,13 @@ export default function NuevaSolicitud() {
                 onChange={(newValue) => setEndDate(newValue)}
                 shouldDisableDate={(date) => {
                   return (
-                    (startDate && date.isBefore(startDate, "day")) || // No puede ser anterior a la fecha de inicio
-                    isWeekend(date) || // No puede ser fin de semana
-                    isDisabledDate(date) // No puede ser una fecha deshabilitada
+                    (startDate && date.isBefore(startDate, "day")) ||
+                    isWeekend(date) ||
+                    isDisabledDate(date)
                   );
                 }}
                 format="YYYY-MM-DD"
-                disabled={!startDate} // Deshabilita si no hay fecha de inicio seleccionada
+                disabled={!startDate}
                 renderInput={(params) => (
                   <input
                     {...params}
@@ -176,7 +202,11 @@ export default function NuevaSolicitud() {
                 )}
               />
             </div>
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={validDays > diasVacacionesDisponibles}
+            >
               Crear Solicitud
             </button>
           </form>
