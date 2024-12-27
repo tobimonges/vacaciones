@@ -1,1 +1,5 @@
 .idea/
+vacaciones-backend/src/main/resources/
+vacaciones-frontend/node_modules/
+vacaciones-frontend/package-lock.json
+vacaciones-frontend/package.json
