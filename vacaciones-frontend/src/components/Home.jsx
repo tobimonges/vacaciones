@@ -64,9 +64,12 @@ const Home = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/usuarios/1');
+                const response = await axios.get('http://localhost:8080/vacaciones/buscar/1');
                 const { nombre, fecha_ingreso, dias_vacaciones } = response.data;
-
+                const auth = {
+                    username: "admin@empresa.com",
+                    password: "admin123",
+                };
                 setUserName(nombre);
                 setJoinDate(fecha_ingreso);
                 setVacationDays(dias_vacaciones);
