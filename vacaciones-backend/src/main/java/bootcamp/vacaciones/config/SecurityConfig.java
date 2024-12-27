@@ -38,7 +38,7 @@ public class SecurityConfig {
                 // Autorizamos requests
                 .authorizeHttpRequests(auth -> {
                     // Ejemplo: Rutas que solo puede acceder un ROLE_ADMIN
-                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/admin/**").hasRole("AD MIN");
                     // Rutas que solo puede acceder un ROLE_FUNCIONARIO
                     auth.requestMatchers("/funcionario/**").hasRole("FUNCIONARIO");
                     // Rutas que solo puede acceder un ROLE_INVITADO
