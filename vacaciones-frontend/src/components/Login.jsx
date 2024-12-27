@@ -1,25 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import reactLogo from "./assets/react.svg";
 import "./Login.css";
-import NuevaSolicitud from "./components/NuevaSolicitud";
+import NuevaSolicitud from "./NuevaSolicitud";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
-  let navigate = useNavigate();
-  const [usuario, setUsusario] = useState("");
+  const navigate = useNavigate();
+  const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (usuario === "admin" && password === "1234") {
-      alert("Inicio de sesión exitoso");
-      navigate("/NuevaSolicitud");
-      // navigate("/NuevaSolicitud"); // Redirige al usuario a la página NuevaSolicitud
-    } else {
-      alert("Credenciales incorrectas.");
+    try {
+      const respuesta = await axios.post("http://localhost:5173/login", {
+        usuario,
+        password,
+      });
+
+      if (respuesta.data.success) {
+        alert("Inicio de sesión exitoso");
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("id_usuario", respuesta.data.id_usuario);
+        navigate("/NuevaSolicitud", { replace: true });
+      } else {
+        alert("Credenciales incorrectas.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al iniciar sesión");
     }
+
+    /*   const handleLogout = () => {
+      localStorage.removeItem("isAuthenticated"); // Eliminar la sesión
+      alert("Has cerrado sesión");
+      navigate("/", { replace: true }); // Redirige al login
+    }; */
   };
   return (
     <div className="container">
@@ -34,7 +55,7 @@ function Login() {
                 placeholder="Usuario"
                 className="input"
                 value={usuario}
-                onChange={(e) => setUsusario(e.target.value)}
+                onChange={(e) => setUsuario(e.target.value)}
                 required
               />
             </div>
