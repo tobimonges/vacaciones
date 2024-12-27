@@ -24,21 +24,27 @@ public class UsuarioController {
     @Autowired
     private RolRepository rolRepository;
 
-    @GetMapping("/listar/usuarios")
+    @GetMapping("/listarusuarios")
     public List<UsuarioModel> obtenerUsuarios() {
         return usuarioService.listarUsuarios();
     }
 
-    @GetMapping("/buscar")
-    public ResponseEntity<Optional<UsuarioModel>> obtenerUsuarioPorCedula(@RequestParam("nroCedula") int nroCedula){
+    @GetMapping("/buscar/{nroCedula}")
+    public ResponseEntity<Optional<UsuarioModel>> obtenerUsuarioPorCedula(@PathVariable("nroCedula")  int nroCedula){
         Optional<UsuarioModel> usuario = Optional.ofNullable(usuarioService.buscarUsuarioPorCedula(nroCedula));
         return usuario.isPresent()
                 ? ResponseEntity.ok(usuario)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
     }
 
-    @GetMapping("/dias/disponibles")
-    public ResponseEntity<Integer> obtenerDiasDisponibles(@RequestParam("nroCedula") int nroCedula) {
+    @GetMapping("/diasdisponibles/{idUsuario}")
+    public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("idUsuario") Long idUsuario) {
+        int diasVacaciones = usuarioService.obtenerDiasVacacionesPorIdUsuario(idUsuario);
+        return ResponseEntity.ok(diasVacaciones);
+    }
+
+    @GetMapping("/diasdisponibles/{nroCedula}")
+    public ResponseEntity<Integer> obtenerDiasDisponibles(@PathVariable("nroCedula") int nroCedula) {
         int diasVacaciones = usuarioService.obtenerDiasVacacionesPorCedula(nroCedula);
         return ResponseEntity.ok(diasVacaciones);
     }

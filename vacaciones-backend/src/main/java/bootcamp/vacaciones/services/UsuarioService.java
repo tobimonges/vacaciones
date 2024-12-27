@@ -33,6 +33,14 @@ public class UsuarioService implements IUsuarioService{
         return usuario.getDiasVacaciones();
     }
 
+    public int obtenerDiasVacacionesPorIdUsuario(Long idUsuario) {
+        UsuarioModel usuario = usuarioRepository.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            throw new IllegalArgumentException("El usuario no existe");
+        }
+        return usuario.getDiasVacaciones();
+    }
+
     @Override
     public UsuarioModel buscarUsuarioPorId(Long idUsuario) {
         return usuarioRepository.findById(idUsuario).orElse(null);

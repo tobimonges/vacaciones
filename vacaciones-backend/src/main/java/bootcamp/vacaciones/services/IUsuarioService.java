@@ -11,6 +11,8 @@ public interface IUsuarioService {
 
     UsuarioModel buscarUsuarioPorCedula(int nroCedula);
 
+    int obtenerDiasVacacionesPorIdUsuario (Long idUsuario);
+
     int obtenerDiasVacacionesPorCedula(int nroCedula);
 
     UsuarioModel guardarUsuario(UsuarioModel usuario);
