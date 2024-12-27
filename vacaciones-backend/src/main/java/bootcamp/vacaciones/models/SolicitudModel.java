@@ -1,37 +1,79 @@
 package bootcamp.vacaciones.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 @Entity
 @Table(name = "solicitudes")
 public class SolicitudModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Integer id;
+    @Column(unique = true, nullable = false, name = "id_solicitud")
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private UsuarioModel usuario;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "fecha_inicio")
     private LocalDate fechaInicio;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "fecha_fin")
     private LocalDate fechaFin;
 
     @Column(nullable = false)
     private Boolean estado;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public UsuarioModel getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioModel usuario) {
+        this.usuario = usuario;
+    }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
+    public SolicitudModel() {
+    }
+
+    public SolicitudModel(Long id, UsuarioModel usuario, LocalDate fechaInicio, LocalDate fechaFin, Boolean estado) {
+        this.id = id;
+        this.usuario = usuario;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = estado;
+    }
 }
