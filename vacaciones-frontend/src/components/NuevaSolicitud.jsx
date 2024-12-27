@@ -10,13 +10,6 @@ import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css"; // Asegúrate de que este archivo existe y tiene estilos adecuados
 import "dayjs/locale/es";
 
-// Supongamos que tienes un contexto de autenticación para obtener el usuario actual
-// Si no, puedes obtener el usuarioId de otra manera, como localStorage o props
-// Aquí, para el ejemplo, usaremos un usuarioId estático
-// Reemplaza esto con tu lógica real para obtener el usuario autenticado
-// Por ejemplo, usando un contexto de autenticación
-//import { useAuth } from "../context/AuthContext"; // Asegúrate de tener este contexto implementado ////////////////////////////////////////
-
 const today = dayjs(); // Fecha actual
 
 const isWeekend = (date) => {
@@ -87,19 +80,24 @@ export default function NuevaSolicitud() {
 
     // Construir el objeto solicitud
     const solicitud = {
-      fechaInicio: new Date(startDate.format("YYYY-MM-DD")),
-      fechaFin: new Date(endDate.format("YYYY-MM-DD")),
+      fechaInicio: startDate.format("YYYY-MM-DD"),
+      fechaFin: endDate.format("YYYY-MM-DD"),
       estado: false,
       //diasSeleccionados: validDays,
     };
 
     try {
-      // URL del backend para crear una nueva solicitud
-      const urlBase = "http://localhost:8080/vacaciones/solicitudes"; // Reemplaza con tu URL de backend
-
-      // Realizar la solicitud POST
-      await axios.post(`${urlBase}?usuarioId=${usuarioId}`, solicitud);
-
+      // URL del backend para crear una nueva solicitud, incluyendo usuarioId en el path
+      const urlBase = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`; // Aquí incluimos el usuarioId en el path
+      // Agregar credenciales para autenticación básica
+      const auth = {
+        username: "admin@empresa.com", // Reemplaza con tu nombre de usuario
+        password: "admin123", // Reemplaza con tu contraseña
+      };
+      // Realizar la solicitud POST con autenticación básica
+      await axios.post(urlBase, solicitud, {
+        auth, // Agregamos las credenciales de autenticación básica
+      });
       // Redirigir a la lista de solicitudes después de crear
       navigate("/");
     } catch (err) {
