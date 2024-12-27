@@ -3,6 +3,7 @@ package bootcamp.vacaciones.services;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.List;
 public class UsuarioService implements IUsuarioService{
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UsuarioModel> listarUsuarios() {
@@ -36,8 +40,9 @@ public class UsuarioService implements IUsuarioService{
 
     @Override
     public UsuarioModel guardarUsuario(UsuarioModel usuario) {
-        return usuarioRepository.save(usuario);
-    }
+        String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
+        usuario.setContrasena(contrasenaEncriptada);
+        return usuarioRepository.save(usuario);    }
 
     @Override
     public void eliminarUsuario(UsuarioModel usuario) {
