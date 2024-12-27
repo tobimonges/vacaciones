@@ -1,0 +1,125 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loginBox {
+  height: 350px;
+  width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+  background: #ffffff;
+  background: #f1e7e7;
+  background: linear-gradient(90deg, #f1e7e7 0%, #f5f5dc 80%);
+  background: -webkit-linear-gradient(90deg, #f1e7e7 0%, #f5f5dc 80%);
+  background: -moz-linear-gradient(90deg, #f1e7e7 0%, #f5f5dc 80%);
+  box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  justify-content: space-between; /* Esto empuja los elementos hacia los extremos */
+  flex-direction: column;
+  justify-content: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 30px;
+  color: #333;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.icon {
+  width: 25px;
+  height: 20px;
+  margin-bottom: 8px;
+  margin-top: 10px;
+  margin-left: -6pxx;
+}
+
+.iconWrap {
+  display: flex;
+  width: 75%;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin-right: 5px;
+  padding: 20px;
+}
+
+.input {
+  width: 70%;
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.input:hover {
+  border-color: #666;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.forgotPassword {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 5px;
+}
+
+.link {
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.link:hover {
+  color: #666;
+}
+
+.button {
+  width: 50%;
+  padding: 10px;
+  background-color: #fdca40;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 auto;
+  margin-top: 20px;
+  display: block;
+  transition: all 0.4s ease;
+}
+
+.button:hover {
+  background-color: #fcbc0e;
+  box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+}
+
+h3 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+h3 .icon {
+  margin-right: 10px;
+}
