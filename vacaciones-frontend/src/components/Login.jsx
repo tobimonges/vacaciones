@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import reactLogo from "./assets/react.svg";
 import "./Login.css";
-import NuevaSolicitud from "./components/NuevaSolicitud";
+import NuevaSolicitud from "./NuevaSolicitud";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -10,6 +9,10 @@ function Login() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +25,9 @@ function Login() {
 
       if (respuesta.data.success) {
         alert("Inicio de sesión exitoso");
-        navigate("/NuevaSolicitud");
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("id_usuario", respuesta.data.id_usuario);
+        navigate("/NuevaSolicitud", { replace: true });
       } else {
         alert("Credenciales incorrectas.");
       }
@@ -30,16 +35,13 @@ function Login() {
       console.error(error);
       alert("Error al iniciar sesión");
     }
-  };
-  /* if (usuario === "admin" && password === "1234") {
-      alert("Inicio de sesión exitoso");
-      navigate("/NuevaSolicitud");
-      // navigate("/NuevaSolicitud"); // Redirige al usuario a la página NuevaSolicitud
-    } else {
-      alert("Credenciales incorrectas.");
-    }
-  } */
 
+    /*   const handleLogout = () => {
+      localStorage.removeItem("isAuthenticated"); // Eliminar la sesión
+      alert("Has cerrado sesión");
+      navigate("/", { replace: true }); // Redirige al login
+    }; */
+  };
   return (
     <div className="container">
       <div className="loginBox">
