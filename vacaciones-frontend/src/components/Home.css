@@ -19,27 +19,39 @@
     text-align: center;
     background: #fff;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     max-width: 800px;
     width: 90%;
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+    border: 1px solid #e0e7ff; /* Ligeramente visible borde */
+}
+
+.calendar-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 /* Títulos y Textos */
 .calendar-title {
     margin-bottom: 10px;
     color: #4f46e5;
+    font-size: 2rem;
+    font-weight: 600;
 }
+
 
 .calendar-text {
     margin: 5px 0;
     color: #6b7280;
+    font-size: 1rem;
 }
 
 .calendar-selected-days {
     margin-top: 10px;
     color: #10b981;
+    font-size: 1.2rem;
+    font-weight: 500;
 }
 
 /* Contenedor de los DatePickers */
@@ -61,4 +73,31 @@
 .calendar-day:hover {
     background-color: #dbeafe;
     transition: background 0.3s ease-in-out;
+}
+
+
+.calendar-day {
+    transition: background 0.3s ease;
+    border-radius: 50%;
+}
+
+.calendar-day:hover {
+    background-color: #dbeafe;
+}
+
+.calendar-day-selected {
+    background-color: #4f46e5 !important;
+    color: white !important;
+    border-radius: 50%;
+    transform: scale(1.1);
+}
+
+.calendar-day-selected:hover {
+    background-color: #6366f1;
+}
+
+.calendar-error-message {
+    color: #dc2626;
+    font-weight: bold;
+    margin-top: 10px;
 }
