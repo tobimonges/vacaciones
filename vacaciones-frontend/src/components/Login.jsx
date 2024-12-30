@@ -17,7 +17,19 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
+    const usuarioPrueba = "admin";
+    const passwordPrueba = "1234";
+
+    if (usuario === usuarioPrueba && password === passwordPrueba) {
+      alert("Inicio de sesión exitoso con usuario de prueba");
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("id_usuario", "1"); // ID ficticio para el usuario de prueba
+      navigate("/NuevaSolicitud", { replace: true });
+      return;
+    }
+    localStorage.setItem("isAuthenticated", "false");
+
+    /* try {
       const respuesta = await axios.post("http://localhost:5173/login", {
         usuario,
         password,
