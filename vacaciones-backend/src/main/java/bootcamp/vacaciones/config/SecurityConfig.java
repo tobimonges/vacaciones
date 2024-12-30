@@ -1,7 +1,6 @@
 package bootcamp.vacaciones.config;
 
-import bootcamp.vacaciones.services.CustomUserDetailsService;
-import jakarta.servlet.http.HttpServletResponse;
+import bootcamp.vacaciones.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -18,67 +18,56 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    // 1) Definimos el PasswordEncoder para encriptar las contraseñas
+    private final JwtAuthFilter jwtAuthFilter;
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.userDetailsService = userDetailsService;
+    }
+
+    // 1. Configuración de PasswordEncoder (para manejar contraseñas hasheadas)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // 2. Configuración del AuthenticationManager
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authBuilder.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+        return authBuilder.build();
+    }
 
-    // 3) Definimos el SecurityFilterChain, que establece reglas de seguridad
+    // 3. Configuración del SecurityFilterChain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Configurar CORS para aceptar cualquier origen
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    configuration.setAllowedHeaders(List.of("*"));
-                    configuration.setAllowCredentials(true);
+                    configuration.addAllowedOriginPattern("*"); // Permitir cualquier origen
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
+                    configuration.setAllowedHeaders(List.of("*")); // Permitir cualquier encabezado
+                    configuration.setAllowCredentials(true); // Permitir cookies o credenciales
                     return configuration;
                 }))
-                // Deshabilita CSRF solo si estás haciendo pruebas; en producción se recomienda habilitarlo
+
+                // Deshabilitar CSRF explícitamente
                 .csrf(csrf -> csrf.disable())
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
-                        .accessDeniedHandler((request, response, accessDeniedException) ->
-                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
+
+                // Configurar reglas de autorización
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll() // Permitir rutas públicas
+                        .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
                 )
 
-                // Autorizamos requests
-                .authorizeHttpRequests(auth -> {
-                    // Ejemplo: Rutas que solo puede acceder un ROLE_ADMIN
-                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                    // Rutas que solo puede acceder un ROLE_FUNCIONARIO
-                    auth.requestMatchers("/funcionario/**").hasRole("FUNCIONARIO");
-                    // Rutas que solo puede acceder un ROLE_INVITADO
-                    auth.requestMatchers("/invitado/**").hasRole("INVITADO");
-                    // Todo lo demás requiere simplemente estar autenticado
-                    auth.anyRequest().authenticated();
-                })
+                // Agregar el filtro JWT
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-                // Configuramos el formulario de login
-
-                .httpBasic(httpBasic -> httpBasic
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
-                );
-
-        // Importante: Al final construimos la configuración
         return http.build();
     }
 
-    // 4) Creamos un AuthenticationManager que sepa usar nuestro userDetailsService + passwordEncoder
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http,
-                                             PasswordEncoder passwordEncoder,
-                                             UserDetailsService userDetailsService) throws Exception {
-        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authBuilder.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-
-        return authBuilder.build();
-
-    }
 }
