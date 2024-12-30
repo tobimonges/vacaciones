@@ -11,6 +11,12 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
 
+  useEffect(() => {
+    // Esto activa la animación inicial cuando se carga la página
+    const loginBox = document.querySelector(".loginBox");
+    loginBox.classList.add("cajaLogin");
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
