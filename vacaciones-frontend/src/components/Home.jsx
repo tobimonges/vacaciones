@@ -64,15 +64,16 @@ const Home = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/vacaciones/buscar/1');
-                const { nombre, fecha_ingreso, dias_vacaciones } = response.data;
                 const auth = {
                     username: "admin@empresa.com",
                     password: "admin123",
                 };
+                const response = await axios.get('http://localhost:8080/vacaciones/buscarid/1', { auth });
+                const { nombre, fechaIngreso, diasVacaciones } = response.data;
+
                 setUserName(nombre);
-                setJoinDate(fecha_ingreso);
-                setVacationDays(dias_vacaciones);
+                setJoinDate(fechaIngreso);
+                setVacationDays(diasVacaciones);
             } catch (error) {
                 console.error('Error al obtener datos del usuario:', error);
                 setError('No se pudieron cargar los datos del usuario.');
@@ -81,6 +82,7 @@ const Home = () => {
 
         fetchUserData();
     }, []);
+
 
     // ️ Manejar selección de fechas
     const handleDateSelection = (newValue) => {
