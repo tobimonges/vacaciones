@@ -9,6 +9,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css"; // Asegúrate de que este archivo existe y tiene estilos adecuados
 import "dayjs/locale/es";
+import { getUsuarioId } from "./authUtils"; // Importar el helper
 
 const today = dayjs(); // Fecha actual
 
@@ -48,7 +49,7 @@ function countValidDays(start, end) {
   return count;
 }
 export default function NuevaSolicitud() {
-  const usuarioId = 3; // ID del usuario autenticado
+  const usuarioId = getUsuarioId(); // Obtener el usuarioId
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(null); // Inicialmente sin fecha seleccionada
   const [validDays, setValidDays] = useState(0);
@@ -117,13 +118,14 @@ export default function NuevaSolicitud() {
     };
 
     try {
+      const token = localStorage.getItem("token");
       const urlBase = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`;
-      const auth = {
-        username: "admin@empresa.com",
-        password: "admin123",
-      };
-      await axios.post(urlBase, solicitud, { auth });
-      navigate("/NuevaSolicitud");
+      await axios.post(urlBase, solicitud, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      navigate("/");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
