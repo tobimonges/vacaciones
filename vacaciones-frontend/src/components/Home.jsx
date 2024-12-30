@@ -48,7 +48,7 @@ const Home = () => {
     return selectedDays.some((selectedDay) => differenceInCalendarDays(selectedDay, day) === 0);
   };
 
-  // Calcular días seleccionados a partir de las solicitudes
+  // Calcular días seleccionados a partir de las Solicitudes
   useEffect(() => {
     if (vacationRequests.length > 0) {
       const days = vacationRequests.flatMap(({ fecha_inicio, fecha_fin }) => {
