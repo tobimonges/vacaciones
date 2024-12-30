@@ -10,23 +10,11 @@ function App() {
         {/*ruta Login */}
         <Route path="/" element={<Login />} />
         {/* Ruta para Home */}
-        <Route
-          path="/Home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/Home" element={<Home />} />
 
-        <Route
-          path="/NuevaSolicitud"
-          element={
-            <ProtectedRoute>
-              <NuevaSolicitud />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
+
+        <Route path="/SolicitudDetalle" element={<SolicitudDetalle />} />
       </Routes>
     </Router>
   );
