@@ -1,6 +1,8 @@
 package bootcamp.vacaciones.controllers;
 
+import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.LoginRequest;
+import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +18,17 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/api/auth")
 public class LoginController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class); // Logger para LoginController
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final UsuarioRepository usuarioRepository; // Repositorio de usuarios para obtener el ID
 
     @Autowired
-    public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UsuarioRepository usuarioRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @PostMapping("/login")
@@ -45,8 +49,12 @@ public class LoginController {
             // Establecer el contexto de seguridad
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Generar el token JWT
-            String jwt = jwtUtils.generateJwtToken(loginRequest.getEmail());
+            // Obtener el usuario desde la base de datos
+            UsuarioModel usuario = usuarioRepository.findByCorreo(loginRequest.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Generar el token JWT con username y usuarioId
+            String jwt = jwtUtils.generateJwtToken(usuario.getCorreo(), usuario.getId());
             logger.info("JWT generado: " + jwt);
 
             // Retornar el token

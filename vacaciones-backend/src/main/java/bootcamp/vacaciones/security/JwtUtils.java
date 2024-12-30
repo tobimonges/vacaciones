@@ -12,24 +12,38 @@ public class JwtUtils {
     private final int jwtExpirationMs = 86400000; // 1 día (en milisegundos)
 
     // Generar un token JWT
-    public String generateJwtToken(String username) {
+    public String generateJwtToken(String username, Long usuarioId) {
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+                .setSubject(username) // Establece el nombre de usuario como "subject"
+                .claim("usuarioId", usuarioId) // Incluye el usuarioId en los claims
+                .setIssuedAt(new Date()) // Fecha de emisión
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // Fecha de expiración
+                .signWith(SignatureAlgorithm.HS512, jwtSecret) // Firma con HS512
+                .compact(); // Construir el token
     }
 
     // Obtener el username del token JWT
     public String getUsernameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject(); // Retorna el "subject" (nombre de usuario)
+    }
+
+    // Obtener el usuarioId del token JWT
+    public Long getUsuarioIdFromJwtToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("usuarioId", Long.class); // Retorna el "usuarioId" del claim
     }
 
     // Validar un token JWT
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken); // Verifica la firma y validez del token
             return true;
         } catch (SignatureException e) {
             System.err.println("Firma inválida: " + e.getMessage());
