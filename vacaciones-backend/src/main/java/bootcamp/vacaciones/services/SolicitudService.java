@@ -44,19 +44,26 @@ public class SolicitudService implements ISolicitudService {
 
     @Override
     public SolicitudModel buscarSolicitudPorId(Long idSolicitud) {
-        return solicitudRepository.findById(Math.toIntExact(idSolicitud)).orElse(null);
+        return solicitudRepository.findById(idSolicitud).orElse(null);
     }
 
 
     @Override
     public void eliminarSolicitud(Long idSolicitud) {
-        Integer id = Math.toIntExact(idSolicitud);
-        SolicitudModel solicitud = solicitudRepository.findById(id).orElse(null);
+        SolicitudModel solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
         if (solicitud != null) {
             solicitudRepository.delete(solicitud);
         } else {
             throw new IllegalArgumentException("Solicitud no encontrada");
         }
+    }
+
+    @Override
+    public List<SolicitudModel> obtenerSolicitudesPorUsuario(Long usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new IllegalArgumentException("El usuario con ID " + usuarioId + " no fue encontrado.");
+        }
+        return solicitudRepository.findByUsuarioId(usuarioId);
     }
 
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import NuevaSolicitud from "./NuevaSolicitud";
+import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -10,42 +10,27 @@ function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-  }, [navigate]);
-
   const handleLogin = async (e) => {
     e.preventDefault();
+    try {
+      const respuesta = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          email: usuario, // El backend espera "email"
+          password: password, // El backend espera "password"
+        }
+      );
+      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
-    const usuarioPrueba = "admin";
-    const passwordPrueba = "1234";
-
-    if (usuario === usuarioPrueba && password === passwordPrueba) {
-      alert("Inicio de sesión exitoso con usuario de prueba");
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("id_usuario", "1"); // ID ficticio para el usuario de prueba
-      navigate("/NuevaSolicitud", { replace: true });
-      return;
-    }
-    localStorage.setItem("isAuthenticated", "false");
-
-    /* try {
-      const respuesta = await axios.post("http://localhost:5173/login", {
-        usuario,
-        password,
-      });
-
-      if (respuesta.data.success) {
-        alert("Inicio de sesión exitoso");
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("id_usuario", respuesta.data.id_usuario);
-        navigate("/NuevaSolicitud", { replace: true });
-      } else {
-        alert("Credenciales incorrectas.");
-      }
+      // Si el login es exitoso, almacenar el token
+      const token = respuesta.data; // El token viene en la respuesta
+      localStorage.setItem("token", token); // Guardar el token en localStorage
+      alert("Inicio de sesión exitoso");
+      navigate("/Home"); // Redirigir al usuario
     } catch (error) {
-      console.error(error);
-      alert("Error al iniciar sesión");
+      console.error("Error al iniciar sesión", error);
+      setUsuario("");
+      setPassword("");
     }
 
     /*   const handleLogout = () => {
@@ -98,12 +83,7 @@ function Login() {
             </a>
           </div>
         </form>
-        <div className="content">
-          <Routes>
-            <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
-            {/* Puedes agregar más rutas aquí */}
-          </Routes>
-        </div>
+        <div className="content"></div>
       </div>
     </div>
   );
