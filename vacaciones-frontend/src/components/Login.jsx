@@ -9,6 +9,7 @@ function Login() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,15 +23,16 @@ function Login() {
       );
       console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
-      // Si el login es exitoso, almacenar el token
-      const token = respuesta.data; // El token viene en la respuesta
-      localStorage.setItem("token", token); // Guardar el token en localStorage
+      const token = respuesta.data;
+      localStorage.setItem("token", token);
       alert("Inicio de sesión exitoso");
-      navigate("/Home"); // Redirigir al usuario
+      navigate("/Home");
     } catch (error) {
       console.error("Error al iniciar sesión", error);
       setUsuario("");
       setPassword("");
+      setError(true);
+      setTimeout(() => setError(false), 300);
     }
 
     /*   const handleLogout = () => {
@@ -41,7 +43,7 @@ function Login() {
   };
   return (
     <div className="container">
-      <div className="loginBox">
+      <div className={`loginBox ${error ? "datosIncorrectos" : ""}`}>
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin} action="login" method="post">
           <div className="inputGroup">
