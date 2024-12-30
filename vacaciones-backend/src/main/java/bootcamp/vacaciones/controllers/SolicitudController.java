@@ -69,4 +69,17 @@ public class SolicitudController {
             return ResponseEntity.ok(solicitud);
         }
     }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<?> obtenerSolicitudesPorUsuario(@PathVariable Long usuarioId) {
+        try {
+            List<SolicitudModel> solicitudes = solicitudService.obtenerSolicitudesPorUsuario(usuarioId);
+            return ResponseEntity.ok(solicitudes);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener las solicitudes del usuario.");
+        }
+    }
+
 }
