@@ -13,8 +13,6 @@ function App() {
         <Route path="/Home" element={<Home />} />
 
         <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
-
-        <Route path="/SolicitudDetalle" element={<SolicitudDetalle />} />
       </Routes>
     </Router>
   );
