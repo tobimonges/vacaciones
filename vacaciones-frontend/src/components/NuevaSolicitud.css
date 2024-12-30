@@ -25,14 +25,23 @@
   padding: 2rem;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.603); /* Sombra opcional */
+  box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
-.DatePicker h4 {
+.DatePicker h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 30px;
+  color: #333;
   margin-bottom: 0.5rem;
 }
 
 .DatePicker p {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 5px;
   margin-bottom: 1rem;
 }
 

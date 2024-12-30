@@ -137,13 +137,24 @@ export default function NuevaSolicitud() {
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <div className="container">
         <div className="DatePicker">
-          <h4>Nueva Solicitud</h4>
+          <h2>Nueva Solicitud</h2>
           {error && <p className="error">{error}</p>}
           <p>
-            Tienes <strong>{diasVacacionesDisponibles}</strong> días de
-            vacaciones disponibles.
+            Tienes{" "}
+            <strong>
+              <span style={{ border: "1px solid black", padding: "2px 5px" }}>
+                {diasVacacionesDisponibles}
+              </span>
+            </strong>{" "}
+            días de vacaciones disponibles.
           </p>
-          <p>Tienes seleccionados {validDays} día(s)</p>
+          <p>
+            Tienes seleccionados{" "}
+            <span style={{ border: "1px solid black", padding: "2px 5px" }}>
+              {validDays}
+            </span>{" "}
+            día(s)
+          </p>
           {warning && <p className="warning">{warning}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -167,7 +178,7 @@ export default function NuevaSolicitud() {
                     isDisabledDate(date)
                   );
                 }}
-                format="YYYY-MM-DD"
+                format="DD-MM-YYYY"
                 renderInput={(params) => (
                   <input
                     {...params}
@@ -190,7 +201,7 @@ export default function NuevaSolicitud() {
                     isDisabledDate(date)
                   );
                 }}
-                format="YYYY-MM-DD"
+                format="DD-MM-YYYY"
                 disabled={!startDate}
                 renderInput={(params) => (
                   <input
