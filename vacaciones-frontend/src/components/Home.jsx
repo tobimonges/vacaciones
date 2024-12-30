@@ -60,7 +60,7 @@ const Home = () => {
         setSelectedDaysCount(calculateSelectedDays());
     }, [range]);
 
-    //  Obtener datos del usuario desde el backend
+    //  Obtener datos del usuario desde el Backend
     useEffect(() => {
         const fetchUserData = async () => {
             try {
