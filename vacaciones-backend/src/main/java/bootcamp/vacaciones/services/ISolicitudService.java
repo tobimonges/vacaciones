@@ -14,4 +14,6 @@ public interface ISolicitudService {
 
     void eliminarSolicitud(Long idSolicitud);
 
+    List<SolicitudModel> obtenerSolicitudesPorUsuario(Long usuarioId);
+
 }
