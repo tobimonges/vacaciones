@@ -17,7 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/vacaciones")
 
-@CrossOrigin(value = "http://localhost:3000") //para recibir peticiones del front
+@CrossOrigin(value = "http://localhost:5173") //para recibir peticiones del front
 public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
@@ -29,7 +29,7 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
-    @GetMapping("/buscar/{nroCedula}")
+    @GetMapping("/buscarcedula/{nroCedula}")
     public ResponseEntity<Optional<UsuarioModel>> obtenerUsuarioPorCedula(@PathVariable("nroCedula")  int nroCedula){
         Optional<UsuarioModel> usuario = Optional.ofNullable(usuarioService.buscarUsuarioPorCedula(nroCedula));
         return usuario.isPresent()
@@ -37,13 +37,13 @@ public class UsuarioController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
     }
 
-    @GetMapping("/diasdisponibles/{idUsuario}")
+    @GetMapping("/diasdisponiblesid/{idUsuario}")
     public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("idUsuario") Long idUsuario) {
         int diasVacaciones = usuarioService.obtenerDiasVacacionesPorIdUsuario(idUsuario);
         return ResponseEntity.ok(diasVacaciones);
     }
 
-    @GetMapping("/diasdisponibles/{nroCedula}")
+    @GetMapping("/diasdisponiblescedula/{nroCedula}")
     public ResponseEntity<Integer> obtenerDiasDisponibles(@PathVariable("nroCedula") int nroCedula) {
         int diasVacaciones = usuarioService.obtenerDiasVacacionesPorCedula(nroCedula);
         return ResponseEntity.ok(diasVacaciones);
@@ -57,7 +57,7 @@ public class UsuarioController {
         return usuarioService.guardarUsuario(usuario);
     }
 
-    @GetMapping("/buscar/{id}")
+    @GetMapping("/buscarid/{id}")
     public ResponseEntity<UsuarioModel> obtenerUsuarioPorId(@PathVariable("id") Long id) {
         UsuarioModel usuario = usuarioService.buscarUsuarioPorId(id);
         if (usuario == null) {
