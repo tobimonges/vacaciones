@@ -12,7 +12,7 @@
   border-radius: 10px;
   background: #ffffff;
   background: #fff;
-
+  transition: all 0.3 ease;
   box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
   -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
@@ -122,4 +122,50 @@ h3 {
 
 h3 .icon {
   margin-right: 10px;
+}
+
+.datosIncorrectos {
+  animation: datosIncorrectos 0.3s ease 0s 1 normal forwards;
+}
+
+.cajaLogin {
+  animation: cajaLogin 0.5s ease forwards;
+}
+
+@keyframes datosIncorrectos {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70% {
+    transform: translateX(-10px);
+  }
+
+  20%,
+  40%,
+  60% {
+    transform: translateX(10px);
+  }
+
+  80% {
+    transform: translateX(8px);
+  }
+
+  90% {
+    transform: translateX(-8px);
+  }
+}
+
+@keyframes cajaLogin {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
