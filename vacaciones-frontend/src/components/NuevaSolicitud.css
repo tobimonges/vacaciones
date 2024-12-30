@@ -17,6 +17,37 @@
   background-blend-mode: multiply; /* Opcional: color de fondo */
 }
 
+.info-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 20px;
+  text-align: center;
+  flex: 1;
+  margin: 0 1px;
+}
+
+.info-card h3 {
+  display: block;
+  font-size: 16px;
+  margin: 0;
+  color: #555;
+}
+
+.info-card p {
+  font-size: 28px;
+  color: #007bff;
+  margin: 0 5px 0 0; /* Opcional para ajustar espacio */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.info-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+}
+
 .DatePicker {
   text-align: center;
   display: flex;

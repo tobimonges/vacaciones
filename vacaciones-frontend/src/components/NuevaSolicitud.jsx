@@ -123,7 +123,7 @@ export default function NuevaSolicitud() {
         password: "admin123",
       };
       await axios.post(urlBase, solicitud, { auth });
-      navigate("/");
+      navigate("/NuevaSolicitud");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -138,23 +138,16 @@ export default function NuevaSolicitud() {
       <div className="container">
         <div className="DatePicker">
           <h2>Nueva Solicitud</h2>
-          {error && <p className="error">{error}</p>}
-          <p>
-            Tienes{" "}
-            <strong>
-              <span style={{ border: "1px solid black", padding: "2px 5px" }}>
-                {diasVacacionesDisponibles}
-              </span>
-            </strong>{" "}
-            días de vacaciones disponibles.
-          </p>
-          <p>
-            Tienes seleccionados{" "}
-            <span style={{ border: "1px solid black", padding: "2px 5px" }}>
-              {validDays}
-            </span>{" "}
-            día(s)
-          </p>
+          <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
+            <div className="info-card">
+              <p className="info-number">{diasVacacionesDisponibles}</p>
+              <h3>Días Disponibles</h3>
+            </div>
+            <div className="info-card">
+              <p className="info-number">{validDays}</p>
+              <h3>Días de Vacaciones</h3>
+            </div>
+          </div>
           {warning && <p className="warning">{warning}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
