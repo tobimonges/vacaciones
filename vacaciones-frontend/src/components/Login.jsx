@@ -11,12 +11,12 @@ function Login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    const isAuthenticated = localStorage.setItem("isAuthenticated", "false");
   }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    //prueba
     const usuarioPrueba = "admin";
     const passwordPrueba = "1234";
 
@@ -27,8 +27,11 @@ function Login() {
       navigate("/NuevaSolicitud", { replace: true });
       return;
     }
+    alert("Credenciales Incorrectas. Intente de nuevo.");
+    setUsuario("");
+    setPassword("");
     localStorage.setItem("isAuthenticated", "false");
-
+    //prueba
     /* try {
       const respuesta = await axios.post("http://localhost:5173/login", {
         usuario,
