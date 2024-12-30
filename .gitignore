@@ -1,2 +1,5 @@
 .idea/
 vacaciones-backend/src/main/resources/
+node_modules/
+/package-lock.json
+/package.json

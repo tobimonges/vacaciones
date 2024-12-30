@@ -1,9 +1,6 @@
 package bootcamp.vacaciones.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
@@ -13,17 +10,17 @@ public class SolicitudModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "id_solicitud")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private UsuarioModel usuario;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "fecha_inicio")
     private LocalDate fechaInicio;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "fecha_fin")
     private LocalDate fechaFin;
 
     @Column(nullable = false)
