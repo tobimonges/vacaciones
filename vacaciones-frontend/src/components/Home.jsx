@@ -66,18 +66,23 @@ const Home = () => {
     setSelectedDaysCount(calculateSelectedDays());
   }, [range]);
 
-  //  Obtener datos del usuario desde el backend
+  //  Obtener datos del usuario desde el Backend
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const auth = {
+          username: "admin@empresa.com",
+          password: "admin123",
+        };
         const response = await axios.get(
-          "http://localhost:8080/api/usuarios/1"
+          "http://localhost:8080/vacaciones/buscarid/1",
+          { auth }
         );
-        const { nombre, fecha_ingreso, dias_vacaciones } = response.data;
+        const { nombre, fechaIngreso, diasVacaciones } = response.data;
 
         setUserName(nombre);
-        setJoinDate(fecha_ingreso);
-        setVacationDays(dias_vacaciones);
+        setJoinDate(fechaIngreso);
+        setVacationDays(diasVacaciones);
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
