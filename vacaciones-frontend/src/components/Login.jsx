@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import NuevaSolicitud from "./NuevaSolicitud";
+import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -11,7 +11,7 @@ function Login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    const isAuthenticated = localStorage.setItem("isAuthenticated", "false");
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
   }, [navigate]);
 
   const handleLogin = async (e) => {
@@ -24,7 +24,7 @@ function Login() {
       alert("Inicio de sesión exitoso con usuario de prueba");
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("id_usuario", "1"); // ID ficticio para el usuario de prueba
-      navigate("/NuevaSolicitud", { replace: true });
+      navigate("/Home", { replace: true });
       return;
     }
     alert("Credenciales Incorrectas. Intente de nuevo.");
@@ -101,12 +101,7 @@ function Login() {
             </a>
           </div>
         </form>
-        <div className="content">
-          <Routes>
-            <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
-            {/* Puedes agregar más rutas aquí */}
-          </Routes>
-        </div>
+        <div className="content"></div>
       </div>
     </div>
   );
