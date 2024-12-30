@@ -10,45 +10,27 @@ function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-  }, [navigate]);
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    //prueba
-    const usuarioPrueba = "admin";
-    const passwordPrueba = "1234";
+    try {
+      const respuesta = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          email: usuario, // El backend espera "email"
+          password: password, // El backend espera "password"
+        }
+      );
+      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
-    if (usuario === usuarioPrueba && password === passwordPrueba) {
-      alert("Inicio de sesión exitoso con usuario de prueba");
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("id_usuario", "1"); // ID ficticio para el usuario de prueba
-      navigate("/Home", { replace: true });
-      return;
-    }
-    alert("Credenciales Incorrectas. Intente de nuevo.");
-    setUsuario("");
-    setPassword("");
-    localStorage.setItem("isAuthenticated", "false");
-    //prueba
-    /* try {
-      const respuesta = await axios.post("http://localhost:5173/login", {
-        usuario,
-        password,
-      });
-
-      if (respuesta.data.success) {
-        alert("Inicio de sesión exitoso");
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("id_usuario", respuesta.data.id_usuario);
-        navigate("/NuevaSolicitud", { replace: true });
-      } else {
-        alert("Credenciales incorrectas.");
-      }
+      // Si el login es exitoso, almacenar el token
+      const token = respuesta.data; // El token viene en la respuesta
+      localStorage.setItem("token", token); // Guardar el token en localStorage
+      alert("Inicio de sesión exitoso");
+      navigate("/Home"); // Redirigir al usuario
     } catch (error) {
-      console.error(error);
-      alert("Error al iniciar sesión");
+      console.error("Error al iniciar sesión", error);
+      setUsuario("");
+      setPassword("");
     }
 
     /*   const handleLogout = () => {
