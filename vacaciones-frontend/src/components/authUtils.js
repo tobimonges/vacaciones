@@ -14,6 +14,24 @@ export const getUsuarioId = () => {
   return null;
 };
 
+export function getUserRole() {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const payload = jwtDecode(token); // Decodifica el JWT
+    return payload.rol;
+  } catch (error) {
+    console.error("Error al decodificar el token:", error);
+    return null;
+  }
+}
+
+export function isAdmin() {
+  const rol = getUserRole();
+  return rol?.includes("ADMIN");
+}
+
 export const isTokenValid = () => {
   const token = localStorage.getItem("token");
   if (!token) return false;
@@ -26,4 +44,7 @@ export const isTokenValid = () => {
     console.error("Error al validar el token:", error);
     return false;
   }
+
+
+
 };
