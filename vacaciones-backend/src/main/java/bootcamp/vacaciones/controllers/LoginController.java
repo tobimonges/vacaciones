@@ -53,9 +53,10 @@ public class LoginController {
             UsuarioModel usuario = usuarioRepository.findByCorreo(loginRequest.getEmail())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            // Generar el token JWT con username y usuarioId
-            String jwt = jwtUtils.generateJwtToken(usuario.getCorreo(), usuario.getId());
-            logger.info("JWT generado: " + jwt);
+            String rol = usuario.getRol().getNombre(); // Extraer el nombre del rol
+
+            // Generar el token JWT
+            String jwt = jwtUtils.generateJwtToken(usuario.getCorreo(), usuario.getId(), rol);
 
             // Retornar el token
             return ResponseEntity.ok(jwt);
