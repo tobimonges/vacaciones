@@ -12,10 +12,11 @@ public class JwtUtils {
     private final int jwtExpirationMs = 86400000; // 1 día (en milisegundos)
 
     // Generar un token JWT
-    public String generateJwtToken(String username, Long usuarioId) {
+    public String generateJwtToken(String username, Long usuarioId, String rol) {
         return Jwts.builder()
                 .setSubject(username) // Establece el nombre de usuario como "subject"
                 .claim("usuarioId", usuarioId) // Incluye el usuarioId en los claims
+                .claim("rol", rol) // Incluir el rol en el token
                 .setIssuedAt(new Date()) // Fecha de emisión
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // Fecha de expiración
                 .signWith(SignatureAlgorithm.HS512, jwtSecret) // Firma con HS512
