@@ -1,11 +1,13 @@
-.container {
+.containerLogin {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  border: none;
 }
 
 .loginBox {
+  border: none;
   height: 350px;
   width: 400px;
   padding: 20px;
