@@ -6,8 +6,8 @@ import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import Badge from "@mui/material/Badge";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import CheckIcon from "@mui/icons-material/Check";
-import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import eachDayOfInterval from "date-fns/eachDayOfInterval";
+import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
@@ -40,7 +40,6 @@ const Home = () => {
 
   const isWeekend = (date) => date.getDay() === 0 || date.getDay() === 6;
   const isHoliday = (date) => holidays.some((holiday) => differenceInCalendarDays(holiday, date) === 0);
-
   const shouldDisableDate = (date) => isWeekend(date) || isHoliday(date);
 
   const isInRange = (day) => {
@@ -49,11 +48,11 @@ const Home = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const usuarioId = getUsuarioId(); // Obtén el ID del usuario desde el token
+      const usuarioId = getUsuarioId();
 
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-        navigate("/"); // Redirige al login
+        navigate("/");
         return;
       }
 
@@ -80,11 +79,11 @@ const Home = () => {
 
   useEffect(() => {
     const fetchVacationRequests = async () => {
-      const usuarioId = getUsuarioId(); // Obtén el ID del usuario desde el token
+      const usuarioId = getUsuarioId();
 
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-        navigate("/"); // Redirige al login
+        navigate("/");
         return;
       }
 
@@ -96,6 +95,30 @@ const Home = () => {
           },
         });
 
+        // Debug: Verificar los datos de la API
+        console.log("Datos de la API:", response.data);
+
+        const vacationDaysArray = response.data.flatMap(({ fecha_inicio, fecha_fin }) => {
+          if (!fecha_inicio || !fecha_fin) {
+            console.error("Fecha inválida recibida:", { fecha_inicio, fecha_fin });
+            return [];
+          }
+
+          const start = new Date(fecha_inicio);
+          const end = new Date(fecha_fin);
+
+          if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            console.error("Fecha inválida recibida:", { fecha_inicio, fecha_fin });
+            return [];
+          }
+
+          return eachDayOfInterval({
+            start,
+            end,
+          });
+        });
+
+        setSelectedDays(vacationDaysArray);
         setVacationRequests(response.data);
       } catch (error) {
         console.error("Error al obtener solicitudes de vacaciones:", error);
@@ -144,15 +167,18 @@ const Home = () => {
                       }
                       value={null}
                       shouldDisableDate={shouldDisableDate}
-                      renderDay={(day, _value, DayComponentProps) => (
-                          <Badge
-                              key={day.toString()}
-                              overlap="circular"
-                              badgeContent={isInRange(day) ? <CheckIcon color="primary" /> : undefined}
-                          >
-                            <PickersDay {...DayComponentProps} selected={isInRange(day)} />
-                          </Badge>
-                      )}
+                      renderDay={(day, _value, DayComponentProps) => {
+                        const isDayInRange = isInRange(day);
+                        return (
+                            <Badge
+                                key={day.toString()}
+                                overlap="circular"
+                                badgeContent={isDayInRange ? <CheckIcon color="primary" /> : undefined}
+                            >
+                              <PickersDay {...DayComponentProps} selected={isDayInRange} />
+                            </Badge>
+                        );
+                      }}
                   />
               ))}
             </div>
