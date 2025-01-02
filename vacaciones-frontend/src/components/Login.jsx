@@ -10,6 +10,7 @@ function Login() {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
@@ -31,8 +32,12 @@ function Login() {
 
       const token = respuesta.data;
       localStorage.setItem("token", token);
-      alert("Inicio de sesión exitoso");
-      navigate("/Home");
+      // alert("Inicio de sesión exitoso");
+      setIsAnimating(true);
+      setTimeout(() => {
+        alert("Inicio de sesión exitoso");
+        navigate("/Home");
+      }, 500);
     } catch (error) {
       console.error("Error al iniciar sesión", error);
       setUsuario("");
@@ -49,7 +54,11 @@ function Login() {
   };
   return (
     <div className="container">
-      <div className={`loginBox ${error ? "datosIncorrectos" : ""}`}>
+      <div
+        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
+          error ? "datosIncorrectos" : ""
+        }`}
+      >
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin} action="login" method="post">
           <div className="inputGroup">
