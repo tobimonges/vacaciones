@@ -129,7 +129,10 @@ const Home = () => {
               <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
                 Solicitar
               </button>
-              <button className="calendar-button" onClick={() => navigate("/componentes/SolicitudDetalle")}>
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+              >
                 Ver Solicitudes
               </button>
             </div>
