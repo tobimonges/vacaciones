@@ -52,7 +52,7 @@ function Login() {
     }; */
   };
   return (
-    <div className="container">
+    <div className="containerLogin">
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
