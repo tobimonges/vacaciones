@@ -13,3 +13,17 @@ export const getUsuarioId = () => {
   }
   return null;
 };
+
+export const isTokenValid = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return false;
+
+  try {
+    const { exp } = jwtDecode(token);
+    const currentTime = Math.floor(Date.now() / 1000);
+    return exp > currentTime;
+  } catch (error) {
+    console.error("Error al validar el token:", error);
+    return false;
+  }
+};
