@@ -39,12 +39,15 @@ const Home = () => {
   ];
 
   const isWeekend = (date) => date.getDay() === 0 || date.getDay() === 6;
-  const isHoliday = (date) => holidays.some((holiday) => differenceInCalendarDays(holiday, date) === 0);
+  const isHoliday = (date) =>
+    holidays.some((holiday) => differenceInCalendarDays(holiday, date) === 0);
 
   const shouldDisableDate = (date) => isWeekend(date) || isHoliday(date);
 
   const isInRange = (day) => {
-    return selectedDays.some((selectedDay) => differenceInCalendarDays(selectedDay, day) === 0);
+    return selectedDays.some(
+      (selectedDay) => differenceInCalendarDays(selectedDay, day) === 0
+    );
   };
 
   useEffect(() => {
@@ -59,11 +62,14 @@ const Home = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
         setUserName(nombre);
@@ -90,11 +96,14 @@ const Home = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:8080/vacaciones/usuario/${usuarioId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setVacationRequests(response.data);
       } catch (error) {
@@ -111,57 +120,78 @@ const Home = () => {
     fetchVacationRequests();
   }, []);
 
+  //en el return esta editado el calendar-card
+
   return (
-      <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
-        <div className="calendar-container">
-          <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-            <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
-            <p className="calendar-text">
-              Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-            </p>
-            <p className="calendar-text">
-              Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
-            </p>
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+      <div className="calendar-container ">
+        <div
+          className={`calendar-card HomeAnim ${error ? "calendar-error" : ""}`}
+        >
+          <h1 className="calendar-title">
+            Bienvenido, {userName || "Usuario"}
+          </h1>
+          <p className="calendar-text">
+            Fecha de ingreso:{" "}
+            {joinDate
+              ? new Date(joinDate).toLocaleDateString("es-ES")
+              : "Cargando..."}
+          </p>
+          <p className="calendar-text">
+            Total de días de vacaciones disponibles:{" "}
+            {vacationDays || "Cargando..."}
+          </p>
 
-            {error && <p className="calendar-error-message">{error}</p>}
+          {error && <p className="calendar-error-message">{error}</p>}
 
-            <div className="button-container">
-              <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
-                Solicitar
-              </button>
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
-              >
-                Ver Solicitudes
-              </button>
-            </div>
+          <div className="button-container">
+            <button
+              className="calendar-button"
+              onClick={() => navigate("/NuevaSolicitud")}
+            >
+              Solicitar
+            </button>
+            <button
+              className="calendar-button"
+              onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+            >
+              Ver Solicitudes
+            </button>
+          </div>
 
-            <div className="calendar-pickers-container">
-              {[0, 1].map((monthOffset) => (
-                  <StaticDatePicker
-                      key={monthOffset}
-                      displayStaticWrapperAs="desktop"
-                      defaultCalendarMonth={
-                        new Date(new Date().getFullYear(), new Date().getMonth() + monthOffset)
-                      }
-                      value={null}
-                      shouldDisableDate={shouldDisableDate}
-                      renderDay={(day, _value, DayComponentProps) => (
-                          <Badge
-                              key={day.toString()}
-                              overlap="circular"
-                              badgeContent={isInRange(day) ? <CheckIcon color="primary" /> : undefined}
-                          >
-                            <PickersDay {...DayComponentProps} selected={isInRange(day)} />
-                          </Badge>
-                      )}
-                  />
-              ))}
-            </div>
+          <div className="calendar-pickers-container">
+            {[0, 1].map((monthOffset) => (
+              <StaticDatePicker
+                key={monthOffset}
+                displayStaticWrapperAs="desktop"
+                defaultCalendarMonth={
+                  new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth() + monthOffset
+                  )
+                }
+                value={null}
+                shouldDisableDate={shouldDisableDate}
+                renderDay={(day, _value, DayComponentProps) => (
+                  <Badge
+                    key={day.toString()}
+                    overlap="circular"
+                    badgeContent={
+                      isInRange(day) ? <CheckIcon color="primary" /> : undefined
+                    }
+                  >
+                    <PickersDay
+                      {...DayComponentProps}
+                      selected={isInRange(day)}
+                    />
+                  </Badge>
+                )}
+              />
+            ))}
           </div>
         </div>
-      </LocalizationProvider>
+      </div>
+    </LocalizationProvider>
   );
 };
 

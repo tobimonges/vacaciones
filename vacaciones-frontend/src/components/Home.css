@@ -2,147 +2,160 @@
 
 /* Contenedor Principal */
 .calendar-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 version=%271.1%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 xmlns:svgjs=%27http://svgjs.com/svgjs%27 width=%271440%27 height=%27560%27 preserveAspectRatio=%27none%27 viewBox=%270 0 1440 560%27%3e%3cg mask=%27url(%26quot%3b%23SvgjsMask1560%26quot%3b)%27 fill=%27none%27%3e%3crect width=%271440%27 height=%27560%27 x=%270%27 y=%270%27 fill=%27url(%23SvgjsRadialGradient1561)%27%3e%3c/rect%3e%3cpath d=%27M0 0L52.91 0L0 5.82z%27 fill=%27rgba(255%2c 255%2c 255%2c .1)%27%3e%3c/path%3e%3cpath d=%27M0 5.82L52.91 0L223.41 0L0 198.10999999999999z%27 fill=%27rgba(255%2c 255%2c 255%2c .075)%27%3e%3c/path%3e%3cpath d=%27M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z%27 fill=%27rgba(255%2c 255%2c 255%2c .05)%27%3e%3c/path%3e%3cpath d=%27M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z%27 fill=%27rgba(255%2c 255%2c 255%2c .025)%27%3e%3c/path%3e%3cpath d=%27M1440 560L1266.7 560L1440 289.19z%27 fill=%27rgba(0%2c 0%2c 0%2c .1)%27%3e%3c/path%3e%3cpath d=%27M1440 289.19L1266.7 560L701.63 560L1440 233.49z%27 fill=%27rgba(0%2c 0%2c 0%2c .075)%27%3e%3c/path%3e%3cpath d=%27M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z%27 fill=%27rgba(0%2c 0%2c 0%2c .05)%27%3e%3c/path%3e%3cpath d=%27M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z%27 fill=%27rgba(0%2c 0%2c 0%2c .025)%27%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id=%27SvgjsMask1560%27%3e%3crect width=%271440%27 height=%27560%27 fill=%27white%27%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx=%27100%25%27 cy=%27100%25%27 r=%271545.06%27 gradientUnits=%27userSpaceOnUse%27 id=%27SvgjsRadialGradient1561%27%3e%3cstop stop-color=%27rgba(9%2c 82%2c 158%2c 1)%27 offset=%271%27%3e%3c/stop%3e%3cstop stop-color=%27rgba(0%2c 69%2c 158%2c 0)%27 offset=%271%27%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e') no-repeat center center;
-    background-size: cover;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif; /* Fuente del primer CSS */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 version=%271.1%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27 xmlns:svgjs=%27http://svgjs.com/svgjs%27 width=%271440%27 height=%27560%27 preserveAspectRatio=%27none%27 viewBox=%270 0 1440 560%27%3e%3cg mask=%27url(%26quot%3b%23SvgjsMask1560%26quot%3b)%27 fill=%27none%27%3e%3crect width=%271440%27 height=%27560%27 x=%270%27 y=%270%27 fill=%27url(%23SvgjsRadialGradient1561)%27%3e%3c/rect%3e%3cpath d=%27M0 0L52.91 0L0 5.82z%27 fill=%27rgba(255%2c 255%2c 255%2c .1)%27%3e%3c/path%3e%3cpath d=%27M0 5.82L52.91 0L223.41 0L0 198.10999999999999z%27 fill=%27rgba(255%2c 255%2c 255%2c .075)%27%3e%3c/path%3e%3cpath d=%27M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z%27 fill=%27rgba(255%2c 255%2c 255%2c .05)%27%3e%3c/path%3e%3cpath d=%27M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z%27 fill=%27rgba(255%2c 255%2c 255%2c .025)%27%3e%3c/path%3e%3cpath d=%27M1440 560L1266.7 560L1440 289.19z%27 fill=%27rgba(0%2c 0%2c 0%2c .1)%27%3e%3c/path%3e%3cpath d=%27M1440 289.19L1266.7 560L701.63 560L1440 233.49z%27 fill=%27rgba(0%2c 0%2c 0%2c .075)%27%3e%3c/path%3e%3cpath d=%27M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z%27 fill=%27rgba(0%2c 0%2c 0%2c .05)%27%3e%3c/path%3e%3cpath d=%27M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z%27 fill=%27rgba(0%2c 0%2c 0%2c .025)%27%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id=%27SvgjsMask1560%27%3e%3crect width=%271440%27 height=%27560%27 fill=%27white%27%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx=%27100%25%27 cy=%27100%25%27 r=%271545.06%27 gradientUnits=%27userSpaceOnUse%27 id=%27SvgjsRadialGradient1561%27%3e%3cstop stop-color=%27rgba(9%2c 82%2c 158%2c 1)%27 offset=%271%27%3e%3c/stop%3e%3cstop stop-color=%27rgba(0%2c 69%2c 158%2c 0)%27 offset=%271%27%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e")
+    no-repeat center center;
+  background-size: cover;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif; /* Fuente del primer CSS */
 }
 
 /* Tarjeta del Calendario */
 .calendar-card {
-    text-align: center;
-    background: #fff;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75); /* Sombra del primer CSS */
-    max-width: 800px;
-    width: 90%;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-    border: 1px solid #e0e7ff;
+  text-align: center;
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75); /* Sombra del primer CSS */
+  max-width: 800px;
+  width: 90%;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+  border: 1px solid #e0e7ff;
 }
 
 .calendar-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 /* Títulos y Textos */
 .calendar-title {
-    margin-bottom: 10px;
-    color: #4f46e5;
-    font-size: 2rem;
-    font-weight: 600;
-    font-family: 'Arial', sans-serif; /* Fuente del primer CSS */
+  margin-bottom: 10px;
+  color: #4f46e5;
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: "Arial", sans-serif; /* Fuente del primer CSS */
 }
 
 .calendar-text {
-    margin: 5px 0;
-    color: #6b7280;
-    font-size: 1rem;
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 1rem;
 }
 
 .calendar-selected-days {
-    margin-top: 10px;
-    color: #10b981;
-    font-size: 1.2rem;
-    font-weight: 500;
+  margin-top: 10px;
+  color: #10b981;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 /* Contenedor de los DatePickers */
 .calendar-pickers-container {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 /* Día Seleccionado */
 .calendar-day-selected {
-    background-color: #2563eb !important;
-    color: #fff !important;
-    border-radius: 50%;
-    transform: scale(1.1);
+  background-color: #2563eb !important;
+  color: #fff !important;
+  border-radius: 50%;
+  transform: scale(1.1);
 }
 
 /* Día al Pasar el Ratón */
 .calendar-day:hover {
-    background-color: #dbeafe;
-    transition: background 0.3s ease-in-out;
+  background-color: #dbeafe;
+  transition: background 0.3s ease-in-out;
 }
 
 .calendar-day {
-    transition: background 0.3s ease;
-    border-radius: 50%;
+  transition: background 0.3s ease;
+  border-radius: 50%;
 }
 
 .calendar-day:hover {
-    background-color: #dbeafe;
+  background-color: #dbeafe;
 }
 
 .calendar-day-selected {
-    background-color: #4f46e5 !important;
-    color: white !important;
-    border-radius: 50%;
-    transform: scale(1.1);
+  background-color: #4f46e5 !important;
+  color: white !important;
+  border-radius: 50%;
+  transform: scale(1.1);
 }
 
 .calendar-day-selected:hover {
-    background-color: #6366f1;
+  background-color: #6366f1;
 }
 
 /* Botón */
 .calendar-button {
-    width: 50%;
-    padding: 10px;
-    background-color: #fdca40;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 20px auto;
-    display: block;
-    transition: all 0.4s ease;
+  width: 50%;
+  padding: 10px;
+  background-color: #fdca40;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 20px auto;
+  display: block;
+  transition: all 0.4s ease;
 }
 
 .calendar-button:hover {
-    background-color: #fcbc0e;
-    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07),
-    0 4px 4px rgba(0, 0, 0, 0.07),
-    0 8px 8px rgba(0, 0, 0, 0.07),
-    0 16px 16px rgba(0, 0, 0, 0.07),
+  background-color: #fcbc0e;
+  box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
     0 32px 32px rgba(0, 0, 0, 0.07);
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .calendar-error-message {
-    color: #dc2626;
-    font-weight: bold;
-    margin-top: 10px;
+  color: #dc2626;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 /* Campos de entrada */
 .calendar-input {
-    width: 70%;
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: all 0.3s ease;
+  width: 70%;
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .calendar-input:hover {
-    border-color: #666;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border-color: #666;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.HomeAnim {
+  animation: HomeAnim 0.3s ease 0s 1 normal forwards;
+}
+
+@keyframes HomeAnim {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

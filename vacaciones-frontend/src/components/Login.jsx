@@ -35,9 +35,8 @@ function Login() {
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
       setTimeout(() => {
-        alert("Inicio de sesión exitoso");
         navigate("/Home");
-      }, 500);
+      }, 200);
     } catch (error) {
       console.error("Error al iniciar sesión", error);
       setUsuario("");
