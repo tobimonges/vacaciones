@@ -1,104 +1,68 @@
-import React, { useEffect } from "react";
-import { useSolicitud } from "./SolicitudContext";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function SolicitudDetalle() {
-  const { solicitud, setSolicitud } = useSolicitud();
+  const { id } = useParams(); // ID del usuario
   const navigate = useNavigate();
+  const [solicitudes, setSolicitudes] = useState([]); // Lista de solicitudes
+  const [error, setError] = useState("");
 
-  // Obtener los detalles de una solicitud específica al cargar el componente
   useEffect(() => {
-    const fetchSolicitud = async () => {
-      if (!solicitud?.id) {
-        console.error("El ID de la solicitud no está definido.");
-        return;
-      }
-
+    const fetchSolicitudes = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No estás autenticado. Por favor, inicia sesión.");
+          navigate("/");
+          return;
+        }
+
         const response = await axios.get(
-          `http://localhost:8080/vacaciones/${solicitud.id}`
+            `http://localhost:8080/vacaciones/usuario/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
         );
+
         if (response.status === 200) {
-          setSolicitud(response.data);
+          setSolicitudes(response.data); // Guardar las solicitudes obtenidas
         } else {
-          console.error("No se pudo obtener la solicitud.");
+          setError("No se pudieron obtener las solicitudes.");
         }
       } catch (error) {
-        console.error("Error obteniendo la solicitud:", error);
+        console.error("Error obteniendo las solicitudes:", error);
+        setError("Error al conectar con el servidor.");
       }
     };
 
-    fetchSolicitud();
-  }, [solicitud?.id, setSolicitud]);
+    fetchSolicitudes();
+  }, [id, navigate]);
 
-  const handleEditar = () => {
-    navigate("/"); // Redirigir al formulario principal
-  };
+  if (error) {
+    return <p className="error">{error}</p>;
+  }
 
-  const handleEliminar = async () => {
-    if (!solicitud?.id) {
-      console.error("El ID de la solicitud no está definido.");
-      alert("No se puede eliminar una solicitud sin ID.");
-      return;
-    }
-
-    try {
-      const response = await axios.delete(
-        `http://localhost:8080/vacaciones/${solicitud.id}`
-      );
-      if (response.status === 200) {
-        setSolicitud({ startDate: null, endDate: null }); // Resetear el contexto
-        alert("Solicitud eliminada.");
-        navigate("/");
-      } else {
-        alert("Hubo un problema al eliminar la solicitud.");
-      }
-    } catch (error) {
-      console.error("Error eliminando la solicitud:", error);
-      alert("Error al conectar con el servidor.");
-    }
-  };
-
-  const handleConfirmar = async () => {
-    if (!solicitud?.id) {
-      console.error("El ID de la solicitud no está definido.");
-      alert("No se puede confirmar una solicitud sin ID.");
-      return;
-    }
-
-    try {
-      const response = await axios.put(
-        `http://localhost:8080/vacaciones/${solicitud.id}`,
-        solicitud
-      );
-      if (response.status === 200) {
-        alert("Solicitud confirmada.");
-      } else {
-        alert("No se pudo confirmar la solicitud.");
-      }
-    } catch (error) {
-      console.error("Error confirmando la solicitud:", error);
-      alert("Error al conectar con el servidor.");
-    }
-  };
+  if (solicitudes.length === 0) {
+    return <p>No se encontraron solicitudes para este usuario.</p>;
+  }
 
   return (
-    <div className="container">
-      <div className="DatePicker">
-        <h4>Solicitud N°{solicitud.id || "1"}</h4>
-        <p>
-          Fecha de inicio:{" "}
-          {solicitud.startDate?.format("DD/MM/YYYY") || "No definida"}
-        </p>
-        <p>
-          Fecha de fin:{" "}
-          {solicitud.endDate?.format("DD/MM/YYYY") || "No definida"}
-        </p>
-        <button onClick={handleEditar}>Editar</button>
-        <button onClick={handleConfirmar}>OK</button>
-        <button onClick={handleEliminar}>Eliminar</button>
+      <div className="container">
+        <h4>Solicitudes del Usuario N°{id}</h4>
+        <ul>
+          {solicitudes.map((solicitud) => (
+              <li key={solicitud.id}>
+                <p>Solicitud N°{solicitud.id}</p>
+                <p>Fecha de inicio: {solicitud.fechaInicio}</p>
+                <p>Fecha de fin: {solicitud.fechaFin}</p>
+                <p>Estado: {solicitud.estado ? "Confirmada" : "Pendiente"}</p>
+              </li>
+          ))}
+        </ul>
+        <button onClick={() => navigate("/Home")}>Volver al Home</button>
       </div>
-    </div>
   );
 }
