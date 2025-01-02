@@ -3,6 +3,8 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import ProtectedRoute from "./components/rutas";
 import NuevaSolicitud from "./components/NuevaSolicitud";
+import SolicitudDetalle from "./components/SolicitudDetalle";
+
 function App() {
   return (
     <Router>
@@ -13,6 +15,7 @@ function App() {
         <Route path="/Home" element={<Home />} />
 
         <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
+        <Route path="/DetalleSolicitud" element={<SolicitudDetalle />} />
       </Routes>
     </Router>
   );
