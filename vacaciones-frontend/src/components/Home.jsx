@@ -64,35 +64,59 @@ const Home = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const auth = { username: 'admin@empresa.com', password: 'admin123' };
-        const response = await axios.get('http://localhost:8080/vacaciones/buscarid/1', { auth });
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/vacaciones/buscarid/1", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Añade el token en los encabezados
+          },
+        });
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
-
         setUserName(nombre);
         setJoinDate(fechaIngreso);
         setVacationDays(diasVacaciones);
       } catch (error) {
-        console.error('Error al obtener datos del usuario:', error);
-        setError('No se pudieron cargar los datos del usuario.');
+        console.error("Error al obtener datos del usuario:", error);
+        setError("No se pudieron cargar los datos del usuario.");
       }
     };
     fetchUserData();
   }, []);
 
-  // Obtener solicitudes de vacaciones
+
   useEffect(() => {
     const fetchVacationRequests = async () => {
       try {
-        const auth = { username: 'admin@empresa.com', password: 'admin123' };
-        const response = await axios.get('http://localhost:8080/vacaciones/solicitudes/1', { auth });
-        setVacationRequests(response.data);
+        const token = localStorage.getItem("token"); // Obtener el token del almacenamiento local
+
+        if (!token) {
+          setError("Usuario no autenticado. Por favor, inicie sesión.");
+          return;
+        }
+
+        const response = await axios.get(
+            "http://localhost:8080/vacaciones/usuario/1", // Ruta al backend
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Agregar el token al encabezado
+              },
+            }
+        );
+
+        setVacationRequests(response.data); // Actualizar el estado con las solicitudes
       } catch (error) {
-        console.error('Error al obtener solicitudes de vacaciones:', error);
-        setError('No se pudieron cargar las solicitudes de vacaciones.');
+        console.error("Error al obtener solicitudes de vacaciones:", error);
+
+        if (error.response && error.response.status === 403) {
+          setError("No tienes permisos para acceder a estas solicitudes.");
+        } else {
+          setError("No se pudieron cargar las solicitudes de vacaciones.");
+        }
       }
     };
+
     fetchVacationRequests();
   }, []);
+
 
   return (
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>

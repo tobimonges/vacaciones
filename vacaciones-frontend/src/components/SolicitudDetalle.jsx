@@ -16,7 +16,9 @@ export default function SolicitudDetalle() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8080/vacaciones/${solicitud.id}`);
+        const response = await axios.get(
+          `http://localhost:8080/vacaciones/${solicitud.id}`
+        );
         if (response.status === 200) {
           setSolicitud(response.data);
         } else {
@@ -42,7 +44,9 @@ export default function SolicitudDetalle() {
     }
 
     try {
-      const response = await axios.delete(`http://localhost:8080/vacaciones/${solicitud.id}`);
+      const response = await axios.delete(
+        `http://localhost:8080/vacaciones/${solicitud.id}`
+      );
       if (response.status === 200) {
         setSolicitud({ startDate: null, endDate: null }); // Resetear el contexto
         alert("Solicitud eliminada.");
@@ -64,7 +68,10 @@ export default function SolicitudDetalle() {
     }
 
     try {
-      const response = await axios.put(`http://localhost:8080/vacaciones/${solicitud.id}`, solicitud);
+      const response = await axios.put(
+        `http://localhost:8080/vacaciones/${solicitud.id}`,
+        solicitud
+      );
       if (response.status === 200) {
         alert("Solicitud confirmada.");
       } else {
@@ -80,8 +87,14 @@ export default function SolicitudDetalle() {
     <div className="container">
       <div className="DatePicker">
         <h4>Solicitud N°{solicitud.id || "1"}</h4>
-        <p>Fecha de inicio: {solicitud.startDate?.format("DD/MM/YYYY") || "No definida"}</p>
-        <p>Fecha de fin: {solicitud.endDate?.format("DD/MM/YYYY") || "No definida"}</p>
+        <p>
+          Fecha de inicio:{" "}
+          {solicitud.startDate?.format("DD/MM/YYYY") || "No definida"}
+        </p>
+        <p>
+          Fecha de fin:{" "}
+          {solicitud.endDate?.format("DD/MM/YYYY") || "No definida"}
+        </p>
         <button onClick={handleEditar}>Editar</button>
         <button onClick={handleConfirmar}>OK</button>
         <button onClick={handleEliminar}>Eliminar</button>
@@ -89,5 +102,3 @@ export default function SolicitudDetalle() {
     </div>
   );
 }
-
-
