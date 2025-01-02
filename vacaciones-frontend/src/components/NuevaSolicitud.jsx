@@ -13,11 +13,9 @@ import { getUsuarioId } from "./authUtils"; // Helper para obtener usuarioId
 
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
-const disabledDates = [
-  dayjs("2024-12-25"),
-  dayjs("2025-01-01"),
-];
-const isDisabledDate = (date) => disabledDates.some((disabledDate) => date.isSame(disabledDate, "day"));
+const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")];
+const isDisabledDate = (date) =>
+  disabledDates.some((disabledDate) => date.isSame(disabledDate, "day"));
 
 function countValidDays(start, end) {
   if (!start || !end) return 0;
@@ -39,7 +37,8 @@ export default function NuevaSolicitud() {
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(null);
   const [validDays, setValidDays] = useState(0);
-  const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] = useState(null);
+  const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] =
+    useState(null);
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
@@ -48,7 +47,10 @@ export default function NuevaSolicitud() {
     const days = countValidDays(startDate, endDate);
     setValidDays(days);
 
-    if (diasVacacionesDisponibles !== null && days > diasVacacionesDisponibles) {
+    if (
+      diasVacacionesDisponibles !== null &&
+      days > diasVacacionesDisponibles
+    ) {
       setWarning("No puedes seleccionar más días de los disponibles.");
     } else {
       setWarning("");
@@ -108,7 +110,8 @@ export default function NuevaSolicitud() {
           Authorization: `Bearer ${token}`,
         },
       });
-      navigate("/");
+      alert("Carga de solicitud exitoso");
+      navigate("/Home");
     } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
@@ -119,84 +122,88 @@ export default function NuevaSolicitud() {
   };
 
   return (
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-        <div className="container">
-          <div className="DatePicker">
-            <h2>Nueva Solicitud</h2>
-            <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
-              <div className="info-card">
-                <p className="info-number">{diasVacacionesDisponibles}</p>
-                <h3>Días Disponibles</h3>
-              </div>
-              <div className="info-card">
-                <p className="info-number">{validDays}</p>
-                <h3>Días de Vacaciones</h3>
-              </div>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+      <div className="container">
+        <div className="DatePicker">
+          <h2>Nueva Solicitud</h2>
+          <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
+            <div className="info-card">
+              <p className="info-number">{diasVacacionesDisponibles}</p>
+              <h3>Días Disponibles</h3>
             </div>
-            {warning && <p className="warning">{warning}</p>}
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <DatePicker
-                    label="Fecha de inicio"
-                    value={startDate}
-                    onChange={(newValue) => {
-                      setStartDate(newValue);
-                      if (endDate && newValue && endDate.isBefore(newValue, "day")) {
-                        setEndDate(null);
-                      }
-                    }}
-                    shouldDisableDate={(date) => {
-                      return (
-                          date.isBefore(today, "day") ||
-                          isWeekend(date) ||
-                          isDisabledDate(date)
-                      );
-                    }}
-                    format="DD-MM-YYYY"
-                    renderInput={(params) => (
-                        <input
-                            {...params}
-                            required
-                            className="form-control"
-                            placeholder="Selecciona la fecha de inicio"
-                        />
-                    )}
-                />
-              </div>
-              <div className="mb-3">
-                <DatePicker
-                    label="Fecha de fin"
-                    value={endDate}
-                    onChange={(newValue) => setEndDate(newValue)}
-                    shouldDisableDate={(date) => {
-                      return (
-                          (startDate && date.isBefore(startDate, "day")) ||
-                          isWeekend(date) ||
-                          isDisabledDate(date)
-                      );
-                    }}
-                    format="DD-MM-YYYY"
-                    disabled={!startDate}
-                    renderInput={(params) => (
-                        <input
-                            {...params}
-                            required
-                            className="form-control"
-                            placeholder="Selecciona la fecha de fin"
-                        />
-                    )}
-                />
-              </div>
-              <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={validDays > diasVacacionesDisponibles}
-              >
-                Crear Solicitud
-              </button>
-            </form>
+            <div className="info-card">
+              <p className="info-number">{validDays}</p>
+              <h3>Días de Vacaciones</h3>
+            </div>
           </div>
+          {warning && <p className="warning">{warning}</p>}
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <DatePicker
+                label="Fecha de inicio"
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                  if (
+                    endDate &&
+                    newValue &&
+                    endDate.isBefore(newValue, "day")
+                  ) {
+                    setEndDate(null);
+                  }
+                }}
+                shouldDisableDate={(date) => {
+                  return (
+                    date.isBefore(today, "day") ||
+                    isWeekend(date) ||
+                    isDisabledDate(date)
+                  );
+                }}
+                format="DD-MM-YYYY"
+                renderInput={(params) => (
+                  <input
+                    {...params}
+                    required
+                    className="form-control"
+                    placeholder="Selecciona la fecha de inicio"
+                  />
+                )}
+              />
+            </div>
+            <div className="mb-3">
+              <DatePicker
+                label="Fecha de fin"
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                shouldDisableDate={(date) => {
+                  return (
+                    (startDate && date.isBefore(startDate, "day")) ||
+                    isWeekend(date) ||
+                    isDisabledDate(date)
+                  );
+                }}
+                format="DD-MM-YYYY"
+                disabled={!startDate}
+                renderInput={(params) => (
+                  <input
+                    {...params}
+                    required
+                    className="form-control"
+                    placeholder="Selecciona la fecha de fin"
+                  />
+                )}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={validDays > diasVacacionesDisponibles}
+            >
+              Crear Solicitud
+            </button>
+          </form>
         </div>
-      </LocalizationProvider>
+      </div>
+    </LocalizationProvider>
   );
 }

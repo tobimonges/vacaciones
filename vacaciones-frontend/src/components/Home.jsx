@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import Badge from '@mui/material/Badge';
-import { PickersDay } from '@mui/x-date-pickers/PickersDay';
-import CheckIcon from '@mui/icons-material/Check';
-import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
-import eachDayOfInterval from 'date-fns/eachDayOfInterval';
-import { es } from 'date-fns/locale';
-import { useNavigate } from 'react-router-dom';
-import './Home.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
+import Badge from "@mui/material/Badge";
+import { PickersDay } from "@mui/x-date-pickers/PickersDay";
+import CheckIcon from "@mui/icons-material/Check";
+import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
+import eachDayOfInterval from "date-fns/eachDayOfInterval";
+import { es } from "date-fns/locale";
+import { useNavigate } from "react-router-dom";
+import { getUsuarioId, isTokenValid } from "./authUtils";
+import "./Home.css";
 
 const Home = () => {
-  const [vacationRequests, setVacationRequests] = useState([]); // Datos de solicitudes
-  const [userName, setUserName] = useState('');
-  const [joinDate, setJoinDate] = useState('');
+  const [vacationRequests, setVacationRequests] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [joinDate, setJoinDate] = useState("");
   const [vacationDays, setVacationDays] = useState(0);
-  const [range, setRange] = useState({ start: null, end: null });
   const [selectedDays, setSelectedDays] = useState([]);
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const holidays = [
@@ -48,28 +47,24 @@ const Home = () => {
     return selectedDays.some((selectedDay) => differenceInCalendarDays(selectedDay, day) === 0);
   };
 
-  // Calcular días seleccionados a partir de las Solicitudes
-  useEffect(() => {
-    if (vacationRequests.length > 0) {
-      const days = vacationRequests.flatMap(({ fecha_inicio, fecha_fin }) => {
-        const startDate = new Date(fecha_inicio);
-        const endDate = new Date(fecha_fin);
-        return eachDayOfInterval({ start: startDate, end: endDate });
-      });
-      setSelectedDays(days);
-    }
-  }, [vacationRequests]);
-
-  // Obtener datos del usuario
   useEffect(() => {
     const fetchUserData = async () => {
+      const usuarioId = getUsuarioId(); // Obtén el ID del usuario desde el token
+
+      if (!usuarioId || !isTokenValid()) {
+        setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        navigate("/"); // Redirige al login
+        return;
+      }
+
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/vacaciones/buscarid/1", {
+        const response = await axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
           headers: {
-            Authorization: `Bearer ${token}`, // Añade el token en los encabezados
+            Authorization: `Bearer ${token}`,
           },
         });
+
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
         setUserName(nombre);
         setJoinDate(fechaIngreso);
@@ -79,30 +74,29 @@ const Home = () => {
         setError("No se pudieron cargar los datos del usuario.");
       }
     };
+
     fetchUserData();
   }, []);
 
-
   useEffect(() => {
     const fetchVacationRequests = async () => {
+      const usuarioId = getUsuarioId(); // Obtén el ID del usuario desde el token
+
+      if (!usuarioId || !isTokenValid()) {
+        setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        navigate("/"); // Redirige al login
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("token"); // Obtener el token del almacenamiento local
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`http://localhost:8080/vacaciones/usuario/${usuarioId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        if (!token) {
-          setError("Usuario no autenticado. Por favor, inicie sesión.");
-          return;
-        }
-
-        const response = await axios.get(
-            "http://localhost:8080/vacaciones/usuario/1", // Ruta al backend
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, // Agregar el token al encabezado
-              },
-            }
-        );
-
-        setVacationRequests(response.data); // Actualizar el estado con las solicitudes
+        setVacationRequests(response.data);
       } catch (error) {
         console.error("Error al obtener solicitudes de vacaciones:", error);
 
@@ -117,31 +111,27 @@ const Home = () => {
     fetchVacationRequests();
   }, []);
 
-
   return (
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
         <div className="calendar-container">
-          <div className={`calendar-card ${error ? 'calendar-error' : ''}`}>
-            <h1 className="calendar-title">Bienvenido, {userName || 'Usuario'}</h1>
+          <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+            <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
             <p className="calendar-text">
-              Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString('es-ES') : 'Cargando...'}
+              Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
             </p>
             <p className="calendar-text">
-              Total de días de vacaciones disponibles: {vacationDays || 'Cargando...'}
+              Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
             </p>
 
             {error && <p className="calendar-error-message">{error}</p>}
 
             <div className="button-container">
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate('/NuevaSolicitud')}
-              >
+              <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
                 Solicitar
               </button>
               <button
                   className="calendar-button"
-                  onClick={() => navigate('/componentes/SolicitudDetalle')}
+                  onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
               >
                 Ver Solicitudes
               </button>
@@ -155,7 +145,7 @@ const Home = () => {
                       defaultCalendarMonth={
                         new Date(new Date().getFullYear(), new Date().getMonth() + monthOffset)
                       }
-                      value={range.start}
+                      value={null}
                       shouldDisableDate={shouldDisableDate}
                       renderDay={(day, _value, DayComponentProps) => (
                           <Badge
@@ -163,11 +153,7 @@ const Home = () => {
                               overlap="circular"
                               badgeContent={isInRange(day) ? <CheckIcon color="primary" /> : undefined}
                           >
-                            <PickersDay
-                                {...DayComponentProps}
-                                selected={isInRange(day)}
-                                className={isInRange(day) ? 'calendar-day-selected' : 'calendar-day'}
-                            />
+                            <PickersDay {...DayComponentProps} selected={isInRange(day)} />
                           </Badge>
                       )}
                   />
