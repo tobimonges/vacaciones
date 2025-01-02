@@ -1,69 +1,75 @@
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-}
-
-.DatePicker {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 2rem;
-  background-color: rgb(255, 255, 255);
   border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative; /* Para posicionar elementos internos */
 }
 
-.DatePicker button {
-  background-color: #FDCA40;
-  font-family: "bold";
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  padding: 12px 48px;
-  color: #2C2C2C;
-  text-transform: uppercase;
-  transition: all 0.3s ease-in-out;
-  text-decoration: none;
-}
-
-.DatePicker button:hover {
-  background-color: #FCBC0E;
-  box-shadow: 
-    0 -1px 1px rgba(0, 0, 0, 0.07),
-    0 4px 4px rgba(0, 0, 0, 0.07),
-    0 8px 8px rgba(0, 0, 0, 0.07),
-    0 16px 16px rgba(0, 0, 0, 0.07),
-    0 32px 32px rgba(0, 0, 0, 0.07);
-  transform: translateY(-2px);
-}
-
-.solicitud-detalle {
+h4 {
+  font-size: 1.5rem;
+  color: white; /* Título en blanco */
+  margin-bottom: 1rem;
   text-align: center;
-  padding: 2rem;
-  background-color: white;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+li {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+li p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #555;
 }
 
 .buttons {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1rem;
+  margin-top: 0.5rem;
 }
 
 button {
-  padding: 0.5rem 1rem;
+  background-color: #fdca40; /* Color amarillo */
+  font-family: "bold";
+  font-size: 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  padding: 0.4rem; /* Ajustado */
+  color: #2c2c2c; /* Texto oscuro */
   cursor: pointer;
-}
-
-button.delete {
-  background-color: #ff4d4f;
-  color: white;
+  transition: all 0.3s ease-in-out;
 }
 
 button:hover {
-  opacity: 0.9;
+  background-color: #fcbc0e; /* Hover amarillo */
+  box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+}
+
+.volver-home {
+  margin-top: 1rem; /* Ajuste para separar del contenido */
+  align-self: center; /* Centrar el botón */
+  font-size: 18px; /* Tamaño más grande */
+  padding: 0.6rem 1.5rem; /* Ajuste del tamaño */
 }
