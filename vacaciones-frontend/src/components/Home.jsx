@@ -10,17 +10,16 @@ import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import eachDayOfInterval from "date-fns/eachDayOfInterval";
 import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
 
 const Home = () => {
-  const [vacationRequests, setVacationRequests] = useState([]); // Datos de solicitudes
+  const [vacationRequests, setVacationRequests] = useState([]);
   const [userName, setUserName] = useState("");
   const [joinDate, setJoinDate] = useState("");
   const [vacationDays, setVacationDays] = useState(0);
-  const [range, setRange] = useState({ start: null, end: null });
   const [selectedDays, setSelectedDays] = useState([]);
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
   const holidays = [
@@ -40,42 +39,32 @@ const Home = () => {
   ];
 
   const isWeekend = (date) => date.getDay() === 0 || date.getDay() === 6;
-  const isHoliday = (date) =>
-    holidays.some((holiday) => differenceInCalendarDays(holiday, date) === 0);
+  const isHoliday = (date) => holidays.some((holiday) => differenceInCalendarDays(holiday, date) === 0);
 
   const shouldDisableDate = (date) => isWeekend(date) || isHoliday(date);
 
   const isInRange = (day) => {
-    return selectedDays.some(
-      (selectedDay) => differenceInCalendarDays(selectedDay, day) === 0
-    );
+    return selectedDays.some((selectedDay) => differenceInCalendarDays(selectedDay, day) === 0);
   };
 
-  // Calcular días seleccionados a partir de las Solicitudes
-  useEffect(() => {
-    if (vacationRequests.length > 0) {
-      const days = vacationRequests.flatMap(({ fecha_inicio, fecha_fin }) => {
-        const startDate = new Date(fecha_inicio);
-        const endDate = new Date(fecha_fin);
-        return eachDayOfInterval({ start: startDate, end: endDate });
-      });
-      setSelectedDays(days);
-    }
-  }, [vacationRequests]);
-
-  // Obtener datos del usuario
   useEffect(() => {
     const fetchUserData = async () => {
+      const usuarioId = getUsuarioId(); // Obtén el ID del usuario desde el token
+
+      if (!usuarioId || !isTokenValid()) {
+        setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        navigate("/"); // Redirige al login
+        return;
+      }
+
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/vacaciones/buscarid/1",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Añade el token en los encabezados
-            },
-          }
-        );
+        const response = await axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
         setUserName(nombre);
         setJoinDate(fechaIngreso);
@@ -85,29 +74,29 @@ const Home = () => {
         setError("No se pudieron cargar los datos del usuario.");
       }
     };
+
     fetchUserData();
   }, []);
 
   useEffect(() => {
     const fetchVacationRequests = async () => {
+      const usuarioId = getUsuarioId(); // Obtén el ID del usuario desde el token
+
+      if (!usuarioId || !isTokenValid()) {
+        setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        navigate("/"); // Redirige al login
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("token"); // Obtener el token del almacenamiento local
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`http://localhost:8080/vacaciones/usuario/${usuarioId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        if (!token) {
-          setError("Usuario no autenticado. Por favor, inicie sesión.");
-          return;
-        }
-
-        const response = await axios.get(
-          "http://localhost:8080/vacaciones/usuario/1", // Ruta al backend
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Agregar el token al encabezado
-            },
-          }
-        );
-
-        setVacationRequests(response.data); // Actualizar el estado con las solicitudes
+        setVacationRequests(response.data);
       } catch (error) {
         console.error("Error al obtener solicitudes de vacaciones:", error);
 
@@ -123,78 +112,53 @@ const Home = () => {
   }, []);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
-      <div className="calendar-container">
-        <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-          <h1 className="calendar-title">
-            Bienvenido, {userName || "Usuario"}
-          </h1>
-          <p className="calendar-text">
-            Fecha de ingreso:{" "}
-            {joinDate
-              ? new Date(joinDate).toLocaleDateString("es-ES")
-              : "Cargando..."}
-          </p>
-          <p className="calendar-text">
-            Total de días de vacaciones disponibles:{" "}
-            {vacationDays || "Cargando..."}
-          </p>
+      <LocalizationProvider dateAdapter={AdapterDateFns} locale={es}>
+        <div className="calendar-container">
+          <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+            <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
+            <p className="calendar-text">
+              Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
+            </p>
+            <p className="calendar-text">
+              Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
+            </p>
 
-          {error && <p className="calendar-error-message">{error}</p>}
+            {error && <p className="calendar-error-message">{error}</p>}
 
-          <div className="button-container">
-            <button
-              className="calendar-button"
-              onClick={() => navigate("/NuevaSolicitud")}
-            >
-              Solicitar
-            </button>
-            <button
-              className="calendar-button"
-              onClick={() => navigate("/DetalleSolicitud")}
-            >
-              Ver Solicitudes
-            </button>
-          </div>
+            <div className="button-container">
+              <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
+                Solicitar
+              </button>
+              <button className="calendar-button" onClick={() => navigate("/componentes/SolicitudDetalle")}>
+                Ver Solicitudes
+              </button>
+            </div>
 
-          <div className="calendar-pickers-container">
-            {[0, 1].map((monthOffset) => (
-              <StaticDatePicker
-                key={monthOffset}
-                displayStaticWrapperAs="desktop"
-                defaultCalendarMonth={
-                  new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth() + monthOffset
-                  )
-                }
-                value={range.start}
-                shouldDisableDate={shouldDisableDate}
-                renderDay={(day, _value, DayComponentProps) => (
-                  <Badge
-                    key={day.toString()}
-                    overlap="circular"
-                    badgeContent={
-                      isInRange(day) ? <CheckIcon color="primary" /> : undefined
-                    }
-                  >
-                    <PickersDay
-                      {...DayComponentProps}
-                      selected={isInRange(day)}
-                      className={
-                        isInRange(day)
-                          ? "calendar-day-selected"
-                          : "calendar-day"
+            <div className="calendar-pickers-container">
+              {[0, 1].map((monthOffset) => (
+                  <StaticDatePicker
+                      key={monthOffset}
+                      displayStaticWrapperAs="desktop"
+                      defaultCalendarMonth={
+                        new Date(new Date().getFullYear(), new Date().getMonth() + monthOffset)
                       }
-                    />
-                  </Badge>
-                )}
-              />
-            ))}
+                      value={null}
+                      shouldDisableDate={shouldDisableDate}
+                      renderDay={(day, _value, DayComponentProps) => (
+                          <Badge
+                              key={day.toString()}
+                              overlap="circular"
+                              badgeContent={isInRange(day) ? <CheckIcon color="primary" /> : undefined}
+                          >
+                            <PickersDay {...DayComponentProps} selected={isInRange(day)} />
+                          </Badge>
+                      )}
+                  />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </LocalizationProvider>
+      </LocalizationProvider>
   );
 };
 

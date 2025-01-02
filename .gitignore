@@ -3,3 +3,6 @@ vacaciones-backend/src/main/resources/
 node_modules/
 /package-lock.json
 /package.json
+vacaciones-frontend/package.json
+vacaciones-frontend/package-lock.json
+vacaciones-frontend/node_modules
