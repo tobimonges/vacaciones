@@ -4,6 +4,7 @@ package bootcamp.vacaciones.controllers;
 import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.RolRepository;
+import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.services.IUsuarioService;
 import bootcamp.vacaciones.services.RolService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -23,11 +25,15 @@ public class UsuarioController {
     private IUsuarioService usuarioService;
     @Autowired
     private RolRepository rolRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
 
     @GetMapping("/listarusuarios")
     public List<UsuarioModel> obtenerUsuarios() {
         return usuarioService.listarUsuarios();
     }
+
 
     @GetMapping("/buscarcedula/{nroCedula}")
     public ResponseEntity<Optional<UsuarioModel>> obtenerUsuarioPorCedula(@PathVariable("nroCedula")  int nroCedula){
@@ -37,6 +43,13 @@ public class UsuarioController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
     }
 
+    @GetMapping("/lideres")
+    public ResponseEntity<List<UsuarioModel>> listarLideres() {
+        List<UsuarioModel> lideres = usuarioRepository.findAll().stream()
+                .filter(usuario -> usuario.getRol().getNombre().equalsIgnoreCase("LIDER"))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lideres);
+    }
     @GetMapping("/diasdisponiblesid/{idUsuario}")
     public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("idUsuario") Long idUsuario) {
         int diasVacaciones = usuarioService.obtenerDiasVacacionesPorIdUsuario(idUsuario);
