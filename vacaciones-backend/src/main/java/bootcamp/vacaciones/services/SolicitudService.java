@@ -1,6 +1,7 @@
 package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.SolicitudModel;
+import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.SolicitudRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,13 @@ public class SolicitudService implements ISolicitudService {
         if (!usuarioRepository.existsById(idUsuario)) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
+
+
         // Validar que la fecha no coincida con otra solicitud
         // ...
         solicitud.setUsuario(usuarioRepository.findById(idUsuario).orElseThrow());
-        solicitud.setEstado(true);
-        solicitud.setFechaInicio(solicitud.getFechaInicio());
-        solicitud.setFechaFin(solicitud.getFechaFin());
+        solicitud.setNumeroAprobaciones(0); // Ninguna aprobación inicial
+        solicitud.setRechazado(false);
 
         return solicitudRepository.save(solicitud);
     }

@@ -26,6 +26,41 @@ public class SolicitudModel {
     @Column(nullable = false)
     private Boolean estado;
 
+    @Column(nullable=true, name="numero_aprobaciones")
+    private Integer numeroAprobaciones;
+
+    @Column(nullable = true, name="cantidad_dias")
+    private Integer cantidadDias;
+
+    @Column(nullable = true)
+    private String comentario;
+
+    @Column(nullable = false)
+    private Boolean rechazado;
+
+    @ManyToOne
+    @JoinColumn(name = "id_lider", nullable = false)
+    private UsuarioModel lider; // Relación con el líder
+
+
+    public SolicitudModel() {
+    }
+
+
+    public SolicitudModel(Long id, UsuarioModel usuario, LocalDate fechaInicio, LocalDate fechaFin, Boolean estado, Integer numeroAprobaciones, Integer cantidadDias,
+                          String comentario, Boolean rechazado, UsuarioModel lider) {
+        this.id = id;
+        this.usuario = usuario;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = estado;
+        this.numeroAprobaciones = numeroAprobaciones;
+        this.cantidadDias = cantidadDias;
+        this.comentario = comentario;
+        this.rechazado = rechazado;
+        this.lider = lider;
+    }
+
     public Long getId() {
         return id;
     }
@@ -66,14 +101,45 @@ public class SolicitudModel {
         this.estado = estado;
     }
 
-    public SolicitudModel() {
+    public Integer getNumeroAprobaciones() {
+        return numeroAprobaciones;
     }
 
-    public SolicitudModel(Long id, UsuarioModel usuario, LocalDate fechaInicio, LocalDate fechaFin, Boolean estado) {
-        this.id = id;
-        this.usuario = usuario;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-        this.estado = estado;
+    public void setNumeroAprobaciones(Integer numeroAprobaciones) {
+        this.numeroAprobaciones = numeroAprobaciones;
     }
+
+    public Integer getCantidadDias() {
+        return cantidadDias;
+    }
+
+    public void setCantidadDias(Integer cantidadDias) {
+        this.cantidadDias = cantidadDias;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public Boolean getRechazado() {
+        return rechazado;
+    }
+
+    public void setRechazado(Boolean rechazado) {
+        this.rechazado = rechazado;
+    }
+
+    public UsuarioModel getLider() {
+        return lider;
+    }
+
+    public void setLider(UsuarioModel lider) {
+        this.lider = lider;
+    }
+
 }
+
