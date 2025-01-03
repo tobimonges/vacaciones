@@ -41,15 +41,16 @@ ul {
 li {
   padding: 1rem;
   margin-bottom: 1rem;
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(45, 96, 177, 0.726);
+  color: white;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.381);
 }
 
 li p {
   margin: 0.5rem 0;
   font-size: 1rem;
-  color: #555;
+  color: white;
 }
 
 li p:first-of-type {
@@ -102,4 +103,43 @@ button:hover {
 .datepicker-container input {
   width: 100%; /* O ajusta el tamaño que prefieras */
   max-width: 250px; /* Ancho máximo para no hacerlos demasiado grandes */
+}
+
+/* Estilos para la lista desplegable de filtro */
+/* Fondo translúcido para las opciones de la lista desplegable */
+.select-filtro {
+  position: absolute;
+  top: 3.6rem; /* Ajusta este valor según el espacio desde el borde superior */
+  right: 1.5rem; /* Ajusta este valor para alinearlo con el borde derecho */
+  background-color: #fdca40; /* Mismo amarillo que los otros botones */
+  color: #2c2c2c; /* Texto oscuro */
+  font-family: "bold";
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  padding: 0.4rem 1rem; /* Espaciado interno */
+  cursor: pointer;
+  box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+  0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+  0 32px 32px rgba(0, 0, 0, 0.07);  
+  transition: all 0.3s ease-in-out;
+  margin: 0 0.5rem; /* Espaciado */
+}
+
+/* Estilo del menú desplegable */
+.select-filtro option {
+  background-color: #F0E68C; /* Fondo amarillo translúcido */
+  color: #2c2c2c; /* Texto oscuro */
+  font-size: 16px;
+  padding: 0.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Cambio al pasar el mouse */
+.select-filtro option:hover {
+  background-color: rgba(252, 188, 14, 0.85); /* Hover translúcido */
+}
+.select-filtro:focus {
+  outline: none; /* Eliminar el contorno negro */
 }
