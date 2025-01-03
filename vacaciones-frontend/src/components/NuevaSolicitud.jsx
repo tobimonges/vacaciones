@@ -14,21 +14,41 @@ const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
 const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")];
 
+function countValidDays(start, end, reservedDates = []) {
+  if (!start || !end) return 0;
+  if (end.isBefore(start, "day")) return 0;
+
+  let count = 0;
+  let currentDate = start.clone();
+  while (currentDate.isSame(end, "day") || currentDate.isBefore(end, "day")) {
+    if (
+      !isWeekend(currentDate) &&
+      !disabledDates.some((d) => currentDate.isSame(d, "day")) &&
+      !reservedDates.some((d) => currentDate.isSame(d, "day"))
+    ) {
+      count++;
+    }
+    currentDate = currentDate.add(1, "day");
+  }
+  return count;
+}
+
 export default function NuevaSolicitud() {
   const usuarioId = getUsuarioId();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [lideres, setLideres] = useState([]); // Lista de líderes
-  const [selectedUsuario, setSelectedUsuario] = useState(""); // Líder seleccionado
+  const [validDays, setValidDays] = useState(0);
   const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] =
     useState(null);
+  const [reservedDates, setReservedDates] = useState([]);
+  const [lideres, setLideres] = useState([]); // Lista de líderes
+  const [selectedLider, setSelectedLider] = useState(""); // Líder seleccionado
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener líderes
-    const fetchLideres = async () => {
+    const fetchReservedDates = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -36,24 +56,37 @@ export default function NuevaSolicitud() {
           return;
         }
 
-        const response = await axios.get(
-          "http://localhost:8080/vacaciones/lideres",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const url = `http://localhost:8080/vacaciones/usuario/${usuarioId}`;
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        setLideres(response.data); // Guardar líderes en el estado
+        const dates = response.data.flatMap((solicitud) => {
+          const start = dayjs(solicitud.fechaInicio);
+          const end = dayjs(solicitud.fechaFin);
+          const range = [];
+          let currentDate = start.clone();
+          while (
+            currentDate.isSame(end, "day") ||
+            currentDate.isBefore(end, "day")
+          ) {
+            range.push(currentDate.clone());
+            currentDate = currentDate.add(1, "day");
+          }
+          return range;
+        });
+
+        setReservedDates(dates);
       } catch (err) {
-        console.error("Error al obtener los líderes:", err);
-        setError("No se pudo obtener la información de los líderes.");
+        console.error("Error al obtener fechas reservadas:", err);
+        setError("No se pudo obtener la información de las solicitudes.");
       }
     };
 
-    fetchLideres();
-  }, []);
+    fetchReservedDates();
+  }, [usuarioId]);
 
   useEffect(() => {
     const fetchDiasDisponibles = async () => {
@@ -79,10 +112,44 @@ export default function NuevaSolicitud() {
     fetchDiasDisponibles();
   }, [usuarioId]);
 
+  useEffect(() => {
+    const fetchLideres = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/lideres",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setLideres(response.data);
+      } catch (err) {
+        console.error("Error al obtener líderes:", err);
+        setError("No se pudo obtener la información de los líderes.");
+      }
+    };
+
+    fetchLideres();
+  }, []);
+
+  useEffect(() => {
+    const days = countValidDays(startDate, endDate, reservedDates);
+    setValidDays(days);
+
+    if (
+      diasVacacionesDisponibles !== null &&
+      days > diasVacacionesDisponibles
+    ) {
+      setWarning("No puedes seleccionar más días de los disponibles.");
+    } else {
+      setWarning("");
+    }
+  }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!startDate || !endDate || !selectedUsuario) {
+    if (!startDate || !endDate || !selectedLider) {
       setError("Por favor, selecciona ambas fechas y un líder.");
       return;
     }
@@ -90,8 +157,10 @@ export default function NuevaSolicitud() {
     const solicitud = {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
-      usuarioId: selectedUsuario,
+      liderId: selectedLider,
       estado: false,
+      cantidadDias: validDays,
+      idLider: selectedLider.id,
     };
 
     try {
@@ -124,6 +193,10 @@ export default function NuevaSolicitud() {
               <p className="info-number">{diasVacacionesDisponibles}</p>
               <h3>Días Disponibles</h3>
             </div>
+            <div className="info-card">
+              <p className="info-number">{validDays}</p>
+              <h3>Días de Vacaciones</h3>
+            </div>
           </div>
           {warning && <p className="warning">{warning}</p>}
           {error && <p className="error">{error}</p>}
@@ -132,7 +205,24 @@ export default function NuevaSolicitud() {
               <DatePicker
                 label="Fecha de inicio"
                 value={startDate}
-                onChange={(newValue) => setStartDate(newValue)}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                  if (
+                    endDate &&
+                    newValue &&
+                    endDate.isBefore(newValue, "day")
+                  ) {
+                    setEndDate(null);
+                  }
+                }}
+                shouldDisableDate={(date) => {
+                  return (
+                    date.isBefore(today, "day") ||
+                    isWeekend(date) ||
+                    disabledDates.some((d) => date.isSame(d, "day")) ||
+                    reservedDates.some((d) => date.isSame(d, "day"))
+                  );
+                }}
               />
             </div>
             <div className="mb-3">
@@ -140,13 +230,21 @@ export default function NuevaSolicitud() {
                 label="Fecha de fin"
                 value={endDate}
                 onChange={(newValue) => setEndDate(newValue)}
+                shouldDisableDate={(date) => {
+                  return (
+                    (startDate && date.isBefore(startDate, "day")) ||
+                    isWeekend(date) ||
+                    disabledDates.some((d) => date.isSame(d, "day")) ||
+                    reservedDates.some((d) => date.isSame(d, "day"))
+                  );
+                }}
                 disabled={!startDate}
               />
             </div>
             <div className="mb-3">
               <select
-                value={selectedUsuario}
-                onChange={(e) => setSelectedUsuario(e.target.value)}
+                value={selectedLider}
+                onChange={(e) => setSelectedLider(e.target.value)}
                 className="select-usuarios"
               >
                 <option value="" disabled>
@@ -162,7 +260,7 @@ export default function NuevaSolicitud() {
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={!startDate || !endDate || !selectedUsuario}
+              disabled={validDays > diasVacacionesDisponibles || !selectedLider}
             >
               Crear Solicitud
             </button>
