@@ -29,7 +29,6 @@ const Home = () => {
   const [vacationDays, setVacationDays] = useState(0);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
   // 📥 **Obtener Datos del Usuario**
@@ -56,6 +55,7 @@ const Home = () => {
         setUserName(nombre);
         setJoinDate(fechaIngreso);
         setVacationDays(diasVacaciones);
+
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -65,7 +65,6 @@ const Home = () => {
     fetchUserData();
   }, [navigate]);
 
-  // 📥 **Obtener Solicitudes de Vacaciones**
   useEffect(() => {
     const fetchVacationRequests = async () => {
       const usuarioId = getUsuarioId();
@@ -79,27 +78,43 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`,
+            `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }
         );
 
-        // 🗺️ Mapear fechas al calendario usando un Map
+        console.log("Respuesta de la API:", response.data); // ✅ Validar estructura
+
         const eventsArray = [];
-        if (response.data && response.data.solicitudes) {
-          response.data.solicitudes.forEach((solicitud) => {
+        if (response.data && Array.isArray(response.data)) {
+          response.data.forEach((solicitud) => {
+            console.log("Solicitud actual:", solicitud); // ✅ Validar cada solicitud
+
             if (solicitud.fechaInicio && solicitud.fechaFin) {
-              eventsArray.push({
-                title: "Día de Vacaciones",
-                start: new Date(solicitud.fechaInicio),
-                end: new Date(solicitud.fechaFin),
-                allDay: true,
-              });
+              const startDate = new Date(solicitud.fechaInicio);
+              startDate.setHours(0, 0, 0, 0);
+
+              const endDate = new Date(solicitud.fechaFin);
+              endDate.setHours(23, 59, 59, 999);
+
+              console.log("Fecha Inicio:", startDate, "Fecha Fin:", endDate); // ✅ Validar fechas
+
+              let currentDate = new Date(startDate);
+              while (currentDate <= endDate) {
+                eventsArray.push({
+                  title: "Día de Vacaciones",
+                  start: new Date(currentDate),
+                  end: new Date(currentDate),
+                  allDay: true,
+                });
+                currentDate.setDate(currentDate.getDate() + 1);
+              }
             }
           });
         }
 
+        console.log("Array final de eventos:", eventsArray); // ✅ Validar array final
         setEvents(eventsArray);
       } catch (error) {
         console.error("Error al obtener solicitudes de vacaciones:", error);
@@ -111,6 +126,9 @@ const Home = () => {
   }, [navigate]);
 
 
+
+
+  console.log("Estado final de eventos:", events); // 👈 Valida el estado antes del calendario
   // 🎨 **Renderizado del Componente**
   return (
       <div className="calendar-container">
