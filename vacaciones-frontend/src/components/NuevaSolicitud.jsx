@@ -160,9 +160,8 @@ export default function NuevaSolicitud() {
       liderId: selectedLider,
       estado: false,
       cantidadDias: validDays,
-      idLider: selectedLider.id,
     };
-
+    console.log(solicitud);
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`;
@@ -252,7 +251,8 @@ export default function NuevaSolicitud() {
                 </option>
                 {lideres.map((lider) => (
                   <option key={lider.id} value={lider.id}>
-                    {lider.nombre}
+                    {lider.nombre} {lider.apellido}{" "}
+                    {/* Concatenar nombre y apellido */}
                   </option>
                 ))}
               </select>
