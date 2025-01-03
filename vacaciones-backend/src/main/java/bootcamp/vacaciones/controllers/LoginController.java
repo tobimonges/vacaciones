@@ -4,6 +4,7 @@ import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.LoginRequest;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.security.JwtUtils;
+import bootcamp.vacaciones.security.JwtBlacklist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,13 +23,15 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final UsuarioRepository usuarioRepository; // Repositorio de usuarios para obtener el ID
+    private final UsuarioRepository usuarioRepository;
+    private final JwtBlacklist jwtBlacklist;
 
     @Autowired
-    public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UsuarioRepository usuarioRepository) {
+    public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UsuarioRepository usuarioRepository, JwtBlacklist jwtBlacklist) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.usuarioRepository = usuarioRepository;
+        this.jwtBlacklist = jwtBlacklist;
     }
 
     @PostMapping("/login")
@@ -64,5 +67,16 @@ public class LoginController {
             logger.error("Error en autenticación: " + e.getMessage());
             return ResponseEntity.status(401).body("Credenciales incorrectas");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            jwtBlacklist.addToBlacklist(jwt);
+            logger.info("Token invalidado: " + jwt);
+            return ResponseEntity.ok("Sesión cerrada correctamente.");
+        }
+        return ResponseEntity.badRequest().body("Token inválido.");
     }
 }
