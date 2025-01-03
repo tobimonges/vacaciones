@@ -25,6 +25,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private JwtBlacklist jwtBlacklist;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -35,6 +38,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String jwt = authHeader.substring(7);
 
             try {
+                // Verificar si el token está en la lista negra
+                if (jwtBlacklist.isBlacklisted(jwt)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token invalidado.");
+                    return;
+                }
+
+                // Validar el token y establecer la autenticación
                 String username = jwtUtils.getUsernameFromJwtToken(jwt);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
