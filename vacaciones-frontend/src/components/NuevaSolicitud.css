@@ -92,8 +92,8 @@
   font-family: "bold";
   font-size: 16px;
   border: none;
-  border-radius: 5px;
-  padding: 0.4rem;
+  border-radius: 10px;
+  padding: 0.2rem;
   color: #2c2c2c;
 
   transition: all 0.3s ease-in-out;

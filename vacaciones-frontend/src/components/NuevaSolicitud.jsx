@@ -1,5 +1,3 @@
-// src/components/NuevaSolicitud.jsx
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -14,17 +12,19 @@ import { getUsuarioId } from "./authUtils"; // Helper para obtener usuarioId
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
 const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")];
-const isDisabledDate = (date) =>
-  disabledDates.some((disabledDate) => date.isSame(disabledDate, "day"));
 
-function countValidDays(start, end) {
+function countValidDays(start, end, reservedDates = []) {
   if (!start || !end) return 0;
   if (end.isBefore(start, "day")) return 0;
 
   let count = 0;
   let currentDate = start.clone();
   while (currentDate.isSame(end, "day") || currentDate.isBefore(end, "day")) {
-    if (!isWeekend(currentDate) && !isDisabledDate(currentDate)) {
+    if (
+      !isWeekend(currentDate) &&
+      !disabledDates.some((d) => currentDate.isSame(d, "day")) &&
+      !reservedDates.some((d) => currentDate.isSame(d, "day"))
+    ) {
       count++;
     }
     currentDate = currentDate.add(1, "day");
@@ -34,17 +34,85 @@ function countValidDays(start, end) {
 
 export default function NuevaSolicitud() {
   const usuarioId = getUsuarioId();
-  const [startDate, setStartDate] = useState(today);
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [validDays, setValidDays] = useState(0);
   const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] =
     useState(null);
+  const [reservedDates, setReservedDates] = useState([]); // Fechas ya reservadas
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const days = countValidDays(startDate, endDate);
+    const fetchReservedDates = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No se encontró un token. Inicia sesión nuevamente.");
+          return;
+        }
+
+        // Obtener fechas reservadas
+        const url = `http://localhost:8080/vacaciones/usuario/${usuarioId}`;
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // Procesar rangos de fechas reservadas
+        const dates = response.data.flatMap((solicitud) => {
+          const start = dayjs(solicitud.fechaInicio);
+          const end = dayjs(solicitud.fechaFin);
+          const range = [];
+          let currentDate = start.clone();
+          while (
+            currentDate.isSame(end, "day") ||
+            currentDate.isBefore(end, "day")
+          ) {
+            range.push(currentDate.clone());
+            currentDate = currentDate.add(1, "day");
+          }
+          return range;
+        });
+
+        setReservedDates(dates);
+      } catch (err) {
+        console.error("Error al obtener fechas reservadas:", err);
+        setError("No se pudo obtener la información de las solicitudes.");
+      }
+    };
+
+    fetchReservedDates();
+  }, [usuarioId]);
+
+  useEffect(() => {
+    const fetchDiasDisponibles = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No se encontró un token. Inicia sesión nuevamente.");
+          return;
+        }
+
+        const url = `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`;
+        const response = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setDiasVacacionesDisponibles(response.data);
+      } catch (err) {
+        console.error("Error al obtener días de vacaciones disponibles:", err);
+        setError("No se pudo obtener la información de días de vacaciones.");
+      }
+    };
+
+    fetchDiasDisponibles();
+  }, [usuarioId]);
+
+  useEffect(() => {
+    const days = countValidDays(startDate, endDate, reservedDates);
     setValidDays(days);
 
     if (
@@ -55,39 +123,23 @@ export default function NuevaSolicitud() {
     } else {
       setWarning("");
     }
-  }, [startDate, endDate, diasVacacionesDisponibles]);
-
-  useEffect(() => {
-    const fetchDiasVacaciones = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("No se encontró un token. Inicia sesión nuevamente.");
-          return;
-        }
-
-        const urlBase = `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`;
-        const response = await axios.get(urlBase, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setDiasVacacionesDisponibles(response.data);
-      } catch (err) {
-        console.error("Error al obtener días de vacaciones disponibles:", err);
-        setError("No se pudo obtener la información de días de vacaciones.");
-      }
-    };
-
-    fetchDiasVacaciones();
-  }, [usuarioId]);
+  }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!startDate || !endDate) {
       setError("Por favor, selecciona ambas fechas.");
+      return;
+    }
+
+    if (startDate.isBefore(today, "day")) {
+      setError("La fecha de inicio no puede ser anterior a la fecha actual.");
+      return;
+    }
+
+    if (endDate.isBefore(startDate, "day")) {
+      setError("La fecha de fin no puede ser anterior a la fecha de inicio.");
       return;
     }
 
@@ -104,13 +156,13 @@ export default function NuevaSolicitud() {
 
     try {
       const token = localStorage.getItem("token");
-      const urlBase = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`;
-      await axios.post(urlBase, solicitud, {
+      const url = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`;
+      await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Carga de solicitud exitoso");
+      alert("Carga de solicitud exitosa");
       navigate("/Home");
     } catch (err) {
       if (err.response?.data?.message) {
@@ -137,6 +189,7 @@ export default function NuevaSolicitud() {
             </div>
           </div>
           {warning && <p className="warning">{warning}</p>}
+          {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <DatePicker
@@ -156,18 +209,10 @@ export default function NuevaSolicitud() {
                   return (
                     date.isBefore(today, "day") ||
                     isWeekend(date) ||
-                    isDisabledDate(date)
+                    disabledDates.some((d) => date.isSame(d, "day")) ||
+                    reservedDates.some((d) => date.isSame(d, "day"))
                   );
                 }}
-                format="DD-MM-YYYY"
-                renderInput={(params) => (
-                  <input
-                    {...params}
-                    required
-                    className="form-control"
-                    placeholder="Selecciona la fecha de inicio"
-                  />
-                )}
               />
             </div>
             <div className="mb-3">
@@ -179,19 +224,11 @@ export default function NuevaSolicitud() {
                   return (
                     (startDate && date.isBefore(startDate, "day")) ||
                     isWeekend(date) ||
-                    isDisabledDate(date)
+                    disabledDates.some((d) => date.isSame(d, "day")) ||
+                    reservedDates.some((d) => date.isSame(d, "day"))
                   );
                 }}
-                format="DD-MM-YYYY"
                 disabled={!startDate}
-                renderInput={(params) => (
-                  <input
-                    {...params}
-                    required
-                    className="form-control"
-                    placeholder="Selecciona la fecha de fin"
-                  />
-                )}
               />
             </div>
             <button
