@@ -11,7 +11,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const loginBox = document.querySelector(".loginBox");
@@ -51,6 +51,18 @@ function Login() {
       navigate("/", { replace: true }); // Redirige al login
     }; */
   };
+  const handleForgotPassword = () => {
+    const loginBox = document.querySelector(".loginBox");
+    loginBox.classList.add("LoginSlide");
+    setTimeout(() => {
+      navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
+    }, 550);
+  };
+  if (showForgotPassword) {
+    return (
+      <ForgotPassword onBackToLogin={() => setShowForgotPassword(false)} />
+    );
+  }
   return (
     <div className="containerLogin">
       <div
@@ -94,7 +106,14 @@ function Login() {
             Iniciar sesión
           </button>
           <div className="forgotPassword">
-            <a href="#" className="link">
+            <a
+              href="#"
+              className="link"
+              onClick={(e) => {
+                e.preventDefault();
+                handleForgotPassword();
+              }}
+            >
               Olvidaste tu contraseña?
             </a>
           </div>
