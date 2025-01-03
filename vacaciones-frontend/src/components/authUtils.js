@@ -1,4 +1,6 @@
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+
 export const getUsuarioId = () => {
   const token = localStorage.getItem("token");
   if (token) {
