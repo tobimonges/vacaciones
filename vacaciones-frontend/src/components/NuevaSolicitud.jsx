@@ -1,5 +1,3 @@
-// src/components/NuevaSolicitud.jsx
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -91,6 +89,16 @@ export default function NuevaSolicitud() {
       return;
     }
 
+    if (startDate.isBefore(today, "day")) {
+      setError("La fecha de inicio no puede ser anterior a la fecha actual.");
+      return;
+    }
+
+    if (endDate.isBefore(startDate, "day")) {
+      setError("La fecha de fin no puede ser anterior a la fecha de inicio.");
+      return;
+    }
+
     if (validDays > diasVacacionesDisponibles) {
       setError("No puedes seleccionar más días de los disponibles.");
       return;
@@ -137,6 +145,7 @@ export default function NuevaSolicitud() {
             </div>
           </div>
           {warning && <p className="warning">{warning}</p>}
+          {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <DatePicker
