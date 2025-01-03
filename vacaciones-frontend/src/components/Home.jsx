@@ -92,25 +92,19 @@ const Home = () => {
             console.log("Solicitud actual:", solicitud); // ✅ Validar cada solicitud
 
             if (solicitud.fechaInicio && solicitud.fechaFin) {
-              const startDate = new Date(solicitud.fechaInicio);
-              startDate.setHours(0, 0, 0, 0);
+              const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
+              const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-              const endDate = new Date(solicitud.fechaFin);
-              endDate.setHours(23, 59, 59, 999);
+              // Usar las fechas normalizadas como base
+              eventsArray.push({
+                title: "Día de Vacaciones",
+                start: new Date(`${startDate}T00:00:00`), // Inicio del día
+                end: new Date(`${endDate}T23:59:59`), // Fin del día
+                allDay: true,
+              });
 
-              console.log("Fecha Inicio:", startDate, "Fecha Fin:", endDate); // ✅ Validar fechas
-
-              let currentDate = new Date(startDate);
-              while (currentDate <= endDate) {
-                eventsArray.push({
-                  title: "Día de Vacaciones",
-                  start: new Date(currentDate),
-                  end: new Date(currentDate),
-                  allDay: true,
-                });
-                currentDate.setDate(currentDate.getDate() + 1);
-              }
             }
+
           });
         }
 

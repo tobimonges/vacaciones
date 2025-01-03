@@ -1,1 +1,55 @@
-.calendar-container {    display: flex;    justify-content: center;    align-items: center;    margin: 20px;}.calendar-card {    width: 90%;    max-width: 1200px;    background: #ffffff;    border-radius: 8px;    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);    padding: 20px;    text-align: center;}.calendar-title {    font-size: 24px;    margin-bottom: 10px;}.calendar-text {    font-size: 16px;    margin: 5px 0;}.button-container {    margin: 20px 0;}.calendar-button {    margin: 5px;    padding: 8px 16px;    background-color: #007bff;    color: white;    border: none;    border-radius: 4px;    cursor: pointer;}.calendar-button:hover {    background-color: #0056b3;}.calendar-big-container {    margin-top: 20px;}
+/* 🖼 Contenedor principal del calendario */
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+/* 📝 Tarjeta del calendario */
+.calendar-card {
+    width: 90%;
+    max-width: 1200px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+/* 📌 Título del calendario */
+.calendar-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* 📄 Texto dentro del calendario */
+.calendar-text {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+/* 🔘 Contenedor de botones */
+.button-container {
+    margin: 20px 0;
+}
+
+/* 🕹 Botones del calendario */
+.calendar-button {
+    margin: 5px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.calendar-button:hover {
+    background-color: #0056b3;
+}
+
+/* 🗓 Contenedor grande del calendario */
+.calendar-big-container {
+    margin-top: 20px;
+}
