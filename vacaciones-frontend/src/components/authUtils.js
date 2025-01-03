@@ -44,7 +44,32 @@ export const isTokenValid = () => {
     console.error("Error al validar el token:", error);
     return false;
   }
-
-
-
 };
+
+export async function logout() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No hay token almacenado para cerrar sesión.");
+    return;
+  }
+  try {
+    // Enviar el token al backend para invalidarlo
+    await axios.post(
+      "http://localhost:8080/api/auth/logout",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // Eliminar el token del almacenamiento local
+    localStorage.removeItem("token");
+    // Redirigir al usuario a la página de inicio de sesión
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    // Manejar el error, por ejemplo, mostrar un mensaje al usuario
+    alert("No se pudo cerrar sesión correctamente. Intenta de nuevo.");
+  }
+}

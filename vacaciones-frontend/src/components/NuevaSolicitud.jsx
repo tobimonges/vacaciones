@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import { getUsuarioId } from "./authUtils"; // Helper para obtener usuarioId
+import LogoutButton from "./LogoutButton"; // Importar el componente del botón
 
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
@@ -53,7 +54,6 @@ export default function NuevaSolicitud() {
           return;
         }
 
-        // Obtener fechas reservadas
         const url = `http://localhost:8080/vacaciones/usuario/${usuarioId}`;
         const response = await axios.get(url, {
           headers: {
@@ -61,7 +61,6 @@ export default function NuevaSolicitud() {
           },
         });
 
-        // Procesar rangos de fechas reservadas
         const dates = response.data.flatMap((solicitud) => {
           const start = dayjs(solicitud.fechaInicio);
           const end = dayjs(solicitud.fechaFin);
@@ -176,6 +175,7 @@ export default function NuevaSolicitud() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <div className="container">
+        <LogoutButton /> {/* Botón de cierre de sesión */}
         <div className="DatePicker">
           <h2>Nueva Solicitud</h2>
           <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
