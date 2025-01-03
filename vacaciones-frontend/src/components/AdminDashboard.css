@@ -1,0 +1,86 @@
+.container-admin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 90%;
+  width: 100%;
+  background-color: rgba(87, 145, 238, 0.25); /* Fondo translúcido */
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Centrado en la pantalla */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 80vh; /* Limitar altura al 80% del viewport */
+  overflow-y: scroll; /* Habilitar desplazamiento vertical */
+  scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
+}
+
+.container-solicitudes::-webkit-scrollbar {
+  display: none; /* Ocultar barra de desplazamiento en navegadores basados en WebKit (Chrome, Edge, Safari) */
+}
+h4 {
+  font-size: 1.5rem;
+  color: white;
+  text-align: center;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: rgb(225, 225, 225);
+}
+
+.admin-table thead {
+  color: white;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ffffff9c;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f9f9f931;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  background-color: #fdca40;
+  font-family: "bold";
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  padding: 0.4rem;
+  color: #2c2c2c;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #fcbc0e;
+  transform: translateY(-2px);
+}
+
+button.reject {
+  background-color: #fdca40;
+}
+
+button.reject:hover {
+  background-color: #fdca40;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
