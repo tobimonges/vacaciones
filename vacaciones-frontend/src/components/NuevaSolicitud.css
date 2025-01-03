@@ -106,3 +106,31 @@
     0 32px 32px rgba(0, 0, 0, 0.07);
   transform: translateY(-2px);
 }
+
+.select-usuarios {
+  width: 100%; /* Ocupa el ancho completo */
+  max-width: 250px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
+  padding: 8px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño del texto */
+  border: 1px solid #ccc; /* Borde gris */
+  border-radius: 4px; /* Bordes redondeados */
+  background-color: white; /* Fondo blanco */
+  color: #333; /* Texto en color oscuro */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+}
+
+.select-usuarios:focus {
+  outline: none; /* Quita el borde azul predeterminado */
+  border-color: #007bff; /* Cambia el color del borde al enfocarlo */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Agrega un resplandor azul */
+}
+
+.select-usuarios option {
+  background-color: white; /* Fondo blanco */
+  color: #333; /* Texto oscuro */
+  padding: 8px; /* Espaciado interno */
+}
+
+.select-usuarios option:hover {
+  background-color: #f1f1f100; /* Cambia el fondo al pasar el mouse */
+}
