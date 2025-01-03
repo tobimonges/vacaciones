@@ -15,6 +15,7 @@ export default function SolicitudDetalle() {
   const [editando, setEditando] = useState(null); // ID de la solicitud que se está editando
   const [nuevaFechaInicio, setNuevaFechaInicio] = useState(null);
   const [nuevaFechaFin, setNuevaFechaFin] = useState(null);
+  const [filtro, setFiltro] = useState(""); // Estado del filtro: "Confirmada" o "Pendiente"
 
   useEffect(() => {
     const fetchSolicitudes = async () => {
@@ -127,6 +128,15 @@ export default function SolicitudDetalle() {
     }
   };
 
+  // Filtrar solicitudes según el estado
+  const solicitudesFiltradas = filtro
+    ? solicitudes.filter(
+        (solicitud) =>
+          (filtro === "Confirmada" && solicitud.estado === true) ||
+          (filtro === "Pendiente" && solicitud.estado === false)
+      )
+    : solicitudes;
+
   if (error) {
     return <p className="error">{error}</p>;
   }
@@ -139,14 +149,24 @@ export default function SolicitudDetalle() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="container-solicitudes">
         <h4>Solicitudes del Usuario</h4>
+        {/* Lista desplegable para filtro */}
+        <select
+          className="select-filtro"
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+        >
+          <option value="">Todas</option>
+          <option value="Confirmada">Confirmadas</option>
+          <option value="Pendiente">Pendientes</option>
+        </select>
+
         <ul>
-          {solicitudes.map((solicitud, index) => (
+          {solicitudesFiltradas.map((solicitud, index) => (
             <li key={solicitud.id}>
               {editando === solicitud.id ? (
                 <div>
                   <p>
-                    <strong>Solicitud N°{index + 1}</strong>{" "}
-                    {/* Aquí usamos el índice + 1 para obtener un contador */}
+                    <strong>Solicitud N°{index + 1}</strong>
                     <br />
                     <br />
                   </p>
@@ -175,8 +195,7 @@ export default function SolicitudDetalle() {
               ) : (
                 <div>
                   <p>
-                    <strong>Solicitud N° {index + 1}</strong>{" "}
-                    {/* Aquí usamos el índice + 1 para obtener un contador */}
+                    <strong>Solicitud N°{index + 1}</strong>
                   </p>
                   <p>
                     <strong>Fecha de inicio:</strong>{" "}
