@@ -4,9 +4,7 @@ import Home from "./components/Home";
 import NuevaSolicitud from "./components/NuevaSolicitud";
 import SolicitudDetalle from "./components/SolicitudDetalle";
 import PrivateRoute from "./components/PrivateRoute";
-import AdminDashboard from "./components/AdminDashboard"; // Ajusta la ruta si es necesario
-
-
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
     return (
@@ -18,14 +16,13 @@ function App() {
                 {/* Rutas para funcionarios */}
                 <Route path="/Home" element={<Home />} />
                 <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
-                {/* Ruta para ver detalles de una solicitud */}
                 <Route path="/SolicitudDetalle/:id" element={<SolicitudDetalle />} />
 
-                {/* Ruta exclusiva para administradores */}
+                {/* Ruta para otros roles excepto FUNCIONARIO */}
                 <Route
                     path="/AdminDashboard"
                     element={
-                        <PrivateRoute adminOnly>
+                        <PrivateRoute allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}>
                             <AdminDashboard />
                         </PrivateRoute>
                     }
