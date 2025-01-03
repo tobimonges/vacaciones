@@ -7,29 +7,31 @@ import PrivateRoute from "./components/PrivateRoute";
 import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                {/* Ruta pública */}
-                <Route path="/" element={<Login />} />
+  return (
+    <Router>
+      <Routes>
+        {/* Ruta pública */}
+        <Route path="/" element={<Login />} />
 
-                {/* Rutas para funcionarios */}
-                <Route path="/Home" element={<Home />} />
-                <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
-                <Route path="/SolicitudDetalle/:id" element={<SolicitudDetalle />} />
+        {/* Rutas para funcionarios */}
+        <Route path="/Home" element={<Home />} />
+        <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
+        <Route path="/SolicitudDetalle/:id" element={<SolicitudDetalle />} />
 
-                {/* Ruta para otros roles excepto FUNCIONARIO */}
-                <Route
-                    path="/AdminDashboard"
-                    element={
-                        <PrivateRoute allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}>
-                            <AdminDashboard />
-                        </PrivateRoute>
-                    }
-                />
-            </Routes>
-        </Router>
-    );
+        {/* Ruta para otros roles excepto FUNCIONARIO */}
+        <Route
+          path="/AdminDashboard"
+          element={
+            <PrivateRoute
+              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
+            >
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

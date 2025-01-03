@@ -1,12 +1,13 @@
-.containerLogin {
+.containerRestablecer {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
   border: none;
+  position: relative;
 }
 
-.loginBox {
+.restablecerBox {
   border: none;
   height: 350px;
   width: 400px;
@@ -21,8 +22,10 @@
   justify-content: space-between; /* Esto empuja los elementos hacia los extremos */
   flex-direction: column;
   justify-content: center;
+  position: relative;
 }
-.segundoLContainer {
+
+.segundoContainerRC {
   border: #333;
   height: 260px;
   width: 380px;
@@ -35,75 +38,59 @@
   justify-content: center;
 }
 
-.header {
+.headerRC {
   text-align: center;
   margin-bottom: 20px;
   font-size: 30px;
   color: #333;
 }
 
-.inputGroup {
+.inputRCGroup {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  margin-top: 40px;
-  margin-bottom: -55px;
+  padding: 0px;
+  margin-top: 70px;
+  margin-bottom: -60px;
 }
-
-.icon {
+.iconRC {
+  position: absolute;
   width: 25px;
-  height: 20px;
-  margin-bottom: 8px;
+  height: 25px;
+  margin-bottom: 5px;
   margin-top: 10px;
-  margin-left: -6pxx;
+  margin-left: -35px;
 }
-
-.iconWrap {
+.iconWrapRC {
+  position: absolute;
   display: flex;
-  width: 75%;
+  width: 95%;
   align-items: center;
   justify-content: center;
   height: 30px;
   margin-right: 5px;
-  padding: 20px;
+  padding: 10px;
 }
 
-.input {
-  width: 70%;
+.inputRC {
+  position: relative;
+  width: 100%;
   flex: 1;
-  padding: 10px;
+  padding: 11px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
   transition: all 0.3s ease;
 }
 
-.input:hover {
+.inputRC:hover {
   border-color: #666;
   background-color: #f9f9f9;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.forgotPassword {
-  text-align: center;
-  margin-bottom: 20px;
-  margin-top: 5px;
-}
-
-.link {
-  font-size: 14px;
-  color: #333;
-  text-decoration: none;
-  margin-top: 10px;
-  transition: all 0.3s ease;
-}
-
-.link:hover {
-  color: #666;
-}
-
-.button {
+.buttonRC {
+  position: relative;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   width: 50%;
   padding: 10px;
@@ -113,102 +100,78 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin: 0 auto;
-  margin-top: 80px;
+  margin-top: 90px;
+  margin-left: 95px;
   display: block;
   transition: all 0.4s ease;
 }
 
-.button:hover {
+.buttonRC:hover {
   background-color: #fcbc0e;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
     0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
     0 32px 32px rgba(0, 0, 0, 0.07);
   transform: translateY(-2px);
 }
+.linkRC {
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+  margin-top: -265px;
+  margin-left: 165px;
+  transition: all 0.3s ease;
+  position: absolute;
+  margin-bottom: 25px;
+}
 
-h3 {
+.linkRC:hover {
+  color: #666;
+}
+.BackToLogin {
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.inputRCGroup1 {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  font-size: 16px;
-  margin-left: 10px;
+  padding: 5px;
+  margin-top: 70px;
+  margin-bottom: -50px;
+}
+.iconRC1 {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-left: -35px;
+}
+.iconWrapRC1 {
+  position: absolute;
+  display: flex;
+  width: 95%;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin-right: 5px;
+  padding: 10px;
+}
+.iconFP {
+  position: absolute;
+  width: 40px; /* Ajusta el tamaño de la imagen */
+  height: 40px;
+  margin-right: 20px; /* Si deseas un pequeño espacio entre la imagen y cualquier otro contenido */
+  margin-top: -210px;
+  margin-left: -20px;
 }
 
-h3 .icon {
-  margin-right: 10px;
-}
-
-.datosIncorrectos {
-  animation: datosIncorrectos 0.3s ease 0s 1 normal forwards;
-}
-
-.cajaLogin {
-  animation: cajaLogin 0.5s ease forwards;
-}
-
-.LoginAnim {
-  animation: LoginAnim 0.2s ease 0s 1 normal forwards;
-}
-
-@keyframes datosIncorrectos {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  10%,
-  30%,
-  50%,
-  70% {
-    transform: translateX(-10px);
-  }
-
-  20%,
-  40%,
-  60% {
-    transform: translateX(10px);
-  }
-
-  80% {
-    transform: translateX(8px);
-  }
-
-  90% {
-    transform: translateX(-8px);
-  }
-}
-
-@keyframes cajaLogin {
-  0% {
-    transform: scale(0);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes LoginAnim {
-  0% {
-    transform: scale(1);
-  }
-
-  100% {
-    transform: scale(0);
-  }
-}
-.LoginSlide {
-  animation: LoginSlide 0.5s ease 0s 1 normal forwards;
-}
-@keyframes LoginSlide {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(250px);
-  }
+.iconFP:hover {
+  background-color: #fcbc0e;
+  box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+  border-radius: 30px;
 }
