@@ -158,7 +158,7 @@ export default function NuevaSolicitud() {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
       liderId: selectedLider,
-      estado: null,
+      estado: false,
       cantidadDias: validDays,
     };
     try {
