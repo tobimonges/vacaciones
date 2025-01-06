@@ -5,6 +5,8 @@ import NuevaSolicitud from "./components/NuevaSolicitud";
 import SolicitudDetalle from "./components/SolicitudDetalle";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminDashboard from "./components/AdminDashboard";
+import RestablecerContraseña from "./components/RestablecerContraseña";
+import LoginForgotPassword from "./components/LoginForgotPassword";
 
 function App() {
   return (
