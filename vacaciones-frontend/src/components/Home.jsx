@@ -197,7 +197,7 @@ const Home = () => {
           {error && <p className="calendar-error-message">{error}</p>}
 
           {/* 🛠️ Botones de Acción */}
-          <div className="button-container">
+          <div className="buttons">
             <button
                 className="calendar-button"
                 onClick={() => navigate("/NuevaSolicitud")}
@@ -236,10 +236,10 @@ const Home = () => {
 
           {/* 🖍️ Leyenda de Colores */}
           <div className="calendar-legend">
-            <p><span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Aprobado</span> - Vacaciones aprobadas</p>
-            <p><span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Rechazado</span> - Vacaciones rechazadas</p>
-            <p><span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>Pendiente</span> - Vacaciones pendientes</p>
-            <p><span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Feriado</span> - Feriados oficiales</p>
+            <p><span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Aprobado</span></p>
+            <p><span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Rechazado</span></p>
+            <p><span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>Pendiente</span></p>
+            <p><span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Feriado</span></p>
           </div>
         </div>
       </div>
