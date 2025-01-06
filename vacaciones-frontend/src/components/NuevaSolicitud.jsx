@@ -243,7 +243,7 @@ export default function NuevaSolicitud() {
             <div className="mb-3">
               <select
                 value={selectedLider}
-                onChange={(e) => setSelectedLider(e.target.value)}
+                onChange={(e) => setSelectedLider(parseInt(e.target.value, 10))}
                 className="select-usuarios"
               >
                 <option value="" disabled>
