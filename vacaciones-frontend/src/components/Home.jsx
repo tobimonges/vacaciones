@@ -23,7 +23,6 @@ const localizer = dateFnsLocalizer({
 // 🏠 **Componente Principal**
 const Home = () => {
   // 🧠 Estados
-  const [vacationRequests, setVacationRequests] = useState([]);
   const [userName, setUserName] = useState("");
   const [joinDate, setJoinDate] = useState("");
   const [vacationDays, setVacationDays] = useState(0);
@@ -55,7 +54,6 @@ const Home = () => {
         setUserName(nombre);
         setJoinDate(fechaIngreso);
         setVacationDays(diasVacaciones);
-
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -65,6 +63,7 @@ const Home = () => {
     fetchUserData();
   }, [navigate]);
 
+  // 📥 **Obtener Solicitudes de Vacaciones**
   useEffect(() => {
     const fetchVacationRequests = async () => {
       const usuarioId = getUsuarioId();
@@ -84,31 +83,51 @@ const Home = () => {
             }
         );
 
-        console.log("Respuesta de la API:", response.data); // ✅ Validar estructura
-
         const eventsArray = [];
+
         if (response.data && Array.isArray(response.data)) {
           response.data.forEach((solicitud) => {
-            console.log("Solicitud actual:", solicitud); // ✅ Validar cada solicitud
-
             if (solicitud.fechaInicio && solicitud.fechaFin) {
               const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
               const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-              // Usar las fechas normalizadas como base
+              // Agregar eventos de vacaciones
               eventsArray.push({
-                title: "Día de Vacaciones",
-                start: new Date(`${startDate}T00:00:00`), // Inicio del día
-                end: new Date(`${endDate}T23:59:59`), // Fin del día
+                title: "Permiso",
+                start: new Date(`${startDate}T00:00:00`),
+                end: new Date(`${endDate}T23:59:59`),
                 allDay: true,
+                type: "vacaciones",
               });
-
             }
-
           });
         }
 
-        console.log("Array final de eventos:", eventsArray); // ✅ Validar array final
+        // Fechas fijas de feriados manuales
+        const feriados = [
+          { date: "2025-01-01", title: "Año Nuevo" }, // Feriado Nacional
+          { date: "2025-03-02", title: "Día de los Héroes" }, // Héroes de la Patria
+          { date: "2025-04-17", title: "Jueves Santo" }, // Semana Santa
+          { date: "2025-04-18", title: "Viernes Santo" }, // Semana Santa
+          { date: "2025-05-01", title: "Día del Trabajador" }, // Día Internacional del Trabajo
+          { date: "2025-05-14", title: "Día de la Independencia" }, // Independencia Nacional
+          { date: "2025-06-12", title: "Día de la Paz del Chaco" }, // Paz del Chaco
+          { date: "2025-08-15", title: "Fundación de Asunción" }, // Fundación de Asunción
+          { date: "2025-09-29", title: "Victoria de Boquerón" }, // Victoria de Boquerón
+          { date: "2025-12-08", title: "Día de la Virgen de Caacupé" }, // Virgen de Caacupé
+          { date: "2025-12-25", title: "Navidad" }, // Navidad
+        ];
+
+        feriados.forEach((feriado) => {
+          eventsArray.push({
+            title: feriado.title,
+            start: new Date(`${feriado.date}T00:00:00`),
+            end: new Date(`${feriado.date}T23:59:59`),
+            allDay: true,
+            type: "feriado",
+          });
+        });
+
         setEvents(eventsArray);
       } catch (error) {
         console.error("Error al obtener solicitudes de vacaciones:", error);
@@ -119,10 +138,30 @@ const Home = () => {
     fetchVacationRequests();
   }, [navigate]);
 
+  // 🎨 **Personalizar colores de eventos**
+  const eventStyleGetter = (event) => {
+    switch (event.type) {
+      case "vacaciones":
+        return {
+          style: {
+            backgroundColor: "#007bff",
+            color: "#ffffff",
+            borderRadius: "4px",
+          },
+        };
+      case "feriado":
+        return {
+          style: {
+            backgroundColor: "#28a745",
+            color: "#ffffff",
+            borderRadius: "4px",
+          },
+        };
+      default:
+        return {};
+    }
+  };
 
-
-
-  console.log("Estado final de eventos:", events); // 👈 Valida el estado antes del calendario
   // 🎨 **Renderizado del Componente**
   return (
       <div className="calendar-container">
@@ -173,7 +212,8 @@ const Home = () => {
                   day: "Día",
                   agenda: "Agenda",
                 }}
-                views={{ month: true }} // Solo habilita la vista de mes
+                views={{ month: true }}
+                eventPropGetter={eventStyleGetter}
             />
           </div>
         </div>
