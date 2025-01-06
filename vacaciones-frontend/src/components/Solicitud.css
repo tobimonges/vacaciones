@@ -26,7 +26,7 @@
 
 h4 {
   font-size: 1.5rem;
-  color: white; /* Título en blanco */
+  color: white;
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -65,19 +65,19 @@ li p:first-of-type {
 }
 
 button {
-  background-color: #fdca40; /* Color amarillo */
+  background-color: #fdca40;
   font-family: "bold";
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  padding: 0.4rem; /* Ajustado */
-  color: #2c2c2c; /* Texto oscuro */
+  padding: 0.4rem;
+  color: #2c2c2c;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
 button:hover {
-  background-color: #fcbc0e; /* Hover amarillo */
+  background-color: #fcbc0e;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
     0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
     0 32px 32px rgba(0, 0, 0, 0.07);
@@ -85,10 +85,10 @@ button:hover {
 }
 
 .volver-home {
-  margin-top: 1rem; /* Ajuste para separar del contenido */
-  align-self: center; /* Centrar el botón */
-  font-size: 18px; /* Tamaño más grande */
-  padding: 0.6rem 1.5rem; /* Ajuste del tamaño */
+  margin-top: 1rem;
+  align-self: center;
+  font-size: 18px;
+  padding: 0.6rem 1.5rem;
 }
 
 .datepicker-container {
@@ -100,36 +100,82 @@ button:hover {
   margin-bottom: 1rem;
 }
 
-.datepicker-container input {
-  width: 100%; /* O ajusta el tamaño que prefieras */
-  max-width: 250px; /* Ancho máximo para no hacerlos demasiado grandes */
+/* Estilo general del contenedor del campo */
+.MuiOutlinedInput-root {
+  border-radius: 4px; /* Asegura esquinas redondeadas */
 }
 
+/* Cambia el borde negro predeterminado a blanco */
+.MuiOutlinedInput-notchedOutline {
+  border-color: white !important; /* Cambia el color del borde predeterminado */
+}
+
+/* Mantén el borde blanco al pasar el cursor */
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: white !important; /* Color del borde al hover */
+}
+
+/* Cambia el borde negro más oscuro (en foco) a blanco */
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: white !important; /* Color del borde al enfocar */
+}
+
+/* Opcional: Asegúrate de que el texto también sea blanco */
+.MuiInputBase-input {
+  color: white !important;
+}
+
+/* Cambia el color del label a blanco permanentemente */
+.MuiInputLabel-root {
+  color: white !important; /* Elimina el color celeste predeterminado */
+}
+
+/* Mantén el color blanco cuando el campo está enfocado */
+.MuiInputLabel-root.Mui-focused {
+  color: white !important; /* Sin transición al color celeste */
+}
+
+
+.datepicker-container input {
+  color: white;
+  width: 100%;
+  max-width: 250px;
+}
+
+.datepicker-container label {
+  color: white;
+}
+
+/* Apunta al ícono dentro del DatePicker */
+.datepicker-container .MuiSvgIcon-root {
+  color: white; /* Cambia el color del ícono */
+}
+
+
 /* Estilos para la lista desplegable de filtro */
-/* Fondo translúcido para las opciones de la lista desplegable */
 .select-filtro {
   position: absolute;
-  top: 3.6rem; /* Ajusta este valor según el espacio desde el borde superior */
-  right: 1.5rem; /* Ajusta este valor para alinearlo con el borde derecho */
-  background-color: #fdca40; /* Mismo amarillo que los otros botones */
-  color: #2c2c2c; /* Texto oscuro */
+  top: 3.6rem;
+  right: 1.5rem;
+  background-color: #fdca40;
+  color: #2c2c2c;
   font-family: "bold";
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  padding: 0.4rem 1rem; /* Espaciado interno */
+  padding: 0.4rem 1rem;
   cursor: pointer;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
   0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
   0 32px 32px rgba(0, 0, 0, 0.07);  
   transition: all 0.3s ease-in-out;
-  margin: 0 0.5rem; /* Espaciado */
+  margin: 0 0.5rem;
 }
 
 /* Estilo del menú desplegable */
 .select-filtro option {
-  background-color: #F0E68C; /* Fondo amarillo translúcido */
-  color: #2c2c2c; /* Texto oscuro */
+  background-color: #F0E68C;
+  color: #2c2c2c;
   font-size: 16px;
   padding: 0.4rem;
   cursor: pointer;
@@ -138,7 +184,7 @@ button:hover {
 
 /* Cambio al pasar el mouse */
 .select-filtro option:hover {
-  background-color: rgba(252, 188, 14, 0.85); /* Hover translúcido */
+  background-color: rgba(252, 188, 14, 0.85);
 }
 .select-filtro:focus {
   outline: none; /* Eliminar el contorno negro */
