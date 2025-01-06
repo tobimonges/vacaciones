@@ -87,29 +87,9 @@
   font-size: 1rem;
 }
 
-.DatePicker button {
-  background-color: #fdca40;
-  font-family: "bold";
-  font-size: 16px;
-  border: none;
-  border-radius: 10px;
-  padding: 0.2rem;
-  color: #2c2c2c;
-
-  transition: all 0.3s ease-in-out;
-  text-decoration: none;
-}
-.DatePicker button:hover {
-  background-color: #fcbc0e;
-  box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
-    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
-    0 32px 32px rgba(0, 0, 0, 0.07);
-  transform: translateY(-2px);
-}
-
 .select-usuarios {
   width: 100%; /* Ocupa el ancho completo */
-  max-width: 250px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
+  max-width: 265px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
   padding: 8px; /* Espaciado interno */
   font-size: 16px; /* Tamaño del texto */
   border: 1px solid #ccc; /* Borde gris */
@@ -117,12 +97,6 @@
   background-color: rgba(255, 0, 0, 0); /* Fondo blanco */
   color: #ffffff; /* Texto en color oscuro */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
-}
-
-.select-usuarios:focus {
-  outline: none; /* Quita el borde azul predeterminado */
-  border-color: #007bff; /* Cambia el color del borde al enfocarlo */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Agrega un resplandor azul */
 }
 
 .select-usuarios option {
@@ -133,4 +107,8 @@
 
 .select-usuarios option:hover {
   background-color: #f1f1f100; /* Cambia el fondo al pasar el mouse */
+}
+
+.MuiSvgIcon-root {
+  color: white !important; /* Cambiar el color del ícono a blanco */
 }
