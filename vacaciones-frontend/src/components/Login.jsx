@@ -9,7 +9,7 @@ function Login() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   useEffect(() => {
@@ -28,7 +28,14 @@ function Login() {
           password: password, // El backend espera "password"
         }
       );
-      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
+
+      if (respuesta.data.success) {
+        setIsAnimating(true);
+        setTimeout(() => {
+          navigate("/Home");
+        }, 350);
+      }
+      // console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
       const token = respuesta.data;
       localStorage.setItem("token", token);
