@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
+import HomeTh from "./components/HomeTh.jsx";
 import NuevaSolicitud from "./components/NuevaSolicitud";
 import SolicitudDetalle from "./components/SolicitudDetalle";
 import PrivateRoute from "./components/PrivateRoute";
@@ -12,6 +13,7 @@ function App() {
   return (
     <Router>
       <Routes>
+          <Route path="/HomeTh" element={<HomeTh />} />
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />
 
