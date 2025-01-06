@@ -161,10 +161,9 @@ export default function NuevaSolicitud() {
       estado: false,
       cantidadDias: validDays,
     };
-    console.log(solicitud);
     try {
       const token = localStorage.getItem("token");
-      const url = `http://localhost:8080/vacaciones/solicitudes/${usuarioId}`;
+      const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
       await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,

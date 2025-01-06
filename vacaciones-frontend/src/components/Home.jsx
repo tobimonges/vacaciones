@@ -89,8 +89,6 @@ const Home = () => {
         const eventsArray = [];
         if (response.data && Array.isArray(response.data)) {
           response.data.forEach((solicitud) => {
-            console.log("Solicitud actual:", solicitud); // ✅ Validar cada solicitud
-
             if (solicitud.fechaInicio && solicitud.fechaFin) {
               const startDate = new Date(solicitud.fechaInicio);
               startDate.setHours(0, 0, 0, 0);
@@ -98,7 +96,6 @@ const Home = () => {
               const endDate = new Date(solicitud.fechaFin);
               endDate.setHours(23, 59, 59, 999);
 
-              console.log("Fecha Inicio:", startDate, "Fecha Fin:", endDate); // ✅ Validar fechas
 
               let currentDate = new Date(startDate);
               while (currentDate <= endDate) {
@@ -114,7 +111,6 @@ const Home = () => {
           });
         }
 
-        console.log("Array final de eventos:", eventsArray); // ✅ Validar array final
         setEvents(eventsArray);
       } catch (error) {
         console.error("Error al obtener solicitudes de vacaciones:", error);
