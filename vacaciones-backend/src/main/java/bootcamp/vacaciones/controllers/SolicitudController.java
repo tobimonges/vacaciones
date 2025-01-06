@@ -73,16 +73,15 @@ public class SolicitudController {
         }
     }
     @PutMapping("/solicitudes/{id}")
-    public ResponseEntity<SolicitudModel> actualizarSolicitud(@PathVariable Long id, @RequestBody SolicitudModel solicitudRecibida) {
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(id);
-        if (solicitud == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            solicitud.setFechaInicio(solicitudRecibida.getFechaInicio());
-            solicitud.setFechaFin(solicitudRecibida.getFechaFin());
-            solicitud.setEstado(solicitudRecibida.getEstado());
-            solicitudService.guardarSolicitud(solicitud.getUsuario().getId(), solicitud);
-            return ResponseEntity.ok(solicitud);
+    public ResponseEntity<SolicitudModel> actualizarSolicitud(
+            @PathVariable Long id,
+            @RequestBody SolicitudRequest solicitudRequest) {
+        try {
+            // Llamar al servicio para procesar la solicitud existente
+            SolicitudModel solicitudActualizada = solicitudService.actualizarSolicitudConDTO(id, solicitudRequest);
+            return ResponseEntity.ok(solicitudActualizada);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
