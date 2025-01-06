@@ -6,11 +6,15 @@ import { getUsuarioId, getUserRole } from "./authUtils"; // Cambia el path segú
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSolicitudId, setSelectedSolicitudId] = useState(null);
+  const [comentario, setComentario] = useState("");
+
+  const userRole = getUserRole(); // Obtener el rol del usuario logueado
 
   useEffect(() => {
     const fetchSolicitudes = async () => {
       const token = localStorage.getItem("token");
-      const userRole = getUserRole(); // Obtener el rol del usuario logueado
       const userId = getUsuarioId(); // Obtener el ID del usuario logueado
 
       try {
@@ -38,7 +42,7 @@ const AdminDashboard = () => {
     };
 
     fetchSolicitudes();
-  }, []);
+  }, [userRole]);
 
   const handleAction = async (id, action) => {
     try {
@@ -60,6 +64,49 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleAddComentario = async () => {
+    if (!comentario.trim()) {
+      alert("El comentario no puede estar vacío.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:8080/operaciones/solicitudes/${selectedSolicitudId}`,
+        { comentario },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("Comentario añadido con éxito.");
+      setShowModal(false);
+      setComentario("");
+
+      // Actualizar la lista localmente
+      setSolicitudes((prev) =>
+        prev.map((solicitud) =>
+          solicitud.id === selectedSolicitudId
+            ? { ...solicitud, comentario }
+            : solicitud
+        )
+      );
+    } catch (err) {
+      console.error("Error al añadir comentario:", err);
+      alert("Error al añadir el comentario.");
+    }
+  };
+
+  const openModal = (id) => {
+    setSelectedSolicitudId(id);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setComentario("");
+  };
+
   return (
     <div className="container-admin">
       <h4>Panel de Administrador</h4>
@@ -76,6 +123,7 @@ const AdminDashboard = () => {
               <th>Fecha Inicio</th>
               <th>Fecha Fin</th>
               <th>Estado</th>
+              <th>Comentarios</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -87,6 +135,11 @@ const AdminDashboard = () => {
                 <td>{solicitud.fechaInicio}</td>
                 <td>{solicitud.fechaFin}</td>
                 <td>{solicitud.estado ? "Aprobada" : "Pendiente"}</td>
+                <td>
+                  {solicitud.comentario
+                    ? solicitud.comentario
+                    : "No hay comentarios"}
+                </td>
                 <td>
                   <div className="buttons">
                     <button
@@ -100,12 +153,39 @@ const AdminDashboard = () => {
                     >
                       Rechazar
                     </button>
+                    {userRole === "OPERACIONES" && (
+                      <button
+                        className="add-comment"
+                        onClick={() => openModal(solicitud.id)}
+                      >
+                        Añadir Comentario
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h4>Añadir Comentario</h4>
+            <div className="modal-input">
+              <textarea
+                value={comentario}
+                onChange={(e) => setComentario(e.target.value)}
+                placeholder="Escriba un comentario..."
+              ></textarea>
+              <div className="modal-buttons">
+                <button onClick={handleAddComentario}>Guardar</button>
+                <button onClick={closeModal}>Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
