@@ -1,9 +1,10 @@
 /* 🖼 Contenedor principal del calendario */
 .calendar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px;
+    display: flex; /* Habilita Flexbox */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100vh; /* Altura igual al 100% del viewport */
+    margin: 0; /* Elimina cualquier margen adicional */
 }
 
 /* 📝 Tarjeta del calendario */
@@ -53,3 +54,5 @@
 .calendar-big-container {
     margin-top: 20px;
 }
+
+
