@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminDashboard.css";
+import { getUsuarioId, getUserRole } from "./authUtils"; // Cambia el path según sea necesario
 
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -9,6 +10,9 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchSolicitudes = async () => {
       const token = localStorage.getItem("token");
+      const userRole = getUserRole(); // Obtener el rol del usuario logueado
+      const userId = getUsuarioId(); // Obtener el ID del usuario logueado
+
       try {
         const response = await axios.get(
           "http://localhost:8080/vacaciones/solicitudes",
@@ -16,7 +20,17 @@ const AdminDashboard = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setSolicitudes(response.data);
+
+        let solicitudesData = response.data;
+
+        // Si el usuario tiene rol LIDER, filtrar por liderId
+        if (userRole === "LIDER") {
+          solicitudesData = solicitudesData.filter(
+            (solicitud) => solicitud.lider.id === userId
+          );
+        }
+
+        setSolicitudes(solicitudesData);
       } catch (err) {
         console.error("Error al obtener solicitudes:", err);
         setError("No se pudieron cargar las solicitudes.");
