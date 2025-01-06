@@ -173,6 +173,7 @@ const Home = () => {
                   day: "Día",
                   agenda: "Agenda",
                 }}
+                views={{ month: true }} // Solo habilita la vista de mes
             />
           </div>
         </div>
