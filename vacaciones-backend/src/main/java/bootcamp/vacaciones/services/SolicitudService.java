@@ -68,7 +68,7 @@ public class SolicitudService implements ISolicitudService {
         }
         return solicitudRepository.findByUsuarioId(usuarioId);
     }
-
+    @Override
     public SolicitudModel procesarSolicitudConDTO(Long idUsuario, SolicitudRequest solicitudRequest) {
         if (!usuarioRepository.existsById(idUsuario)) {
             throw new IllegalArgumentException("Usuario no encontrado");
@@ -96,7 +96,26 @@ public class SolicitudService implements ISolicitudService {
 
         return solicitudRepository.save(nuevaSolicitud);
     }
+    @Override
+    public SolicitudModel actualizarSolicitudConDTO(Long idSolicitud, SolicitudRequest solicitudRequest) {
+        // Validar que la solicitud existe
+        SolicitudModel solicitud = solicitudRepository.findById(idSolicitud)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
+        // Validar y buscar el líder si está presente en la solicitud
+        UsuarioModel lider = null;
+        if (solicitudRequest.getLiderId() != null) {
+            lider = usuarioRepository.findById(solicitudRequest.getLiderId())
+                    .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
+        }
+
+        // Actualizar los campos de la solicitud
+        solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
+        solicitud.setFechaFin(solicitudRequest.getFechaFin());
+
+        // Guardar y devolver la solicitud actualizada
+        return solicitudRepository.save(solicitud);
+    }
 
 }
 
