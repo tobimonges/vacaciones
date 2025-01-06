@@ -30,29 +30,62 @@
     margin: 5px 0;
 }
 
-/* 🔘 Contenedor de botones */
-.button-container {
-    margin: 20px 0;
-}
-
-/* 🕹 Botones del calendario */
-.calendar-button {
-    margin: 5px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.calendar-button:hover {
-    background-color: #0056b3;
-}
-
 /* 🗓 Contenedor grande del calendario */
 .calendar-big-container {
     margin-top: 20px;
 }
 
+/* Leyenda de colores alineada horizontalmente */
+.calendar-legend {
+    display: flex; /* Utiliza flexbox para disposición horizontal */
+    flex-wrap: wrap; /* Permite que los elementos se ajusten si no caben */
+    gap: 20px; /* Espaciado entre los elementos */
+    justify-content: center; /* Centra los elementos en el contenedor */
+    margin-top: 20px; /* Espaciado superior */
+    padding: 10px; /* Espaciado alrededor de todo el contenedor */
+    border-radius: 8px; /* Opcional, para bordes redondeados */
+    background-color: #f9f9f9; /* Opcional, color de fondo para la leyenda */
+}
 
+/* Estilo de los íconos de color */
+.calendar-legend p {
+    display: flex;
+    align-items: center; /* Alinea los íconos con el texto */
+    margin: 0; /* Elimina márgenes por defecto */
+    padding: 5px 15px; /* Espaciado interno alrededor de los íconos y texto */
+    border-radius: 4px; /* Bordes redondeados para los íconos */
+    background-color: #ffffff; /* Fondo blanco para cada item */
+}
+
+/* Estilo de los íconos de color */
+.calendar-legend span {
+    margin-right: 8px; /* Espaciado entre el color y el texto */
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+button {
+    background-color: #fdca40; /* Color amarillo */
+    font-family: "bold";
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    padding: 0.4rem; /* Ajustado */
+    color: #2c2c2c; /* Texto oscuro */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #fcbc0e; /* Hover amarillo */
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+}

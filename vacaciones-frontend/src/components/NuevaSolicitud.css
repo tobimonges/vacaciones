@@ -18,8 +18,8 @@
 }
 
 .info-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: rgba(87, 145, 238, 0.25);
+  border: 1px solid #969696;
   border-radius: 6px;
   padding: 10px 20px;
   text-align: center;
@@ -31,12 +31,12 @@
   display: block;
   font-size: 16px;
   margin: 0;
-  color: #555;
+  color: #ffffff;
 }
 
 .info-card p {
   font-size: 28px;
-  color: #007bff;
+  color: #fcbc0e;
   margin: 0 5px 0 0; /* Opcional para ajustar espacio */
   display: inline-block;
   vertical-align: middle;
@@ -45,7 +45,7 @@
 .info-number {
   font-size: 24px;
   font-weight: bold;
-  color: #007bff;
+  color: #fcbc0e;
 }
 
 .DatePicker {
@@ -54,7 +54,7 @@
   flex-direction: column;
   gap: 1rem; /* Espaciado entre los elementos */
   padding: 2rem;
-  background-color: #fff;
+  background-color: rgba(87, 145, 238, 0.25);
   border-radius: 8px;
   box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
   -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
@@ -65,7 +65,7 @@
   text-align: center;
   margin-bottom: 20px;
   font-size: 30px;
-  color: #333;
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
@@ -114,8 +114,8 @@
   font-size: 16px; /* Tamaño del texto */
   border: 1px solid #ccc; /* Borde gris */
   border-radius: 4px; /* Bordes redondeados */
-  background-color: white; /* Fondo blanco */
-  color: #333; /* Texto en color oscuro */
+  background-color: rgba(255, 0, 0, 0); /* Fondo blanco */
+  color: #ffffff; /* Texto en color oscuro */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
 }
 
@@ -126,7 +126,7 @@
 }
 
 .select-usuarios option {
-  background-color: white; /* Fondo blanco */
+  background-color: rgba(255, 255, 255, 0); /* Fondo blanco */
   color: #333; /* Texto oscuro */
   padding: 8px; /* Espaciado interno */
 }
