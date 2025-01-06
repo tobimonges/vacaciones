@@ -1,6 +1,7 @@
 package bootcamp.vacaciones.controllers;
 
 import bootcamp.vacaciones.models.SolicitudModel;
+import bootcamp.vacaciones.payload.SolicitudRequest;
 import bootcamp.vacaciones.services.SolicitudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,21 @@ public class SolicitudController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    @PostMapping("/solicitudes/dto/{idUsuario}")
+    public ResponseEntity<SolicitudModel> procesarSolicitudConDTO(
+            @PathVariable Long idUsuario,
+            @RequestBody SolicitudRequest solicitudRequest) {
+        System.out.println(solicitudRequest.toString());
+        try {
+            // Aquí llamamos a un método en el servicio que maneje el DTO
+            SolicitudModel nuevaSolicitud = solicitudService.procesarSolicitudConDTO(idUsuario, solicitudRequest);
+            return ResponseEntity.ok(nuevaSolicitud);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 
     @GetMapping("/solicitudes/{id}")
     public ResponseEntity<SolicitudModel> obtenerSolicitudPorId(@PathVariable Long id) {
