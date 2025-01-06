@@ -7,6 +7,7 @@ function ForgotPassword({ onBackToLogin }) {
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,38 +27,50 @@ function ForgotPassword({ onBackToLogin }) {
     }
   };
   const handleBackToLogin = () => {
-    navigate("/"); // Redirige al Login
+    setIsExiting(true);
+  };
+  const handleAnimationEnd = () => {
+    if (isExiting) {
+      navigate("/"); // Redirigir al login una vez que la animación termine
+    }
   };
 
   return (
     <div className="loginFPContainer">
-      <div className={`loginFPBox ${isAnimating ? "forgotPasswordBox" : ""}`}>
+      {mensaje && (
+        <div className="mensajeContainer">
+          <p className="mensaje">{mensaje}</p>
+        </div>
+      )}
+      <div
+        className={`loginFPBox ${isAnimating ? "forgotPasswordBox" : ""} ${
+          isExiting ? "forgotPasswordExiting" : ""
+        }`}
+        onAnimationEnd={handleAnimationEnd}
+      >
         <h2 className="headerFP">Recuperar Contraseña</h2>
         <form onSubmit={handleForgotPassword}>
-          <div className="segundoFPContainer">
-            <div className="inputFPGroup">
-              <div className="iconFPWrap">
-                <input
-                  type="email"
-                  placeholder="Correo electrónico"
-                  className="inputFP"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+          <div className="inputFPGroup">
+            <div className="iconFPWrap">
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                className="inputFP"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
-            <button type="submit" className="button">
-              Correo de recuperación
-            </button>
-            <div className="forgotPassword">
-              <a href="#" className="link" onClick={handleBackToLogin}>
-                <img src="/avatar.svg" alt="Usuario" className="iconFP" />
-              </a>
+          </div>
+          <button type="submit" className="buttonFPC">
+            Correo de recuperación
+          </button>
+          <div className="forgotPassword">
+            <div className="iconFPWrapini" onClick={handleBackToLogin}>
+              <img src="/avatar.svg" alt="Usuario" className="iconFP" />
             </div>
           </div>
         </form>
-        {mensaje && <p className="mensaje">{mensaje}</p>}
       </div>
     </div>
   );
