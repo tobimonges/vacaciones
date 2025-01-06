@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -96,5 +97,36 @@ public class SolicitudController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener las solicitudes del usuario.");
         }
     }
+
+    @PutMapping("/{id}/aprobar")
+    public ResponseEntity<String> aprobarSolicitud(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId) {
+        try {
+            String resultado = solicitudService.aprobarSolicitud(id, usuarioId);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}/rechazar")
+    public ResponseEntity<String> rechazarSolicitud(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId,
+            @RequestBody Map<String, String> body) {
+        try {
+            String comentario = body.get("comentario");
+            if (comentario == null || comentario.isEmpty()) {
+                return ResponseEntity.badRequest().body("El comentario es obligatorio para rechazar una solicitud.");
+            }
+
+            String resultado = solicitudService.rechazarSolicitud(id, usuarioId, comentario);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 }
