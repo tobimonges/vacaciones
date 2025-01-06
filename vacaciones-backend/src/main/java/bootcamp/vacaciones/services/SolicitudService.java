@@ -2,6 +2,7 @@ package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.SolicitudModel;
 import bootcamp.vacaciones.models.UsuarioModel;
+import bootcamp.vacaciones.payload.SolicitudRequest;
 import bootcamp.vacaciones.repositories.SolicitudRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,35 @@ public class SolicitudService implements ISolicitudService {
         }
         return solicitudRepository.findByUsuarioId(usuarioId);
     }
+
+    public SolicitudModel procesarSolicitudConDTO(Long idUsuario, SolicitudRequest solicitudRequest) {
+        if (!usuarioRepository.existsById(idUsuario)) {
+            throw new IllegalArgumentException("Usuario no encontrado");
+        }
+
+        UsuarioModel usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        UsuarioModel lider = null;
+        if (solicitudRequest.getLiderId() != null) {
+            lider = usuarioRepository.findById(solicitudRequest.getLiderId())
+                    .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
+        }
+
+        SolicitudModel nuevaSolicitud = new SolicitudModel();
+        nuevaSolicitud.setUsuario(usuario);
+        nuevaSolicitud.setLider(lider);
+        nuevaSolicitud.setFechaInicio(solicitudRequest.getFechaInicio());
+        nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
+        nuevaSolicitud.setCantidadDias(solicitudRequest.getCantidadDias());
+        nuevaSolicitud.setEstado(false); // Por defecto, pendiente
+        nuevaSolicitud.setNumeroAprobaciones(0); // Sin aprobaciones iniciales
+        nuevaSolicitud.setRechazado(false); // Por defecto, no rechazada
+        nuevaSolicitud.setComentario(solicitudRequest.getComentario());
+
+        return solicitudRepository.save(nuevaSolicitud);
+    }
+
 
 }
 
