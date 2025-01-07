@@ -1,7 +1,9 @@
 package bootcamp.vacaciones.repositories;
 import bootcamp.vacaciones.models.UsuarioModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,5 +14,9 @@ public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
 
     @Query("SELECT u FROM UsuarioModel u WHERE u.rol.nombre = 'LIDER'")
     List<UsuarioModel> listarLideres();
+
+    @Modifying
+    @Query("UPDATE UsuarioModel u SET u.diasVacaciones = :dias WHERE u.id = :usuarioId")
+    void actualizarDiasVacaciones(@Param("dias") int dias, @Param("usuarioId") Long usuarioId);
 
 }

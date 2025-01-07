@@ -138,6 +138,17 @@ public class SolicitudService implements ISolicitudService {
             solicitud.setNumeroAprobaciones(2); // Aprobado por TH
             solicitud.setEstado(true); // Solicitud completamente aprobada
             solicitud.setRechazado(false); // Actualizar el estado de rechazado
+
+            int diasSolicitados = solicitud.getCantidadDias();
+            UsuarioModel usuarioRelacionado = solicitud.getUsuario();
+            int diasRestantes = usuarioRelacionado.getDiasVacaciones() - diasSolicitados;
+
+            if (diasRestantes < 0) {
+                throw new RuntimeException("No hay suficientes días de vacaciones disponibles.");
+            }
+
+            usuarioRelacionado.setDiasVacaciones(diasRestantes);
+            usuarioRepository.save(usuarioRelacionado);
         } else {
             throw new RuntimeException("La solicitud ya está completamente aprobada.");
         }
@@ -192,6 +203,14 @@ public class SolicitudService implements ISolicitudService {
 
         if (comentario == null || comentario.isEmpty()) {
             throw new RuntimeException("El comentario es obligatorio para rechazar una solicitud.");
+        }
+
+        if (solicitud.getEstado() && solicitud.getNumeroAprobaciones() == 2) {
+            UsuarioModel usuarioRelacionado = solicitud.getUsuario();
+            usuarioRelacionado.setDiasVacaciones(
+                    usuarioRelacionado.getDiasVacaciones() + solicitud.getCantidadDias()
+            );
+            usuarioRepository.save(usuarioRelacionado);
         }
 
         solicitud.setEstado(false);
