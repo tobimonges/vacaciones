@@ -110,23 +110,34 @@ public class SolicitudController {
         }
     }
 
-    @PutMapping("/{id}/rechazar")
-    public ResponseEntity<String> rechazarSolicitud(
+    @PutMapping("/{id}/rechazar-lider-th")
+    public ResponseEntity<?> rechazarPorLiderOTh(@PathVariable Long id, @RequestParam Long usuarioId) {
+        try {
+            String resultado = solicitudService.rechazarSolicitudPorLiderOTh(id, usuarioId);
+            return ResponseEntity.ok(resultado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Error al procesar la solicitud."));
+        }
+    }
+
+
+
+    @PutMapping("/{id}/rechazar-operador")
+    public ResponseEntity<String> rechazarPorOperador(
             @PathVariable Long id,
             @RequestParam Long usuarioId,
             @RequestBody Map<String, String> body) {
         try {
             String comentario = body.get("comentario");
-            if (comentario == null || comentario.isEmpty()) {
-                return ResponseEntity.badRequest().body("El comentario es obligatorio para rechazar una solicitud.");
-            }
-
-            String resultado = solicitudService.rechazarSolicitud(id, usuarioId, comentario);
+            String resultado = solicitudService.rechazarSolicitudPorOperador(id, usuarioId, comentario);
             return ResponseEntity.ok(resultado);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
 
 }
