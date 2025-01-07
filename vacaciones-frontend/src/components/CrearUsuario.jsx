@@ -22,8 +22,8 @@ function CrearUsuario() {
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
-    const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("cajaLogin");
+    const createBox = document.querySelector(".createBox");
+    createBox.classList.add("cajaLogin");
   }, []);
 
   const handleSubmit = async (e) => {
@@ -80,7 +80,7 @@ function CrearUsuario() {
   return (
     <div className="containerLogin">
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
+        className={`createBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
         }`}
       >
