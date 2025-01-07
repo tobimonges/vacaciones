@@ -117,7 +117,7 @@ public class SolicitudService implements ISolicitudService {
         return solicitudRepository.save(solicitud);
     }
 
-    public String aprobarSolicitud(Long solicitudId, Long usuarioId) {
+    public SolicitudModel aprobarSolicitud(Long solicitudId, Long usuarioId) {
         SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
@@ -142,14 +142,13 @@ public class SolicitudService implements ISolicitudService {
             throw new RuntimeException("La solicitud ya está completamente aprobada.");
         }
 
-        solicitudRepository.save(solicitud);
-        return "Solicitud aprobada con éxito.";
+        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
 
 
 
-    public String rechazarSolicitudPorLiderOTh(Long solicitudId, Long usuarioId) {
+    public SolicitudModel rechazarSolicitudPorLiderOTh(Long solicitudId, Long usuarioId) {
         SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
@@ -177,11 +176,10 @@ public class SolicitudService implements ISolicitudService {
             throw new RuntimeException("No tienes permiso suficiente para rechazar esta solicitud.");
         }
 
-        solicitudRepository.save(solicitud);
-        return "Solicitud rechazada con éxito.";
+        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
-    public String rechazarSolicitudPorOperador(Long solicitudId, Long usuarioId, String comentario) {
+    public SolicitudModel rechazarSolicitudPorOperador(Long solicitudId, Long usuarioId, String comentario) {
         SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
@@ -201,8 +199,7 @@ public class SolicitudService implements ISolicitudService {
         solicitud.setComentario(comentario);
         solicitud.setNumeroAprobaciones(0);
 
-        solicitudRepository.save(solicitud);
-        return "Solicitud rechazada con éxito con motivo: " + comentario;
+        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
 

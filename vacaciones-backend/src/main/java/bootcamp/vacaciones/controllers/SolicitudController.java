@@ -99,22 +99,24 @@ public class SolicitudController {
     }
 
     @PutMapping("/{id}/aprobar")
-    public ResponseEntity<String> aprobarSolicitud(
+    public ResponseEntity<?> aprobarSolicitud(
             @PathVariable Long id,
             @RequestParam Long usuarioId) {
         try {
-            String resultado = solicitudService.aprobarSolicitud(id, usuarioId);
-            return ResponseEntity.ok(resultado);
+            SolicitudModel solicitudActualizada = solicitudService.aprobarSolicitud(id, usuarioId);
+            return ResponseEntity.ok(solicitudActualizada);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
     @PutMapping("/{id}/rechazar-lider-th")
-    public ResponseEntity<?> rechazarPorLiderOTh(@PathVariable Long id, @RequestParam Long usuarioId) {
+    public ResponseEntity<?> rechazarPorLiderOTh(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId) {
         try {
-            String resultado = solicitudService.rechazarSolicitudPorLiderOTh(id, usuarioId);
-            return ResponseEntity.ok(resultado);
+            SolicitudModel solicitudActualizada = solicitudService.rechazarSolicitudPorLiderOTh(id, usuarioId);
+            return ResponseEntity.ok(solicitudActualizada);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
@@ -125,16 +127,16 @@ public class SolicitudController {
 
 
     @PutMapping("/{id}/rechazar-operador")
-    public ResponseEntity<String> rechazarPorOperador(
+    public ResponseEntity<?> rechazarPorOperador(
             @PathVariable Long id,
             @RequestParam Long usuarioId,
             @RequestBody Map<String, String> body) {
         try {
             String comentario = body.get("comentario");
-            String resultado = solicitudService.rechazarSolicitudPorOperador(id, usuarioId, comentario);
-            return ResponseEntity.ok(resultado);
+            SolicitudModel solicitudActualizada = solicitudService.rechazarSolicitudPorOperador(id, usuarioId, comentario);
+            return ResponseEntity.ok(solicitudActualizada);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
