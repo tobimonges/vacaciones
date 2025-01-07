@@ -77,6 +77,17 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Placeholder o texto inicial del <select> */
+.inputCreate option[value=""][disabled] {
+  color: rgba(255, 255, 255, 0.479);
+}
+
+/* Estilo para las opciones desplegadas */
+.inputCreate option {
+  background-color: rgba(32, 85, 170, 0.8); /* Fondo translúcido */
+  color: #ffffff; /* Texto blanco */
+}
+
 .button {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   width: 50%;

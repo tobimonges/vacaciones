@@ -10,7 +10,7 @@ function CrearUsuario() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
-  const [nroCedula, setCedula] = useState();
+  const [nroCedula, setCedula] = useState("");
   const [correo, setCorreo] = useState("");
   const [rol, setRol] = useState("");
   const [fechaIngreso, setFechaIngreso] = useState("");
@@ -19,11 +19,31 @@ function CrearUsuario() {
   const [ConfirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const createBox = document.querySelector(".createBox");
     createBox.classList.add("cajaLogin");
+    const fetchRoles = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/roles/listar-roles",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setRoles(response.data); // Asume que la respuesta es una lista de objetos
+      } catch (err) {
+        console.error("Error al obtener los roles:", err);
+        setError("Error al cargar los roles.");
+      }
+    };
+
+    fetchRoles();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -151,15 +171,22 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Usuario" className="icon" />
-              <input
-                type="text"
-                placeholder="Este tiene que ser selected para rol"
+              <img src="/avatar.svg" alt="Rol" className="icon" />
+              <select
                 className="inputCreate"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 required
-              />
+              >
+                <option value="" disabled>
+                  Rol asignado
+                </option>
+                {roles.map((rol) => (
+                  <option key={rol.id} value={rol.id}>
+                    {rol.nombre}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

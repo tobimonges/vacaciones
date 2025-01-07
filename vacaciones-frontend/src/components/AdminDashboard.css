@@ -114,9 +114,9 @@ button.reject:hover {
 }
 
 /* Estilo para el textarea dentro del modal */
-.modal-input textarea {
+.modal-content textarea {
   width: 90%;
-  height: 100px;
+  height: 150px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
