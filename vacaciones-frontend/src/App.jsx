@@ -8,6 +8,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AdminDashboard from "./components/AdminDashboard";
 import RestablecerContraseña from "./components/RestablecerContraseña";
 import LoginForgotPassword from "./components/LoginForgotPassword";
+import CrearUsuario from "./components/CrearUsuario";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/forgotPassword" element={<LoginForgotPassword />} />
         {/* Ruta para CAMBIAR contraseña */}
         <Route path="/restablecer" element={<RestablecerContraseña />} />
+
         {/* Ruta exclusiva para administradores */}
         {/* Ruta para otros roles excepto FUNCIONARIO */}
         <Route
@@ -34,6 +36,15 @@ function App() {
               allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
             >
               <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/CrearUsuario"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <CrearUsuario />
             </PrivateRoute>
           }
         />
