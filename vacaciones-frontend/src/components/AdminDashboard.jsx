@@ -39,19 +39,20 @@ const AdminDashboard = () => {
     const userId = getUsuarioId();
 
     try {
-      await axios.put(
+      const response = await axios.put(
           `http://localhost:8080/vacaciones/${id}/aprobar?usuarioId=${userId}`,
           null,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
       );
+
+      console.log(response.data)
       alert("Solicitud aprobada con éxito.");
+      // Actualizamos la solicitud en tiempo real con los datos del backend
       setSolicitudes((prev) =>
           prev.map((solicitud) =>
-              solicitud.id === id
-                  ? { ...solicitud, estado: true, rechazado: false, numeroAprobaciones: 2 }
-                  : solicitud
+              solicitud.id === id ? response.data : solicitud
           )
       );
     } catch (err) {
@@ -59,7 +60,7 @@ const AdminDashboard = () => {
 
       // Extraer el mensaje de error del backend
       const errorMessage =
-          err.response.data || "Ocurrió un error al aprobar la solicitud.";
+          err.response.data.message || "Ocurrió un error al aprobar la solicitud.";
 
       alert(`Error al aprobar la solicitud: ${errorMessage}`);
     }
@@ -71,7 +72,7 @@ const AdminDashboard = () => {
     const userId = getUsuarioId();
 
     try {
-      await axios.put(
+      const response = await axios.put(
           `http://localhost:8080/vacaciones/${id}/rechazar-lider-th?usuarioId=${userId}`,
           null,
           {
@@ -79,6 +80,8 @@ const AdminDashboard = () => {
           }
       );
       alert("Solicitud rechazada con éxito.");
+
+      console.log(response.data)
       // Actualizar el estado local de las solicitudes
       setSolicitudes((prev) =>
           prev.map((solicitud) =>
@@ -89,7 +92,7 @@ const AdminDashboard = () => {
       );
     } catch (err) {
       console.error("Error al rechazar solicitud:", err.response.data);
-      alert(`Error: ${err.response?.data?.message || err.message}`);
+      alert(`Error: ${err.response.data.message}`);
     }
   };
 
