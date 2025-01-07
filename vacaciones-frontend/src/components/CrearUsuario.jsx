@@ -10,20 +10,20 @@ function CrearUsuario() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
-  const [cedula, setCedula] = useState("");
+  const [nroCedula, setCedula] = useState();
   const [correo, setCorreo] = useState("");
   const [rol, setRol] = useState("");
   const [fechaIngreso, setFechaIngreso] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [password, setPassword] = useState("");
+  const [contrasena, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
-    const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("cajaLogin");
+    const createBox = document.querySelector(".createBox");
+    createBox.classList.add("cajaLogin");
   }, []);
 
   const handleSubmit = async (e) => {
@@ -33,9 +33,9 @@ function CrearUsuario() {
     if (
       !nombre ||
       !apellido ||
-      !cedula ||
+      !nroCedula ||
       !correo ||
-      !password ||
+      !contrasena ||
       !telefono ||
       !fechaIngreso
     ) {
@@ -43,12 +43,19 @@ function CrearUsuario() {
       return;
     }
 
+    if (contrasena !== ConfirmPassword) {
+      alert(
+        "Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente."
+      );
+      return;
+    }
+
     const nuevoUsuario = {
       nombre: nombre,
       apellido: apellido,
-      cedula: cedula,
+      nroCedula: parseInt(nroCedula),
       correo: correo,
-      password: password,
+      contrasena: contrasena,
       telefono: telefono,
       fechaIngreso: fechaIngreso.format("YYYY-MM-DD"), // Asegúrate de formatear la fecha
       estado: true, // Asegúrate de que 'estado' sea un valor booleano
@@ -80,11 +87,11 @@ function CrearUsuario() {
   return (
     <div className="containerLogin">
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
+        className={`createBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
         }`}
       >
-        <h2 className="header">Crear Usuario</h2>
+        <h2 className="headerCreate">Crear Usuario</h2>
         <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">
             <div className="iconWrap">
@@ -92,7 +99,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Nombre"
-                className="input"
+                className="inputCreate"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 required
@@ -106,7 +113,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Apellido"
-                className="input"
+                className="inputCreate"
                 value={apellido}
                 onChange={(e) => setApellido(e.target.value)}
                 required
@@ -120,8 +127,8 @@ function CrearUsuario() {
               <input
                 type="number"
                 placeholder="Nro de Cedula"
-                className="input no-spinner"
-                value={cedula}
+                className="inputCreate no-spinner"
+                value={nroCedula}
                 onChange={(e) => setCedula(e.target.value)}
                 required
               />
@@ -134,7 +141,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Correo"
-                className="input"
+                className="inputCreate"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
                 required
@@ -148,7 +155,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Este tiene que ser selected para rol"
-                className="input"
+                className="inputCreate"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 required
@@ -168,7 +175,7 @@ function CrearUsuario() {
                   selected={fechaIngreso}
                   onChange={(date) => setFechaIngreso(date)}
                   dateFormat="yyyy-MM-dd"
-                  className="input"
+                  className="inputCreate"
                   placeholderText="Seleccionar fecha de ingreso"
                   required
                 />
@@ -182,7 +189,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Telefono"
-                className="input"
+                className="inputCreate"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
                 required
@@ -200,8 +207,8 @@ function CrearUsuario() {
               <input
                 type="password"
                 placeholder="Contraseña"
-                className="input"
-                value={password} // Vincula el valor con el estado
+                className="inputCreate"
+                value={contrasena} // Vincula el valor con el estado
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
@@ -218,7 +225,7 @@ function CrearUsuario() {
               <input
                 type="password"
                 placeholder="Confirmar contraseña"
-                className="input"
+                className="inputCreate"
                 value={ConfirmPassword} // Vincula el valor con el estado
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
