@@ -10,12 +10,12 @@ function CrearUsuario() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
-  const [cedula, setCedula] = useState("");
+  const [nroCedula, setCedula] = useState();
   const [correo, setCorreo] = useState("");
   const [rol, setRol] = useState("");
   const [fechaIngreso, setFechaIngreso] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [password, setPassword] = useState("");
+  const [contrasena, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -33,9 +33,9 @@ function CrearUsuario() {
     if (
       !nombre ||
       !apellido ||
-      !cedula ||
+      !nroCedula ||
       !correo ||
-      !password ||
+      !contrasena ||
       !telefono ||
       !fechaIngreso
     ) {
@@ -46,9 +46,9 @@ function CrearUsuario() {
     const nuevoUsuario = {
       nombre: nombre,
       apellido: apellido,
-      cedula: cedula,
+      nroCedula: parseInt(nroCedula),
       correo: correo,
-      password: password,
+      contrasena: contrasena,
       telefono: telefono,
       fechaIngreso: fechaIngreso.format("YYYY-MM-DD"), // Asegúrate de formatear la fecha
       estado: true, // Asegúrate de que 'estado' sea un valor booleano
@@ -121,7 +121,7 @@ function CrearUsuario() {
                 type="number"
                 placeholder="Nro de Cedula"
                 className="inputCreate no-spinner"
-                value={cedula}
+                value={nroCedula}
                 onChange={(e) => setCedula(e.target.value)}
                 required
               />
@@ -201,7 +201,7 @@ function CrearUsuario() {
                 type="password"
                 placeholder="Contraseña"
                 className="inputCreate"
-                value={password} // Vincula el valor con el estado
+                value={contrasena} // Vincula el valor con el estado
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
