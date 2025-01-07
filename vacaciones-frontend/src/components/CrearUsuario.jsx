@@ -2,11 +2,21 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CrearUsuario.css";
 import axios from "axios";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 function CrearUsuario() {
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [cedula, setCedula] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [rol, setRol] = useState("");
+  const [fechaIngreso, setFechaIngreso] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [password, setPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -16,31 +26,54 @@ function CrearUsuario() {
     loginBox.classList.add("cajaLogin");
   }, []);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const respuesta = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        {
-          email: usuario, // El backend espera "email"
-          password: password, // El backend espera "password"
-        }
-      );
-      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
-      const token = respuesta.data;
-      localStorage.setItem("token", token);
-      // alert("Inicio de sesión exitoso");
-      setIsAnimating(true);
-      setTimeout(() => {
-        navigate("/Home");
-      }, 200);
-    } catch (error) {
-      console.error("Error al iniciar sesión", error);
-      setUsuario("");
-      setPassword("");
-      setError(true);
-      setTimeout(() => setError(false), 300);
+    // Verificar que todos los campos requeridos están presentes
+    if (
+      !nombre ||
+      !apellido ||
+      !cedula ||
+      !correo ||
+      !password ||
+      !telefono ||
+      !fechaIngreso
+    ) {
+      setError("Por favor, completa todos los campos.");
+      return;
+    }
+
+    const nuevoUsuario = {
+      nombre: nombre,
+      apellido: apellido,
+      cedula: cedula,
+      correo: correo,
+      password: password,
+      telefono: telefono,
+      fechaIngreso: fechaIngreso.format("YYYY-MM-DD"), // Asegúrate de formatear la fecha
+      estado: true, // Asegúrate de que 'estado' sea un valor booleano
+      rol: {
+        id: rol,
+      },
+    };
+
+    try {
+      const token = localStorage.getItem("token"); // Obtener token de autenticación
+      console.log(token);
+      const url = "http://localhost:8080/vacaciones/crea/usuarios"; // URL para la creación del nuevo usuario
+      await axios.post(url, nuevoUsuario, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Incluir el token en los encabezados
+        },
+      });
+      alert("Usuario creado exitosamente");
+      navigate("/Home"); // Redirigir a la página principal u otra
+    } catch (err) {
+      if (err.response?.data?.message) {
+        setError(err.response.data.message); // Mostrar mensaje de error del servidor
+      } else {
+        setError("Error al crear el usuario.");
+      }
     }
   };
 
@@ -51,21 +84,112 @@ function CrearUsuario() {
           error ? "datosIncorrectos" : ""
         }`}
       >
-        <h2 className="header">Sistema de Vacaciones</h2>
-        <form onSubmit={handleLogin} action="login" method="post">
+        <h2 className="header">Crear Usuario</h2>
+        <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">
             <div className="iconWrap">
               <img src="/avatar.svg" alt="Usuario" className="icon" />
               <input
                 type="text"
-                placeholder="Usuario"
+                placeholder="Nombre"
                 className="input"
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
                 required
               />
             </div>
           </div>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <input
+                type="text"
+                placeholder="Apellido"
+                className="input"
+                value={apellido}
+                onChange={(e) => setApellido(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <input
+                type="number"
+                placeholder="Nro de Cedula"
+                className="input no-spinner"
+                value={cedula}
+                onChange={(e) => setCedula(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <input
+                type="text"
+                placeholder="Correo"
+                className="input"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <input
+                type="text"
+                placeholder="Este tiene que ser selected para rol"
+                className="input"
+                value={rol}
+                onChange={(e) => setRol(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <div className="inputGroup">
+              <div className="iconWrap">
+                <img
+                  src="/calendario.svg"
+                  alt="Fecha de Ingreso"
+                  className="icon"
+                />
+                <DatePicker
+                  selected={fechaIngreso}
+                  onChange={(date) => setFechaIngreso(date)}
+                  dateFormat="yyyy-MM-dd"
+                  className="input"
+                  placeholderText="Seleccionar fecha de ingreso"
+                  required
+                />
+              </div>
+            </div>
+          </LocalizationProvider>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <input
+                type="text"
+                placeholder="Telefono"
+                className="input"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
           <div className="inputGroup">
             <div className="iconWrap">
               <img
@@ -83,8 +207,27 @@ function CrearUsuario() {
               />
             </div>
           </div>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img
+                src="/cerrar-con-llave.svg"
+                alt="Contraseña"
+                className="icon"
+              />
+              <input
+                type="password"
+                placeholder="Confirmar contraseña"
+                className="input"
+                value={ConfirmPassword} // Vincula el valor con el estado
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
           <button type="submit" className="button">
-            Iniciar sesión
+            Crear
           </button>
         </form>
       </div>

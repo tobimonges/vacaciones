@@ -8,7 +8,7 @@
 
 .loginBox {
   border: none;
-  height: 350px;
+  height: 650px;
   width: 400px;
   padding: 20px;
   border-radius: 10px;
@@ -149,6 +149,17 @@ h3 .icon {
 
 .LoginAnim {
   animation: LoginAnim 0.2s ease 0s 1 normal forwards;
+}
+
+.no-spinner {
+  appearance: none; /* Elimina los spinners en navegadores compatibles */
+  -moz-appearance: textfield; /* Elimina los spinners en Firefox */
+  -webkit-appearance: none; /* Elimina los spinners en Safari y Chrome */
+}
+
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Oculta los botones en Chrome */
 }
 
 @keyframes datosIncorrectos {
