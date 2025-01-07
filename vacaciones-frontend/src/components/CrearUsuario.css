@@ -22,7 +22,7 @@
   justify-content: center;
 }
 
-.header {
+.headerCreate {
   text-align: center;
   margin-bottom: 20px;
   font-size: 30px;
@@ -55,7 +55,7 @@
   padding: 20px;
 }
 
-.input {
+.inputCreate {
   width: 70%;
   flex: 1;
   padding: 10px;
@@ -67,7 +67,11 @@
   transition: all 0.3s ease;
 }
 
-.input:hover {
+.inputCreate::placeholder {
+  color: rgba(255, 255, 255, 0.479);
+}
+
+.inputCreate:hover {
   border-color: #666;
   background-color: rgba(255, 255, 255, 0.527);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);

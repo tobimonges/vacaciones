@@ -84,7 +84,7 @@ function CrearUsuario() {
           error ? "datosIncorrectos" : ""
         }`}
       >
-        <h2 className="header">Crear Usuario</h2>
+        <h2 className="headerCreate">Crear Usuario</h2>
         <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">
             <div className="iconWrap">
@@ -92,7 +92,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Nombre"
-                className="input"
+                className="inputCreate"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 required
@@ -106,7 +106,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Apellido"
-                className="input"
+                className="inputCreate"
                 value={apellido}
                 onChange={(e) => setApellido(e.target.value)}
                 required
@@ -120,7 +120,7 @@ function CrearUsuario() {
               <input
                 type="number"
                 placeholder="Nro de Cedula"
-                className="input no-spinner"
+                className="inputCreate no-spinner"
                 value={cedula}
                 onChange={(e) => setCedula(e.target.value)}
                 required
@@ -134,7 +134,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Correo"
-                className="input"
+                className="inputCreate"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
                 required
@@ -148,7 +148,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Este tiene que ser selected para rol"
-                className="input"
+                className="inputCreate"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 required
@@ -168,7 +168,7 @@ function CrearUsuario() {
                   selected={fechaIngreso}
                   onChange={(date) => setFechaIngreso(date)}
                   dateFormat="yyyy-MM-dd"
-                  className="input"
+                  className="inputCreate"
                   placeholderText="Seleccionar fecha de ingreso"
                   required
                 />
@@ -182,7 +182,7 @@ function CrearUsuario() {
               <input
                 type="text"
                 placeholder="Telefono"
-                className="input"
+                className="inputCreate"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
                 required
@@ -200,7 +200,7 @@ function CrearUsuario() {
               <input
                 type="password"
                 placeholder="Contraseña"
-                className="input"
+                className="inputCreate"
                 value={password} // Vincula el valor con el estado
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -218,7 +218,7 @@ function CrearUsuario() {
               <input
                 type="password"
                 placeholder="Confirmar contraseña"
-                className="input"
+                className="inputCreate"
                 value={ConfirmPassword} // Vincula el valor con el estado
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
