@@ -43,6 +43,13 @@ function CrearUsuario() {
       return;
     }
 
+    if (contrasena !== ConfirmPassword) {
+      alert(
+        "Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente."
+      );
+      return;
+    }
+
     const nuevoUsuario = {
       nombre: nombre,
       apellido: apellido,
