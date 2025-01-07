@@ -21,7 +21,7 @@ const localizer = dateFnsLocalizer({
 });
 
 // 🏠 **Componente Principal**
-const Home = () => {
+const HomeTh = () => {
     // 🧠 Estados
     const [userName, setUserName] = useState(""); // Nombre del usuario
     const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
@@ -270,4 +270,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default HomeTh;
