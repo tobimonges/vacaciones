@@ -89,17 +89,26 @@ const Home = () => {
 
         if (response.data && Array.isArray(response.data)) {
           response.data.forEach((solicitud) => {
+            console.log("Solicitud recibida:", solicitud); // Debug para verificar datos
+
             if (solicitud.fechaInicio && solicitud.fechaFin) {
               const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
               const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-              // Agregar eventos según el estado de la solicitud
+              // Lógica de asignación del tipo
+              const type = solicitud.rechazado
+                  ? "rechazado"
+                  : solicitud.estado
+                      ? "aprobado"
+                      : "pendiente";
+              console.log("Tipo asignado:", type); // Debug para verificar tipo
+
               eventsArray.push({
-                title: "Permiso",
+                title: "Vacaciones",
                 start: new Date(`${startDate}T00:00:00`),
                 end: new Date(`${endDate}T23:59:59`),
                 allDay: true,
-                type: solicitud.estado ? "aprobado" : solicitud.estado === false ? "rechazado" : "pendiente",
+                type,
               });
             }
           });
@@ -139,6 +148,7 @@ const Home = () => {
 
     fetchVacationRequests();
   }, [navigate]);
+
 
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {

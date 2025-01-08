@@ -103,7 +103,7 @@ const HomeTh = () => {
                             console.log("Tipo asignado:", type); // Verificar el tipo asignado
 
                             eventsArray.push({
-                                title: "Permiso",
+                                title: "Vacaciones",
                                 start: new Date(`${startDate}T00:00:00`),
                                 end: new Date(`${endDate}T23:59:59`),
                                 allDay: true,
