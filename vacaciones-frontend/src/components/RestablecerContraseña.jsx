@@ -37,7 +37,7 @@ function RestablecerContraseña() {
 
   return (
     <div className="containerRestablecer">
-      <Preloader duration={1000} />
+      <Preloader duration={650} />
       <div className={`restablecerBox $(error ? "error" : "")`}>
         <h2 className="headerRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">

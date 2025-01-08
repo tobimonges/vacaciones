@@ -152,7 +152,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <Preloader duration={1000} />
+      <Preloader duration={650} />
       <div className="container-admin">
         
         <h4>Panel de Administrador</h4>

@@ -184,7 +184,7 @@ export default function NuevaSolicitud() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-      <Preloader duration={1000} />
+      <Preloader duration={650} />
       <div className="container">
         <LogoutButton />
         <div className="DatePicker">

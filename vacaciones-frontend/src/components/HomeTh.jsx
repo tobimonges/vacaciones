@@ -195,7 +195,7 @@ const HomeTh = () => {
     // 🎨 **Renderizado del Componente**
     return (
         <div className="calendar-container">
-            <Preloader duration={1000} />
+            <Preloader duration={650} />
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
                 {/* 👤 Información del Usuario */}
                 <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>

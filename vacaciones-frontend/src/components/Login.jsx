@@ -68,7 +68,7 @@ function Login() {
 
       
     <div className="containerLogin">
-      <Preloader duration={1000} />
+      <Preloader duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
