@@ -174,7 +174,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Rol" className="icon" />
+              <img src="/mapa-del-sitio (1).svg" alt="Rol" className="icon" />
               <select
                 className="inputCreate"
                 value={rol}

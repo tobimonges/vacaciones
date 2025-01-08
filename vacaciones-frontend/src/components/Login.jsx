@@ -4,6 +4,7 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
+import Preloader from "./Preloader";  // Importar el componente Preloader
 
 function Login() {
   const navigate = useNavigate();
@@ -39,11 +40,11 @@ function Login() {
         localStorage.setItem("token", token);
 
         //Activo animación de entrada
-        /*  setIsAnimating(true);
+          setIsAnimating(true);
       setTimeout(() => {
         navigate("/Home");
       }, 200); 
-      */
+      
       }
       // console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
@@ -83,7 +84,7 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginSlide");
+    loginBox.classList.add("LoginAnim");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
     }, 550);
@@ -95,6 +96,7 @@ function Login() {
   }
   return (
     <div className="containerLogin">
+      <Preloader duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
