@@ -8,6 +8,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
+import Preloader from "./Preloader";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -192,7 +193,9 @@ const Home = () => {
 
   // 🎨 **Renderizado del Componente**
   return (
+    
       <div className="calendar-container">
+        <Preloader duration={1000} />
         <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
           {/* 👤 Información del Usuario */}
           <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>

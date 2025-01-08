@@ -6,6 +6,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import Preloader from "./Preloader";
+
 function CrearUsuario() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
@@ -106,6 +108,7 @@ function CrearUsuario() {
 
   return (
     <div className="containerLogin">
+      <Preloader duration={1000} />
       <div
         className={`createBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""

@@ -10,6 +10,8 @@ import "./NuevaSolicitud.css";
 import { getUsuarioId } from "./authUtils";
 import LogoutButton from "./LogoutButton";
 
+import Preloader from "./Preloader";
+
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
 const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")];
@@ -182,6 +184,7 @@ export default function NuevaSolicitud() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+      <Preloader duration={1000} />
       <div className="container">
         <LogoutButton />
         <div className="DatePicker">

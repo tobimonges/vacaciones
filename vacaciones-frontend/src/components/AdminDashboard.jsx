@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminDashboard.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
+import Preloader from "./Preloader";
 
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -151,6 +152,7 @@ const AdminDashboard = () => {
 
   return (
       <div className="container-admin">
+        <Preloader duration={1000} />
         <h4>Panel de Administrador</h4>
         {error ? (
             <p className="error">{error}</p>
