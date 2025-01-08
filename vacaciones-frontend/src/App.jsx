@@ -17,7 +17,7 @@ function App() {
       <Routes>
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />
-
+ 
         {/* Rutas para funcionarios */}
         <Route path="/Home" element={<Home />} />
         <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
