@@ -208,9 +208,8 @@ const AdminDashboard = () => {
                             </button>
                           </>
                         ) : userRole === "TH" ? (
-                          solicitud.numeroAprobaciones === 0 ? (
-                            <p>Falta aprobación del Líder</p>
-                          ) : solicitud.estado ? (
+                          solicitud.numeroAprobaciones ===
+                          0 ? null : solicitud.estado ? (
                             <button onClick={() => handleReject(solicitud.id)}>
                               Rechazar
                             </button>
