@@ -5,30 +5,39 @@
   height: 100%;
   border: none;
 }
-.errorMessage {
+.errorPopup {
   position: absolute;
-  top: -50px;
+  top: 35px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #ff4d4d;
+  background-color: white;
   color: white;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 7px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   font-size: 16px;
-  animation: errorMessageAnimation 3s ease;
+  animation: shadeIn 0.5s forwards;
   z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
-@keyframes errorMessageAnimation {
-  0% {
+@keyframes shadeIn {
+  from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateX(-50%) translateY(-20px);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
+}
+.errorPopup.error {
+  background-color: #f44336;  /* Color rojo más fuerte */
+  color: white;
+  opacity: 1;
 }
 .loginBox {
+  position: relative;
   border: none;
   height: 350px;
   width: 400px;
@@ -162,7 +171,7 @@ h3 .icon {
 }
 
 .datosIncorrectos {
-  animation: datosIncorrectos 0.3s ease 0s 1 normal forwards;
+  animation: shake 0.5s ease ;
 }
 
 .cajaLogin {
@@ -173,31 +182,18 @@ h3 .icon {
   animation: LoginAnim 0.2s ease 0s 1 normal forwards;
 }
 
-@keyframes datosIncorrectos {
-  0%,
-  100% {
+@keyframes shake {
+  0%, 100% {
     transform: translateX(0);
   }
-
-  10%,
-  30%,
-  50%,
-  70% {
-    transform: translateX(-10px);
+  25% {
+    transform: translateX(-5px);
   }
-
-  20%,
-  40%,
-  60% {
-    transform: translateX(10px);
+  50% {
+    transform: translateX(5px);
   }
-
-  80% {
-    transform: translateX(8px);
-  }
-
-  90% {
-    transform: translateX(-8px);
+  75% {
+    transform: translateX(-5px);
   }
 }
 

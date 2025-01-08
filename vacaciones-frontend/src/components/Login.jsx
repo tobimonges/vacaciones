@@ -4,7 +4,6 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
-import Preloader from "./Preloader";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,6 +12,8 @@ function Login() {
   const [error, setError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showError, setShowError] = useState(false);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const loginBox = document.querySelector(".loginBox");
@@ -21,6 +22,8 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    setError(false); // Resetear el estado de error para que si se pone varias veces mal siga animando
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -31,41 +34,45 @@ function Login() {
       );
 
       if (respuesta.data.success) {
-        setIsAnimating(true);
-        setTimeout(() => {
-          navigate("/Home");
-        }, 350);
+        //seteo token y guardo token
+        const token = respuesta.data;
+        localStorage.setItem("token", token);
+
+        //Activo animación de entrada
+        /*  setIsAnimating(true);
+      setTimeout(() => {
+        navigate("/Home");
+      }, 200); 
+      */
       }
       // console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
-      const token = respuesta.data;
-      localStorage.setItem("token", token);
+     
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
       setTimeout(() => {
         navigate("/Home");
       }, 200);
     } catch (error) {
-      if (error.response) {
-        console.error(
-            `Error al iniciar sesión: Status ${error.response.status} - ${error.response.data}`
-        );
-      
-        if (error.response.status === 401) {
-          alert("Credenciales inválidas. Por favor, verifica tu email y contraseña.");
-        } else if (error.response.status === 500) {
-          alert("Error del servidor. Inténtalo más tarde.");
-        } else {
-          alert(`Error inesperado: ${error.response.data}`);
-        }
-      } else {
-        console.error("Error al conectar con el servidor", error.message);
-        alert("Error de red. Por favor, verifica tu conexión.");
-      }
+      console.error("Error al iniciar sesión", error);
       setUsuario("");
       setPassword("");
-      setError(true);
-      setTimeout(() => setError(false), 300);
+      setError(true); // Mostrar el mensaje de error
+      setShowError(true); // Mostrar el mensaje de error
+      setTimeout(() => setShowError(false), 2000);
+
+      if (error.response) {
+        if (error.response.status === 401) {
+          setErrorMessage("Credenciales inválidas. Verifica tu email y contraseña.");
+        } else if (error.response.status === 500) {
+          setErrorMessage("Error del servidor. Inténtalo más tarde.");
+        } else {
+          setErrorMessage("Error inesperado. Por favor, intenta de nuevo.");
+        }
+      } else {
+        setErrorMessage("Error de red. Por favor, verifica tu conexión.");
+      }
+
     }
 
     /*   const handleLogout = () => {
@@ -76,7 +83,7 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginAnim");
+    loginBox.classList.add("LoginSlide");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
     }, 550);
@@ -87,10 +94,7 @@ function Login() {
     );
   }
   return (
-
-      
     <div className="containerLogin">
-      <Preloader duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
@@ -146,6 +150,12 @@ function Login() {
         </form>
         <div className="content"></div>
       </div>
+      {/* Error Message Popup */}
+    {showError && (
+      <div className={`errorPopup ${error ? 'error' : ''}`}>
+        {errorMessage}
+      </div>
+    )}
     </div>
   );
 }
