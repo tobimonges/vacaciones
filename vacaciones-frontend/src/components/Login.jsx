@@ -4,6 +4,7 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
+import Preloader from "./Preloader";
 
 function Login() {
   const navigate = useNavigate();
@@ -64,7 +65,10 @@ function Login() {
     );
   }
   return (
+
+      
     <div className="containerLogin">
+      <Preloader duration={1000} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
