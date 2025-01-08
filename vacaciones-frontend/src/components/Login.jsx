@@ -10,7 +10,7 @@ function Login() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   useEffect(() => {
@@ -29,7 +29,14 @@ function Login() {
           password: password, // El backend espera "password"
         }
       );
-      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
+
+      if (respuesta.data.success) {
+        setIsAnimating(true);
+        setTimeout(() => {
+          navigate("/Home");
+        }, 350);
+      }
+      // console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
       const token = respuesta.data;
       localStorage.setItem("token", token);
@@ -39,7 +46,22 @@ function Login() {
         navigate("/Home");
       }, 200);
     } catch (error) {
-      console.error("Error al iniciar sesión", error);
+      if (error.response) {
+        console.error(
+            `Error al iniciar sesión: Status ${error.response.status} - ${error.response.data}`
+        );
+      
+        if (error.response.status === 401) {
+          alert("Credenciales inválidas. Por favor, verifica tu email y contraseña.");
+        } else if (error.response.status === 500) {
+          alert("Error del servidor. Inténtalo más tarde.");
+        } else {
+          alert(`Error inesperado: ${error.response.data}`);
+        }
+      } else {
+        console.error("Error al conectar con el servidor", error.message);
+        alert("Error de red. Por favor, verifica tu conexión.");
+      }
       setUsuario("");
       setPassword("");
       setError(true);
@@ -54,7 +76,7 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginSlide");
+    loginBox.classList.add("LoginAnim");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
     }, 550);
