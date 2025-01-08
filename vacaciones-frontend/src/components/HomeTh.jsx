@@ -79,9 +79,10 @@ const HomeTh = () => {
             }
 
             try {
+
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
+                    `http://localhost:8080/vacaciones/solicitudes`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -91,6 +92,7 @@ const HomeTh = () => {
 
                     response.data.forEach((solicitud) => {
                         console.log("Solicitud recibida:", response.data); // Aquí se muestra el contenido de cada solicitud
+                        console.log("Nombre del usuario:", solicitud.usuario.nombre);
 
                         if (solicitud.fechaInicio && solicitud.fechaFin) {
                             const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
@@ -105,7 +107,7 @@ const HomeTh = () => {
                             console.log("Tipo asignado:", type); // Verificar el tipo asignado
 
                             eventsArray.push({
-                                title: "Vacaciones",
+                                title: solicitud.usuario.nombre +" " +  solicitud.usuario.apellido,
                                 start: new Date(`${startDate}T00:00:00`),
                                 end: new Date(`${endDate}T23:59:59`),
                                 allDay: true,
@@ -201,7 +203,7 @@ const HomeTh = () => {
                     Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
                 </p>
                 <p className="calendar-text">
-                    Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
+                    Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
                 </p>
 
                 {/* 🚨 Mensajes de Error */}
@@ -242,6 +244,9 @@ const HomeTh = () => {
                         }}
                         views={{ month: true, day: true}}
                         eventPropGetter={eventStyleGetter}
+                        popup={false}
+                        showMultiDayTimes={true}
+                        longPressThreshold={10}
                     />
                 </div>
 
