@@ -196,48 +196,69 @@ const AdminDashboard = () => {
                       {!solicitud.rechazado ? (
                         userRole === "LIDER" ? (
                           <>
-                            {solicitud.numeroAprobaciones !== 1 && (
-                              <button
-                                onClick={() => handleApprove(solicitud.id)}
-                              >
-                                Aprobar
-                              </button>
-                            )}
-                            <button onClick={() => handleReject(solicitud.id)}>
-                              Rechazar
-                            </button>
-                          </>
-                        ) : userRole === "TH" ? (
-                          solicitud.numeroAprobaciones ===
-                          0 ? null : solicitud.estado ? (
-                            <button onClick={() => handleReject(solicitud.id)}>
-                              Rechazar
-                            </button>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => handleApprove(solicitud.id)}
-                              >
-                                Aprobar
-                              </button>
-                              <button
-                                onClick={() => handleReject(solicitud.id)}
-                              >
-                                Rechazar
-                              </button>
-                            </>
-                          )
-                        ) : (
-                          <>
-                            <button onClick={() => handleApprove(solicitud.id)}>
+                            <button
+                              onClick={() => handleApprove(solicitud.id)}
+                              disabled={solicitud.numeroAprobaciones === 1}
+                            >
                               Aprobar
                             </button>
                             <button onClick={() => handleReject(solicitud.id)}>
                               Rechazar
                             </button>
                           </>
+                        ) : userRole === "TH" ? (
+                          <>
+                            <button
+                              onClick={() => handleApprove(solicitud.id)}
+                              disabled={
+                                solicitud.numeroAprobaciones === 0 ||
+                                solicitud.estado === true
+                              }
+                            >
+                              Aprobar
+                            </button>
+                            <button
+                              onClick={() => handleReject(solicitud.id)}
+                              disabled={
+                                solicitud.numeroAprobaciones === 0 &&
+                                !solicitud.estado
+                              }
+                            >
+                              Rechazar
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleApprove(solicitud.id)}
+                              disabled={true}
+                            >
+                              Aprobar
+                            </button>
+                            <button
+                              onClick={() => handleReject(solicitud.id)}
+                              disabled={true}
+                            >
+                              Rechazar
+                            </button>
+                          </>
                         )
-                      ) : null}
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleApprove(solicitud.id)}
+                            disabled={true}
+                          >
+                            Aprobar
+                          </button>
+                          <button
+                            onClick={() => handleReject(solicitud.id)}
+                            disabled={true}
+                          >
+                            Rechazar
+                          </button>
+                        </>
+                      )}
                     </>
                   )}
                 </td>
