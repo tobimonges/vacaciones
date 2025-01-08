@@ -25,7 +25,7 @@ const localizer = dateFnsLocalizer({
 // 🏠 **Componente Principal**
 const HomeTh = () => {
     // 🧠 Estados
-    const [userName, setUserName] = useState(""); // Nombre del usuario
+    const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
     const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
     const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
     const [events, setEvents] = useState([]); // Lista de eventos para el calendario
@@ -54,7 +54,7 @@ const HomeTh = () => {
                 );
 
                 const { nombre, fechaIngreso, diasVacaciones } = response.data;
-                setUserName(nombre);
+                setUserNameTh(nombre);
                 setJoinDate(fechaIngreso);
                 setVacationDays(diasVacaciones);
             } catch (error) {
@@ -91,8 +91,6 @@ const HomeTh = () => {
 
 
                     response.data.forEach((solicitud) => {
-                        console.log("Solicitud recibida:", response.data); // Aquí se muestra el contenido de cada solicitud
-                        console.log("Nombre del usuario:", solicitud.usuario.nombre);
 
                         if (solicitud.fechaInicio && solicitud.fechaFin) {
                             const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
@@ -104,7 +102,6 @@ const HomeTh = () => {
                                 : solicitud.estado
                                     ? "aprobado"
                                     : "pendiente";
-                            console.log("Tipo asignado:", type); // Verificar el tipo asignado
 
                             eventsArray.push({
                                 title: solicitud.usuario.nombre +" " +  solicitud.usuario.apellido,
@@ -198,7 +195,7 @@ const HomeTh = () => {
             <Preloader duration={650} />
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
                 {/* 👤 Información del Usuario */}
-                <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
+                <h1 className="calendar-title">Bienvenido, {userNameTh || "Usuario"}</h1>
                 <p className="calendar-text">
                     Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
                 </p>

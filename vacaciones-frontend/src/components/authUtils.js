@@ -6,7 +6,6 @@ export const getUsuarioId = () => {
   if (token) {
     try {
       const decoded = jwtDecode(token); // Decodifica el token directamente
-      console.log("Token decodificado:", decoded); // Para depuración
       return decoded.usuarioId; // Asegúrate de que el token contenga esta información
     } catch (error) {
       console.error("Error al decodificar el token:", error);
