@@ -151,8 +151,10 @@ const AdminDashboard = () => {
   };
 
   return (
+    <div>
+      <Preloader duration={650} />
       <div className="container-admin">
-        <Preloader duration={1000} />
+        
         <h4>Panel de Administrador</h4>
         {error ? (
             <p className="error">{error}</p>
@@ -224,6 +226,7 @@ const AdminDashboard = () => {
               </div>
             </div>
         )}
+      </div>
       </div>
   );
 };

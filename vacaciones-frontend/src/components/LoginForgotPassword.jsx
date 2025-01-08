@@ -40,7 +40,7 @@ function ForgotPassword({ onBackToLogin }) {
 
   return (
     <div className="loginFPContainer">
-      <Preloader duration={1000} />
+      <Preloader duration={650} />
       {mensaje && (
         <div className="mensajeContainer">
           <p className="mensaje">{mensaje}</p>

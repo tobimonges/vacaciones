@@ -14,7 +14,7 @@
 .calendar-card {
     width: 100%;
     max-width: 1200px;
-    background: #ffffff;
+    background: rgba(87, 145, 238, 0.25);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -27,17 +27,21 @@
     font-size: 20px;
     margin-bottom: 10px;
     line-height: 1.2; /* Mejor ajuste de espacio */
+    color: white;
 }
 
 /* 📄 Texto dentro del calendario */
 .calendar-text {
     font-size: 14px; /* Tamaño reducido para pantallas pequeñas */
     margin: 5px 0;
+    color: white;
 }
 
 /* 🗓 Contenedor grande del calendario */
 .calendar-big-container {
     margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
 }
 
 /* Leyenda de colores alineada horizontalmente */
@@ -49,6 +53,7 @@
     margin-top: 15px; /* Espaciado reducido */
     padding: 5px; /* Ajustado */
     border-radius: 8px;
+
 }
 
 /* Estilo de los íconos de color */
@@ -58,7 +63,7 @@
     margin: 0;
     padding: 5px 10px; /* Menor espaciado interno */
     border-radius: 4px;
-    background-color: #ffffff;
+
 }
 .calendar-big-container {
     height: 600px; /* Ajusta la altura según tus necesidades */
@@ -79,6 +84,7 @@
     justify-content: center;
     gap: 0.5rem; /* Espaciado menor */
     margin-top: 0.5rem;
+
 }
 
 button {
