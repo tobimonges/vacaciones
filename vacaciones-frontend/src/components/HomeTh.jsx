@@ -79,31 +79,39 @@ const HomeTh = () => {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    `http://localhost:8080/vacaciones/solicitudes`,
+                    `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
                 );
-
                 const eventsArray = [];
 
-                if (response.data && Array.isArray(response.data)) {
+
                     response.data.forEach((solicitud) => {
+                        console.log("Solicitud recibida:", response.data); // Aquí se muestra el contenido de cada solicitud
+
                         if (solicitud.fechaInicio && solicitud.fechaFin) {
                             const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
                             const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-                            // Agregar eventos según el estado de la solicitud
+                            // Nueva lógica para asignar tipo de evento
+                            const type = solicitud.rechazado
+                                ? "rechazado"
+                                : solicitud.estado
+                                    ? "aprobado"
+                                    : "pendiente";
+                            console.log("Tipo asignado:", type); // Verificar el tipo asignado
+
                             eventsArray.push({
                                 title: "Permiso",
                                 start: new Date(`${startDate}T00:00:00`),
                                 end: new Date(`${endDate}T23:59:59`),
                                 allDay: true,
-                                type: solicitud.estado ? "aprobado" : solicitud.estado === false ? "rechazado" : "pendiente",
+                                type,
                             });
                         }
                     });
-                }
+
 
                 // Fechas fijas de feriados manuales
                 const feriados = [
@@ -229,17 +237,33 @@ const HomeTh = () => {
                             day: "Día",
                             agenda: "Agenda",
                         }}
-                        views={{ month: true }}
+                        views={{ month: true, day: true}}
                         eventPropGetter={eventStyleGetter}
                     />
                 </div>
 
                 {/* 🖍️ Leyenda de Colores */}
                 <div className="calendar-legend">
-                    <p><span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Aprobado</span></p>
-                    <p><span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Rechazado</span></p>
-                    <p><span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>Pendiente</span></p>
-                    <p><span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Feriado</span></p>
+                    <p>
+            <span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
+              Aprobado
+            </span>
+                    </p>
+                    <p>
+            <span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
+              Rechazado
+            </span>
+                    </p>
+                    <p>
+            <span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>
+              Pendiente
+            </span>
+                    </p>
+                    <p>
+            <span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
+              Feriado
+            </span>
+                    </p>
                 </div>
             </div>
         </div>

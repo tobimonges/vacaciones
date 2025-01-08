@@ -28,7 +28,7 @@ public class UsuarioModel {
 
     @Column(name="antiguedad" , insertable = false, updatable = false)
     private String antiguedad;
-    @Column(name="dias_vacaciones", insertable = false, updatable = false)
+    @Column(name="dias_vacaciones")
     private int diasVacaciones;
 
     private boolean estado;
