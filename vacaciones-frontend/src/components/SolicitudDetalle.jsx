@@ -7,6 +7,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import "./Solicitud.css";
 
+import Preloader from "./Preloader";
+
 export default function SolicitudDetalle() {
   const { id } = useParams(); // ID del usuario
   const navigate = useNavigate();
@@ -147,6 +149,7 @@ export default function SolicitudDetalle() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Preloader duration={1000} />
       <div className="container-solicitudes">
         <h4>Solicitudes del Usuario</h4>
         {/* Lista desplegable para filtro */}

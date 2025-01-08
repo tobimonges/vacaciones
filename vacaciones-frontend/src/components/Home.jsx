@@ -8,6 +8,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
+import Preloader from "./Preloader";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -89,17 +90,26 @@ const Home = () => {
 
         if (response.data && Array.isArray(response.data)) {
           response.data.forEach((solicitud) => {
+            console.log("Solicitud recibida:", solicitud); // Debug para verificar datos
+
             if (solicitud.fechaInicio && solicitud.fechaFin) {
               const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
               const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-              // Agregar eventos según el estado de la solicitud
+              // Lógica de asignación del tipo
+              const type = solicitud.rechazado
+                  ? "rechazado"
+                  : solicitud.estado
+                      ? "aprobado"
+                      : "pendiente";
+              console.log("Tipo asignado:", type); // Debug para verificar tipo
+
               eventsArray.push({
-                title: "Permiso",
+                title: "Vacaciones",
                 start: new Date(`${startDate}T00:00:00`),
                 end: new Date(`${endDate}T23:59:59`),
                 allDay: true,
-                type: solicitud.estado ? "aprobado" : solicitud.estado === false ? "rechazado" : "pendiente",
+                type,
               });
             }
           });
@@ -139,6 +149,7 @@ const Home = () => {
 
     fetchVacationRequests();
   }, [navigate]);
+
 
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
@@ -182,7 +193,9 @@ const Home = () => {
 
   // 🎨 **Renderizado del Componente**
   return (
+    
       <div className="calendar-container">
+        <Preloader duration={1000} />
         <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
           {/* 👤 Información del Usuario */}
           <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
@@ -190,8 +203,9 @@ const Home = () => {
             Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
           </p>
           <p className="calendar-text">
-            Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
+            Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
           </p>
+
 
           {/* 🚨 Mensajes de Error */}
           {error && <p className="calendar-error-message">{error}</p>}
