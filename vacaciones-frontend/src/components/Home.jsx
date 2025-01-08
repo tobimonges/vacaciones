@@ -90,7 +90,7 @@ const Home = () => {
 
         if (response.data && Array.isArray(response.data)) {
           response.data.forEach((solicitud) => {
-            console.log("Solicitud recibida:", solicitud); // Debug para verificar datos
+
 
             if (solicitud.fechaInicio && solicitud.fechaFin) {
               const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
@@ -102,7 +102,6 @@ const Home = () => {
                   : solicitud.estado
                       ? "aprobado"
                       : "pendiente";
-              console.log("Tipo asignado:", type); // Debug para verificar tipo
 
               eventsArray.push({
                 title: "Vacaciones",
