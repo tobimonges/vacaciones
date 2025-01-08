@@ -15,8 +15,4 @@ public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
     @Query("SELECT u FROM UsuarioModel u WHERE u.rol.nombre = 'LIDER'")
     List<UsuarioModel> listarLideres();
 
-    @Modifying
-    @Query("UPDATE UsuarioModel u SET u.diasVacaciones = :dias WHERE u.id = :usuarioId")
-    void actualizarDiasVacaciones(@Param("dias") int dias, @Param("usuarioId") Long usuarioId);
-
 }
