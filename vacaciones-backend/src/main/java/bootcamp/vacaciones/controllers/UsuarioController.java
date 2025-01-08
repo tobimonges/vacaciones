@@ -5,9 +5,12 @@ import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.RolRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
+import bootcamp.vacaciones.security.JwtUtils;
+import bootcamp.vacaciones.services.EmailService;
 import bootcamp.vacaciones.services.IUsuarioService;
 import bootcamp.vacaciones.services.RolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +24,24 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(value = "http://localhost:5173") //para recibir peticiones del front
 public class UsuarioController {
+
+    @Value("${app.reset-password-url}")
+    private String baseUrl;
+
+    private final JwtUtils jwtUtils;
+    private final EmailService emailService;
+
     @Autowired
     private IUsuarioService usuarioService;
     @Autowired
     private RolRepository rolRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    public UsuarioController(JwtUtils jwtUtils, EmailService emailService) {
+        this.jwtUtils = jwtUtils;
+        this.emailService = emailService;
+    }
 
 
     @GetMapping("/listarusuarios")
@@ -105,5 +120,35 @@ public class UsuarioController {
             return ResponseEntity.ok(usuario);
         }
     }
+
+    @PostMapping("/usuarios/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String email) {
+        if (!emailService.esCorreoValido(email)) {
+            return ResponseEntity.badRequest().body("Correo inválido.");
+        }
+
+        try {
+            UsuarioModel usuario = usuarioRepository.findByCorreo(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            String token = jwtUtils.generateResetPasswordToken(usuario.getCorreo(), usuario.getId());
+            String resetLink = String.format("%s?token=%s", baseUrl, token);
+
+            emailService.enviarCorreo(
+                    email,
+                    "Restablecimiento de Contraseña",
+                    "<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><a href='" + resetLink + "'>Restablecer Contraseña</a>"
+            );
+
+            return ResponseEntity.ok("Correo enviado con éxito.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al procesar la solicitud.");
+        }
+    }
+
+
+
+
+
 
 }
