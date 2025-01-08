@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
 
-// 🌍 Localización
+// 🌍 Localización de fechas
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
@@ -23,18 +23,19 @@ const localizer = dateFnsLocalizer({
 // 🏠 **Componente Principal**
 const Home = () => {
   // 🧠 Estados
-  const [userName, setUserName] = useState("");
-  const [joinDate, setJoinDate] = useState("");
-  const [vacationDays, setVacationDays] = useState(0);
-  const [events, setEvents] = useState([]);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [userName, setUserName] = useState(""); // Nombre del usuario
+  const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
+  const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
+  const [events, setEvents] = useState([]); // Lista de eventos para el calendario
+  const [error, setError] = useState(""); // Mensajes de error
+  const navigate = useNavigate(); // Navegación entre rutas
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
       const usuarioId = getUsuarioId();
 
+      // Verificar autenticación
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -68,6 +69,7 @@ const Home = () => {
     const fetchVacationRequests = async () => {
       const usuarioId = getUsuarioId();
 
+      // Verificar autenticación
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -91,13 +93,13 @@ const Home = () => {
               const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
               const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-              // Agregar eventos de vacaciones
+              // Agregar eventos según el estado de la solicitud
               eventsArray.push({
                 title: "Permiso",
                 start: new Date(`${startDate}T00:00:00`),
                 end: new Date(`${endDate}T23:59:59`),
                 allDay: true,
-                type: "vacaciones",
+                type: solicitud.estado ? "aprobado" : solicitud.estado === false ? "rechazado" : "pendiente",
               });
             }
           });
@@ -105,17 +107,17 @@ const Home = () => {
 
         // Fechas fijas de feriados manuales
         const feriados = [
-          { date: "2025-01-01", title: "Año Nuevo" }, // Feriado Nacional
-          { date: "2025-03-02", title: "Día de los Héroes" }, // Héroes de la Patria
-          { date: "2025-04-17", title: "Jueves Santo" }, // Semana Santa
-          { date: "2025-04-18", title: "Viernes Santo" }, // Semana Santa
-          { date: "2025-05-01", title: "Día del Trabajador" }, // Día Internacional del Trabajo
-          { date: "2025-05-14", title: "Día de la Independencia" }, // Independencia Nacional
-          { date: "2025-06-12", title: "Día de la Paz del Chaco" }, // Paz del Chaco
-          { date: "2025-08-15", title: "Fundación de Asunción" }, // Fundación de Asunción
-          { date: "2025-09-29", title: "Victoria de Boquerón" }, // Victoria de Boquerón
-          { date: "2025-12-08", title: "Día de la Virgen de Caacupé" }, // Virgen de Caacupé
-          { date: "2025-12-25", title: "Navidad" }, // Navidad
+          { date: "2025-01-01", title: "Año Nuevo" },
+          { date: "2025-03-02", title: "Día de los Héroes" },
+          { date: "2025-04-17", title: "Jueves Santo" },
+          { date: "2025-04-18", title: "Viernes Santo" },
+          { date: "2025-05-01", title: "Día del Trabajador" },
+          { date: "2025-05-14", title: "Día de la Independencia" },
+          { date: "2025-06-12", title: "Día de la Paz del Chaco" },
+          { date: "2025-08-15", title: "Fundación de Asunción" },
+          { date: "2025-09-29", title: "Victoria de Boquerón" },
+          { date: "2025-12-08", title: "Día de la Virgen de Caacupé" },
+          { date: "2025-12-25", title: "Navidad" },
         ];
 
         feriados.forEach((feriado) => {
@@ -141,18 +143,34 @@ const Home = () => {
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
     switch (event.type) {
-      case "vacaciones":
+      case "aprobado":
         return {
           style: {
-            backgroundColor: "#007bff",
+            backgroundColor: "#28a745", // Verde para aprobados
             color: "#ffffff",
+            borderRadius: "4px",
+          },
+        };
+      case "rechazado":
+        return {
+          style: {
+            backgroundColor: "#dc3545", // Rojo para rechazados
+            color: "#ffffff",
+            borderRadius: "4px",
+          },
+        };
+      case "pendiente":
+        return {
+          style: {
+            backgroundColor: "#ffc107", // Amarillo para pendientes
+            color: "#000000",
             borderRadius: "4px",
           },
         };
       case "feriado":
         return {
           style: {
-            backgroundColor: "#28a745",
+            backgroundColor: "#007bff", // Azul para feriados
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -169,8 +187,7 @@ const Home = () => {
           {/* 👤 Información del Usuario */}
           <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
           <p className="calendar-text">
-            Fecha de ingreso:{" "}
-            {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
+            Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
           </p>
           <p className="calendar-text">
             Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
@@ -180,7 +197,7 @@ const Home = () => {
           {error && <p className="calendar-error-message">{error}</p>}
 
           {/* 🛠️ Botones de Acción */}
-          <div className="button-container">
+          <div className="buttons">
             <button
                 className="calendar-button"
                 onClick={() => navigate("/NuevaSolicitud")}
@@ -215,6 +232,14 @@ const Home = () => {
                 views={{ month: true }}
                 eventPropGetter={eventStyleGetter}
             />
+          </div>
+
+          {/* 🖍️ Leyenda de Colores */}
+          <div className="calendar-legend">
+            <p><span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Aprobado</span></p>
+            <p><span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Rechazado</span></p>
+            <p><span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>Pendiente</span></p>
+            <p><span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Feriado</span></p>
           </div>
         </div>
       </div>

@@ -2,52 +2,37 @@
 .calendar-container {
     display: flex; /* Habilita Flexbox */
     justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    height: 100vh; /* Altura igual al 100% del viewport */
+    align-items: flex-start; /* Alinea contenido al inicio para evitar recortes */
+    min-height: 100vh; /* Usa altura mínima para evitar problemas en pantallas pequeñas */
+    padding: 10px; /* Añade un relleno alrededor */
+    box-sizing: border-box; /* Asegura que padding no altere dimensiones */
     margin: 0; /* Elimina cualquier margen adicional */
+    overflow-y: auto; /* Permite desplazamiento vertical si es necesario */
 }
 
 /* 📝 Tarjeta del calendario */
 .calendar-card {
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
+    box-sizing: border-box; /* Asegura consistencia en el diseño */
 }
 
 /* 📌 Título del calendario */
 .calendar-title {
-    font-size: 24px;
+    font-size: 20px;
     margin-bottom: 10px;
+    line-height: 1.2; /* Mejor ajuste de espacio */
 }
 
 /* 📄 Texto dentro del calendario */
 .calendar-text {
-    font-size: 16px;
+    font-size: 14px; /* Tamaño reducido para pantallas pequeñas */
     margin: 5px 0;
-}
-
-/* 🔘 Contenedor de botones */
-.button-container {
-    margin: 20px 0;
-}
-
-/* 🕹 Botones del calendario */
-.calendar-button {
-    margin: 5px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.calendar-button:hover {
-    background-color: #0056b3;
 }
 
 /* 🗓 Contenedor grande del calendario */
@@ -55,4 +40,67 @@
     margin-top: 20px;
 }
 
+/* Leyenda de colores alineada horizontalmente */
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espaciado menor para pantallas pequeñas */
+    justify-content: center;
+    margin-top: 15px; /* Espaciado reducido */
+    padding: 5px; /* Ajustado */
+    border-radius: 8px;
+}
 
+/* Estilo de los íconos de color */
+.calendar-legend p {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 5px 10px; /* Menor espaciado interno */
+    border-radius: 4px;
+    background-color: #ffffff;
+}
+
+/* Estilo de los íconos de color */
+.calendar-legend span {
+    margin-right: 5px;
+    padding: 4px 8px; /* Ajuste de espacio */
+    border-radius: 4px;
+}
+
+/* Estilos de los botones */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem; /* Espaciado menor */
+    margin-top: 0.5rem;
+}
+
+button {
+    font-size: 14px; /* Tamaño reducido */
+    padding: 0.3rem; /* Ajustado */
+}
+
+/* 🎯 Reglas responsivas */
+@media (max-width: 768px) {
+    .calendar-title {
+        font-size: 18px; /* Ajusta el tamaño del título */
+    }
+
+    .calendar-text {
+        font-size: 12px; /* Reduce tamaño del texto */
+    }
+
+    .calendar-card {
+        padding: 15px; /* Reduce el padding */
+    }
+
+    .calendar-legend {
+        gap: 8px; /* Menor espaciado */
+    }
+
+    button {
+        font-size: 12px; /* Botones más pequeños */
+        padding: 0.2rem;
+    }
+}

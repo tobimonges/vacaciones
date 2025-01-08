@@ -117,6 +117,115 @@ public class SolicitudService implements ISolicitudService {
         return solicitudRepository.save(solicitud);
     }
 
+    public SolicitudModel aprobarSolicitud(Long solicitudId, Long usuarioId) {
+        SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        UsuarioModel usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar que el líder asignado apruebe primero
+        if (solicitud.getNumeroAprobaciones() == 0) {
+            if (!solicitud.getLider().getId().equals(usuario.getId())) {
+                throw new RuntimeException("Solo el líder asignado puede aprobar esta solicitud.");
+            }
+            solicitud.setNumeroAprobaciones(1); // Aprobado por el líder
+            solicitud.setRechazado(false);
+        } else if (solicitud.getNumeroAprobaciones() == 1) {
+            if (!"TH".equals(usuario.getRol().getNombre())) {
+                throw new RuntimeException("Solo el rol TH puede aprobar en esta etapa.");
+            }
+            solicitud.setNumeroAprobaciones(2); // Aprobado por TH
+            solicitud.setEstado(true); // Solicitud completamente aprobada
+            solicitud.setRechazado(false); // Actualizar el estado de rechazado
+
+            int diasSolicitados = solicitud.getCantidadDias();
+            UsuarioModel usuarioRelacionado = solicitud.getUsuario();
+            int diasRestantes = usuarioRelacionado.getDiasVacaciones() - diasSolicitados;
+
+            if (diasRestantes < 0) {
+                throw new RuntimeException("No hay suficientes días de vacaciones disponibles.");
+            }
+
+            usuarioRelacionado.setDiasVacaciones(diasRestantes);
+            usuarioRepository.save(usuarioRelacionado);
+        } else {
+            throw new RuntimeException("La solicitud ya está completamente aprobada.");
+        }
+
+        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
+    }
+
+
+
+
+    public SolicitudModel rechazarSolicitudPorLiderOTh(Long solicitudId, Long usuarioId) {
+        SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        UsuarioModel usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar si el usuario es líder asignado o tiene rol TH
+        if (solicitud.getNumeroAprobaciones() == 0 && solicitud.getLider().getId().equals(usuario.getId())) {
+            solicitud.setEstado(false);
+            solicitud.setRechazado(true);
+            solicitud.setNumeroAprobaciones(0);
+        } else if (solicitud.getNumeroAprobaciones() == 1 && solicitud.getLider().getId().equals(usuario.getId())) {
+            solicitud.setEstado(false);
+            solicitud.setRechazado(true);
+            solicitud.setNumeroAprobaciones(0);
+        } else if (solicitud.getNumeroAprobaciones() == 1 && "TH".equals(usuario.getRol().getNombre())) {
+            solicitud.setEstado(false);
+            solicitud.setRechazado(true);
+            solicitud.setNumeroAprobaciones(0);
+        } else if (solicitud.getNumeroAprobaciones() == 2 && "TH".equals(usuario.getRol().getNombre())) {
+            solicitud.setEstado(false);
+            solicitud.setRechazado(true);
+            solicitud.setNumeroAprobaciones(0);
+        } else {
+            throw new RuntimeException("No tienes permiso suficiente para rechazar esta solicitud.");
+        }
+
+        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
+    }
+
+    public SolicitudModel rechazarSolicitudPorOperador(Long solicitudId, Long usuarioId, String comentario) {
+        SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        UsuarioModel usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!"OPERACIONES".equals(usuario.getRol().getNombre())) {
+            throw new RuntimeException("Solo un usuario con rol OPERACIONES puede rechazar con un motivo.");
+        }
+
+        if (comentario == null || comentario.isEmpty()) {
+            throw new RuntimeException("El comentario es obligatorio para rechazar una solicitud.");
+        }
+
+        if (solicitud.getEstado() && solicitud.getNumeroAprobaciones() == 2) {
+            UsuarioModel usuarioRelacionado = solicitud.getUsuario();
+            usuarioRelacionado.setDiasVacaciones(
+                    usuarioRelacionado.getDiasVacaciones() + solicitud.getCantidadDias()
+            );
+            usuarioRepository.save(usuarioRelacionado);
+        }
+
+        solicitud.setEstado(false);
+        solicitud.setRechazado(true); // Aquí está el problema: siempre se marca como true
+        solicitud.setComentario(comentario);
+        solicitud.setNumeroAprobaciones(0);
+
+        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
+    }
+
+
+
+
+
+
 }
 
 

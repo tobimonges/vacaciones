@@ -256,13 +256,17 @@ export default function NuevaSolicitud() {
                 ))}
               </select>
             </div>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={validDays > diasVacacionesDisponibles || !selectedLider}
-            >
-              Crear Solicitud
-            </button>
+            <div className="buttons">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={
+                  validDays > diasVacacionesDisponibles || !selectedLider
+                }
+              >
+                Crear Solicitud
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -96,5 +97,49 @@ public class SolicitudController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener las solicitudes del usuario.");
         }
     }
+
+    @PutMapping("/{id}/aprobar")
+    public ResponseEntity<?> aprobarSolicitud(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId) {
+        try {
+            SolicitudModel solicitudActualizada = solicitudService.aprobarSolicitud(id, usuarioId);
+            return ResponseEntity.ok(solicitudActualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/rechazar-lider-th")
+    public ResponseEntity<?> rechazarPorLiderOTh(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId) {
+        try {
+            SolicitudModel solicitudActualizada = solicitudService.rechazarSolicitudPorLiderOTh(id, usuarioId);
+            return ResponseEntity.ok(solicitudActualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Error al procesar la solicitud."));
+        }
+    }
+
+
+
+    @PutMapping("/{id}/rechazar-operador")
+    public ResponseEntity<?> rechazarPorOperador(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId,
+            @RequestBody Map<String, String> body) {
+        try {
+            String comentario = body.get("comentario");
+            SolicitudModel solicitudActualizada = solicitudService.rechazarSolicitudPorOperador(id, usuarioId, comentario);
+            return ResponseEntity.ok(solicitudActualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+
 
 }
