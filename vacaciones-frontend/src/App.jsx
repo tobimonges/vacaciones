@@ -1,12 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
+import HomeTh from "./components/HomeTh";
 import NuevaSolicitud from "./components/NuevaSolicitud";
 import SolicitudDetalle from "./components/SolicitudDetalle";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminDashboard from "./components/AdminDashboard";
 import LoginForgotPassword from './components/LoginForgotPassword';
 import RestablecerContraseña from "./components/RestablecerContraseña";
+import LoginForgotPassword from "./components/LoginForgotPassword";
+import CrearUsuario from "./components/CrearUsuario";
 
 
 function App() {
@@ -35,6 +38,25 @@ function App() {
               <AdminDashboard />
             </PrivateRoute>
           }
+        />
+
+        <Route
+        path="/CrearUsuario"
+        element={
+          <PrivateRoute allowedRoles={["TH"]}>
+            
+            <CrearUsuario />
+          </PrivateRoute>
+        }
+        />
+        <Route
+        path="/HomeTh"
+        element={
+          <PrivateRoute allowedRoles={["TH"]}>
+            
+            <HomeTh />
+          </PrivateRoute>
+        }
         />
       </Routes>
     </Router>
