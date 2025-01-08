@@ -48,9 +48,16 @@ public class UsuarioService implements IUsuarioService{
 
     @Override
     public UsuarioModel guardarUsuario(UsuarioModel usuario) {
+        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+            throw new IllegalArgumentException("El correo ya está registrado");
+        }
+        if (usuarioRepository.findByNroCedula(usuario.getNroCedula()) != null) {
+            throw new IllegalArgumentException("La cédula ya está registrada");
+        }
         String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
         usuario.setContrasena(contrasenaEncriptada);
-        return usuarioRepository.save(usuario);    }
+        return usuarioRepository.save(usuario);
+    }
 
     @Override
     public void eliminarUsuario(UsuarioModel usuario) {
