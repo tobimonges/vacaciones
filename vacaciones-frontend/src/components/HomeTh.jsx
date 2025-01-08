@@ -30,6 +30,8 @@ const HomeTh = () => {
     const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
     const [events, setEvents] = useState([]); // Lista de eventos para el calendario
     const [error, setError] = useState(""); // Mensajes de error
+    const [modalOpen, setModalOpen] = useState(false); // Estado para abrir/cerrar el modal
+    const [modalEvents, setModalEvents] = useState([]); // Eventos a mostrar en el modal
     const navigate = useNavigate(); // Navegación entre rutas
 
     // 📥 **Obtener Datos del Usuario**
@@ -90,29 +92,28 @@ const HomeTh = () => {
                 const eventsArray = [];
 
 
-                    response.data.forEach((solicitud) => {
+                response.data.forEach((solicitud) => {
 
-                        if (solicitud.fechaInicio && solicitud.fechaFin) {
-                            const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
-                            const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
+                    if (solicitud.fechaInicio && solicitud.fechaFin) {
+                        const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
+                        const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-                            // Nueva lógica para asignar tipo de evento
-                            const type = solicitud.rechazado
-                                ? "rechazado"
-                                : solicitud.estado
-                                    ? "aprobado"
-                                    : "pendiente";
+                        // Nueva lógica para asignar tipo de evento
+                        const type = solicitud.rechazado
+                            ? "rechazado"
+                            : solicitud.estado
+                                ? "aprobado"
+                                : "pendiente";
 
-                            eventsArray.push({
-                                title: solicitud.usuario.nombre +" " +  solicitud.usuario.apellido,
-                                start: new Date(`${startDate}T00:00:00`),
-                                end: new Date(`${endDate}T23:59:59`),
-                                allDay: true,
-                                type,
-                            });
-                        }
-                    });
-
+                        eventsArray.push({
+                            title: solicitud.usuario.nombre + " " + solicitud.usuario.apellido,
+                            start: new Date(`${startDate}T00:00:00`),
+                            end: new Date(`${endDate}T23:59:59`),
+                            allDay: true,
+                            type,
+                        });
+                    }
+                });
 
                 // Fechas fijas de feriados manuales
                 const feriados = [
@@ -189,6 +190,17 @@ const HomeTh = () => {
         }
     };
 
+    // 🖼️ **Mostrar Modal con Eventos del Día**
+    const handleDayClick = (date) => {
+        const eventsOnDate = events.filter(
+            (event) =>
+                new Date(event.start).toLocaleDateString() ===
+                new Date(date).toLocaleDateString()
+        );
+        setModalEvents(eventsOnDate);
+        setModalOpen(true);
+    };
+
     // 🎨 **Renderizado del Componente**
     return (
         <div className="calendar-container">
@@ -239,11 +251,12 @@ const HomeTh = () => {
                             day: "Día",
                             agenda: "Agenda",
                         }}
-                        views={{ month: true, day: true}}
+                        views={{ month: true}}
                         eventPropGetter={eventStyleGetter}
                         popup={false}
                         showMultiDayTimes={true}
                         longPressThreshold={10}
+                        onSelectSlot={(slotInfo) => handleDayClick(slotInfo.start)}
                     />
                 </div>
 
@@ -270,6 +283,27 @@ const HomeTh = () => {
             </span>
                     </p>
                 </div>
+
+                {/* 🔲 Modal para Solicitudes del Día */}
+                {modalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Solicitudes en esta fecha:</h3>
+                            {modalEvents.length > 0 ? (
+                                <ul>
+                                    {modalEvents.map((event, index) => (
+                                        <li key={index}>
+                                            <strong>{event.title}</strong> - {event.type}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>No hay solicitudes para esta fecha.</p>
+                            )}
+                            <button onClick={() => setModalOpen(false)}>Cerrar</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
