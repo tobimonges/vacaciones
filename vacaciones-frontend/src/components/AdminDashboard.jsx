@@ -137,12 +137,14 @@ const AdminDashboard = () => {
   };
 
   const getEstadoSolicitud = (solicitud) => {
-    if (solicitud.numeroAprobaciones === 1) {
+    if (!solicitud.estado && solicitud.rechazado) {
+      return "Rechazado"; // Si la solicitud fue rechazada
+    } else if (solicitud.numeroAprobaciones === 0 && userRole === "TH") {
+      return "Falta aprobación del Líder"; // Si no ha sido aprobada por el líder y el usuario es TH
+    } else if (solicitud.numeroAprobaciones === 1) {
       return "Pendiente a TH"; // Si hay una aprobación, el estado es "Pendiente a TH"
     } else if (solicitud.estado) {
       return "Aprobado"; // Si la solicitud está aprobada completamente
-    } else if (!solicitud.estado && solicitud.rechazado) {
-      return "Rechazado"; // Si la solicitud fue rechazada
     } else {
       return "Pendiente"; // Cualquier otro caso
     }
