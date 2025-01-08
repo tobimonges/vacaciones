@@ -1,18 +1,17 @@
 package bootcamp.vacaciones.controllers;
 
-//import bootcamp.vacaciones.models.RolModel;
-import bootcamp.vacaciones.models.RolModel;
+
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.RolRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.services.IUsuarioService;
-import bootcamp.vacaciones.services.RolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -63,11 +62,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/crea/usuarios")
-    public UsuarioModel guardarUsuario(@RequestBody UsuarioModel usuario) {
-        RolModel rol = rolRepository.findById(usuario.getRol().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
-        usuario.setRol(rol);
-        return usuarioService.guardarUsuario(usuario);
+    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioModel usuario) {
+        try {
+            UsuarioModel nuevoUsuario = usuarioService.guardarUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/buscarid/{id}")
