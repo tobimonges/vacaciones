@@ -9,21 +9,34 @@ import bootcamp.vacaciones.security.JwtUtils;
 import bootcamp.vacaciones.services.EmailService;
 import bootcamp.vacaciones.services.IUsuarioService;
 import bootcamp.vacaciones.services.RolService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Bucket4j;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Refill;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+
 
 @RestController
 @RequestMapping("/vacaciones")
 
 @CrossOrigin(value = "http://localhost:5173") //para recibir peticiones del front
 public class UsuarioController {
+
+    private static final ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     @Value("${app.reset-password-url}")
     private String baseUrl;
@@ -122,8 +135,27 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuarios/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String email) {
+    public ResponseEntity<?> resetPassword(@RequestParam String email, HttpServletRequest request) {
+        String clientIp = request.getRemoteAddr();
+        String key = clientIp + ":" + email;
+
+        logger.info("Solicitud recibida para reset-password desde IP: {} con correo: {}", clientIp, email);
+
+        // Configuración del bucket para rate limiting
+        Bucket bucket = buckets.computeIfAbsent(key, k -> {
+            Bandwidth limit = Bandwidth.classic(3, Refill.greedy(3, Duration.ofMinutes(1)));
+            return Bucket4j.builder().addLimit(limit).build();
+        });
+
+        // Verificar si hay capacidad disponible en el bucket
+        if (!bucket.tryConsume(1)) {
+            logger.warn("Límite de solicitudes excedido para la clave: {}", key);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Demasiadas solicitudes recientes.");
+        }
+
+        // Lógica de reset-password
         if (!emailService.esCorreoValido(email)) {
+            logger.warn("Correo inválido recibido: {}", email);
             return ResponseEntity.badRequest().body("Correo inválido.");
         }
 
@@ -134,6 +166,8 @@ public class UsuarioController {
             String token = jwtUtils.generateResetPasswordToken(usuario.getCorreo(), usuario.getId());
             String resetLink = String.format("%s?token=%s", baseUrl, token);
 
+            logger.info("Enviando correo de reset-password al correo: {}", email);
+
             emailService.enviarCorreo(
                     email,
                     "Restablecimiento de Contraseña",
@@ -142,6 +176,7 @@ public class UsuarioController {
 
             return ResponseEntity.ok("Correo enviado con éxito.");
         } catch (Exception e) {
+            logger.error("Error al procesar la solicitud de reset-password: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al procesar la solicitud.");
         }
     }
