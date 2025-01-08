@@ -190,7 +190,7 @@ const Home = () => {
             Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
           </p>
           <p className="calendar-text">
-            Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
+            Total de días de vacaciones disponibles: {vacationDays !== 0 ? vacationDays : "Cargando..."}
           </p>
 
 
