@@ -226,18 +226,38 @@ public class SolicitudService implements ISolicitudService {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el líder asignado.</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 1 && solicitud.getLider().getId().equals(usuario.getId())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el líder asignado.</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 1 && "TH".equals(usuario.getRol().getNombre())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 2 && "TH".equals(usuario.getRol().getNombre())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
+            );
         } else {
             throw new RuntimeException("No tienes permiso suficiente para rechazar esta solicitud.");
         }
@@ -272,6 +292,12 @@ public class SolicitudService implements ISolicitudService {
         solicitud.setRechazado(true); // Aquí está el problema: siempre se marca como true
         solicitud.setComentario(comentario);
         solicitud.setNumeroAprobaciones(0);
+
+        emailService.enviarCorreo(
+                solicitud.getUsuario().getCorreo(),
+                "Solicitud Rechazada",
+                "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Operaciones. <br> Motivo: " + comentario + "</p>"
+        );
 
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
