@@ -51,7 +51,7 @@ function App() {
         <Route
         path="/HomeTh"
         element={
-          <PrivateRoute allowedRoles={["TH"]}>
+          <PrivateRoute allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}>
             
             <HomeTh />
           </PrivateRoute>
