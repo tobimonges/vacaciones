@@ -36,12 +36,11 @@ function RestablecerContraseña() {
   }
 
   return (
-    <div className="containerRestablecer">
+    <div className="containerRestablecerContraseña">
       <Preloader duration={650} />
-      <div className={`restablecerBox $(error ? "error" : "")`}>
+      <div className={`restablecerBox ${error ? "error" : ""}`}>
         <h2 className="headerRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">
-          <div className="segundoContainerRC">
             <div className="inputRCGroup">
               <div className="iconRCWrap">
                 <img
@@ -85,7 +84,6 @@ function RestablecerContraseña() {
             <button type="submit" className="buttonRC">
               Restablecer
             </button>
-          </div>
         </form>
 
         <div className="backToLogin">
