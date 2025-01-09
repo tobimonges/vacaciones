@@ -160,15 +160,7 @@ button {
     scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
     max-height: calc(70vh - 50px); /* Ajusta la altura para no sobrepasar la altura total */
 }
-.modal-contentTh .close-button-container {
-    position: sticky; /* Fija la posición del botón dentro del modal */
-    bottom: 0; /* Alínea al final del contenido del modal */
-    background-color: inherit; /* Mantén el fondo igual al modal */
-    padding-top: 10px; /* Espaciado superior */
-    text-align: center; /* Centra el botón */
-}
-.modal-contentTh li {
-    background-color: #3764a5;
+
 /* Elementos de la lista de eventos */
 .modal-contentTh li {
     background-color: #4c6da8;
@@ -208,6 +200,34 @@ button {
     0 32px 32px rgba(0, 0, 0, 0.07);
     transform: translateY(-2px);
 }
+/* 🎯 Reglas responsivas */
+@media (max-width: 768px) {
+    .modal-contentTh {
+        width: 90%;
+        max-width: 100%;
+    }
+
+    .close-modal-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
+
+/* Botón de cerrar */
+.close-modal-btn {
+    background-color: #fbc940;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Espaciado arriba del botón */
+}
+
+.close-modal-btn:hover {
+    background-color: #dfb755;
+}
+
 /* 🎯 Reglas responsivas */
 @media (max-width: 768px) {
     .modal-contentTh {
