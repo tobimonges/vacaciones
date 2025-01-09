@@ -149,9 +149,9 @@ export default function SolicitudDetalle() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-
-      <div className="container-solicitudes">
+      <div>
         <Preloader duration={650} />
+      <div className="container-solicitudes">
         <h4>Solicitudes del Usuario</h4>
         {/* Lista desplegable para filtro */}
         <select
@@ -232,6 +232,7 @@ export default function SolicitudDetalle() {
         <button className="volver-home" onClick={() => navigate("/Home")}>
           Volver al Home
         </button>
+      </div>
       </div>
     </LocalizationProvider>
   );
