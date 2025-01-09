@@ -5,7 +5,7 @@ import axios from "axios";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
+import Logo from "./Logo";
 import Preloader from "./Preloader";
 
 function CrearUsuario() {
@@ -114,11 +114,16 @@ function CrearUsuario() {
           error ? "datosIncorrectos" : ""
         }`}
       >
+        <Logo />
         <h2 className="headerCreate">Crear Usuario</h2>
         <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/circulo-de-usuario (2).svg" alt="Usuario" className="icon" />
+              <img
+                src="/circulo-de-usuario (2).svg"
+                alt="Usuario"
+                className="icon"
+              />
               <input
                 type="text"
                 placeholder="Nombre"
@@ -132,7 +137,11 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/circulo-de-usuario (2).svg" alt="Usuario" className="icon" />
+              <img
+                src="/circulo-de-usuario (2).svg"
+                alt="Usuario"
+                className="icon"
+              />
               <input
                 type="text"
                 placeholder="Apellido"
@@ -146,7 +155,11 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/tarjeta-de-identificacion (1).svg" alt="Usuario" className="icon" />
+              <img
+                src="/tarjeta-de-identificacion (1).svg"
+                alt="Usuario"
+                className="icon"
+              />
               <input
                 type="number"
                 placeholder="Nro de Cedula"
@@ -215,7 +228,11 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/circle-phone-flip (1).svg" alt="Usuario" className="icon" />
+              <img
+                src="/circulo-de-telefono.svg"
+                alt="Telefono"
+                className="icon"
+              />
               <input
                 type="text"
                 placeholder="Telefono"

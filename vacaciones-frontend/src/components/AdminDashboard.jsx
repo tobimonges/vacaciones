@@ -3,6 +3,7 @@ import axios from "axios";
 import "./AdminDashboard.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Preloader from "./Preloader";
+import Logo from "./Logo";
 
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -170,6 +171,7 @@ const AdminDashboard = () => {
     <div>
       <Preloader duration={650} />
       <div className="container-admin">
+        <Logo />
         <h4>Panel de Administrador</h4>
         {error ? (
           <p className="error">{error}</p>
@@ -192,9 +194,19 @@ const AdminDashboard = () => {
               {solicitudes.map((solicitud) => (
                 <tr key={solicitud.id}>
                   <td>{solicitud.id}</td>
-                  <td>{solicitud.usuario.nombre}</td>
-                  <td>{solicitud.fechaInicio}</td>
-                  <td>{solicitud.fechaFin}</td>
+                  <td>
+                    {solicitud.usuario.nombre +
+                      " " +
+                      solicitud.usuario.apellido}
+                  </td>
+                  <td>
+                    {new Date(solicitud.fechaInicio).toLocaleDateString(
+                      "es-ES"
+                    )}
+                  </td>
+                  <td>
+                    {new Date(solicitud.fechaFin).toLocaleDateString("es-ES")}
+                  </td>
                   <td>{getEstadoSolicitud(solicitud)}</td>
                   {userRole === "TH" && (
                     <td>

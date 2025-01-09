@@ -82,10 +82,10 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginSlide");
+    loginBox.classList.add("LoginAnim");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
-    }, 550);
+    }, 220);
   };
   if (showForgotPassword) {
     return (
