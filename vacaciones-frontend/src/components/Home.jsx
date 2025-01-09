@@ -156,7 +156,7 @@ const Home = () => {
       case "aprobado":
         return {
           style: {
-            backgroundColor: "#28a745",
+            backgroundColor: "#67bcc1", // Verde para aprobados
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -164,7 +164,7 @@ const Home = () => {
       case "rechazado":
         return {
           style: {
-            backgroundColor: "#dc3545",
+            backgroundColor: "#6e6cba", // Rojo para rechazados
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -172,15 +172,15 @@ const Home = () => {
       case "pendiente":
         return {
           style: {
-            backgroundColor: "#ffc107",
-            color: "#000000",
+            backgroundColor: "#6b97c8", // Amarillo para pendientes
+            color: "#ffffff",
             borderRadius: "4px",
           },
         };
       case "feriado":
         return {
           style: {
-            backgroundColor: "#007bff",
+            backgroundColor: "#479cf8", // Azul para feriados
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -240,10 +240,26 @@ const Home = () => {
           </div>
 
           <div className="calendar-legend">
-            <p><span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Aprobado</span></p>
-            <p><span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Rechazado</span></p>
-            <p><span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>Pendiente</span></p>
-            <p><span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Feriado</span></p>
+            <p>
+            <span style={{backgroundColor: "#67bcc1", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+              Aprobado
+            </span>
+            </p>
+            <p>
+            <span style={{backgroundColor: "#6e6cba", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+              Rechazado
+            </span>
+            </p>
+            <p>
+            <span style={{backgroundColor: "#6b97c8", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+              Pendiente
+            </span>
+            </p>
+            <p>
+            <span style={{backgroundColor: "#479cf8", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+              Feriado
+            </span>
+            </p>
           </div>
         </div>
       </div>
