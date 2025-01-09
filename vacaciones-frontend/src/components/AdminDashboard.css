@@ -34,7 +34,7 @@
   position: relative;
   margin-top: 20px;
   margin-bottom: 50px;
-  gap: 20rem; /* Espacio entre título y filtro */
+  gap: 19.5rem; /* Espacio entre título y filtro */
 }
 
 h4 {
