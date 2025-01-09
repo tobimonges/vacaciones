@@ -28,8 +28,24 @@ const AdminDashboard = () => {
           }
         );
 
-        setSolicitudes(response.data);
-        setFilteredSolicitudes(response.data);
+        // Definir el orden de prioridad de los estados
+        const estadoPrioridad = {
+          "Pendiente a TH": 1,
+          Pendiente: 2,
+          "Falta aprobación del Líder": 3,
+          Aprobado: 4,
+          Rechazado: 5,
+        };
+
+        // Ordenar las solicitudes según el estado
+        const sortedSolicitudes = response.data.sort((a, b) => {
+          const estadoA = estadoPrioridad[getEstadoSolicitud(a)] || 6;
+          const estadoB = estadoPrioridad[getEstadoSolicitud(b)] || 6;
+          return estadoA - estadoB;
+        });
+
+        setSolicitudes(sortedSolicitudes);
+        setFilteredSolicitudes(sortedSolicitudes);
       } catch (err) {
         console.error("Error al obtener solicitudes:", err.response.data);
         setError("No se pudieron cargar las solicitudes.");
