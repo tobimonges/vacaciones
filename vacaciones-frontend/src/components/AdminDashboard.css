@@ -145,3 +145,11 @@ button.reject:hover {
 .modal-buttons button:hover {
   background-color: #fcbc0e;
 }
+
+button:disabled {
+  background-color: #c0a354; /* Color de fondo gris */
+  color: #464646; /* Color del texto gris oscuro */
+  cursor: not-allowed; /* Cambiar el cursor a no permitido */
+  opacity: 0.7; /* Añadir un poco de transparencia */
+  transition: none; /* Quitar la animación */
+}

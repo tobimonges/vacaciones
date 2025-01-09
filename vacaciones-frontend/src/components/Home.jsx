@@ -6,8 +6,9 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import esLocale from "date-fns/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
-import { getUsuarioId, isTokenValid } from "./authUtils";
+import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils"; // Asegúrate de que getUserRole esté disponible
 import "./Home.css";
+import Preloader from "./Preloader";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -30,12 +31,18 @@ const Home = () => {
   const [error, setError] = useState(""); // Mensajes de error
   const navigate = useNavigate(); // Navegación entre rutas
 
+  // 📥 **Verificar roles permitidos**
+  const isUserAllowed = () => {
+    const allowedRoles = ["TH", "LIDER", "DIRECTORIO", "OPERACIONES"];
+    const userRole = getUserRole(); // Lógica para obtener el rol del usuario
+    return allowedRoles.includes(userRole);
+  };
+
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
       const usuarioId = getUsuarioId();
 
-      // Verificar autenticación
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -69,7 +76,6 @@ const Home = () => {
     const fetchVacationRequests = async () => {
       const usuarioId = getUsuarioId();
 
-      // Verificar autenticación
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -93,19 +99,23 @@ const Home = () => {
               const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
               const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-              // Agregar eventos según el estado de la solicitud
+              const type = solicitud.rechazado
+                  ? "rechazado"
+                  : solicitud.estado
+                      ? "aprobado"
+                      : "pendiente";
+
               eventsArray.push({
-                title: "Permiso",
+                title: "Vacaciones",
                 start: new Date(`${startDate}T00:00:00`),
                 end: new Date(`${endDate}T23:59:59`),
                 allDay: true,
-                type: solicitud.estado ? "aprobado" : solicitud.estado === false ? "rechazado" : "pendiente",
+                type,
               });
             }
           });
         }
 
-        // Fechas fijas de feriados manuales
         const feriados = [
           { date: "2025-01-01", title: "Año Nuevo" },
           { date: "2025-03-02", title: "Día de los Héroes" },
@@ -146,7 +156,7 @@ const Home = () => {
       case "aprobado":
         return {
           style: {
-            backgroundColor: "#28a745", // Verde para aprobados
+            backgroundColor: "#28a745",
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -154,7 +164,7 @@ const Home = () => {
       case "rechazado":
         return {
           style: {
-            backgroundColor: "#dc3545", // Rojo para rechazados
+            backgroundColor: "#dc3545",
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -162,7 +172,7 @@ const Home = () => {
       case "pendiente":
         return {
           style: {
-            backgroundColor: "#ffc107", // Amarillo para pendientes
+            backgroundColor: "#ffc107",
             color: "#000000",
             borderRadius: "4px",
           },
@@ -170,7 +180,7 @@ const Home = () => {
       case "feriado":
         return {
           style: {
-            backgroundColor: "#007bff", // Azul para feriados
+            backgroundColor: "#007bff",
             color: "#ffffff",
             borderRadius: "4px",
           },
@@ -183,36 +193,31 @@ const Home = () => {
   // 🎨 **Renderizado del Componente**
   return (
       <div className="calendar-container">
+        <Preloader duration={650} />
         <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-          {/* 👤 Información del Usuario */}
           <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
           <p className="calendar-text">
             Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
           </p>
           <p className="calendar-text">
-            Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
+            Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
           </p>
-
-          {/* 🚨 Mensajes de Error */}
           {error && <p className="calendar-error-message">{error}</p>}
 
-          {/* 🛠️ Botones de Acción */}
           <div className="buttons">
-            <button
-                className="calendar-button"
-                onClick={() => navigate("/NuevaSolicitud")}
-            >
+            <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
               Solicitar
             </button>
-            <button
-                className="calendar-button"
-                onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
-            >
+            <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
               Ver Solicitudes
             </button>
+            {isUserAllowed() && (
+                <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
+                  Home Talento Humano
+                </button>
+            )}
           </div>
 
-          {/* 📆 Calendario */}
           <div className="calendar-big-container">
             <Calendar
                 localizer={localizer}
@@ -234,7 +239,6 @@ const Home = () => {
             />
           </div>
 
-          {/* 🖍️ Leyenda de Colores */}
           <div className="calendar-legend">
             <p><span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Aprobado</span></p>
             <p><span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>Rechazado</span></p>

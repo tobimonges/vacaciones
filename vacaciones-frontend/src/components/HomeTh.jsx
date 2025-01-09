@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
 
+import Preloader from "./Preloader";
+
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
 
@@ -23,11 +25,13 @@ const localizer = dateFnsLocalizer({
 // 🏠 **Componente Principal**
 const HomeTh = () => {
     // 🧠 Estados
-    const [userName, setUserName] = useState(""); // Nombre del usuario
+    const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
     const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
     const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
     const [events, setEvents] = useState([]); // Lista de eventos para el calendario
     const [error, setError] = useState(""); // Mensajes de error
+    const [modalOpen, setModalOpen] = useState(false); // Estado para abrir/cerrar el modal
+    const [modalEvents, setModalEvents] = useState([]); // Eventos a mostrar en el modal
     const navigate = useNavigate(); // Navegación entre rutas
 
     // 📥 **Obtener Datos del Usuario**
@@ -52,9 +56,7 @@ const HomeTh = () => {
                 );
 
                 const { nombre, fechaIngreso, diasVacaciones } = response.data;
-                setUserName(nombre);
-                setJoinDate(fechaIngreso);
-                setVacationDays(diasVacaciones);
+                setUserNameTh(nombre);
             } catch (error) {
                 console.error("Error al obtener datos del usuario:", error);
                 setError("No se pudieron cargar los datos del usuario.");
@@ -77,9 +79,10 @@ const HomeTh = () => {
             }
 
             try {
+
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
+                    `http://localhost:8080/vacaciones/solicitudes`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -87,31 +90,28 @@ const HomeTh = () => {
                 const eventsArray = [];
 
 
-                    response.data.forEach((solicitud) => {
-                        console.log("Solicitud recibida:", response.data); // Aquí se muestra el contenido de cada solicitud
+                response.data.forEach((solicitud) => {
 
-                        if (solicitud.fechaInicio && solicitud.fechaFin) {
-                            const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
-                            const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
+                    if (solicitud.fechaInicio && solicitud.fechaFin) {
+                        const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
+                        const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-                            // Nueva lógica para asignar tipo de evento
-                            const type = solicitud.rechazado
-                                ? "rechazado"
-                                : solicitud.estado
-                                    ? "aprobado"
-                                    : "pendiente";
-                            console.log("Tipo asignado:", type); // Verificar el tipo asignado
+                        // Nueva lógica para asignar tipo de evento
+                        const type = solicitud.rechazado
+                            ? "rechazado"
+                            : solicitud.estado
+                                ? "aprobado"
+                                : "pendiente";
 
-                            eventsArray.push({
-                                title: "Permiso",
-                                start: new Date(`${startDate}T00:00:00`),
-                                end: new Date(`${endDate}T23:59:59`),
-                                allDay: true,
-                                type,
-                            });
-                        }
-                    });
-
+                        eventsArray.push({
+                            title: solicitud.usuario.nombre + " " + solicitud.usuario.apellido,
+                            start: new Date(`${startDate}T00:00:00`),
+                            end: new Date(`${endDate}T23:59:59`),
+                            allDay: true,
+                            type,
+                        });
+                    }
+                });
 
                 // Fechas fijas de feriados manuales
                 const feriados = [
@@ -188,18 +188,25 @@ const HomeTh = () => {
         }
     };
 
+    // 🖼️ **Mostrar Modal con Eventos del Día**
+    const handleDayClick = (date) => {
+        const eventsOnDate = events.filter(
+            (event) =>
+                new Date(event.start).toLocaleDateString() ===
+                new Date(date).toLocaleDateString()
+        );
+        setModalEvents(eventsOnDate);
+        setModalOpen(true);
+    };
+
     // 🎨 **Renderizado del Componente**
     return (
         <div className="calendar-container">
+            <Preloader duration={650} />
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
                 {/* 👤 Información del Usuario */}
-                <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
-                <p className="calendar-text">
-                    Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-                </p>
-                <p className="calendar-text">
-                    Total de días de vacaciones disponibles: {vacationDays || "Cargando..."}
-                </p>
+                <h1 className="calendar-title">Bienvenido, {userNameTh || "Usuario"}</h1>
+                <h2 className="calendar-title">Solicitudes Generales</h2>
 
                 {/* 🚨 Mensajes de Error */}
                 {error && <p className="calendar-error-message">{error}</p>}
@@ -208,16 +215,17 @@ const HomeTh = () => {
                 <div className="buttons">
                     <button
                         className="calendar-button"
-                        onClick={() => navigate("/NuevaSolicitud")}
+                        onClick={() => navigate("/Home")}
                     >
-                        Solicitar
+                        Home
                     </button>
                     <button
                         className="calendar-button"
-                        onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+                        onClick={() => navigate(`/AdminDashboard`)}
                     >
-                        Ver Solicitudes
+                        Dashboard
                     </button>
+
                 </div>
 
                 {/* 📆 Calendario */}
@@ -237,8 +245,12 @@ const HomeTh = () => {
                             day: "Día",
                             agenda: "Agenda",
                         }}
-                        views={{ month: true, day: true}}
+                        views={{ month: true}}
                         eventPropGetter={eventStyleGetter}
+                        popup={false}
+                        showMultiDayTimes={true}
+                        longPressThreshold={10}
+                        onSelectSlot={(slotInfo) => handleDayClick(slotInfo.start)}
                     />
                 </div>
 
@@ -265,6 +277,27 @@ const HomeTh = () => {
             </span>
                     </p>
                 </div>
+
+                {/* 🔲 Modal para Solicitudes del Día */}
+                {modalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h3>Solicitudes en esta fecha:</h3>
+                            {modalEvents.length > 0 ? (
+                                <ul>
+                                    {modalEvents.map((event, index) => (
+                                        <li key={index}>
+                                            <strong>{event.title}</strong> - {event.type}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>No hay solicitudes para esta fecha.</p>
+                            )}
+                            <button onClick={() => setModalOpen(false)}>Cerrar</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

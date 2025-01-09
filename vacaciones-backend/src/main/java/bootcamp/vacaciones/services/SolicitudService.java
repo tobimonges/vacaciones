@@ -111,6 +111,8 @@ public class SolicitudService implements ISolicitudService {
         // Actualizar los campos de la solicitud
         solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         solicitud.setFechaFin(solicitudRequest.getFechaFin());
+        solicitud.setCantidadDias(solicitudRequest.getCantidadDias());
+
 
         // Guardar y devolver la solicitud actualizada
         return solicitudRepository.save(solicitud);

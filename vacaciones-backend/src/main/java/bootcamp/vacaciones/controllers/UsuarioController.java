@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
-
 @RestController
 @RequestMapping("/vacaciones")
 
@@ -93,11 +91,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/crea/usuarios")
-    public UsuarioModel guardarUsuario(@RequestBody UsuarioModel usuario) {
-        RolModel rol = rolRepository.findById(usuario.getRol().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
-        usuario.setRol(rol);
-        return usuarioService.guardarUsuario(usuario);
+    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioModel usuario) {
+        try {
+            UsuarioModel nuevoUsuario = usuarioService.guardarUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/buscarid/{id}")

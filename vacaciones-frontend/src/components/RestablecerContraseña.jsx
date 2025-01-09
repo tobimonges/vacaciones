@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RestablecerContraseña.css";
 
+import Preloader from "./Preloader";
+
 function RestablecerContraseña() {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
@@ -35,6 +37,7 @@ function RestablecerContraseña() {
 
   return (
     <div className="containerRestablecer">
+      <Preloader duration={650} />
       <div className={`restablecerBox $(error ? "error" : "")`}>
         <h2 className="headerRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import HomeTh from "./components/HomeTh.jsx";
+import HomeTh from "./components/HomeTh";
 import NuevaSolicitud from "./components/NuevaSolicitud";
 import SolicitudDetalle from "./components/SolicitudDetalle";
 import PrivateRoute from "./components/PrivateRoute";
@@ -10,14 +10,14 @@ import RestablecerContraseña from "./components/RestablecerContraseña";
 import LoginForgotPassword from "./components/LoginForgotPassword";
 import CrearUsuario from "./components/CrearUsuario";
 
+
 function App() {
   return (
     <Router>
       <Routes>
-          <Route path="/HomeTh" element={<HomeTh />} />
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />
-
+ 
         {/* Rutas para funcionarios */}
         <Route path="/Home" element={<Home />} />
         <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
@@ -26,7 +26,6 @@ function App() {
         <Route path="/forgotPassword" element={<LoginForgotPassword />} />
         {/* Ruta para CAMBIAR contraseña */}
         <Route path="/restablecer" element={<RestablecerContraseña />} />
-
         {/* Ruta exclusiva para administradores */}
         {/* Ruta para otros roles excepto FUNCIONARIO */}
         <Route
@@ -41,12 +40,22 @@ function App() {
         />
 
         <Route
-          path="/CrearUsuario"
-          element={
-            <PrivateRoute allowedRoles={["TH"]}>
-              <CrearUsuario />
-            </PrivateRoute>
-          }
+        path="/CrearUsuario"
+        element={
+          <PrivateRoute allowedRoles={["TH"]}>
+            
+            <CrearUsuario />
+          </PrivateRoute>
+        }
+        />
+        <Route
+        path="/HomeTh"
+        element={
+          <PrivateRoute allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}>
+            
+            <HomeTh />
+          </PrivateRoute>
+        }
         />
       </Routes>
     </Router>

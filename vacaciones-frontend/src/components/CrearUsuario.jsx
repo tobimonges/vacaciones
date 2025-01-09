@@ -6,6 +6,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import Preloader from "./Preloader";
+
 function CrearUsuario() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
@@ -106,6 +108,7 @@ function CrearUsuario() {
 
   return (
     <div className="containerLogin">
+      <Preloader duration={650} />
       <div
         className={`createBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
@@ -115,7 +118,7 @@ function CrearUsuario() {
         <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <img src="/circulo-de-usuario (2).svg" alt="Usuario" className="icon" />
               <input
                 type="text"
                 placeholder="Nombre"
@@ -129,7 +132,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <img src="/circulo-de-usuario (2).svg" alt="Usuario" className="icon" />
               <input
                 type="text"
                 placeholder="Apellido"
@@ -143,7 +146,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <img src="/tarjeta-de-identificacion (1).svg" alt="Usuario" className="icon" />
               <input
                 type="number"
                 placeholder="Nro de Cedula"
@@ -157,7 +160,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <img src="/sobre.svg" alt="Usuario" className="icon" />
               <input
                 type="text"
                 placeholder="Correo"
@@ -171,7 +174,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Rol" className="icon" />
+              <img src="/mapa-del-sitio (1).svg" alt="Rol" className="icon" />
               <select
                 className="inputCreate"
                 value={rol}
@@ -194,7 +197,7 @@ function CrearUsuario() {
             <div className="inputGroup">
               <div className="iconWrap">
                 <img
-                  src="/calendario.svg"
+                  src="/dias-del-calendario.svg"
                   alt="Fecha de Ingreso"
                   className="icon"
                 />
@@ -212,7 +215,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/avatar.svg" alt="Usuario" className="icon" />
+              <img src="/circle-phone-flip (1).svg" alt="Usuario" className="icon" />
               <input
                 type="text"
                 placeholder="Telefono"
@@ -227,7 +230,7 @@ function CrearUsuario() {
           <div className="inputGroup">
             <div className="iconWrap">
               <img
-                src="/cerrar-con-llave.svg"
+                src="/bloquear-hashtag.svg"
                 alt="Contraseña"
                 className="icon"
               />
@@ -245,7 +248,7 @@ function CrearUsuario() {
           <div className="inputGroup">
             <div className="iconWrap">
               <img
-                src="/cerrar-con-llave.svg"
+                src="/bloquear-hashtag.svg"
                 alt="Contraseña"
                 className="icon"
               />
