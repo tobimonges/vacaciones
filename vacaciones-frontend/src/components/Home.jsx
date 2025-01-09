@@ -225,6 +225,12 @@ const Home = () => {
             >
               Ver Solicitudes
             </button>
+            <button
+                className="calendar-button"
+                onClick={() => navigate(`/HomeTh`)}
+            >
+              Home Talento Humano
+            </button>
           </div>
 
           {/* 📆 Calendario */}
