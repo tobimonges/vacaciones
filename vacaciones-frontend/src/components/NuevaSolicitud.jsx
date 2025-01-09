@@ -269,7 +269,7 @@ export default function NuevaSolicitud() {
                   validDays > diasVacacionesDisponibles || !selectedLider
                 }
               >
-                Crear Solicitud
+                <span>Crear Solicitud</span>
               </button>
             </div>
           </form>

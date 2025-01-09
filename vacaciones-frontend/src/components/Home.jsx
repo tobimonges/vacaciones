@@ -211,14 +211,14 @@ const Home = () => {
 
           <div className="buttons">
             <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
-              Solicitar
+              <span>Solicitar</span>
             </button>
             <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
-              Ver Solicitudes
+              <span>Ver Solicitudes</span>
             </button>
             {isUserAllowed() && (
                 <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
-                  Home Talento Humano
+                  <span>Home Talento Humano</span>
                 </button>
             )}
           </div>
@@ -246,22 +246,22 @@ const Home = () => {
 
           <div className="calendar-legend">
             <p>
-            <span style={{backgroundColor: "#67bcc1", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+            <span style={{backgroundColor: "#67bcc1", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
               Aprobado
             </span>
             </p>
             <p>
-            <span style={{backgroundColor: "#6e6cba", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+            <span style={{backgroundColor: "#6e6cba", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
               Rechazado
             </span>
             </p>
             <p>
-            <span style={{backgroundColor: "#6b97c8", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+            <span style={{backgroundColor: "#6b97c8", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
               Pendiente
             </span>
             </p>
             <p>
-            <span style={{backgroundColor: "#479cf8", color: "#ffffff", padding: "4px", borderRadius: "4px"}}>
+            <span style={{backgroundColor: "#479cf8", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
               Feriado
             </span>
             </p>
