@@ -93,8 +93,29 @@ public class SolicitudService implements ISolicitudService {
         nuevaSolicitud.setRechazado(false); // Por defecto, no rechazada
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
+        // Notificar al líder
+        emailService.enviarCorreo(
+                lider.getCorreo(),
+                "Nueva Solicitud de Vacaciones",
+                "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+                        nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+        );
+
+        // Notificar a los usuarios con rol "TH"
+        List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+        for (UsuarioModel thUsuario : usuariosTh) {
+            emailService.enviarCorreo(
+                    thUsuario.getCorreo(),
+                    "Nueva Solicitud de Vacaciones",
+                    "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+                            nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+            );
+        }
+
         return solicitudRepository.save(nuevaSolicitud);
     }
+
+
     @Override
     public SolicitudModel actualizarSolicitudConDTO(Long idSolicitud, SolicitudRequest solicitudRequest) {
         // Validar que la solicitud existe
@@ -148,6 +169,17 @@ public class SolicitudService implements ISolicitudService {
             );
 
             actualizarDiasVacaciones(solicitud);
+
+            // Notificar a todos los usuarios con rol "TH"
+            List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+            for (UsuarioModel thUsuario : usuariosTh) {
+                emailService.enviarCorreo(
+                        thUsuario.getCorreo(),
+                        "Aprobación de Solicitud",
+                        "<p>La solicitud del usuario <b>" + solicitud.getUsuario().getNombre() + "</b> para las fechas " +
+                                solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + " ha sido aprobada por completo.</p>"
+                );
+            }
         } else {
             throw new RuntimeException("La solicitud ya está completamente aprobada.");
         }
