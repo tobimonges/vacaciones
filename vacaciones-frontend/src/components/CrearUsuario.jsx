@@ -215,7 +215,7 @@ function CrearUsuario() {
 
           <div className="inputGroup">
             <div className="iconWrap">
-              <img src="/circle-phone-flip (1).svg" alt="Usuario" className="icon" />
+              <img src="/circulo-de-telefono.svg" alt="Usuario" className="icon" />
               <input
                 type="text"
                 placeholder="Telefono"
