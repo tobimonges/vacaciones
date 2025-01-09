@@ -26,7 +26,7 @@ public class UsuarioModel {
     @Column(name="fecha_ingreso", nullable = false)
     private LocalDate fechaIngreso;
 
-    @Column(name="antiguedad" , insertable = false, updatable = false)
+    @Column(name = "antiguedad", columnDefinition = "INTERVAL", insertable = false, updatable = false)
     private String antiguedad;
     @Column(name="dias_vacaciones")
     private int diasVacaciones;
