@@ -211,7 +211,7 @@ const Home = () => {
 
           <div className="buttons">
             <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
-              Solicitar
+              <span>Solicitar</span>
             </button>
             <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
               Ver Solicitudes
