@@ -7,6 +7,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import "./Solicitud.css";
 
+import Logo from "./Logo";
+
 import Preloader from "./Preloader";
 
 export default function SolicitudDetalle() {
@@ -152,6 +154,7 @@ export default function SolicitudDetalle() {
       <div>
         <Preloader duration={650} />
       <div className="container-solicitudes">
+        <Logo />
         <h4>Solicitudes del Usuario</h4>
         {/* Lista desplegable para filtro */}
         <select

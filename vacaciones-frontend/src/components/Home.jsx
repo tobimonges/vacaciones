@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils"; // Asegúrate de que getUserRole esté disponible
 import "./Home.css";
 import Preloader from "./Preloader";
+import Logo from "./Logo";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -193,8 +194,12 @@ const Home = () => {
   // 🎨 **Renderizado del Componente**
   return (
       <div className="calendar-container">
+        
         <Preloader duration={650} />
+
+        
         <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+          <Logo />
           <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
           <p className="calendar-text">
             Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
