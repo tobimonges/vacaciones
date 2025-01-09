@@ -41,7 +41,7 @@ h4 {
 .admin-table th,
 .admin-table td {
   padding: 0.75rem;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ffffff9c;
 }
 
@@ -63,6 +63,7 @@ button {
   padding: 0.4rem;
   color: #2c2c2c;
   cursor: pointer;
+  margin-right: 10px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -152,4 +153,5 @@ button:disabled {
   cursor: not-allowed; /* Cambiar el cursor a no permitido */
   opacity: 0.7; /* Añadir un poco de transparencia */
   transition: none; /* Quitar la animación */
+  margin-right: 10px;
 }
