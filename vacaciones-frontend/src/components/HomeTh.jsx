@@ -57,8 +57,6 @@ const HomeTh = () => {
 
                 const { nombre, fechaIngreso, diasVacaciones } = response.data;
                 setUserNameTh(nombre);
-                setJoinDate(fechaIngreso);
-                setVacationDays(diasVacaciones);
             } catch (error) {
                 console.error("Error al obtener datos del usuario:", error);
                 setError("No se pudieron cargar los datos del usuario.");
@@ -208,12 +206,7 @@ const HomeTh = () => {
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
                 {/* 👤 Información del Usuario */}
                 <h1 className="calendar-title">Bienvenido, {userNameTh || "Usuario"}</h1>
-                <p className="calendar-text">
-                    Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-                </p>
-                <p className="calendar-text">
-                    Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
-                </p>
+                <h2 className="calendar-title">Solicitudes Generales</h2>
 
                 {/* 🚨 Mensajes de Error */}
                 {error && <p className="calendar-error-message">{error}</p>}
@@ -222,16 +215,17 @@ const HomeTh = () => {
                 <div className="buttons">
                     <button
                         className="calendar-button"
-                        onClick={() => navigate("/NuevaSolicitud")}
+                        onClick={() => navigate("/Home")}
                     >
-                        Solicitar
+                        Home
                     </button>
                     <button
                         className="calendar-button"
-                        onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+                        onClick={() => navigate(`/AdminDashboard`)}
                     >
-                        Ver Solicitudes
+                        Dash Board
                     </button>
+
                 </div>
 
                 {/* 📆 Calendario */}
