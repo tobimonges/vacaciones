@@ -91,7 +91,6 @@
 }
 
 button {
-
     font-size: 14px; /* Tamaño reducido */
     padding: 0.3rem; /* Ajustado */
 }
@@ -118,7 +117,6 @@ button {
 }
 
 
-/* Modal Overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -134,73 +132,44 @@ button {
     -webkit-backdrop-filter: blur(8px);
 }
 
-/* Contenido del Modal */
 .modal-contentTh {
     background: #39659f;
     max-height: 70vh;
-    overflow-y: auto; /* Permite el desplazamiento en caso de contenido largo */
-    padding: 20px;
+    overflow-y: scroll; /* Habilitar desplazamiento vertical */
+    scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
+    padding-top: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 400px;
     max-width: 90%;
     position: relative;
-    display: flex;
-    flex-direction: column; /* Organiza el contenido en columna */
-    gap: 15px; /* Espaciado entre el contenido */
+
 }
 
-/* Contenedor de los eventos */
-.modal-events-list {
-    flex: 1; /* Asegura que este contenedor ocupe el espacio disponible */
-    overflow-y: scroll; /* Habilitar desplazamiento vertical */
-    scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
-    max-height: calc(70vh - 50px); /* Ajusta la altura para no sobrepasar la altura total */
+.modal-contentTh h3 {
+    margin-top: 0;
+    color: white;
 }
-
-/* Elementos de la lista de eventos */
+.modal-contentTh .close-button-container {
+    position: sticky; /* Fija la posición del botón dentro del modal */
+    bottom: 0; /* Alínea al final del contenido del modal */
+    background-color: inherit; /* Mantén el fondo igual al modal */
+    padding-top: 10px; /* Espaciado superior */
+    text-align: center; /* Centra el botón */
+}
 .modal-contentTh li {
-    background-color: #4c6da8;
+    background-color: #3764a5;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    margin-bottom: 10px; /* Espaciado entre los elementos */
-    padding: 10px; /* Relleno dentro de los li */
-    border-radius: 4px;
 }
 
-.modal-contentTh li:hover {
+.modal-contentTh li:hover{
     box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
     0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
     0 32px 32px rgba(0, 0, 0, 0.07);
     transform: translateY(-2px);
-}
-
-/* Botón de cerrar */
-.close-modal-btn {
-    background-color: #fbc940;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px; /* Espaciado arriba del botón */
-}
-
-.close-modal-btn:hover {
-    background-color: #dfb755;
-}
-
-/* 🎯 Reglas responsivas */
-@media (max-width: 768px) {
-    .modal-contentTh {
-        width: 90%;
-        max-width: 100%;
-    }
-
-    .close-modal-btn {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
 }
 
 
