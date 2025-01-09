@@ -22,8 +22,16 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
+
+
+
 // 🏠 **Componente Principal**
 const HomeTh = () => {
+    // 🔄 Manejo de clic en "more"
+    const handleShowMore = (eventsOnDay, date) => {
+        setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
+        setModalOpen(true); // Abre el modal
+    };
     // 🧠 Estados
     const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
     const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
@@ -245,13 +253,16 @@ const HomeTh = () => {
                             day: "Día",
                             agenda: "Agenda",
                         }}
-                        views={{ month: true}}
+                        views={{ month: true }} // Mantener solo la vista de mes
                         eventPropGetter={eventStyleGetter}
-                        popup={false}
+                        popup={false} // Desactivar el comportamiento predeterminado del popup
                         showMultiDayTimes={true}
-                        longPressThreshold={10}
-                        onSelectSlot={(slotInfo) => handleDayClick(slotInfo.start)}
+                        onShowMore={(eventsOnDay, date) => {
+                            // Prevenir cambio de vista
+                            handleShowMore(eventsOnDay, date);
+                        }}
                     />
+
                 </div>
 
                 {/* 🖍️ Leyenda de Colores */}
@@ -281,7 +292,7 @@ const HomeTh = () => {
                 {/* 🔲 Modal para Solicitudes del Día */}
                 {modalOpen && (
                     <div className="modal-overlay">
-                        <div className="modal-content">
+                        <div className="modal-contentTh">
                             <h3>Solicitudes en esta fecha:</h3>
                             {modalEvents.length > 0 ? (
                                 <ul>
