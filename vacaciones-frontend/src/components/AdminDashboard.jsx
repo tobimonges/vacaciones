@@ -217,7 +217,7 @@ const AdminDashboard = () => {
           {error ? (
             <p className="error">{error}</p>
           ) : filteredSolicitudes.length === 0 ? (
-            <p>No hay solicitudes que coincidan con el filtro.</p>
+            <p>No hay solicitudes que coincidan con el filtro.</p> // Warning
           ) : (
             <table className="admin-table">
               <thead>
