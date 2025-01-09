@@ -149,8 +149,9 @@ export default function SolicitudDetalle() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Preloader duration={650} />
+
       <div className="container-solicitudes">
+        <Preloader duration={650} />
         <h4>Solicitudes del Usuario</h4>
         {/* Lista desplegable para filtro */}
         <select

@@ -4,6 +4,7 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
+import Logo from "./Logo";
 import Preloader from "./Preloader";
 
 function Login() {
@@ -48,7 +49,7 @@ function Login() {
       setPassword("");
       setError(true);
       setShowError(true);
-    //  setTimeout(() => setError(false), 2100);  
+    //  setTimeout(() => setError(false), 2100);
       setTimeout(() => setShowError(false), 2000);
 
 
@@ -74,10 +75,10 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginAnim");
+    loginBox.classList.add("LoginSlide");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
-    }, 220);
+    }, 550);
   };
   if (showForgotPassword) {
     return (
@@ -92,6 +93,7 @@ function Login() {
           error ? "datosIncorrectos" : ""
         }`}
       >
+        <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin} action="login" method="post">
           <div className="inputGroup">

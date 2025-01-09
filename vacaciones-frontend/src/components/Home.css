@@ -40,8 +40,11 @@
 /* 🗓 Contenedor grande del calendario */
 .calendar-big-container {
     margin-top: 20px;
-    background-color: #ffffff;
+    background-color: #fffffff1;
     border-radius: 15px;
+    padding: 0px 20px; /* Agrega padding interno */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6); /* Añade un pequeño sombreado */
+
 }
 
 /* Leyenda de colores alineada horizontalmente */
@@ -66,7 +69,7 @@
 
 }
 .calendar-big-container {
-    height: 600px; /* Ajusta la altura según tus necesidades */
+    height: 570px; /* Ajusta la altura según tus necesidades */
     overflow-y: auto; /* Agrega scroll si hay demasiados eventos */
 }
 
