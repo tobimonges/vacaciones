@@ -18,8 +18,15 @@ function Login() {
   const [showError, setShowError] = useState(false);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
-    const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("cajaLogin");
+    const timeout = setTimeout(() => {
+      const loginBox = document.querySelector(".loginBox");
+      if (loginBox) {
+        loginBox.classList.add("cajaLogin");
+      }
+    }, 655); // 800 milisegundos = 0.8 segundos
+  
+    // Limpiar el timeout si el componente se desmonta antes de que se ejecute
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleLogin = async (e) => {
