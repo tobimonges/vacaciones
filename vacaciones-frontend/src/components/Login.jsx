@@ -4,17 +4,14 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
-import Preloader from "./Preloader";  // Importar el componente Preloader
 
 function Login() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showError, setShowError] = useState(false);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const loginBox = document.querySelector(".loginBox");
@@ -23,8 +20,6 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    setError(false); // Resetear el estado de error para que si se pone varias veces mal siga animando
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -33,22 +28,10 @@ function Login() {
           password: password, // El backend espera "password"
         }
       );
+      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
-      if (respuesta.data.success) {
-        //seteo token y guardo token
-        const token = respuesta.data;
-        localStorage.setItem("token", token);
-
-        //Activo animación de entrada
-          setIsAnimating(true);
-      setTimeout(() => {
-        navigate("/Home");
-      }, 200); 
-      
-      }
-      // console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
-
-     
+      const token = respuesta.data;
+      localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
       setTimeout(() => {
@@ -58,22 +41,8 @@ function Login() {
       console.error("Error al iniciar sesión", error);
       setUsuario("");
       setPassword("");
-      setError(true); // Mostrar el mensaje de error
-      setShowError(true); // Mostrar el mensaje de error
-      setTimeout(() => setShowError(false), 2000);
-
-      if (error.response) {
-        if (error.response.status === 401) {
-          setErrorMessage("Credenciales inválidas. Verifica tu email y contraseña.");
-        } else if (error.response.status === 500) {
-          setErrorMessage("Error del servidor. Inténtalo más tarde.");
-        } else {
-          setErrorMessage("Error inesperado. Por favor, intenta de nuevo.");
-        }
-      } else {
-        setErrorMessage("Error de red. Por favor, verifica tu conexión.");
-      }
-
+      setError(true);
+      setTimeout(() => setError(false), 300);
     }
 
     /*   const handleLogout = () => {
@@ -84,7 +53,7 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginAnim");
+    loginBox.classList.add("LoginSlide");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
     }, 550);
@@ -96,7 +65,6 @@ function Login() {
   }
   return (
     <div className="containerLogin">
-      <Preloader duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
@@ -152,12 +120,6 @@ function Login() {
         </form>
         <div className="content"></div>
       </div>
-      {/* Error Message Popup */}
-    {showError && (
-      <div className={`errorPopup ${error ? 'error' : ''}`}>
-        {errorMessage}
-      </div>
-    )}
     </div>
   );
 }
