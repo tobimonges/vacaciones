@@ -4,13 +4,12 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
-import Preloader from "./Preloader";
 
 function Login() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   useEffect(() => {
@@ -29,14 +28,7 @@ function Login() {
           password: password, // El backend espera "password"
         }
       );
-
-      if (respuesta.data.success) {
-        setIsAnimating(true);
-        setTimeout(() => {
-          navigate("/Home");
-        }, 350);
-      }
-      // console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
+      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
       const token = respuesta.data;
       localStorage.setItem("token", token);
@@ -46,22 +38,7 @@ function Login() {
         navigate("/Home");
       }, 200);
     } catch (error) {
-      if (error.response) {
-        console.error(
-            `Error al iniciar sesión: Status ${error.response.status} - ${error.response.data}`
-        );
-      
-        if (error.response.status === 401) {
-          alert("Credenciales inválidas. Por favor, verifica tu email y contraseña.");
-        } else if (error.response.status === 500) {
-          alert("Error del servidor. Inténtalo más tarde.");
-        } else {
-          alert(`Error inesperado: ${error.response.data}`);
-        }
-      } else {
-        console.error("Error al conectar con el servidor", error.message);
-        alert("Error de red. Por favor, verifica tu conexión.");
-      }
+      console.error("Error al iniciar sesión", error);
       setUsuario("");
       setPassword("");
       setError(true);
@@ -76,7 +53,7 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginAnim");
+    loginBox.classList.add("LoginSlide");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
     }, 550);
@@ -87,10 +64,7 @@ function Login() {
     );
   }
   return (
-
-      
     <div className="containerLogin">
-      <Preloader duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
