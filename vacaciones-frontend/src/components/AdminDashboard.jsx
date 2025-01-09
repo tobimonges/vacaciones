@@ -194,96 +194,130 @@ const AdminDashboard = () => {
     <div>
       <Preloader duration={650} />
       <div className="container-admin">
-        <Logo />
-        <h4>Panel de Administrador</h4>
-        {error ? (
-          <p className="error">{error}</p>
-        ) : solicitudes.length === 0 ? (
-          <p>No hay solicitudes pendientes.</p>
-        ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
-                <th>Estado</th>
-                {userRole === "TH" && <th>Aprobada por Líder</th>}
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {solicitudes.map((solicitud) => (
-                <tr key={solicitud.id}>
-                  <td>{solicitud.id}</td>
-                  <td>
-                    {solicitud.usuario.nombre +
-                      " " +
-                      solicitud.usuario.apellido}
-                  </td>
-                  <td>
-                    {new Date(solicitud.fechaInicio).toLocaleDateString(
-                      "es-ES"
-                    )}
-                  </td>
-                  <td>
-                    {new Date(solicitud.fechaFin).toLocaleDateString("es-ES")}
-                  </td>
-                  <td>{getEstadoSolicitud(solicitud)}</td>
-                  {userRole === "TH" && (
+        <div className="header-section">
+          <Logo />
+          <div className="header-title-container">
+            <h4>Panel de Administrador</h4>
+            <div className="filter-container">
+              <label htmlFor="filter-input" className="filter-label">
+                Buscar:
+              </label>
+              <input
+                id="filter-input"
+                type="text"
+                placeholder="Usuario, estado o nro. solicitud"
+                value={filterText}
+                onChange={handleFilterChange}
+                className="filter-input"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="content-section">
+          {error ? (
+            <p className="error">{error}</p>
+          ) : filteredSolicitudes.length === 0 ? (
+            <p>No hay solicitudes que coincidan con el filtro.</p> // Warning
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Nro. Solicitud</th>
+                  <th>Usuario</th>
+                  <th>Fecha Inicio</th>
+                  <th>Fecha Fin</th>
+                  <th>Estado</th>
+                  {userRole === "TH" && <th>Aprobada por Líder</th>}
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSolicitudes.map((solicitud) => (
+                  <tr key={solicitud.id}>
+                    <td>{solicitud.id}</td>
                     <td>
-                      {solicitud.numeroAprobaciones === 1 ||
-                      solicitud.numeroAprobaciones === 2
-                        ? "Sí"
-                        : "No"}
+                      {solicitud.usuario.nombre +
+                        " " +
+                        solicitud.usuario.apellido}
                     </td>
-                  )}
-                  <td>
-                    {userRole === "OPERACIONES" ? (
-                      <button
-                        onClick={() => openModal(solicitud.id)}
-                        disabled={solicitud.rechazado}
-                      >
-                        <span>Añadir comentario</span>
-                      </button>
-                    ) : !solicitud.rechazado ? (
-                      userRole === "LIDER" ? (
-                        <>
-                          <button
-                            onClick={() => handleApprove(solicitud.id)}
-                            disabled={solicitud.numeroAprobaciones === 1}
-                          >
-                            <span>Aprobar</span>
-                          </button>
-                          <button
-                            onClick={() => handleReject(solicitud.id)}
-                            disabled={false}
-                          >
-                            <span>Rechazar</span>
-                          </button>
-                        </>
-                      ) : userRole === "TH" ? (
-                        <>
-                          <button
-                            onClick={() => handleApprove(solicitud.id)}
-                            disabled={
-                              solicitud.numeroAprobaciones === 0 ||
-                              solicitud.estado === true
-                            }
-                          >
-                            <span>Aprobar</span>
-                          </button>
-                          <button
-                            onClick={() => handleReject(solicitud.id)}
-                            disabled={
-                              solicitud.numeroAprobaciones === 0 &&
-                              !solicitud.estado
-                            }
-                          >
-                            <span>Rechazar</span>
-                          </button>
-                        </>
+                    <td>
+                      {new Date(solicitud.fechaInicio).toLocaleDateString(
+                        "es-ES"
+                      )}
+                    </td>
+                    <td>
+                      {new Date(solicitud.fechaFin).toLocaleDateString("es-ES")}
+                    </td>
+                    <td>{getEstadoSolicitud(solicitud)}</td>
+                    {userRole === "TH" && (
+                      <td>
+                        {solicitud.numeroAprobaciones === 1 ||
+                        solicitud.numeroAprobaciones === 2
+                          ? "Sí"
+                          : "No"}
+                      </td>
+                    )}
+                    <td>
+                      {userRole === "OPERACIONES" ? (
+                        <button
+                          onClick={() => openModal(solicitud.id)}
+                          disabled={solicitud.rechazado}
+                        >
+                          <span>Añadir comentario</span>
+                        </button>
+                      ) : !solicitud.rechazado ? (
+                        userRole === "LIDER" ? (
+                          <>
+                            <button
+                              onClick={() => handleApprove(solicitud.id)}
+                              disabled={solicitud.numeroAprobaciones === 1}
+                            >
+                              <span>Aprobar</span>
+                            </button>
+                            <button
+                              onClick={() => handleReject(solicitud.id)}
+                              disabled={false}
+                            >
+                              <span>Rechazar</span>
+                            </button>
+                          </>
+                        ) : userRole === "TH" ? (
+                          <>
+                            <button
+                              onClick={() => handleApprove(solicitud.id)}
+                              disabled={
+                                solicitud.numeroAprobaciones === 0 ||
+                                solicitud.estado === true
+                              }
+                            >
+                              <span>Aprobar</span>
+                            </button>
+                            <button
+                              onClick={() => handleReject(solicitud.id)}
+                              disabled={
+                                solicitud.numeroAprobaciones === 0 &&
+                                !solicitud.estado
+                              }
+                            >
+                              <span>Rechazar</span>
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleApprove(solicitud.id)}
+                              disabled
+                            >
+                              <span>Aprobar</span>
+                            </button>
+                            <button
+                              onClick={() => handleReject(solicitud.id)}
+                              disabled
+                            >
+                              <span>Rechazar</span>
+                            </button>
+                          </>
+                        )
                       ) : (
                         <>
                           <button
@@ -299,51 +333,31 @@ const AdminDashboard = () => {
                             <span>Rechazar</span>
                           </button>
                         </>
-                      )
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => handleApprove(solicitud.id)}
-                          disabled
-                        >
-                          <span>Aprobar</span>
-                        </button>
-                        <button
-                          onClick={() => handleReject(solicitud.id)}
-                          disabled
-                        >
-                          <span>Rechazar</span>
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-
-        {showModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <h4>Añadir Comentario</h4>
-              <textarea
-                value={comentario}
-                onChange={(e) => setComentario(e.target.value)}
-                placeholder="Escriba un comentario..."
-              ></textarea>
-              <div className="modal-buttons">
-                <button onClick={handleAddComentario}>
-                  <span>Guardar</span>
-                </button>
-                <button onClick={closeModal}>
-                  <span>Cancelar</span>
-                </button>
-              </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h4>Añadir Comentario</h4>
+            <textarea
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+              placeholder="Escriba un comentario..."
+            ></textarea>
+            <div className="modal-buttons">
+              <button onClick={handleAddComentario}>Guardar</button>
+              <button onClick={closeModal}>Cancelar</button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
