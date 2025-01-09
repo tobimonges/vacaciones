@@ -39,9 +39,9 @@
 .loginBox {
   position: relative;
   border: none;
-  height: 350px;
-  width: 400px;
-  padding: 20px;
+  height: auto;
+  width: auto;
+  padding: 30px 40px 40px 40px;
   border-radius: 10px;
   background: rgba(87, 145, 238, 0.25);
   transition: all 0.3 ease;
@@ -86,7 +86,7 @@
   height: 20px;
   margin-bottom: 8px;
   margin-top: 10px;
-  margin-left: -6pxx;
+  margin-left: -6px;
 }
 
 .iconWrap {
@@ -117,8 +117,8 @@
 
 .forgotPassword {
   text-align: center;
-  margin-bottom: 20px;
-  margin-top: 5px;
+  margin-bottom: 0px;
+  margin-top: -5px;
 }
 
 .link {
@@ -144,7 +144,7 @@
   cursor: pointer;
   font-size: 16px;
   margin: 0 auto;
-  margin-top: 80px;
+  margin-top: 50px;
   display: block;
   transition: all 0.4s ease;
 }

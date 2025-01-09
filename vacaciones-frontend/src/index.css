@@ -36,3 +36,15 @@ body {
   background-attachment: fixed;
   background-blend-mode: multiply;
 }
+
+
+* {
+  font-family: "Montserrat", serif; /* Fuente principal */
+}
+
+/* Si deseas personalizar más, puedes agregar selectores más específicos: */
+
+h1, h2, h3, p, span {
+  font-family: "Montserrat", serif; /* Fuente para títulos */
+}
+
