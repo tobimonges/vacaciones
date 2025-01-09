@@ -227,13 +227,13 @@ const HomeTh = () => {
                         className="calendar-button"
                         onClick={() => navigate("/Home")}
                     >
-                        <span>Home</span>
+                        Home
                     </button>
                     <button
                         className="calendar-button"
                         onClick={() => navigate(`/AdminDashboard`)}
                     >
-                        <span>Dashboard</span>
+                        Dashboard
                     </button>
 
                 </div>
@@ -270,22 +270,22 @@ const HomeTh = () => {
                 {/* 🖍️ Leyenda de Colores */}
                 <div className="calendar-legend">
                     <p>
-            <span style={{ backgroundColor: "#67bcc1", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
+            <span style={{ backgroundColor: "#67bcc1", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
               Aprobado
             </span>
                     </p>
                     <p>
-            <span style={{ backgroundColor: "#6e6cba", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
+            <span style={{ backgroundColor: "#6e6cba", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
               Rechazado
             </span>
                     </p>
                     <p>
-            <span style={{ backgroundColor: "#6b97c8", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
+            <span style={{ backgroundColor: "#6b97c8", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
               Pendiente
             </span>
                     </p>
                     <p>
-            <span style={{ backgroundColor: "#479cf8", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
+            <span style={{ backgroundColor: "#479cf8", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
               Feriado
             </span>
                     </p>
@@ -295,22 +295,30 @@ const HomeTh = () => {
                 {modalOpen && (
                     <div className="modal-overlay">
                         <div className="modal-contentTh">
-                            <h3>Solicitudes en esta fecha:</h3>
+                            <h4>Solicitudes en esta fecha:</h4> <br/>
                             {modalEvents.length > 0 ? (
-                                <ul>
-                                    {modalEvents.map((event, index) => (
-                                        <li key={index}>
-                                            <strong>{event.title}</strong> - {event.type}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className="modal-events-list">
+                                    <ul>
+                                        {modalEvents.map((event, index) => (
+                                            <li key={index}>
+                                                <strong>{event.title}</strong> - {event.type} <br/>
+                                                <span>
+                                    Desde: {event.start.toLocaleDateString()} hasta: {event.end.toLocaleDateString()}
+                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             ) : (
                                 <p>No hay solicitudes para esta fecha.</p>
                             )}
-                            <button onClick={() => setModalOpen(false)}><span>Cerrar</span></button>
+                            <button className="close-modal-btn" onClick={() => setModalOpen(false)}>
+                                <span>Cerrar</span>
+                            </button>
                         </div>
                     </div>
                 )}
+
             </div>
         </div>
     );

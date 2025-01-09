@@ -112,3 +112,7 @@
 .MuiSvgIcon-root {
   color: white !important; /* Cambiar el color del ícono a blanco */
 }
+
+.warning{
+  color: white;
+}
