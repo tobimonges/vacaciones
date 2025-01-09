@@ -48,10 +48,7 @@ public class UsuarioModel {
 
     public UsuarioModel() {
     }
-
-    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono,
-                        LocalDate fechaIngreso, String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo,
-                        CargoModel cargo) {
+    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono, LocalDate fechaIngreso, String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo, CargoModel cargo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
