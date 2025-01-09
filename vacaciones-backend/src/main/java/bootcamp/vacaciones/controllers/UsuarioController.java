@@ -1,6 +1,7 @@
 package bootcamp.vacaciones.controllers;
 
 //import bootcamp.vacaciones.models.RolModel;
+import bootcamp.vacaciones.exceptions.UsuarioNoEncontradoException;
 import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.RolRepository;
@@ -22,6 +23,7 @@ import io.github.bucket4j.Refill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -161,7 +163,7 @@ public class UsuarioController {
 
         try {
             UsuarioModel usuario = usuarioRepository.findByCorreo(email)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                    .orElseThrow(() -> new UsuarioNoEncontradoException("El correo no se encuentra registrado."));
 
             String token = jwtUtils.generateResetPasswordToken(usuario.getCorreo(), usuario.getId());
             String resetLink = String.format("%s?token=%s", baseUrl, token);
@@ -175,15 +177,14 @@ public class UsuarioController {
             );
 
             return ResponseEntity.ok("Correo enviado con éxito.");
+        } catch (UsuarioNoEncontradoException e) {
+            logger.error("Error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
-            logger.error("Error al procesar la solicitud de reset-password: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al procesar la solicitud.");
+            logger.error("Error interno al procesar la solicitud de reset-password: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Ocurrió un error interno."));
         }
     }
-
-
-
-
 
 
 }
