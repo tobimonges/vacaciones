@@ -223,7 +223,7 @@ const HomeTh = () => {
                         className="calendar-button"
                         onClick={() => navigate(`/AdminDashboard`)}
                     >
-                        Dash Board
+                        Dashboard
                     </button>
 
                 </div>
