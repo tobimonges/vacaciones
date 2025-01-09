@@ -85,7 +85,7 @@ function RestablecerContraseña() {
             )}
 
             <button type="submit" className="buttonRC">
-              Restablecer
+              <span>Restablecer</span>
             </button>
         </form>
 

@@ -222,7 +222,7 @@ const AdminDashboard = () => {
                         onClick={() => openModal(solicitud.id)}
                         disabled={solicitud.rechazado}
                       >
-                        Añadir comentario
+                        <span>Añadir comentario</span>
                       </button>
                     ) : !solicitud.rechazado ? (
                       userRole === "LIDER" ? (
@@ -231,13 +231,13 @@ const AdminDashboard = () => {
                             onClick={() => handleApprove(solicitud.id)}
                             disabled={solicitud.numeroAprobaciones === 1}
                           >
-                            Aprobar
+                            <span>Aprobar</span>
                           </button>
                           <button
                             onClick={() => handleReject(solicitud.id)}
                             disabled={false}
                           >
-                            Rechazar
+                            <span>Rechazar</span>
                           </button>
                         </>
                       ) : userRole === "TH" ? (
@@ -249,7 +249,7 @@ const AdminDashboard = () => {
                               solicitud.estado === true
                             }
                           >
-                            Aprobar
+                            <span>Aprobar</span>
                           </button>
                           <button
                             onClick={() => handleReject(solicitud.id)}
@@ -258,7 +258,7 @@ const AdminDashboard = () => {
                               !solicitud.estado
                             }
                           >
-                            Rechazar
+                            <span>Rechazar</span>
                           </button>
                         </>
                       ) : (
@@ -267,13 +267,13 @@ const AdminDashboard = () => {
                             onClick={() => handleApprove(solicitud.id)}
                             disabled
                           >
-                            Aprobar
+                            <span>Aprobar</span>
                           </button>
                           <button
                             onClick={() => handleReject(solicitud.id)}
                             disabled
                           >
-                            Rechazar
+                            <span>Rechazar</span>
                           </button>
                         </>
                       )
@@ -283,13 +283,13 @@ const AdminDashboard = () => {
                           onClick={() => handleApprove(solicitud.id)}
                           disabled
                         >
-                          Aprobar
+                          <span>Aprobar</span>
                         </button>
                         <button
                           onClick={() => handleReject(solicitud.id)}
                           disabled
                         >
-                          Rechazar
+                            <span>Rechazar</span>
                         </button>
                       </>
                     )}
@@ -310,8 +310,8 @@ const AdminDashboard = () => {
                 placeholder="Escriba un comentario..."
               ></textarea>
               <div className="modal-buttons">
-                <button onClick={handleAddComentario}>Guardar</button>
-                <button onClick={closeModal}>Cancelar</button>
+                <button onClick={handleAddComentario}><span>Guardar</span></button>
+                <button onClick={closeModal}><span>Cancelar</span></button>
               </div>
             </div>
           </div>
