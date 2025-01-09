@@ -144,11 +144,9 @@ function Login() {
               </a>
             </div>
           </div>
-
-          <button type="submit" className="button">
+          <button type="submit" className="buttonLogin">
             <span>Iniciar sesión</span>
           </button>
-
         </form>
         <div className="content"></div>
       </div>
