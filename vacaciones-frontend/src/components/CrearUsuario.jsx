@@ -281,7 +281,7 @@ function CrearUsuario() {
           </div>
 
           <button type="submit" className="button">
-            Crear
+            <span>Crear</span>
           </button>
         </form>
       </div>

@@ -48,3 +48,14 @@ h1, h2, h3, p, span {
   font-family: "Montserrat", serif; /* Fuente para títulos */
 }
 
+
+button span {
+  font-family: "Funnel Sans", serif;
+  font-weight: 400;
+  color: #333;
+  padding: 15px;
+  line-height: 1.6;
+  font-size: 1.1rem;
+  
+}
+
