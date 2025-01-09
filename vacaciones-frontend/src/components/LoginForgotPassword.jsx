@@ -15,7 +15,12 @@ function ForgotPassword({ onBackToLogin }) {
 
   useEffect(() => {
     // Activa la animación cuando se monta el componente
-    setIsAnimating(true);
+    const timeout = setTimeout(() => {
+      setIsAnimating(true);
+    }, 655); // 600 milisegundos = 0.6 segundos
+  
+    // Limpia el timeout si el componente se desmonta antes de que se ejecute
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleForgotPassword = async (e) => {
