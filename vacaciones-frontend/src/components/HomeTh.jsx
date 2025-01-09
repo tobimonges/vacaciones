@@ -295,14 +295,21 @@ const HomeTh = () => {
                 {modalOpen && (
                     <div className="modal-overlay">
                         <div className="modal-contentTh">
-                            <h3>Solicitudes en esta fecha:</h3>
+                            <h4>Solicitudes en esta fecha:</h4> <br/>
                             {modalEvents.length > 0 ? (
                                 <ul>
                                     {modalEvents.map((event, index) => (
                                         <li key={index}>
-                                            <strong>{event.title}</strong> - {event.type}
+                                            <strong>{event.title}</strong> - {event.type} <br/>
+                                            <span>
+                                                Desde: {event.start.toLocaleDateString()} hasta: {event.end.toLocaleDateString()}
+                                            </span>
+
                                         </li>
+
+
                                     ))}
+                                    <br/>
                                 </ul>
                             ) : (
                                 <p>No hay solicitudes para esta fecha.</p>
