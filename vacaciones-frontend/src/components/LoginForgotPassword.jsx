@@ -3,6 +3,7 @@ import "./Login.css"; //para reutilizar algunos estilos
 import "./LoginForgotPassword.css";
 import { useNavigate } from "react-router-dom";
 import Preloader from "./Preloader";
+import Logo from "./Logo";
 
 function ForgotPassword({ onBackToLogin }) {
   const [email, setEmail] = useState("");
@@ -57,6 +58,7 @@ function ForgotPassword({ onBackToLogin }) {
         }`}
         onAnimationEnd={handleAnimationEnd}
       >
+        <Logo />
         <h2 className="headerFP">Recuperar Contraseña</h2>
         <form onSubmit={handleForgotPassword}>
           <div className="inputFPGroup">

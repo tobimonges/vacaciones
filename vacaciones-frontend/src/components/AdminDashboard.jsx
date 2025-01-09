@@ -3,6 +3,7 @@ import axios from "axios";
 import "./AdminDashboard.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Preloader from "./Preloader";
+import Logo from "./Logo";
 
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -170,6 +171,7 @@ const AdminDashboard = () => {
     <div>
       <Preloader duration={650} />
       <div className="container-admin">
+        <Logo />
         <h4>Panel de Administrador</h4>
         {error ? (
           <p className="error">{error}</p>

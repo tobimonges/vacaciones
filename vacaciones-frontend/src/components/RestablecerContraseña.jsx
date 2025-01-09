@@ -4,6 +4,8 @@ import "./RestablecerContraseña.css";
 
 import Preloader from "./Preloader";
 
+import Logo from "./Logo";
+
 function RestablecerContraseña() {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
@@ -38,7 +40,8 @@ function RestablecerContraseña() {
   return (
     <div className="containerRestablecerContraseña">
       <Preloader duration={650} />
-      <div className={`restablecerBox ${error ? "error" : ""}`}>
+      <div className={`restablecerBox $(error ? "error" : "")`}>
+        <Logo />
         <h2 className="headerRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">
             <div className="inputRCGroup">
