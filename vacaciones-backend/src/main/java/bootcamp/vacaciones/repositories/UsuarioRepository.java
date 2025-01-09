@@ -15,4 +15,5 @@ public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
     @Query("SELECT u FROM UsuarioModel u WHERE u.rol.nombre = 'LIDER'")
     List<UsuarioModel> listarLideres();
 
+    List<UsuarioModel> findByRolNombre(String rolNombre);
 }
