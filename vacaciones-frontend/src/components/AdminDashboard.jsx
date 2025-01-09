@@ -227,7 +227,6 @@ const AdminDashboard = () => {
                   <th>Fecha Inicio</th>
                   <th>Fecha Fin</th>
                   <th>Estado</th>
-                  {userRole === "TH" && <th>Aprobada por Líder</th>}
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -249,14 +248,7 @@ const AdminDashboard = () => {
                       {new Date(solicitud.fechaFin).toLocaleDateString("es-ES")}
                     </td>
                     <td>{getEstadoSolicitud(solicitud)}</td>
-                    {userRole === "TH" && (
-                      <td>
-                        {solicitud.numeroAprobaciones === 1 ||
-                        solicitud.numeroAprobaciones === 2
-                          ? "Sí"
-                          : "No"}
-                      </td>
-                    )}
+
                     <td>
                       {userRole === "OPERACIONES" ? (
                         <button
