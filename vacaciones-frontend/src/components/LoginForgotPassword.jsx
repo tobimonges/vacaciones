@@ -15,15 +15,37 @@ function ForgotPassword({ onBackToLogin }) {
     setIsAnimating(true);
   }, []);
 
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+    if (!isValidEmail(email)) {
+      setMensaje("Por favor ingresa un correo válido");
+      return;
+    }
     try {
-      //llamada a API para correo de recuperacion
-      // await axios.post("http://localhost:8080/api/auth/forgot-password", { email });
-      setMensaje("Correo de Recuperación enviado!");
+      const response = await fetch("http://localhost:8080/vacaciones/usuarios/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ email }),
+      });
+
+      if (response.ok) {
+        setMensaje("Correo de recuperación enviado!");
+      } else if (response.status === 404) {
+        const data = await response.json();
+        setMensaje(data.message || "El correo no se encuentra registrado.");
+      } else if (response.status === 429) {
+        setMensaje("Has excedido el límite de solicitudes. Intenta más tarde.");
+      } else if (response.status === 400) {
+        setMensaje("Correo inválido. Por favor verifica.");
+      } else {
+        setMensaje("Hubo un problema, intente nuevamente.");
+      }
     } catch (error) {
-      console.error("Error al enviar correo de recuperación", error);
-      setMensaje("Hubo un problema, intente nuevamente");
+      setMensaje("Error de red. Intenta nuevamente.");
     }
   };
   const handleBackToLogin = () => {
