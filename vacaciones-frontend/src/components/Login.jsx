@@ -4,6 +4,7 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
+import Preloader from "./Preloader";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ function Login() {
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showError, setShowError] = useState(false);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const loginBox = document.querySelector(".loginBox");
@@ -20,6 +23,8 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    setError(false); // Ocultar el mensaje de error
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -42,7 +47,23 @@ function Login() {
       setUsuario("");
       setPassword("");
       setError(true);
-      setTimeout(() => setError(false), 300);
+      setShowError(true);
+    //  setTimeout(() => setError(false), 2100);  
+      setTimeout(() => setShowError(false), 2000);
+
+
+      if (error.response) {
+        if (error.response.status === 401) {
+          setErrorMessage("Credenciales inválidas. Verifica tu email y contraseña.");
+        } else if (error.response.status === 500) {
+          setErrorMessage("Error del servidor. Inténtalo más tarde.");
+        } else {
+          setErrorMessage("Error inesperado. Por favor, intenta de nuevo.");
+        }
+      } else {
+        setErrorMessage("Error de red. Por favor, verifica tu conexión.");
+      }
+
     }
 
     /*   const handleLogout = () => {
@@ -53,10 +74,10 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginSlide");
+    loginBox.classList.add("LoginAnim");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
-    }, 550);
+    }, 220);
   };
   if (showForgotPassword) {
     return (
@@ -65,6 +86,7 @@ function Login() {
   }
   return (
     <div className="containerLogin">
+      <Preloader duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
           error ? "datosIncorrectos" : ""
@@ -120,6 +142,12 @@ function Login() {
         </form>
         <div className="content"></div>
       </div>
+      {showError && (
+      <div className={`errorPopup ${error ? 'error' : ''}`}>
+        {errorMessage}
+      </div>
+    )}
+
     </div>
   );
 }
