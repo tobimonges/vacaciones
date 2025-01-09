@@ -158,6 +158,8 @@ button {
     max-height: calc(70vh - 50px); /* Ajusta la altura para no sobrepasar la altura total */
 }
 
+.modal-contentTh li {
+    background-color: #3764a5;
 /* Elementos de la lista de eventos */
 .modal-contentTh li {
     background-color: #4c6da8;
@@ -182,6 +184,7 @@ button {
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
     transition: background-color 0.3s ease;
     margin-top: 10px; /* Espaciado arriba del botón */
 }
@@ -190,6 +193,12 @@ button {
     background-color: #dfb755;
 }
 
+.modal-contentTh li:hover{
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+}
 /* 🎯 Reglas responsivas */
 @media (max-width: 768px) {
     .modal-contentTh {
