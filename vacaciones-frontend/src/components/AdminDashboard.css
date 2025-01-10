@@ -34,7 +34,7 @@
   position: relative;
   margin-top: 20px;
   margin-bottom: 50px;
-  gap: 19.5rem; /* Espacio entre título y filtro */
+  gap: 23rem; /* Espacio entre título y filtro */
 }
 
 h4 {
@@ -261,7 +261,7 @@ button.reject:hover {
   background-color: #fcbc0e;
 }
 
-button:disabled {
+tbody button:disabled {
   background-color: #c0a354;
   color: #464646;
   cursor: not-allowed;
