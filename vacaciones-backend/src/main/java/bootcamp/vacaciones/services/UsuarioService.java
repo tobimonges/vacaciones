@@ -22,17 +22,18 @@ public class UsuarioService implements IUsuarioService{
     }
 
     @Override
-    public UsuarioModel buscarUsuarioPorCedula(int nroCedula){
-        return usuarioRepository.findByNroCedula(nroCedula);
+    public UsuarioModel buscarUsuarioPorCedula(int nroCedula) {
+        return usuarioRepository.findByNroCedula(nroCedula)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
     }
+
     @Override
-    public int obtenerDiasVacacionesPorCedula(int nroCedula){
-        UsuarioModel usuario = usuarioRepository.findByNroCedula(nroCedula);
-        if(usuario == null){
-            throw new IllegalArgumentException("El usuario no existe");
-        }
+    public int obtenerDiasVacacionesPorCedula(int nroCedula) {
+        UsuarioModel usuario = usuarioRepository.findByNroCedula(nroCedula)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
         return usuario.getDiasVacaciones();
     }
+
 
     public int obtenerDiasVacacionesPorIdUsuario(Long idUsuario) {
         UsuarioModel usuario = usuarioRepository.findById(idUsuario).orElse(null);
