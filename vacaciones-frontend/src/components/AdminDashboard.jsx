@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   const [comentario, setComentario] = useState("");
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
   const [filterText, setFilterText] = useState("");
-
+  const userId = getUsuarioId();
   const userRole = getUserRole(); // Obtener el rol del usuario logueado
 
   useEffect(() => {
@@ -37,8 +37,13 @@ const AdminDashboard = () => {
           Rechazado: 5,
         };
 
+        let filteredByRole;
+        filteredByRole = response.data.filter(
+          (solicitud) => solicitud.usuario.id !== userId
+        );
+
         // Ordenar las solicitudes según el estado
-        const sortedSolicitudes = response.data.sort((a, b) => {
+        const sortedSolicitudes = filteredByRole.sort((a, b) => {
           const estadoA = estadoPrioridad[getEstadoSolicitud(a)] || 6;
           const estadoB = estadoPrioridad[getEstadoSolicitud(b)] || 6;
           return estadoA - estadoB;
@@ -57,7 +62,6 @@ const AdminDashboard = () => {
 
   const handleApprove = async (id) => {
     const token = localStorage.getItem("token");
-    const userId = getUsuarioId();
 
     try {
       const response = await axios.put(
