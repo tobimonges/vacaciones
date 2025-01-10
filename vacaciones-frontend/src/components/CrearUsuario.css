@@ -8,7 +8,7 @@
 
 .createBox {
   border: none;
-  height: 850px;
+  height: 940px;
   width: 400px;
   padding: 20px;
   border-radius: 10px;
@@ -35,6 +35,12 @@
   align-items: center;
   margin-top: 40px;
   margin-bottom: -55px;
+}
+
+/* Estilos para los DatePickers */
+.datePickerGroup {
+  margin-top: 55px;
+  margin-bottom: -49px;
 }
 
 .icon {
@@ -66,6 +72,10 @@
   background-color: rgba(87, 145, 238, 0.25);
   font-size: 16px;
   transition: all 0.3s ease;
+}
+
+.inputCreate::placeholder {
+  color: rgba(255, 255, 255, 0.479);
 }
 
 .inputCreate::placeholder {

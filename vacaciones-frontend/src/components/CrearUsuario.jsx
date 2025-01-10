@@ -18,6 +18,7 @@ function CrearUsuario() {
   const [equipo, setEquipo] = useState("");
   const [cargo, setCargo] = useState("");
   const [fechaIngreso, setFechaIngreso] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [telefono, setTelefono] = useState("");
   const [contrasena, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
@@ -60,7 +61,6 @@ function CrearUsuario() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response.data);
         setEquipos(response.data); // Asume que la respuesta es una lista de objetos
       } catch (err) {
         console.error("Error al obtener los roles:", err);
@@ -77,8 +77,6 @@ function CrearUsuario() {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        console.log(response.data);
         setCargos(response.data); // Asume que la respuesta es una lista de objetos
       } catch (err) {
         console.error("Error al obtener los roles:", err);
@@ -134,7 +132,8 @@ function CrearUsuario() {
       correo: correo,
       contrasena: contrasena,
       telefono: telefono,
-      fechaIngreso: fechaIngreso.format("YYYY-MM-DD"), // Asegúrate de formatear la fecha
+      fechaIngreso: fechaIngreso.format("YYYY-MM-DD"),
+      fechaNacimiento: fechaNacimiento.format("YYYY-MM-DD"),
       estado: true, // Asegúrate de que 'estado' sea un valor booleano
       rol: {
         id: rol,
@@ -150,7 +149,6 @@ function CrearUsuario() {
     console.log(nuevoUsuario);
     try {
       const token = localStorage.getItem("token"); // Obtener token de autenticación
-      console.log(token);
       const url = "http://localhost:8080/vacaciones/crea/usuarios"; // URL para la creación del nuevo usuario
       await axios.post(url, nuevoUsuario, {
         headers: {
@@ -250,6 +248,48 @@ function CrearUsuario() {
             </div>
           </div>
 
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <div className="inputGroup datePickerGroup">
+              <div className="iconWrap">
+                <img
+                  src="/dias-del-calendario.svg"
+                  alt="Fecha de Ingreso"
+                  className="icon"
+                />
+                <DatePicker
+                  label="Seleccionar fecha de nacimiento"
+                  selected={fechaNacimiento}
+                  onChange={(date) => setFechaNacimiento(date)}
+                  dateFormat="yyyy-MM-dd"
+                  className="inputCreate"
+                  placeholderText="Seleccionar fecha de nacimiento"
+                  required
+                />
+              </div>
+            </div>
+          </LocalizationProvider>
+
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <div className="inputGroup datePickerGroup">
+              <div className="iconWrap">
+                <img
+                  src="/dias-del-calendario.svg"
+                  alt="Fecha de Ingreso"
+                  className="icon"
+                />
+                <DatePicker
+                  label="Seleccionar fecha de ingreso"
+                  selected={fechaIngreso}
+                  onChange={(date) => setFechaIngreso(date)}
+                  dateFormat="yyyy-MM-dd"
+                  className="inputCreate"
+                  placeholderText="Seleccionar fecha de ingreso"
+                  required
+                />
+              </div>
+            </div>
+          </LocalizationProvider>
+
           <div className="inputGroup">
             <div className="iconWrap">
               <img src="/mapa-del-sitio (1).svg" alt="Rol" className="icon" />
@@ -316,26 +356,6 @@ function CrearUsuario() {
               </select>
             </div>
           </div>
-
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-            <div className="inputGroup">
-              <div className="iconWrap">
-                <img
-                  src="/dias-del-calendario.svg"
-                  alt="Fecha de Ingreso"
-                  className="icon"
-                />
-                <DatePicker
-                  selected={fechaIngreso}
-                  onChange={(date) => setFechaIngreso(date)}
-                  dateFormat="yyyy-MM-dd"
-                  className="inputCreate"
-                  placeholderText="Seleccionar fecha de ingreso"
-                  required
-                />
-              </div>
-            </div>
-          </LocalizationProvider>
 
           <div className="inputGroup">
             <div className="iconWrap">
