@@ -1,0 +1,175 @@
+.containerForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    border: none;
+  }
+  
+  .boxForm {
+    border: none;
+    height: 260px;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(87, 145, 238, 0.25);
+    transition: all 0.3 ease;
+    box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .headerForm {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 30px;
+    color: #ffffff;
+  }
+  
+  .inputGroupForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: -55px;
+  }
+  
+  .iconForm {
+    position: absolute;
+    width: 25px;
+    height: 20px;
+    margin-bottom: 8px;
+    margin-top: 10px;
+    margin-left: -330px;
+  }
+  
+  .iconWrapForm {
+    display: flex;
+    width: 72%;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    margin-left: 5px;
+    padding: 20px;
+  }
+  
+  .inputField {
+    width: 70%;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: rgba(87, 145, 238, 0.25);
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .inputField::placeholder {
+    color: rgba(255, 255, 255, 0.479);
+  }
+  
+  .inputField:hover {
+    border-color: #666;
+    background-color: rgba(255, 255, 255, 0.527);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .inputField option[value=""][disabled] {
+    color: rgba(255, 255, 255, 0.479);
+  }
+  
+  .inputField option {
+    background-color: rgba(32, 85, 170, 0.8);
+    color: #ffffff;
+  }
+  
+  .submitButton {
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    width: 50%;
+    padding: 10px;
+    background-color: #fdca40;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 auto;
+    margin-top: 80px;
+    display: block;
+    transition: all 0.4s ease;
+  }
+  
+  .submitButton:hover {
+    background-color: #fcbc0e;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+      0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+      0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+  }
+  
+  .errorAnimation {
+    animation: errorAnimation 0.3s ease 0s 1 normal forwards;
+  }
+  
+  .boxAnimation {
+    animation: boxAnimation 0.5s ease forwards;
+  }
+  
+  .loginSlide {
+    animation: loginSlide 0.5s ease 0s 1 normal forwards;
+  }
+  
+  .noSpinner {
+    appearance: none;
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+  }
+  
+  .noSpinner::-webkit-inner-spin-button,
+  .noSpinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+  
+  @keyframes errorAnimation {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70% {
+      transform: translateX(-10px);
+    }
+    20%, 40%, 60% {
+      transform: translateX(10px);
+    }
+    80% {
+      transform: translateX(8px);
+    }
+    90% {
+      transform: translateX(-8px);
+    }
+  }
+  
+  @keyframes boxAnimation {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes loginSlide {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(250px);
+    }
+  }
+  

@@ -1,0 +1,212 @@
+.containerLogin2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    border: none;
+  }
+  
+  .createBox2 {
+    border: none;
+    height: 260px;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(87, 145, 238, 0.25);
+    transition: all 0.3 ease;
+    box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    justify-content: space-between; /* Esto empuja los elementos hacia los extremos */
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .headerCreate2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 30px;
+    color: #ffffff;
+  }
+  
+  .inputGroup2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: -55px;
+  }
+  
+  .icon2 {
+    position: absolute;
+    width: 25px;
+    height: 20px;
+    margin-bottom: 8px;
+    margin-top: 10px;
+    margin-left: -330px;
+  }
+  
+  .iconWrap2 {
+    display: flex;
+    width: 72%;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    margin-left: 5px;
+    padding: 20px;
+  }
+  
+  .inputCreate2 {
+    width: 70%;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: rgba(87, 145, 238, 0.25);
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .inputCreate2::placeholder {
+    color: rgba(255, 255, 255, 0.479);
+  }
+  
+  .inputCreate2:hover {
+    border-color: #666;
+    background-color: rgba(255, 255, 255, 0.527);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Placeholder o texto inicial del <select> */
+  .inputCreate2 option[value=""][disabled] {
+    color: rgba(255, 255, 255, 0.479);
+  }
+  
+  /* Estilo para las opciones desplegadas */
+  .inputCreate2 option {
+    background-color: rgba(32, 85, 170, 0.8); /* Fondo translúcido */
+    color: #ffffff; /* Texto blanco */
+  }
+  
+  .button {
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    width: 50%;
+    padding: 10px;
+    background-color: #fdca40;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 auto;
+    margin-top: 80px;
+    display: block;
+    transition: all 0.4s ease;
+  }
+  
+  .button:hover {
+    background-color: #fcbc0e;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+      0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+      0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+  }
+  
+  h3 {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 16px;
+    margin-left: 10px;
+  }
+  
+  h3 .icon {
+    margin-right: 10px;
+  }
+  
+  .datosIncorrectos {
+    animation: datosIncorrectos 0.3s ease 0s 1 normal forwards;
+  }
+  
+  .cajaLogin {
+    animation: cajaLogin 0.5s ease forwards;
+  }
+  
+  .LoginAnim {
+    animation: LoginAnim 0.2s ease 0s 1 normal forwards;
+  }
+  
+  .no-spinner {
+    appearance: none; /* Elimina los spinners en navegadores compatibles */
+    -moz-appearance: textfield; /* Elimina los spinners en Firefox */
+    -webkit-appearance: none; /* Elimina los spinners en Safari y Chrome */
+  }
+  
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Oculta los botones en Chrome */
+  }
+  
+  @keyframes datosIncorrectos {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+  
+    10%,
+    30%,
+    50%,
+    70% {
+      transform: translateX(-10px);
+    }
+  
+    20%,
+    40%,
+    60% {
+      transform: translateX(10px);
+    }
+  
+    80% {
+      transform: translateX(8px);
+    }
+  
+    90% {
+      transform: translateX(-8px);
+    }
+  }
+  
+  @keyframes cajaLogin {
+    0% {
+      transform: scale(0);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes LoginAnim {
+    0% {
+      transform: scale(1);
+    }
+  
+    100% {
+      transform: scale(0);
+    }
+  }
+  .LoginSlide {
+    animation: LoginSlide 0.5s ease 0s 1 normal forwards;
+  }
+  @keyframes LoginSlide {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  
+    100% {
+      opacity: 0;
+      transform: translateY(250px);
+    }
+  }
+  
