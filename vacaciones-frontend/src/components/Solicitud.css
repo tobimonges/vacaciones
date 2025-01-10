@@ -6,7 +6,7 @@
   gap: 1.5rem;
   padding: 2rem;
   border-radius: 8px;
-  max-width: 600px;
+  max-width: 650px;
   width: 100%;
   background-color: rgba(87, 145, 238, 0.25); /* Fondo translúcido */
   margin: 0 auto;
@@ -31,6 +31,14 @@ h4 {
   text-align: center;
 }
 
+
+.titulo-solicitud {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -53,8 +61,26 @@ li p {
   color: white;
 }
 
-li p:first-of-type {
-  text-align: center; /* Centrar el primer <p> */
+.solicitud-contenedor {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+  gap: 16px; /* Espaciado entre columnas */
+  margin: 16px 0; /* Espaciado superior e inferior */
+}
+
+.columna p {
+  margin: 8px 0; /* Espaciado entre párrafos en cada columna */
+  text-align: left;
+}
+
+/* Alinear los elementos <option> en una sola línea */
+.columna p strong + option {
+  display: inline-block; /* Cambiar a inline-block para respetar márgenes */
+  margin-left: 0.1rem; /* Espaciado entre "Líder:" y el nombre */
+  font-weight: normal; /* Asegúrate de que no sea bold */
+  color: white;
+  background: transparent;
+  border: none;
 }
 
 .buttons {
@@ -142,9 +168,7 @@ button:hover {
   max-width: 250px;
 }
 
-.datepicker-container label {
-  color: white;
-}
+
 
 /* Apunta al ícono dentro del DatePicker */
 .datepicker-container .MuiSvgIcon-root {
@@ -155,7 +179,7 @@ button:hover {
 /* Estilos para la lista desplegable de filtro */
 .select-filtro {
   position: absolute;
-  top: 3.6rem;
+  top: 1.6rem;
   right: 1.5rem;
   background-color: #fdca40;
   color: #2c2c2c;
