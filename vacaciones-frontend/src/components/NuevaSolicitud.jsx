@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
-import { getUsuarioId } from "./authUtils";
+import { getUsuarioId, getUserRole } from "./authUtils";
 import LogoutButton from "./LogoutButton";
 import Logo from "./Logo";
 
@@ -49,6 +49,7 @@ export default function NuevaSolicitud() {
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
+  const userRole = getUserRole();
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -119,13 +120,34 @@ export default function NuevaSolicitud() {
     const fetchLideres = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/vacaciones/lideres",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+        let lideresData = [];
+
+        // Si el usuario logueado es "TH", usar la ruta específica
+        if (userRole === "TH") {
+          const thResponse = await axios.get(
+            "http://localhost:8080/vacaciones/listar-TH",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          lideresData = thResponse.data;
+        } else {
+          // En otros casos, usar la ruta estándar
+          const response = await axios.get(
+            "http://localhost:8080/vacaciones/lideres",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          lideresData = response.data;
+        }
+
+        // Filtrar líderes excluyendo al usuario logueado
+        const lideresFiltrados = lideresData.filter(
+          (lider) => lider.id !== usuarioId
         );
-        setLideres(response.data);
+
+        setLideres(lideresFiltrados);
       } catch (err) {
         console.error("Error al obtener líderes:", err);
         setError("No se pudo obtener la información de los líderes.");
@@ -163,7 +185,9 @@ export default function NuevaSolicitud() {
       liderId: selectedLider,
       estado: false,
       cantidadDias: validDays,
+      numeroAprobaciones: userRole === "TH" ? 1 : 0, // Valor según el rol del usuario
     };
+
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
