@@ -8,7 +8,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
-import LogoutButton from "./LogoutButton";
 import Logo from "./Logo";
 
 import Preloader from "./Preloader";
@@ -211,7 +210,6 @@ export default function NuevaSolicitud() {
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <Preloader duration={650} />
       <div className="container">
-        <LogoutButton />
         <div className="DatePicker">
           <Logo />
           <h2>Nueva Solicitud</h2>

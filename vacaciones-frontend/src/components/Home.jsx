@@ -10,6 +10,7 @@ import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils"; // Asegú
 import "./Home.css";
 import Preloader from "./Preloader";
 import Logo from "./Logo";
+import LogoutButton from "./LogoutButton";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -53,10 +54,10 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
@@ -86,10 +87,10 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+          `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const eventsArray = [];
@@ -97,14 +98,18 @@ const Home = () => {
         if (response.data && Array.isArray(response.data)) {
           response.data.forEach((solicitud) => {
             if (solicitud.fechaInicio && solicitud.fechaFin) {
-              const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
-              const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
+              const startDate = new Date(solicitud.fechaInicio)
+                .toISOString()
+                .split("T")[0];
+              const endDate = new Date(solicitud.fechaFin)
+                .toISOString()
+                .split("T")[0];
 
               const type = solicitud.rechazado
-                  ? "rechazado"
-                  : solicitud.estado
-                      ? "aprobado"
-                      : "pendiente";
+                ? "rechazado"
+                : solicitud.estado
+                ? "aprobado"
+                : "pendiente";
 
               eventsArray.push({
                 title: "Vacaciones",
@@ -193,81 +198,121 @@ const Home = () => {
 
   // 🎨 **Renderizado del Componente**
   return (
-      <div className="calendar-container">
-        
-        <Preloader duration={650} />
+    <div className="calendar-container">
+      <LogoutButton />
+      <Preloader duration={650} />
 
-        
-        <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-          <Logo />
-          <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
-          <p className="calendar-text">
-            Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-          </p>
-          <p className="calendar-text">
-            Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
-          </p>
-          {error && <p className="calendar-error-message">{error}</p>}
+      <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+        <Logo />
+        <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
+        <p className="calendar-text">
+          Fecha de ingreso:{" "}
+          {joinDate
+            ? new Date(joinDate).toLocaleDateString("es-ES")
+            : "Cargando..."}
+        </p>
+        <p className="calendar-text">
+          Total de días de vacaciones disponibles:{" "}
+          {vacationDays !== undefined ? vacationDays : "Cargando..."}
+        </p>
+        {error && <p className="calendar-error-message">{error}</p>}
 
-          <div className="buttons">
-            <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
-              <span>Solicitar</span>
+        <div className="buttons">
+          <button
+            className="calendar-button"
+            onClick={() => navigate("/NuevaSolicitud")}
+          >
+            <span>Solicitar</span>
+          </button>
+          <button
+            className="calendar-button"
+            onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+          >
+            <span>Ver Solicitudes</span>
+          </button>
+          {isUserAllowed() && (
+            <button
+              className="calendar-button"
+              onClick={() => navigate(`/HomeTh`)}
+            >
+              <span>Home Talento Humano</span>
             </button>
-            <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
-              <span>Ver Solicitudes</span>
-            </button>
-            {isUserAllowed() && (
-                <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
-                  <span>Home Talento Humano</span>
-                </button>
-            )}
-          </div>
+          )}
+        </div>
 
-          <div className="calendar-big-container">
-            <Calendar
-                localizer={localizer}
-                events={events}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 500, margin: "20px 0" }}
-                messages={{
-                  today: "Hoy",
-                  previous: "Anterior",
-                  next: "Siguiente",
-                  month: "Mes",
-                  week: "Semana",
-                  day: "Día",
-                  agenda: "Agenda",
-                }}
-                views={{ month: true }}
-                eventPropGetter={eventStyleGetter}
-            />
-          </div>
+        <div className="calendar-big-container">
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500, margin: "20px 0" }}
+            messages={{
+              today: "Hoy",
+              previous: "Anterior",
+              next: "Siguiente",
+              month: "Mes",
+              week: "Semana",
+              day: "Día",
+              agenda: "Agenda",
+            }}
+            views={{ month: true }}
+            eventPropGetter={eventStyleGetter}
+          />
+        </div>
 
-          <div className="calendar-legend">
-            <p>
-            <span style={{backgroundColor: "#67bcc1", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
+        <div className="calendar-legend">
+          <p>
+            <span
+              style={{
+                backgroundColor: "#67bcc1",
+                color: "#ffffff",
+                padding: "8px",
+                borderRadius: "6px",
+              }}
+            >
               Aprobado
             </span>
-            </p>
-            <p>
-            <span style={{backgroundColor: "#6e6cba", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
+          </p>
+          <p>
+            <span
+              style={{
+                backgroundColor: "#6e6cba",
+                color: "#ffffff",
+                padding: "8px",
+                borderRadius: "6px",
+              }}
+            >
               Rechazado
             </span>
-            </p>
-            <p>
-            <span style={{backgroundColor: "#6b97c8", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
+          </p>
+          <p>
+            <span
+              style={{
+                backgroundColor: "#6b97c8",
+                color: "#ffffff",
+                padding: "8px",
+                borderRadius: "6px",
+              }}
+            >
               Pendiente
             </span>
-            </p>
-            <p>
-            <span style={{backgroundColor: "#479cf8", color: "#ffffff", padding: "8px", borderRadius: "6px"}}>
+          </p>
+          <p>
+            <span
+              style={{
+                backgroundColor: "#479cf8",
+                color: "#ffffff",
+                padding: "8px",
+                borderRadius: "6px",
+              }}
+            >
               Feriado
             </span>
-            </p>
-          </div>
+          </p>
         </div>
       </div>
+    </div>
   );
 };
 
