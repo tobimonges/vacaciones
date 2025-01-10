@@ -9,7 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,9 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
+
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -40,8 +44,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 // Verificar si el token está en la lista negra
                 if (jwtBlacklist.isBlacklisted(jwt)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("Token invalidado.");
+                    logger.warn("Token invalidado: {}", jwt);
+                    enviarRespuestaJson(response, HttpServletResponse.SC_UNAUTHORIZED, "Token invalidado.");
                     return;
                 }
 
@@ -60,12 +64,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (ExpiredJwtException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token expirado");
+                logger.warn("Token expirado en la solicitud a {}: {}", request.getRequestURI(), e.getMessage());
+                enviarRespuestaJson(response, HttpServletResponse.SC_UNAUTHORIZED, "Token expirado.");
+                return;
+            } catch (Exception e) {
+                logger.error("Error en la autenticación: {}", e.getMessage());
+                enviarRespuestaJson(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error en la autenticación.");
                 return;
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
+
+    private void enviarRespuestaJson(HttpServletResponse response, int status, String mensaje) throws IOException {
+        response.setContentType("application/json");
+        response.setStatus(status);
+        response.getWriter().write(String.format("{\"message\": \"%s\"}", mensaje));
+    }
+
+
 }

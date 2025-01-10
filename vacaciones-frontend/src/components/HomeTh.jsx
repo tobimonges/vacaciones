@@ -8,6 +8,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
+import Logo from "./Logo";
 
 import Preloader from "./Preloader";
 
@@ -22,14 +23,24 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
+
+
+
 // 🏠 **Componente Principal**
 const HomeTh = () => {
+    // 🔄 Manejo de clic en "more"
+    const handleShowMore = (eventsOnDay, date) => {
+        setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
+        setModalOpen(true); // Abre el modal
+    };
     // 🧠 Estados
     const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
     const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
     const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
     const [events, setEvents] = useState([]); // Lista de eventos para el calendario
     const [error, setError] = useState(""); // Mensajes de error
+    const [modalOpen, setModalOpen] = useState(false); // Estado para abrir/cerrar el modal
+    const [modalEvents, setModalEvents] = useState([]); // Eventos a mostrar en el modal
     const navigate = useNavigate(); // Navegación entre rutas
 
     // 📥 **Obtener Datos del Usuario**
@@ -55,8 +66,6 @@ const HomeTh = () => {
 
                 const { nombre, fechaIngreso, diasVacaciones } = response.data;
                 setUserNameTh(nombre);
-                setJoinDate(fechaIngreso);
-                setVacationDays(diasVacaciones);
             } catch (error) {
                 console.error("Error al obtener datos del usuario:", error);
                 setError("No se pudieron cargar los datos del usuario.");
@@ -90,29 +99,28 @@ const HomeTh = () => {
                 const eventsArray = [];
 
 
-                    response.data.forEach((solicitud) => {
+                response.data.forEach((solicitud) => {
 
-                        if (solicitud.fechaInicio && solicitud.fechaFin) {
-                            const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
-                            const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
+                    if (solicitud.fechaInicio && solicitud.fechaFin) {
+                        const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
+                        const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-                            // Nueva lógica para asignar tipo de evento
-                            const type = solicitud.rechazado
-                                ? "rechazado"
-                                : solicitud.estado
-                                    ? "aprobado"
-                                    : "pendiente";
+                        // Nueva lógica para asignar tipo de evento
+                        const type = solicitud.rechazado
+                            ? "rechazado"
+                            : solicitud.estado
+                                ? "aprobado"
+                                : "pendiente";
 
-                            eventsArray.push({
-                                title: solicitud.usuario.nombre +" " +  solicitud.usuario.apellido,
-                                start: new Date(`${startDate}T00:00:00`),
-                                end: new Date(`${endDate}T23:59:59`),
-                                allDay: true,
-                                type,
-                            });
-                        }
-                    });
-
+                        eventsArray.push({
+                            title: solicitud.usuario.nombre + " " + solicitud.usuario.apellido,
+                            start: new Date(`${startDate}T00:00:00`),
+                            end: new Date(`${endDate}T23:59:59`),
+                            allDay: true,
+                            type,
+                        });
+                    }
+                });
 
                 // Fechas fijas de feriados manuales
                 const feriados = [
@@ -155,7 +163,7 @@ const HomeTh = () => {
             case "aprobado":
                 return {
                     style: {
-                        backgroundColor: "#28a745", // Verde para aprobados
+                        backgroundColor: "#67bcc1", // Verde para aprobados
                         color: "#ffffff",
                         borderRadius: "4px",
                     },
@@ -163,7 +171,7 @@ const HomeTh = () => {
             case "rechazado":
                 return {
                     style: {
-                        backgroundColor: "#dc3545", // Rojo para rechazados
+                        backgroundColor: "#6e6cba", // Rojo para rechazados
                         color: "#ffffff",
                         borderRadius: "4px",
                     },
@@ -171,15 +179,15 @@ const HomeTh = () => {
             case "pendiente":
                 return {
                     style: {
-                        backgroundColor: "#ffc107", // Amarillo para pendientes
-                        color: "#000000",
+                        backgroundColor: "#6b97c8", // Amarillo para pendientes
+                        color: "#ffffff",
                         borderRadius: "4px",
                     },
                 };
             case "feriado":
                 return {
                     style: {
-                        backgroundColor: "#007bff", // Azul para feriados
+                        backgroundColor: "#479cf8", // Azul para feriados
                         color: "#ffffff",
                         borderRadius: "4px",
                     },
@@ -189,19 +197,26 @@ const HomeTh = () => {
         }
     };
 
+    // 🖼️ **Mostrar Modal con Eventos del Día**
+    const handleDayClick = (date) => {
+        const eventsOnDate = events.filter(
+            (event) =>
+                new Date(event.start).toLocaleDateString() ===
+                new Date(date).toLocaleDateString()
+        );
+        setModalEvents(eventsOnDate);
+        setModalOpen(true);
+    };
+
     // 🎨 **Renderizado del Componente**
     return (
         <div className="calendar-container">
             <Preloader duration={650} />
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+                <Logo />
                 {/* 👤 Información del Usuario */}
                 <h1 className="calendar-title">Bienvenido, {userNameTh || "Usuario"}</h1>
-                <p className="calendar-text">
-                    Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-                </p>
-                <p className="calendar-text">
-                    Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
-                </p>
+                <h2 className="calendar-title">Solicitudes Generales</h2>
 
                 {/* 🚨 Mensajes de Error */}
                 {error && <p className="calendar-error-message">{error}</p>}
@@ -210,16 +225,17 @@ const HomeTh = () => {
                 <div className="buttons">
                     <button
                         className="calendar-button"
-                        onClick={() => navigate("/NuevaSolicitud")}
+                        onClick={() => navigate("/Home")}
                     >
-                        Solicitar
+                        <span>Home</span>
                     </button>
                     <button
                         className="calendar-button"
-                        onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+                        onClick={() => navigate(`/AdminDashboard`)}
                     >
-                        Ver Solicitudes
+                        <span>Dashboard</span>
                     </button>
+
                 </div>
 
                 {/* 📆 Calendario */}
@@ -239,37 +255,70 @@ const HomeTh = () => {
                             day: "Día",
                             agenda: "Agenda",
                         }}
-                        views={{ month: true, day: true}}
+                        views={{ month: true }} // Mantener solo la vista de mes
                         eventPropGetter={eventStyleGetter}
-                        popup={false}
+                        popup={false} // Desactivar el comportamiento predeterminado del popup
                         showMultiDayTimes={true}
-                        longPressThreshold={10}
+                        onShowMore={(eventsOnDay, date) => {
+                            // Prevenir cambio de vista
+                            handleShowMore(eventsOnDay, date);
+                        }}
                     />
+
                 </div>
 
                 {/* 🖍️ Leyenda de Colores */}
                 <div className="calendar-legend">
                     <p>
-            <span style={{ backgroundColor: "#28a745", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
+            <span style={{ backgroundColor: "#67bcc1", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
               Aprobado
             </span>
                     </p>
                     <p>
-            <span style={{ backgroundColor: "#dc3545", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
+            <span style={{ backgroundColor: "#6e6cba", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
               Rechazado
             </span>
                     </p>
                     <p>
-            <span style={{ backgroundColor: "#ffc107", color: "#000000", padding: "4px", borderRadius: "4px" }}>
+            <span style={{ backgroundColor: "#6b97c8", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
               Pendiente
             </span>
                     </p>
                     <p>
-            <span style={{ backgroundColor: "#007bff", color: "#ffffff", padding: "4px", borderRadius: "4px" }}>
+            <span style={{ backgroundColor: "#479cf8", color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
               Feriado
             </span>
                     </p>
                 </div>
+
+                {/* 🔲 Modal para Solicitudes del Día */}
+                {modalOpen && (
+                    <div className="modal-overlay">
+                        <div className="modal-contentTh">
+                            <h4>Solicitudes en esta fecha:</h4> <br/>
+                            {modalEvents.length > 0 ? (
+                                <div className="modal-events-list">
+                                    <ul>
+                                        {modalEvents.map((event, index) => (
+                                            <li key={index}>
+                                                <strong>{event.title}</strong> - {event.type} <br/>
+                                                <span>
+                                    Desde: {event.start.toLocaleDateString()} hasta: {event.end.toLocaleDateString()}
+                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <p>No hay solicitudes para esta fecha.</p>
+                            )}
+                            <button className="close-modal-btn" onClick={() => setModalOpen(false)}>
+                                <span>Cerrar</span>
+                            </button>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </div>
     );

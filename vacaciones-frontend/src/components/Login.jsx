@@ -4,6 +4,8 @@ import "./Login.css";
 import Home from "./Home";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
+import Logo from "./Logo";
+import Preloader from "./Preloader";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,14 +14,25 @@ function Login() {
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showError, setShowError] = useState(false);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
-    const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("cajaLogin");
+    const timeout = setTimeout(() => {
+      const loginBox = document.querySelector(".loginBox");
+      if (loginBox) {
+        loginBox.classList.add("cajaLogin");
+      }
+    }, 655); // 800 milisegundos = 0.8 segundos
+
+    // Limpiar el timeout si el componente se desmonta antes de que se ejecute
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    setError(false); // Ocultar el mensaje de error
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -42,7 +55,23 @@ function Login() {
       setUsuario("");
       setPassword("");
       setError(true);
-      setTimeout(() => setError(false), 300);
+      setShowError(true);
+      //  setTimeout(() => setError(false), 2100);
+      setTimeout(() => setShowError(false), 2000);
+
+
+      if (error.response) {
+        if (error.response.status === 401) {
+          setErrorMessage("Credenciales inválidas. Verifica tu email y contraseña.");
+        } else if (error.response.status === 500) {
+          setErrorMessage("Error del servidor. Inténtalo más tarde.");
+        } else {
+          setErrorMessage("Error inesperado. Por favor, intenta de nuevo.");
+        }
+      } else {
+        setErrorMessage("Error de red. Por favor, verifica tu conexión.");
+      }
+
     }
 
     /*   const handleLogout = () => {
@@ -53,10 +82,10 @@ function Login() {
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
-    loginBox.classList.add("LoginSlide");
+    loginBox.classList.add("LoginAnim");
     setTimeout(() => {
       navigate("/forgotPassword"); //Cambia a la pantalla de recuperacion de contraseña
-    }, 550);
+    }, 220);
   };
   if (showForgotPassword) {
     return (
@@ -65,11 +94,12 @@ function Login() {
   }
   return (
     <div className="containerLogin">
+      <Preloader duration={650} />
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
-          error ? "datosIncorrectos" : ""
-        }`}
+        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
+          }`}
       >
+        <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin} action="login" method="post">
           <div className="inputGroup">
@@ -101,25 +131,31 @@ function Login() {
                 required
               />
             </div>
+            <div className="forgotPassword">
+              <a
+                href="#"
+                className="link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleForgotPassword();
+                }}
+              >
+                Olvidaste tu contraseña?
+              </a>
+            </div>
           </div>
-          <button type="submit" className="button">
-            Iniciar sesión
+          <button type="submit" className="buttonLogin">
+            <span>Iniciar sesión</span>
           </button>
-          <div className="forgotPassword">
-            <a
-              href="#"
-              className="link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleForgotPassword();
-              }}
-            >
-              Olvidaste tu contraseña?
-            </a>
-          </div>
         </form>
         <div className="content"></div>
       </div>
+      {showError && (
+        <div className={`errorPopup ${error ? 'error' : ''}`}>
+          {errorMessage}
+        </div>
+      )}
+
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import "./Solicitud.css";
 
+import Logo from "./Logo";
+
 import Preloader from "./Preloader";
 
 export default function SolicitudDetalle() {
@@ -149,8 +151,10 @@ export default function SolicitudDetalle() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Preloader duration={650} />
+      <div>
+        <Preloader duration={650} />
       <div className="container-solicitudes">
+        <Logo />
         <h4>Solicitudes del Usuario</h4>
         {/* Lista desplegable para filtro */}
         <select
@@ -190,7 +194,7 @@ export default function SolicitudDetalle() {
                   <br />
                   <div className="buttons">
                     <button onClick={() => handleGuardar(solicitud.id)}>
-                      Guardar
+                      <span>Guardar</span>
                     </button>
                     <button onClick={handleCancelar}>Cancelar</button>
                   </div>
@@ -231,6 +235,7 @@ export default function SolicitudDetalle() {
         <button className="volver-home" onClick={() => navigate("/Home")}>
           Volver al Home
         </button>
+      </div>
       </div>
     </LocalizationProvider>
   );

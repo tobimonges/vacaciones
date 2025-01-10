@@ -11,15 +11,15 @@ public class CargoModel {
     @Column(unique = true, nullable = false, name = "id_cargo")
     private Long id;
 
-    @Column(nullable = false, name = "name")
-    private String name;
+    @Column(nullable = false, name = "nombre")
+    private String nombre;
 
     public CargoModel() {
     }
 
     public CargoModel(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.nombre = nombre;
     }
 
     public Long getId() {
@@ -31,10 +31,10 @@ public class CargoModel {
     }
 
     public String getName() {
-        return name;
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String nombre) {
+        this.nombre = nombre;
     }
 }

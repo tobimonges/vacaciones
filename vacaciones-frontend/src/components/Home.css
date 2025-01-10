@@ -40,8 +40,11 @@
 /* 🗓 Contenedor grande del calendario */
 .calendar-big-container {
     margin-top: 20px;
-    background-color: #ffffff;
+    background-color: #fffffff1;
     border-radius: 15px;
+    padding: 0px 20px; /* Agrega padding interno */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6); /* Añade un pequeño sombreado */
+
 }
 
 /* Leyenda de colores alineada horizontalmente */
@@ -66,7 +69,7 @@
 
 }
 .calendar-big-container {
-    height: 600px; /* Ajusta la altura según tus necesidades */
+    height: 570px; /* Ajusta la altura según tus necesidades */
     overflow-y: auto; /* Agrega scroll si hay demasiados eventos */
 }
 
@@ -88,13 +91,13 @@
 }
 
 button {
+
     font-size: 14px; /* Tamaño reducido */
     padding: 0.3rem; /* Ajustado */
 }
 
 
 .popup-overlay {
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -115,7 +118,90 @@ button {
 }
 
 
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(8px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(8px);
+}
 
+/* Contenido del Modal */
+.modal-contentTh {
+    background: #39659f;
+    max-height: 70vh;
+    overflow-y: auto; /* Permite el desplazamiento en caso de contenido largo */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Organiza el contenido en columna */
+    gap: 15px; /* Espaciado entre el contenido */
+}
+
+/* Contenedor de los eventos */
+.modal-events-list {
+    flex: 1; /* Asegura que este contenedor ocupe el espacio disponible */
+    overflow-y: scroll; /* Habilitar desplazamiento vertical */
+    scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
+    max-height: calc(70vh - 50px); /* Ajusta la altura para no sobrepasar la altura total */
+}
+
+/* Elementos de la lista de eventos */
+.modal-contentTh li {
+    background-color: #4c6da8;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 10px; /* Espaciado entre los elementos */
+    padding: 10px; /* Relleno dentro de los li */
+    border-radius: 4px;
+}
+
+.modal-contentTh li:hover {
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+}
+
+/* Botón de cerrar */
+.close-modal-btn {
+    background-color: #fbc940;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Espaciado arriba del botón */
+}
+
+.close-modal-btn:hover {
+    background-color: #dfb755;
+}
+
+/* 🎯 Reglas responsivas */
+@media (max-width: 768px) {
+    .modal-contentTh {
+        width: 90%;
+        max-width: 100%;
+    }
+
+    .close-modal-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
 
 
 /* 🎯 Reglas responsivas */

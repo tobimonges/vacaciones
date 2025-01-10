@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RestablecerContraseña.css";
+import Logo from "./Logo";
 
 import Preloader from "./Preloader";
 
@@ -22,7 +23,7 @@ function RestablecerContraseña() {
 
   try {
     //llamada a API para restablecer contraseña
-    //const response = await axios.post("/api/restablecer-contraseña", { newPassword });
+    //const response = await axios.post("http://localhost:8080/vacaciones/usuarios/reset-password", { newPassword });
 
     //simulacion de respuesta exitosa
     console.log("Contraseña restablecida con exito!");
@@ -36,12 +37,12 @@ function RestablecerContraseña() {
   }
 
   return (
-    <div className="containerRestablecer">
+    <div className="containerRestablecerContraseña">
       <Preloader duration={650} />
-      <div className={`restablecerBox $(error ? "error" : "")`}>
+      <div className={`restablecerBox ${error ? "error" : ""}`}>
+        <Logo />
         <h2 className="headerRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">
-          <div className="segundoContainerRC">
             <div className="inputRCGroup">
               <div className="iconRCWrap">
                 <img
@@ -83,9 +84,8 @@ function RestablecerContraseña() {
             )}
 
             <button type="submit" className="buttonRC">
-              Restablecer
+              <span>Restablecer</span>
             </button>
-          </div>
         </form>
 
         <div className="backToLogin">

@@ -1,8 +1,8 @@
-.containerRestablecer {
+.containerRestablecerContraseña {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   border: none;
   position: relative;
 }
@@ -13,8 +13,7 @@
   width: 400px;
   padding: 20px;
   border-radius: 10px;
-  background: #ffffff;
-  background: #fff;
+  background: rgba(87, 145, 238, 0.25);
   transition: all 0.3 ease;
   box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
   -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
@@ -23,26 +22,14 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
+  text-align: center;
+  z-index: 1;
 }
-
-.segundoContainerRC {
-  border: #333;
-  height: 260px;
-  width: 380px;
-  padding: 10px;
-  border-radius: 5px;
-  background: #f0eded;
-  transition: all 0.3 ease;
-  justify-content: space-between; /* Esto empuja los elementos hacia los extremos */
-  flex-direction: column;
-  justify-content: center;
-}
-
 .headerRC {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 30px;
-  color: #333;
+  color: white;
 }
 
 .inputRCGroup {
@@ -50,7 +37,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0px;
-  margin-top: 70px;
+  margin-top: 55px;
   margin-bottom: -60px;
 }
 .iconRC {
@@ -58,8 +45,8 @@
   width: 25px;
   height: 25px;
   margin-bottom: 5px;
-  margin-top: 10px;
-  margin-left: -35px;
+  margin-top: 9px;
+  margin-left: -40px;
 }
 .iconWrapRC {
   position: absolute;
@@ -74,9 +61,10 @@
 
 .inputRC {
   position: relative;
-  width: 100%;
+  margin-left: px;
+  width: 300px;
   flex: 1;
-  padding: 11px;
+  padding: 9px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
@@ -100,7 +88,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 90px;
+  margin-top: 95px;
   margin-left: 95px;
   display: block;
   transition: all 0.4s ease;
@@ -145,8 +133,8 @@
   width: 25px;
   height: 25px;
   margin-bottom: 5px;
-  margin-top: 10px;
-  margin-left: -35px;
+  margin-top: 9px;
+  margin-left: -40px;
 }
 .iconWrapRC1 {
   position: absolute;

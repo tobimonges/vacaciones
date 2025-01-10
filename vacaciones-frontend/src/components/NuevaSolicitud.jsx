@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import { getUsuarioId } from "./authUtils";
 import LogoutButton from "./LogoutButton";
+import Logo from "./Logo";
 
 import Preloader from "./Preloader";
 
@@ -188,6 +189,7 @@ export default function NuevaSolicitud() {
       <div className="container">
         <LogoutButton />
         <div className="DatePicker">
+          <Logo />
           <h2>Nueva Solicitud</h2>
           <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
             <div className="info-card">
@@ -267,7 +269,7 @@ export default function NuevaSolicitud() {
                   validDays > diasVacacionesDisponibles || !selectedLider
                 }
               >
-                Crear Solicitud
+                <span>Crear Solicitud</span>
               </button>
             </div>
           </form>

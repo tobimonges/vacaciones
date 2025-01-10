@@ -1,26 +1,50 @@
 package bootcamp.vacaciones.security;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 @Component
 public class JwtUtils {
 
-    private final String jwtSecret = "2iFBbtE1VvamHUKioDWTW2QudnXeoYJvs5lp+EDWiZKmGxWXnfamjDmnd2A9dtu9HQoTNHJBXb38kCsRez2dOg=="; // Cambia esto por una clave segura
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    @Value("${jwt.expiration-reset-password}")
+    private int jwtExpirationResetPassword;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+    @Value("${jwt.expiration-login}")
+    private int jwtExpirationLogin;
+
     private final int jwtExpirationMs = 86400000; // 1 día (en milisegundos)
 
     // Generar un token JWT
     public String generateJwtToken(String username, Long usuarioId, String rol) {
         return Jwts.builder()
-                .setSubject(username) // Establece el nombre de usuario como "subject"
-                .claim("usuarioId", usuarioId) // Incluye el usuarioId en los claims
-                .claim("rol", rol) // Incluir el rol en el token
-                .setIssuedAt(new Date()) // Fecha de emisión
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // Fecha de expiración
-                .signWith(SignatureAlgorithm.HS512, jwtSecret) // Firma con HS512
-                .compact(); // Construir el token
+                .setSubject(username)
+                .claim("usuarioId", usuarioId)
+                .claim("rol", rol)
+                .setIssuedAt(new Date())
+                .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(jwtExpirationLogin)))) // Duración en minutos
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+    // Generar token para reset-password
+    public String generateResetPasswordToken(String email, Long userId) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("userId", userId)
+                .setIssuedAt(new Date())
+                .setExpiration(Date.from(Instant.now().plus(Duration.ofMinutes(jwtExpirationResetPassword)))) // 30 minutos
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
     }
 
     // Obtener el username del token JWT

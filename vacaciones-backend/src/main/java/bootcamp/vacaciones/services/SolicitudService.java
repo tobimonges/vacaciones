@@ -16,10 +16,13 @@ public class SolicitudService implements ISolicitudService {
     private final SolicitudRepository solicitudRepository;
     private final UsuarioRepository usuarioRepository;
 
+    private final EmailService emailService;
+
     @Autowired
-    public SolicitudService(SolicitudRepository solicitudRepository, UsuarioRepository usuarioRepository) {
+    public SolicitudService(SolicitudRepository solicitudRepository, UsuarioRepository usuarioRepository, EmailService emailService) {
         this.solicitudRepository = solicitudRepository;
         this.usuarioRepository = usuarioRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -33,10 +36,6 @@ public class SolicitudService implements ISolicitudService {
         if (!usuarioRepository.existsById(idUsuario)) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
-
-
-        // Validar que la fecha no coincida con otra solicitud
-        // ...
         solicitud.setUsuario(usuarioRepository.findById(idUsuario).orElseThrow());
         solicitud.setNumeroAprobaciones(0); // Ninguna aprobación inicial
         solicitud.setRechazado(false);
@@ -94,8 +93,29 @@ public class SolicitudService implements ISolicitudService {
         nuevaSolicitud.setRechazado(false); // Por defecto, no rechazada
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
+        // Notificar al líder
+        emailService.enviarCorreo(
+                lider.getCorreo(),
+                "Nueva Solicitud de Vacaciones",
+                "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+                        nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+        );
+
+        // Notificar a los usuarios con rol "TH"
+        List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+        for (UsuarioModel thUsuario : usuariosTh) {
+            emailService.enviarCorreo(
+                    thUsuario.getCorreo(),
+                    "Nueva Solicitud de Vacaciones",
+                    "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+                            nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+            );
+        }
+
         return solicitudRepository.save(nuevaSolicitud);
     }
+
+
     @Override
     public SolicitudModel actualizarSolicitudConDTO(Long idSolicitud, SolicitudRequest solicitudRequest) {
         // Validar que la solicitud existe
@@ -126,38 +146,71 @@ public class SolicitudService implements ISolicitudService {
         UsuarioModel usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Validar que el líder asignado apruebe primero
         if (solicitud.getNumeroAprobaciones() == 0) {
-            if (!solicitud.getLider().getId().equals(usuario.getId())) {
-                throw new RuntimeException("Solo el líder asignado puede aprobar esta solicitud.");
-            }
-            solicitud.setNumeroAprobaciones(1); // Aprobado por el líder
+            validarLider(usuario, solicitud);
+            solicitud.setNumeroAprobaciones(1);
             solicitud.setRechazado(false);
+
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Aprobada por Líder",
+                    "<p>Tu solicitud ha sido aprobada por el líder.</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 1) {
-            if (!"TH".equals(usuario.getRol().getNombre())) {
-                throw new RuntimeException("Solo el rol TH puede aprobar en esta etapa.");
+            validarRolTh(usuario);
+            solicitud.setNumeroAprobaciones(2);
+            solicitud.setEstado(true);
+            solicitud.setRechazado(false);
+
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Completamente Aprobada",
+                    "<p>Tu solicitud ha sido completamente aprobada.</p>"
+            );
+
+            actualizarDiasVacaciones(solicitud);
+
+            // Notificar a todos los usuarios con rol "TH"
+            List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+            for (UsuarioModel thUsuario : usuariosTh) {
+                emailService.enviarCorreo(
+                        thUsuario.getCorreo(),
+                        "Aprobación de Solicitud",
+                        "<p>La solicitud del usuario <b>" + solicitud.getUsuario().getNombre() + "</b> para las fechas " +
+                                solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + " ha sido aprobada por completo.</p>"
+                );
             }
-            solicitud.setNumeroAprobaciones(2); // Aprobado por TH
-            solicitud.setEstado(true); // Solicitud completamente aprobada
-            solicitud.setRechazado(false); // Actualizar el estado de rechazado
-
-            int diasSolicitados = solicitud.getCantidadDias();
-            UsuarioModel usuarioRelacionado = solicitud.getUsuario();
-            int diasRestantes = usuarioRelacionado.getDiasVacaciones() - diasSolicitados;
-
-            if (diasRestantes < 0) {
-                throw new RuntimeException("No hay suficientes días de vacaciones disponibles.");
-            }
-
-            usuarioRelacionado.setDiasVacaciones(diasRestantes);
-            usuarioRepository.save(usuarioRelacionado);
         } else {
             throw new RuntimeException("La solicitud ya está completamente aprobada.");
         }
 
-        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
+        return solicitudRepository.save(solicitud);
     }
 
+    private void validarLider(UsuarioModel usuario, SolicitudModel solicitud) {
+        if (!solicitud.getLider().getId().equals(usuario.getId())) {
+            throw new RuntimeException("Solo el líder asignado puede aprobar esta solicitud.");
+        }
+    }
+
+    private void validarRolTh(UsuarioModel usuario) {
+        if (!"TH".equals(usuario.getRol().getNombre())) {
+            throw new RuntimeException("Solo el rol TH puede aprobar en esta etapa.");
+        }
+    }
+
+    private void actualizarDiasVacaciones(SolicitudModel solicitud) {
+        int diasSolicitados = solicitud.getCantidadDias();
+        UsuarioModel usuarioRelacionado = solicitud.getUsuario();
+        int diasRestantes = usuarioRelacionado.getDiasVacaciones() - diasSolicitados;
+
+        if (diasRestantes < 0) {
+            throw new RuntimeException("No hay suficientes días de vacaciones disponibles.");
+        }
+
+        usuarioRelacionado.setDiasVacaciones(diasRestantes);
+        usuarioRepository.save(usuarioRelacionado);
+    }
 
 
 
@@ -173,18 +226,38 @@ public class SolicitudService implements ISolicitudService {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el líder asignado.</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 1 && solicitud.getLider().getId().equals(usuario.getId())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el líder asignado.</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 1 && "TH".equals(usuario.getRol().getNombre())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
+            );
         } else if (solicitud.getNumeroAprobaciones() == 2 && "TH".equals(usuario.getRol().getNombre())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
+            emailService.enviarCorreo(
+                    solicitud.getUsuario().getCorreo(),
+                    "Solicitud Rechazada",
+                    "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
+            );
         } else {
             throw new RuntimeException("No tienes permiso suficiente para rechazar esta solicitud.");
         }
@@ -219,6 +292,12 @@ public class SolicitudService implements ISolicitudService {
         solicitud.setRechazado(true); // Aquí está el problema: siempre se marca como true
         solicitud.setComentario(comentario);
         solicitud.setNumeroAprobaciones(0);
+
+        emailService.enviarCorreo(
+                solicitud.getUsuario().getCorreo(),
+                "Solicitud Rechazada",
+                "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Operaciones. <br> Motivo: " + comentario + "</p>"
+        );
 
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
