@@ -82,6 +82,15 @@ public class SolicitudService implements ISolicitudService {
                     .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
         }
 
+        // Validar conflictos de fechas
+        List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
+                idUsuario, solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin()
+        );
+
+        if (!solicitudesConflicto.isEmpty()) {
+            throw new IllegalArgumentException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
+        }
+
         SolicitudModel nuevaSolicitud = new SolicitudModel();
         nuevaSolicitud.setUsuario(usuario);
         nuevaSolicitud.setLider(lider);
