@@ -25,7 +25,7 @@ function App() {
         {/* Ruta para restablecer contraseña */}
         <Route path="/forgotPassword" element={<LoginForgotPassword />} />
         {/* Ruta para CAMBIAR contraseña */}
-        <Route path="/restablecer" element={<RestablecerContraseña />} />
+        <Route path="/reset-password" element={<RestablecerContraseña />} />
         {/* Ruta exclusiva para administradores */}
         {/* Ruta para otros roles excepto FUNCIONARIO */}
         <Route
