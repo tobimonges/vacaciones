@@ -2,6 +2,7 @@ package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
+import bootcamp.vacaciones.utils.GeneradorContraseña;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,14 @@ public class UsuarioService implements IUsuarioService{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private final EmailService emailService;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+    }
 
     @Override
     public List<UsuarioModel> listarUsuarios() {
@@ -55,8 +64,23 @@ public class UsuarioService implements IUsuarioService{
         if (usuarioRepository.findByNroCedula(usuario.getNroCedula()) != null) {
             throw new IllegalArgumentException("La cédula ya está registrada");
         }
-        String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
-        usuario.setContrasena(contrasenaEncriptada);
+        if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
+            String passwordAleatoria = GeneradorContraseña.generarContraseñaAleatoria();
+
+            // Enviar la contraseña generada al correo del usuario
+            emailService.enviarCorreo(
+                    usuario.getCorreo(),
+                    "Bienvenido a Roshka",
+                    "<p>Estimado(a) " + usuario.getNombre() + ",</p>" +
+                            "<p>Se ha creado una cuenta para usted en nuestro sistema. Su contraseña temporal es:</p>" +
+                            "<h3>" + passwordAleatoria + "</h3>" +
+                            "<p>Por favor cambie su contraseña lo antes posible.</p>" +
+                            "<p>Saludos</p>"
+
+            );
+
+            usuario.setContrasena(passwordEncoder.encode(passwordAleatoria));
+        }
         return usuarioRepository.save(usuario);
     }
 
@@ -64,6 +88,7 @@ public class UsuarioService implements IUsuarioService{
     public void eliminarUsuario(UsuarioModel usuario) {
         usuarioRepository.delete(usuario);
     }
+
     @Scheduled(cron = "0 04 15 * * ?")
     public void actualizarAntiguedadYVacaciones() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
