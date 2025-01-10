@@ -64,16 +64,41 @@ public class UsuarioService implements IUsuarioService{
     public void eliminarUsuario(UsuarioModel usuario) {
         usuarioRepository.delete(usuario);
     }
-    @Scheduled(cron = "0 00 09 * * ?")
+    @Scheduled(cron = "0 04 15 * * ?")
     public void actualizarAntiguedadYVacaciones() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
 
         for (UsuarioModel usuario : usuarios) {
-            // Actualizar antigüedad directamente en la base de datos con SQL
             usuarioRepository.actualizarAntiguedad(usuario.getId());
 
-            // Guardar cambios
-            usuarioRepository.save(usuario);
+            UsuarioModel usuarioActualizado = usuarioRepository.findById(usuario.getId()).orElseThrow();
+
+            int years = usuarioRepository.obtenerYears(usuario.getId());
+            int months = usuarioRepository.obtenerMonths(usuario.getId());
+            int days = usuarioRepository.obtenerDays(usuario.getId());
+
+            if (cumpleAniversario(months, days)) {
+                int nuevosDiasVacaciones = calcularDiasVacaciones(years);
+                usuarioActualizado.setDiasVacaciones(
+                        usuarioActualizado.getDiasVacaciones() + nuevosDiasVacaciones
+                );
+            }
+            usuarioRepository.save(usuarioActualizado);
+
         }
+    }
+    public int calcularDiasVacaciones(int years) {
+        if (years >= 1 && years < 5) {
+            return 12;
+        } else if (years >= 5 && years <= 10) {
+            return 18;
+        } else if (years > 10) {
+            return 30;
+        }
+        return 0;
+    }
+
+    public boolean cumpleAniversario(int months, int days) {
+        return months == 0 && days == 0;
     }
 }
