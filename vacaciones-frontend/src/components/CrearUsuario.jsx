@@ -15,6 +15,8 @@ function CrearUsuario() {
   const [nroCedula, setCedula] = useState("");
   const [correo, setCorreo] = useState("");
   const [rol, setRol] = useState("");
+  const [equipo, setEquipo] = useState("");
+  const [cargo, setCargo] = useState("");
   const [fechaIngreso, setFechaIngreso] = useState("");
   const [telefono, setTelefono] = useState("");
   const [contrasena, setPassword] = useState("");
@@ -22,6 +24,8 @@ function CrearUsuario() {
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [equipos, setEquipos] = useState([]);
+  const [cargos, setCargos] = useState([]);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState("");
 
@@ -46,18 +50,55 @@ function CrearUsuario() {
         setError("Error al cargar los roles.");
       }
     };
-
     fetchRoles();
+
+    const fetchEquipos = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/equipos", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response.data);
+        setEquipos(response.data); // Asume que la respuesta es una lista de objetos
+      } catch (err) {
+        console.error("Error al obtener los roles:", err);
+        setError("Error al cargar los roles.");
+      }
+    };
+    fetchEquipos();
+
+    const fetchCargos = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/cargos", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log(response.data);
+        setCargos(response.data); // Asume que la respuesta es una lista de objetos
+      } catch (err) {
+        console.error("Error al obtener los roles:", err);
+        setError("Error al cargar los roles.");
+      }
+    };
+    fetchCargos();
   }, []);
 
   //temporizador
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setPopupType(""); // Restablecer el tipo de popup
-      }, popupType === "success" ? 1300 : 3000); // 1.8s para éxito, 3s para error
-  
+      const timer = setTimeout(
+        () => {
+          setMessage("");
+          setPopupType(""); // Restablecer el tipo de popup
+        },
+        popupType === "success" ? 1300 : 3000
+      ); // 1.8s para éxito, 3s para error
+
       return () => clearTimeout(timer); // Limpieza del temporizador
     }
   }, [message, popupType]);
@@ -79,7 +120,9 @@ function CrearUsuario() {
     }
 
     if (contrasena !== ConfirmPassword) {
-      setMessage("Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente.");
+      setMessage(
+        "Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente."
+      );
       setPopupType("error");
       return;
     }
@@ -96,8 +139,15 @@ function CrearUsuario() {
       rol: {
         id: rol,
       },
+      cargo: {
+        id: cargo,
+      },
+      equipo: {
+        id: equipo,
+      },
     };
 
+    console.log(nuevoUsuario);
     try {
       const token = localStorage.getItem("token"); // Obtener token de autenticación
       console.log(token);
@@ -107,11 +157,11 @@ function CrearUsuario() {
           Authorization: `Bearer ${token}`, // Incluir el token en los encabezados
         },
       });
-     setMessage("¡Usuario creado con éxito!");
-     setPopupType("success")
-     setTimeout(() => {
-      navigate("/Home");
-    }, 1300);
+      setMessage("¡Usuario creado con éxito!");
+      setPopupType("success");
+      setTimeout(() => {
+        navigate("/Home");
+      }, 1300);
     } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message); // Mostrar mensaje de error del servidor
@@ -221,6 +271,52 @@ function CrearUsuario() {
             </div>
           </div>
 
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img src="/mapa-del-sitio (1).svg" alt="Cargo" className="icon" />
+              <select
+                className="inputCreate"
+                value={cargo}
+                onChange={(e) => setCargo(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Cargo asignado
+                </option>
+                {cargos.map((cargo) => (
+                  <option key={cargo.id} value={cargo.id}>
+                    {cargo.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="inputGroup">
+            <div className="iconWrap">
+              <img
+                src="/mapa-del-sitio (1).svg"
+                alt="Equipo"
+                className="icon"
+              />
+              <select
+                className="inputCreate"
+                value={equipo}
+                onChange={(e) => setEquipo(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Equipo asignado
+                </option>
+                {equipos.map((equipo) => (
+                  <option key={equipo.id} value={equipo.id}>
+                    {equipo.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
             <div className="inputGroup">
               <div className="iconWrap">
@@ -300,15 +396,15 @@ function CrearUsuario() {
           </button>
         </form>
         {message && (
-        <div
-          className={
-            popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"
-          }
-          style={{ opacity: 1 }}
-        >
-          {message}
-        </div>
-      )}
+          <div
+            className={
+              popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"
+            }
+            style={{ opacity: 1 }}
+          >
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );
