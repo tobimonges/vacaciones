@@ -6,3 +6,4 @@ node_modules/
 vacaciones-frontend/package.json
 vacaciones-frontend/package-lock.json
 vacaciones-frontend/node_modules
+vacaciones-backend/src/main/resources/application.properties
