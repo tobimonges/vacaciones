@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -44,6 +45,8 @@ public class UsuarioController {
     private final JwtUtils jwtUtils;
     private final EmailService emailService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private IUsuarioService usuarioService;
     @Autowired
@@ -78,6 +81,9 @@ public class UsuarioController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(lideres);
     }
+
+
+
     @GetMapping("/diasdisponiblesid/{idUsuario}")
     public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("idUsuario") Long idUsuario) {
         int diasVacaciones = usuarioService.obtenerDiasVacacionesPorIdUsuario(idUsuario);
@@ -183,6 +189,32 @@ public class UsuarioController {
         } catch (Exception e) {
             logger.error("Error interno al procesar la solicitud de reset-password: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Ocurrió un error interno."));
+        }
+    }
+
+    @PostMapping("/usuarios/update-password")
+    public ResponseEntity<?> updatePassword(@RequestParam String token, @RequestParam String newPassword) {
+        try {
+            // Validar el token y extraer el correo
+            if (!jwtUtils.validateJwtToken(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "El token es inválido o ha expirado."));
+            }
+            String email = jwtUtils.getUsernameFromJwtToken(token);
+            // Validar formato de la contraseña
+            if (newPassword.length() < 8 || !newPassword.matches(".*\\d.*") || !newPassword.matches(".*[A-Z].*")) {
+                return ResponseEntity.badRequest().body(Map.of("message", "La contraseña debe tener al menos 8 caracteres, incluir una mayúscula y un número."));
+            }
+            // Buscar al usuario por correo
+            UsuarioModel usuario = usuarioRepository.findByCorreo(email)
+                    .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado."));
+            // Encriptar y actualizar la contraseña
+            usuario.setContrasena(passwordEncoder.encode(newPassword));
+            usuarioRepository.save(usuario);
+            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada con éxito."));
+        } catch (UsuarioNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al actualizar la contraseña."));
         }
     }
 
