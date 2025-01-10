@@ -15,15 +15,129 @@
   left: 50%;
   transform: translate(-50%, -50%);
   max-height: 80vh; /* Limitar altura al 80% del viewport */
+  overflow-y: hidden; /* Evitar desplazamiento vertical fuera de las secciones */
+}
+.header-section {
+  display: flex;
+  flex-direction: column; /* Alinear en columna */
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.header-title-container {
+  display: flex;
+  flex-wrap: wrap; /* Permitir que el contenido se envuelva en pantallas pequeñas */
+  justify-content: flex-end; /* Centrar los elementos */
+  align-items: center;
+  width: 100%;
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 50px;
+  gap: 23rem; /* Espacio entre título y filtro */
+}
+
+h4 {
+  font-size: 1.5rem;
+  color: white;
+  margin: 0;
+  text-align: center; /* Centrar el texto siempre */
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centrar en pantalla pequeña */
+  gap: 0.5rem;
+}
+
+.filter-input {
+  padding: 0.5rem;
+  border: 2px solid #c4c4c4cb;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  width: 200px;
+  margin-right: 60px;
+}
+
+.filter-label {
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .header-section {
+    gap: 0.5rem;
+  }
+
+  .header-title-container {
+    flex-direction: column; /* Alinear en columna en pantallas pequeñas */
+    align-items: center;
+    margin: 10px 0; /* Reducir márgenes */
+    gap: 0.5rem;
+  }
+
+  .filter-container {
+    justify-content: center; /* Centrar en pantallas pequeñas */
+  }
+
+  .filter-input {
+    width: 90%; /* Hacer el filtro más ancho en pantallas pequeñas */
+    max-width: 300px; /* Limitar el ancho máximo */
+  }
+
+  h4 {
+    font-size: 1.25rem; /* Reducir tamaño en pantallas pequeñas */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header-section {
+    gap: 0.5rem;
+  }
+
+  .header-title-container {
+    flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+    align-items: center; /* Alinear todo al centro */
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+
+  h4 {
+    position: static; /* Eliminar posición absoluta */
+    transform: none; /* Eliminar el desplazamiento */
+    text-align: center; /* Centrar el texto */
+    margin-bottom: 10px; /* Añadir espacio inferior */
+  }
+
+  .filter-container {
+    position: static; /* Cambiar de absoluto a estático */
+    margin: 0; /* Eliminar márgenes adicionales */
+  }
+
+  .filter-input {
+    margin: 0 auto; /* Centrar el input horizontalmente */
+    width: 90%; /* Hacerlo más ancho en pantallas pequeñas */
+    box-sizing: border-box; /* Asegurar que padding no afecte el tamaño */
+  }
+
+  .filter-label {
+    margin-right: 0;
+    margin-bottom: 5px; /* Añadir espacio inferior */
+    text-align: center; /* Centrar el texto */
+  }
+}
+
+.content-section {
+  flex: 1;
+  width: 100%;
   overflow-y: scroll; /* Habilitar desplazamiento vertical */
   scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
 }
 
-.container-solicitudes::-webkit-scrollbar {
-  display: none; /* Ocultar barra de desplazamiento en navegadores basados en WebKit (Chrome, Edge, Safari) */
-}
-h4 {
-  font-size: 1.5rem;
+p {
   color: white;
   text-align: center;
 }
@@ -81,7 +195,7 @@ button.reject:hover {
 }
 
 .error {
-  color: red;
+  color: white;
   font-weight: bold;
   text-align: center;
 }
@@ -147,11 +261,11 @@ button.reject:hover {
   background-color: #fcbc0e;
 }
 
-button:disabled {
-  background-color: #c0a354; /* Color de fondo gris */
-  color: #464646; /* Color del texto gris oscuro */
-  cursor: not-allowed; /* Cambiar el cursor a no permitido */
-  opacity: 0.7; /* Añadir un poco de transparencia */
-  transition: none; /* Quitar la animación */
+tbody button:disabled {
+  background-color: #c0a354;
+  color: #464646;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transition: none;
   margin-right: 10px;
 }

@@ -194,7 +194,7 @@ export default function SolicitudDetalle() {
                   <br />
                   <div className="buttons">
                     <button onClick={() => handleGuardar(solicitud.id)}>
-                      Guardar
+                      <span>Guardar</span>
                     </button>
                     <button onClick={handleCancelar}>Cancelar</button>
                   </div>

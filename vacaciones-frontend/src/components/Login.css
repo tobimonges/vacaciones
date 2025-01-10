@@ -39,9 +39,7 @@
 .loginBox {
   position: relative;
   border: none;
-  height: 350px;
-  width: 400px;
-  padding: 20px;
+  padding: 30px 40px 40px 40px;
   border-radius: 10px;
   background: rgba(87, 145, 238, 0.25);
   transition: all 0.3 ease;
@@ -86,7 +84,7 @@
   height: 20px;
   margin-bottom: 8px;
   margin-top: 10px;
-  margin-left: -6pxx;
+  margin-left: -6px;
 }
 
 .iconWrap {
@@ -117,15 +115,15 @@
 
 .forgotPassword {
   text-align: center;
-  margin-bottom: 20px;
-  margin-top: 5px;
+  margin-bottom: 0px;
+  margin-top: -5px;
 }
 
 .link {
-  font-size: 14px;
+  font-size: 13px;
   color: white;
   text-decoration: none;
-  margin-top: 10px;
+  margin-top: 15px;
   transition: all 0.3s ease;
 }
 
@@ -133,10 +131,10 @@
   color: #fdca40;
 }
 
-.button {
+.buttonLogin {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   width: 50%;
-  padding: 10px;
+  padding: 8px;
   background-color: #fdca40;
   color: black;
   border: none;
@@ -144,12 +142,12 @@
   cursor: pointer;
   font-size: 16px;
   margin: 0 auto;
-  margin-top: 80px;
+  margin-top: 90px;
   display: block;
   transition: all 0.4s ease;
 }
 
-.button:hover {
+.buttonLogin:hover {
   background-color: #fcbc0e;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
     0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),

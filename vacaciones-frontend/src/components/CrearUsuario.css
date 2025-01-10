@@ -209,3 +209,55 @@ h3 .icon {
     transform: translateY(250px);
   }
 }
+.popupErrorCrearUsuario {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336; /* Color rojo para el error */
+  color: white;
+  padding: 20px 40px;
+  border-radius: 7px;
+  max-width: 80%; /* Controla el ancho máximo */
+  width: 500px; /* Ajusta el ancho fijo */
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  animation: shadeIn 0.5s forwards;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.popupExitoso {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50; /* Color verde para el éxito */
+  color: white;
+  max-width: 80%; /* Controla el ancho máximo */
+  width: 500px; /* Ajusta el ancho fijo */
+  align-items: center;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 7px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  animation: shadeIn 0.5s forwards;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+@keyframes shadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

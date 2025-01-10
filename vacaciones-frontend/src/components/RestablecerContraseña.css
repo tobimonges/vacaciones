@@ -27,7 +27,7 @@
 }
 .headerRC {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 30px;
   color: white;
 }
@@ -37,7 +37,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0px;
-  margin-top: 70px;
+  margin-top: 55px;
   margin-bottom: -60px;
 }
 .iconRC {
@@ -45,8 +45,8 @@
   width: 25px;
   height: 25px;
   margin-bottom: 5px;
-  margin-top: 10px;
-  margin-left: -35px;
+  margin-top: 9px;
+  margin-left: -40px;
 }
 .iconWrapRC {
   position: absolute;
@@ -61,9 +61,10 @@
 
 .inputRC {
   position: relative;
-  width: 100%;
+  margin-left: px;
+  width: 300px;
   flex: 1;
-  padding: 11px;
+  padding: 9px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
@@ -87,7 +88,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 90px;
+  margin-top: 95px;
   margin-left: 95px;
   display: block;
   transition: all 0.4s ease;
@@ -132,8 +133,8 @@
   width: 25px;
   height: 25px;
   margin-bottom: 5px;
-  margin-top: 10px;
-  margin-left: -35px;
+  margin-top: 9px;
+  margin-left: -40px;
 }
 .iconWrapRC1 {
   position: absolute;

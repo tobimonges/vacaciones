@@ -4,7 +4,7 @@ import "./LogoutButton.css";
 const LogoutButton = () => {
   return (
     <button onClick={logout} className="logout-button">
-      Cerrar sesión
+      <span>Cerrar sesión</span>
     </button>
   );
 };

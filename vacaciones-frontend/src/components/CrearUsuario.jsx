@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CrearUsuario.css";
 import axios from "axios";
@@ -22,6 +22,8 @@ function CrearUsuario() {
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
@@ -48,6 +50,17 @@ function CrearUsuario() {
     fetchRoles();
   }, []);
 
+  //temporizador
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+        setPopupType(""); // Restablecer el tipo de popup
+      }, popupType === "success" ? 1300 : 3000); // 1.8s para éxito, 3s para error
+  
+      return () => clearTimeout(timer); // Limpieza del temporizador
+    }
+  }, [message, popupType]);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,9 +79,8 @@ function CrearUsuario() {
     }
 
     if (contrasena !== ConfirmPassword) {
-      alert(
-        "Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente."
-      );
+      setMessage("Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente.");
+      setPopupType("error");
       return;
     }
 
@@ -95,8 +107,11 @@ function CrearUsuario() {
           Authorization: `Bearer ${token}`, // Incluir el token en los encabezados
         },
       });
-      alert("Usuario creado exitosamente");
-      navigate("/Home"); // Redirigir a la página principal u otra
+     setMessage("¡Usuario creado con éxito!");
+     setPopupType("success")
+     setTimeout(() => {
+      navigate("/Home");
+    }, 1300);
     } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message); // Mostrar mensaje de error del servidor
@@ -281,9 +296,19 @@ function CrearUsuario() {
           </div>
 
           <button type="submit" className="button">
-            Crear
+            <span>Crear</span>
           </button>
         </form>
+        {message && (
+        <div
+          className={
+            popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"
+          }
+          style={{ opacity: 1 }}
+        >
+          {message}
+        </div>
+      )}
       </div>
     </div>
   );

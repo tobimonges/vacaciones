@@ -24,7 +24,7 @@ function Login() {
         loginBox.classList.add("cajaLogin");
       }
     }, 655); // 800 milisegundos = 0.8 segundos
-  
+
     // Limpiar el timeout si el componente se desmonta antes de que se ejecute
     return () => clearTimeout(timeout);
   }, []);
@@ -56,7 +56,7 @@ function Login() {
       setPassword("");
       setError(true);
       setShowError(true);
-    //  setTimeout(() => setError(false), 2100);
+      //  setTimeout(() => setError(false), 2100);
       setTimeout(() => setShowError(false), 2000);
 
 
@@ -96,9 +96,8 @@ function Login() {
     <div className="containerLogin">
       <Preloader duration={650} />
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
-          error ? "datosIncorrectos" : ""
-        }`}
+        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
+          }`}
       >
         <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
@@ -132,30 +131,30 @@ function Login() {
                 required
               />
             </div>
+            <div className="forgotPassword">
+              <a
+                href="#"
+                className="link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleForgotPassword();
+                }}
+              >
+                Olvidaste tu contraseña?
+              </a>
+            </div>
           </div>
-          <button type="submit" className="button">
-            Iniciar sesión
+          <button type="submit" className="buttonLogin">
+            <span>Iniciar sesión</span>
           </button>
-          <div className="forgotPassword">
-            <a
-              href="#"
-              className="link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleForgotPassword();
-              }}
-            >
-              Olvidaste tu contraseña?
-            </a>
-          </div>
         </form>
         <div className="content"></div>
       </div>
       {showError && (
-      <div className={`errorPopup ${error ? 'error' : ''}`}>
-        {errorMessage}
-      </div>
-    )}
+        <div className={`errorPopup ${error ? 'error' : ''}`}>
+          {errorMessage}
+        </div>
+      )}
 
     </div>
   );

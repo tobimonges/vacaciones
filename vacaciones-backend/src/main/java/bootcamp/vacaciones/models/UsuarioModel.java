@@ -26,7 +26,7 @@ public class UsuarioModel {
     @Column(name="fecha_ingreso", nullable = false)
     private LocalDate fechaIngreso;
 
-    @Column(name="antiguedad" , insertable = false, updatable = false)
+    @Column(name = "antiguedad", columnDefinition = "INTERVAL", insertable = false, updatable = false)
     private String antiguedad;
     @Column(name="dias_vacaciones")
     private int diasVacaciones;
@@ -37,12 +37,18 @@ public class UsuarioModel {
     @JoinColumn(name = "id_rol", nullable = false)
     private RolModel rol;
 
+    @ManyToOne
+    @JoinColumn(name="id_equipo", nullable = true)
+    private EquipoModel equipo;
+
+    @ManyToOne
+    @JoinColumn(name="id_cargo", nullable = true)
+    private CargoModel cargo;
+
+
     public UsuarioModel() {
     }
-
-    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
-                        String contrasena, String telefono, LocalDate fechaIngreso,
-                        String antiguedad, int diasVacaciones, boolean estado, RolModel rol) {
+    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono, LocalDate fechaIngreso, String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo, CargoModel cargo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -55,6 +61,8 @@ public class UsuarioModel {
         this.diasVacaciones = diasVacaciones;
         this.estado = estado;
         this.rol = rol;
+        this.equipo = equipo;
+        this.cargo = cargo;
     }
 
     public Long getId() {
@@ -151,5 +159,21 @@ public class UsuarioModel {
 
     public void setRol(RolModel rol) {
         this.rol = rol;
+    }
+
+    public EquipoModel getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(EquipoModel equipo) {
+        this.equipo = equipo;
+    }
+
+    public CargoModel getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(CargoModel cargo) {
+        this.cargo = cargo;
     }
 }

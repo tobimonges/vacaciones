@@ -36,3 +36,32 @@ body {
   background-attachment: fixed;
   background-blend-mode: multiply;
 }
+
+
+* {
+  font-family: "Montserrat", serif; /* Fuente principal */
+}
+
+/* Si deseas personalizar más, puedes agregar selectores más específicos: */
+
+h1, h2, h3, p {
+  font-family: "Montserrat", serif; /* Fuente para títulos */
+}
+
+input {
+  font-family: "Funnel Sans", serif; /* Fuente para textos pequeños */
+  font-weight: 400;
+  color: #333;
+}
+
+
+button span {
+  font-family: "Funnel Sans", serif;
+  font-weight: 400;
+  color: #333;color: #333;
+  padding: 15px;
+  line-height: 1.6;
+  font-size: 1.1rem;
+  
+}
+

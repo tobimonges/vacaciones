@@ -3,6 +3,7 @@ package bootcamp.vacaciones.services;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +63,17 @@ public class UsuarioService implements IUsuarioService{
     @Override
     public void eliminarUsuario(UsuarioModel usuario) {
         usuarioRepository.delete(usuario);
+    }
+    @Scheduled(cron = "0 00 09 * * ?")
+    public void actualizarAntiguedadYVacaciones() {
+        List<UsuarioModel> usuarios = usuarioRepository.findAll();
+
+        for (UsuarioModel usuario : usuarios) {
+            // Actualizar antigüedad directamente en la base de datos con SQL
+            usuarioRepository.actualizarAntiguedad(usuario.getId());
+
+            // Guardar cambios
+            usuarioRepository.save(usuario);
+        }
     }
 }
