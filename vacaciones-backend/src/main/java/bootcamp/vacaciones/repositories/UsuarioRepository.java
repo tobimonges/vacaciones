@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
-    UsuarioModel findByNroCedula(int nroCedula);
+    Optional<UsuarioModel> findByNroCedula(int nroCedula);
     Optional<UsuarioModel> findByCorreo(String correo);
 
     @Query("SELECT u FROM UsuarioModel u WHERE u.rol.nombre = 'LIDER'")
