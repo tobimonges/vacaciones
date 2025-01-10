@@ -125,7 +125,10 @@ export default function NuevaSolicitud() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setLideres(response.data);
+        const lideresFiltrados = response.data.filter(
+          (lider) => lider.id !== usuarioId
+        );
+        setLideres(lideresFiltrados);
       } catch (err) {
         console.error("Error al obtener líderes:", err);
         setError("No se pudo obtener la información de los líderes.");
