@@ -29,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import bootcamp.vacaciones.security.JwtBlacklist;
+
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -42,6 +44,7 @@ public class UsuarioController {
     @Value("${app.reset-password-url}")
     private String baseUrl;
 
+    private final JwtBlacklist jwtBlacklist;
     private final JwtUtils jwtUtils;
     private final EmailService emailService;
 
@@ -54,9 +57,10 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public UsuarioController(JwtUtils jwtUtils, EmailService emailService) {
+    public UsuarioController(JwtUtils jwtUtils, EmailService emailService, JwtBlacklist jwtBlacklist) {
         this.jwtUtils = jwtUtils;
         this.emailService = emailService;
+        this.jwtBlacklist = jwtBlacklist;
     }
 
 
@@ -199,30 +203,53 @@ public class UsuarioController {
     }
 
     @PostMapping("/usuarios/update-password")
-    public ResponseEntity<?> updatePassword(@RequestParam String token, @RequestParam String newPassword) {
+    public ResponseEntity<?> updatePassword(@RequestHeader("Authorization") String authHeader, @RequestParam String newPassword) {
         try {
+            // Validar que el token esté presente
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "El encabezado Authorization es requerido."));
+            }
+
+            String token = authHeader.substring(7);
+
             // Validar el token y extraer el correo
             if (!jwtUtils.validateJwtToken(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "El token es inválido o ha expirado."));
             }
+
             String email = jwtUtils.getUsernameFromJwtToken(token);
+
             // Validar formato de la contraseña
             if (newPassword.length() < 8 || !newPassword.matches(".*\\d.*") || !newPassword.matches(".*[A-Z].*")) {
                 return ResponseEntity.badRequest().body(Map.of("message", "La contraseña debe tener al menos 8 caracteres, incluir una mayúscula y un número."));
             }
+
             // Buscar al usuario por correo
             UsuarioModel usuario = usuarioRepository.findByCorreo(email)
                     .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado."));
+
             // Encriptar y actualizar la contraseña
             usuario.setContrasena(passwordEncoder.encode(newPassword));
             usuarioRepository.save(usuario);
+
+            // Invalida el token después del uso
+            jwtBlacklist.addToBlacklist(token);
+
+            emailService.enviarCorreo(
+                    email,
+                    "Contraseña Actualizada",
+                    "<p>Tu contraseña ha sido actualizada exitosamente. Si no realizaste este cambio, contacta a soporte inmediatamente.</p>"
+            );
+
             return ResponseEntity.ok(Map.of("message", "Contraseña actualizada con éxito."));
+
         } catch (UsuarioNoEncontradoException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al actualizar la contraseña."));
         }
     }
+
 
 
 }
