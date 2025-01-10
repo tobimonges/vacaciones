@@ -188,7 +188,6 @@ export default function NuevaSolicitud() {
       numeroAprobaciones: userRole === "TH" ? 1 : 0, // Valor según el rol del usuario
     };
 
-    console.log(solicitud);
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
