@@ -111,17 +111,14 @@ function CrearUsuario() {
       !correo ||
       !contrasena ||
       !telefono ||
-      !fechaIngreso
+      !fechaIngreso ||
+      !fechaNacimiento ||
+      !estado ||
+      !rol ||
+      !cargo ||
+      !equipo
     ) {
       setError("Por favor, completa todos los campos.");
-      return;
-    }
-
-    if (contrasena !== ConfirmPassword) {
-      setMessage(
-        "Las contraseñas no coinciden. Por favor, verifica e intenta nuevamente."
-      );
-      setPopupType("error");
       return;
     }
 
@@ -130,7 +127,6 @@ function CrearUsuario() {
       apellido: apellido,
       nroCedula: parseInt(nroCedula),
       correo: correo,
-      contrasena: contrasena,
       telefono: telefono,
       fechaIngreso: fechaIngreso.format("YYYY-MM-DD"),
       fechaNacimiento: fechaNacimiento.format("YYYY-MM-DD"),
@@ -146,7 +142,6 @@ function CrearUsuario() {
       },
     };
 
-    console.log(nuevoUsuario);
     try {
       const token = localStorage.getItem("token"); // Obtener token de autenticación
       const url = "http://localhost:8080/vacaciones/crea/usuarios"; // URL para la creación del nuevo usuario
@@ -370,42 +365,6 @@ function CrearUsuario() {
                 className="inputCreate"
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="inputGroup">
-            <div className="iconWrap">
-              <img
-                src="/bloquear-hashtag.svg"
-                alt="Contraseña"
-                className="icon"
-              />
-              <input
-                type="password"
-                placeholder="Contraseña"
-                className="inputCreate"
-                value={contrasena} // Vincula el valor con el estado
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="inputGroup">
-            <div className="iconWrap">
-              <img
-                src="/bloquear-hashtag.svg"
-                alt="Contraseña"
-                className="icon"
-              />
-              <input
-                type="password"
-                placeholder="Confirmar contraseña"
-                className="inputCreate"
-                value={ConfirmPassword} // Vincula el valor con el estado
-                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
