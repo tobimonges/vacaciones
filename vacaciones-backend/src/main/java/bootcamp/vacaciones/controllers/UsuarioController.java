@@ -82,7 +82,13 @@ public class UsuarioController {
         return ResponseEntity.ok(lideres);
     }
 
-
+    @GetMapping("/listar-TH")
+    public ResponseEntity<List<UsuarioModel>> listarTH() {
+        List<UsuarioModel> lideres = usuarioRepository.findAll().stream()
+                .filter(usuario -> usuario.getRol().getNombre().equalsIgnoreCase("TH"))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lideres);
+    }
 
     @GetMapping("/diasdisponiblesid/{idUsuario}")
     public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("idUsuario") Long idUsuario) {
