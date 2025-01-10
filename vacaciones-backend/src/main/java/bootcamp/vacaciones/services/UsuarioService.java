@@ -53,11 +53,14 @@ public class UsuarioService implements IUsuarioService{
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
-        if (usuarioRepository.findByNroCedula(usuario.getNroCedula()) != null) {
+
+        if (usuarioRepository.findByNroCedula(usuario.getNroCedula()).isPresent()) {
             throw new IllegalArgumentException("La cédula ya está registrada");
         }
+
         String contrasenaEncriptada = passwordEncoder.encode(usuario.getContrasena());
         usuario.setContrasena(contrasenaEncriptada);
+
         return usuarioRepository.save(usuario);
     }
 
