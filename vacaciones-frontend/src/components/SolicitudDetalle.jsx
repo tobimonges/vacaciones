@@ -370,7 +370,7 @@ export default function SolicitudDetalle() {
                                 {lider.nombre} {lider.apellido}
                               </span>
                           ))}
-                      </p>
+                      </p> 
                       <p>
                         <strong>Comentario:</strong> {solicitud.comentario || "Sin comentario"}
                       </p>
