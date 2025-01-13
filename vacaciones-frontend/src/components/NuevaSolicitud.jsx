@@ -122,7 +122,7 @@ export default function NuevaSolicitud() {
         let lideresData = [];
 
         // Si el usuario logueado es "TH", usar la ruta específica
-        if (userRole === "TH") {
+        if (userRole === "TH" || userRole === "OPERACIONES") {
           const thResponse = await axios.get(
             "http://localhost:8080/vacaciones/listar-TH",
             {
@@ -184,7 +184,8 @@ export default function NuevaSolicitud() {
       liderId: selectedLider,
       estado: false,
       cantidadDias: validDays,
-      numeroAprobaciones: userRole === "TH" ? 1 : 0, // Valor según el rol del usuario
+      numeroAprobaciones:
+        userRole === "TH" || userRole === "OPERACIONES" ? 1 : 0, // Valor según el rol del usuario
     };
 
     try {
@@ -284,9 +285,9 @@ export default function NuevaSolicitud() {
               </select>
             </div>
             <div className="buttons">
-            <button className="btn" onClick={() => navigate("/Home")}>
-          <span>Volver a Home</span>
-        </button>
+              <button className="btn" onClick={() => navigate("/Home")}>
+                <span>Volver a Home</span>
+              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
