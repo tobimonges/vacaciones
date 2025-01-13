@@ -1,80 +1,139 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Solicitud.css";
-
-import Logo from "./Logo";
 import Preloader from "./Preloader";
+import NavigationBar from "./NavigationBar";
+import { useNavigate } from "react-router-dom";
+import "./AdminDashboard.css";
 
-function EquipoDetalle() {
-  const { id } = useParams(); // ID del usuario
+
+const EquipoDetalle = () => {
+  const [equipos, setEquipos] = useState([]);
+  const [error, setError] = useState("");
+  const [filterText, setFilterText] = useState("");
   const navigate = useNavigate();
-  const [equipos, setEquipos] = useState([]); // Lista de equipos
-  const [error, setError] = useState(""); // Error handling
 
   useEffect(() => {
     const fetchEquipos = async () => {
+      const token = localStorage.getItem("token");
+
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("No estás autenticado. Por favor, inicia sesión.");
-          navigate("/");
-          return;
-        }
+        const response = await axios.get("http://localhost:8080/vacaciones", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        const response = await axios.get(
-          `http://localhost:8080/vacaciones/usuario/${id}/equipos`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setEquipos(response.data); // Guardar los equipos obtenidos
-        } else {
-          setError("No se pudieron obtener los equipos.");
-        }
-      } catch (error) {
-        console.error("Error obteniendo los equipos:", error);
-        setError("Error al conectar con el servidor.");
+        setEquipos(response.data);
+      } catch (err) {
+        console.error("Error fetching equipos:", err.response?.data || err.message);
+        setError("No se pudieron cargar los equipos.");
       }
     };
 
     fetchEquipos();
-  }, [id, navigate]);
+  }, []);
 
-  if (error) {
-    return <p className="error">{error}</p>;
-  }
+  
 
-  if (equipos.length === 0) {
-    return <p>No se encontraron equipos para este usuario.</p>;
-  }
+  const handleFilterChange = (e) => {
+    setFilterText(e.target.value);
+  };
+
+  const filteredEquipos = equipos.filter((equipo) =>
+    equipo.nombre.toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
+  const handleEliminarEquipo = async (equipoId) => {
+    const confirm = window.confirm(
+      "¿Estás seguro de que deseas eliminar este equipo?"
+    );
+    if (!confirm) return;
+  
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `http://localhost:8080/vacaciones/equipos/${equipoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Actualizar la lista de equipos
+      setEquipos((prev) =>
+        prev.filter((equipo) => equipo.id !== equipoId)
+      );
+      alert("Equipo eliminado correctamente.");
+    } catch (error) {
+      console.error("Error eliminando el equipo:", error);
+      alert("No se pudo eliminar el equipo.");
+    }
+  };
+  
+
+  
 
   return (
-    <div className="container-solicitudes">
+    <div>
       <Preloader duration={650} />
-      <Logo />
-      <h4>Equipos del Usuario</h4>
-      <ul>
-        {equipos.map((equipo) => (
-          <li key={equipo.id}>
-            <p>
-              <strong>ID del Equipo:</strong> {equipo.id}
-            </p>
-            <p>
-              <strong>Nombre:</strong> {equipo.nombre}
-            </p>
-          </li>
-        ))}
-      </ul>
-      <button className="volver-home" onClick={() => navigate("/Home")}>
-        Volver al Home
-      </button>
+      <div className="container-admin">
+        <div className="header-section">
+          <NavigationBar onLogout={handleLogout} />
+          <div className="header-title-container">
+            <h4>Lista de Equipos</h4>
+            <div className="filter-container">
+              <label htmlFor="filter-input">Buscar:</label>
+              <input
+                id="filter-input"
+                type="text"
+                placeholder="Nombre del equipo"
+                value={filterText}
+                onChange={handleFilterChange}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="content-section">
+          {error ? (
+            <p className="error">{error}</p>
+          ) : filteredEquipos.length === 0 ? (
+            <p>No hay equipos que coincidan con el filtro.</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEquipos.map((equipo) => (
+                  <tr key={equipo.id}>
+                    <td>{equipo.id}</td>
+                    <td>{equipo.nombre}</td>
+                    <td>.</td>
+                    <td>
+                      <button
+                        onClick={() => handleEliminarEquipo(equipo.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default EquipoDetalle;
