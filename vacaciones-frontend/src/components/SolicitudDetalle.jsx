@@ -4,12 +4,11 @@ import axios from "axios";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { getUsuarioId } from "./authUtils";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "./Solicitud.css";
-
 import Logo from "./Logo";
-
 import Preloader from "./Preloader";
 
 function isWeekend(date) {
@@ -37,6 +36,7 @@ function countValidDays(start, end, reservedDates, disabledDates) {
 }
 
 export default function SolicitudDetalle() {
+  const usuarioId = getUsuarioId();
   const { id } = useParams(); // ID del usuario
   const navigate = useNavigate();
   const [solicitudes, setSolicitudes] = useState([]); // Lista de solicitudes
@@ -47,7 +47,7 @@ export default function SolicitudDetalle() {
   const [filtro, setFiltro] = useState("");
   const [lideres, setLideres] = useState([]);
   const [reservedDates, setReservedDates] = useState([]);
-  const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] = useState(20);
+  const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] = useState(null);
 
   const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")]; 
 
@@ -111,7 +111,7 @@ export default function SolicitudDetalle() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:8080/vacaciones/reservadas/${id}`,
+          `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -125,7 +125,31 @@ export default function SolicitudDetalle() {
     };
 
     fetchReservedDates();
-  }, [id]);
+  }, [usuarioId]);
+
+  useEffect(() => {
+    const fetchDiasDisponibles = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No se encontró un token. Inicia sesión nuevamente.");
+          return;
+        }
+
+        const url = `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`;
+        const response = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setDiasVacacionesDisponibles(response.data);
+      } catch (err) {
+        console.error("Error al obtener días de vacaciones disponibles:", err);
+        setError("No se pudo obtener la información de días de vacaciones.");
+      }
+    };
+
+    fetchDiasDisponibles();
+  }, [usuarioId]);
 
   const shouldDisableDate = (date) => {
     return (
@@ -263,7 +287,9 @@ export default function SolicitudDetalle() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" >
+      <Preloader duration={650} />
       <div className="container-solicitudes">
+        <Logo />
         <h4>Solicitudes del Usuario</h4>
         {/* Lista desplegable para filtro */}
         <select
@@ -317,9 +343,7 @@ export default function SolicitudDetalle() {
                 </div>
               ) : (
                 <div>
-                  <p>
-                    <div className="titulo-solicitud"><strong>Solicitud N°{index + 1}</strong></div>
-                  </p>
+                  <div className="titulo-solicitud"><strong>Solicitud N°{index + 1}</strong></div>
                   <div className="solicitud-contenedor">
                     <div className="columna">
                       <p>
@@ -342,7 +366,7 @@ export default function SolicitudDetalle() {
                       <p>
                         <strong>Líder:</strong>{" "}
                           {lideres
-                            .filter((lider) => lider.id === solicitud.liderId) // Filtra el líder asignado
+                            .filter((lider) => lider.id === solicitud.LiderId) // Filtra el líder asignado
                             .map((lider) => (
                               <span key={lider.id}>
                                 {lider.nombre} {lider.apellido}

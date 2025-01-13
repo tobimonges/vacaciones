@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
-
+import { Link } from "react-router-dom";
 const NavigationBar = ({ logo, onLogout }) => {
     const navigate = useNavigate();
   
@@ -16,12 +16,17 @@ const NavigationBar = ({ logo, onLogout }) => {
                 <span className="text">Atrás</span>
               </button>
             </div>
-          
-  
-          {/* Logo centrado */}
-          <div className="nav-logo">
-            <img src="../../public/logo-white.svg" alt="Logo" />
-          </div>
+
+
+
+
+            {/* Logo centrado */}
+            <div className="nav-logo">
+                <Link to="/home">
+                    <img src="../../public/logo-white.svg" alt="Logo" />
+                </Link>
+            </div>
+
 
             {/* Botón de Cerrar Sesión */}
             <div className="nav-button-container right">
