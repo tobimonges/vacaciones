@@ -6,7 +6,7 @@ import Preloader from "./Preloader";
 import Logo from "./Logo";
 
 import NavigationBar from "./NavigationBar";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
@@ -41,9 +41,15 @@ const AdminDashboard = () => {
         };
 
         let filteredByRole;
-        filteredByRole = response.data.filter(
-          (solicitud) => solicitud.usuario.id !== userId
-        );
+        if (userRole === "LIDER") {
+          filteredByRole = response.data.filter(
+            (solicitud) => solicitud.lider.id === userId
+          );
+        } else {
+          filteredByRole = response.data.filter(
+            (solicitud) => solicitud.usuario.id !== userId
+          );
+        }
 
         // Ordenar las solicitudes según el estado
         const sortedSolicitudes = filteredByRole.sort((a, b) => {
@@ -291,13 +297,16 @@ const AdminDashboard = () => {
                           <>
                             <button
                               onClick={() => handleApprove(solicitud.id)}
-                              disabled={solicitud.numeroAprobaciones === 1}
+                              disabled={
+                                solicitud.numeroAprobaciones === 1 ||
+                                solicitud.usuario.id === userId
+                              } // Deshabilitar si el usuario es el logueado
                             >
                               <span>Aprobar</span>
                             </button>
                             <button
                               onClick={() => handleReject(solicitud.id)}
-                              disabled={false}
+                              disabled={solicitud.usuario.id === userId} // Deshabilitar si el usuario es el logueado
                             >
                               <span>Rechazar</span>
                             </button>
