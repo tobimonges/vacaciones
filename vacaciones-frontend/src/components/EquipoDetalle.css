@@ -1,0 +1,272 @@
+.container-detalle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 90%;
+    width: 100%;
+    background-color: rgba(87, 145, 238, 0.25); /* Fondo translúcido */
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Centrado en la pantalla */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh; /* Limitar altura al 80% del viewport */
+    overflow-y: hidden; /* Evitar desplazamiento vertical fuera de las secciones */
+  }
+  .header-section-detalle {
+    display: flex;
+    flex-direction: column; /* Alinear en columna */
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .header-title-container-detalle {
+    display: flex;
+    flex-wrap: wrap; /* Permitir que el contenido se envuelva en pantallas pequeñas */
+    justify-content: flex-end; /* Centrar los elementos */
+    align-items: center;
+    width: 100%;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    gap: 23rem; /* Espacio entre título y filtro */
+  }
+  
+  h4 {
+    font-size: 1.5rem;
+    color: white;
+    margin: 0;
+    text-align: center; /* Centrar el texto siempre */
+  }
+  
+  .filter-container-detalle {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrar en pantalla pequeña */
+    gap: 0.5rem;
+  }
+  
+  .filter-input-detalle {
+    padding: 0.5rem;
+    border: 2px solid #c4c4c4cb;
+    border-radius: 5px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    width: 200px;
+    margin-right: 60px;
+  }
+  
+  .filter-label {
+    font-size: 1rem;
+    color: white;
+    font-weight: bold;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .header-section {
+      gap: 0.5rem;
+    }
+  
+    .header-title-container {
+      flex-direction: column; /* Alinear en columna en pantallas pequeñas */
+      align-items: center;
+      margin: 10px 0; /* Reducir márgenes */
+      gap: 0.5rem;
+    }
+  
+    .filter-container {
+      justify-content: center; /* Centrar en pantallas pequeñas */
+    }
+  
+    .filter-input {
+      width: 90%; /* Hacer el filtro más ancho en pantallas pequeñas */
+      max-width: 300px; /* Limitar el ancho máximo */
+    }
+  
+    h4 {
+      font-size: 1.25rem; /* Reducir tamaño en pantallas pequeñas */
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .header-section {
+      gap: 0.5rem;
+    }
+  
+    .header-title-container-detalle {
+      flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
+      align-items: center; /* Alinear todo al centro */
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+  
+    h4 {
+      position: static; /* Eliminar posición absoluta */
+      transform: none; /* Eliminar el desplazamiento */
+      text-align: center; /* Centrar el texto */
+      margin-bottom: 10px; /* Añadir espacio inferior */
+    }
+  
+    .filter-container-detalle {
+      position: static; /* Cambiar de absoluto a estático */
+      margin: 0; /* Eliminar márgenes adicionales */
+    }
+  
+    .filter-input {
+      margin: 0 auto; /* Centrar el input horizontalmente */
+      width: 90%; /* Hacerlo más ancho en pantallas pequeñas */
+      box-sizing: border-box; /* Asegurar que padding no afecte el tamaño */
+    }
+  
+    .filter-label {
+      margin-right: 0;
+      margin-bottom: 5px; /* Añadir espacio inferior */
+      text-align: center; /* Centrar el texto */
+    }
+  }
+  
+  .content-section {
+    flex: 1;
+    width: 100%;
+    overflow-y: scroll; /* Habilitar desplazamiento vertical */
+    scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
+  }
+  
+  p {
+    color: white;
+    text-align: center;
+  }
+  
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: rgb(225, 225, 225);
+  }
+  
+  .admin-table thead {
+    color: white;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid #ffffff9c;
+  }
+  
+  .admin-table tbody tr:hover {
+    background-color: #f9f9f931;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  button {
+    background-color: #fdca40;
+    font-family: "bold";
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    padding: 0.4rem;
+    color: #2c2c2c;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: #fcbc0e;
+    transform: translateY(-2px);
+  }
+  
+  button.reject {
+    background-color: #fdca40;
+  }
+  
+  button.reject:hover {
+    background-color: #fdca40;
+  }
+  
+  .error {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Estilo para el modal (ventana emergente) */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(87, 145, 238, 0.25); /* Fondo oscuro translúcido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que se coloque sobre otros elementos */
+    backdrop-filter: blur(8px); /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(8px);
+  }
+  
+  /* Contenido del modal */
+  .modal-content {
+    background: rgba(87, 145, 238, 0.25);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative;
+  }
+  
+  /* Estilo para el textarea dentro del modal */
+  .modal-content textarea {
+    width: 90%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  /* Botones dentro del modal */
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .modal-buttons button {
+    background-color: #fdca40;
+    color: #2c2c2c;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-buttons button:hover {
+    background-color: #fcbc0e;
+  }
+  
+  tbody button:disabled {
+    background-color: #c0a354;
+    color: #464646;
+    cursor: not-allowed;
+    opacity: 0.7;
+    transition: none;
+    margin-right: 10px;
+  }
+  

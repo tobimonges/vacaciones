@@ -3,7 +3,7 @@ import axios from "axios";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import { useNavigate } from "react-router-dom";
-import "./AdminDashboard.css";
+import "./EquipoDetalle.css";
 
 
 const EquipoDetalle = () => {
@@ -17,7 +17,7 @@ const EquipoDetalle = () => {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await axios.get("http://localhost:8080/vacaciones", {
+        const response = await axios.get("http://localhost:8080/api/equipos", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -55,7 +55,7 @@ const EquipoDetalle = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://localhost:8080/vacaciones/equipos/${equipoId}`,
+        `http://localhost:8080/api/equipos/${equipoId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -80,15 +80,15 @@ const EquipoDetalle = () => {
   return (
     <div>
       <Preloader duration={650} />
-      <div className="container-admin">
-        <div className="header-section">
+      <div className="container-detalle">
+        <div className="header-section-detalle">
           <NavigationBar onLogout={handleLogout} />
-          <div className="header-title-container">
+          <div className="header-title-container-detaller">
             <h4>Lista de Equipos</h4>
-            <div className="filter-container">
+            <div className="filter-container-detalle">
               <label htmlFor="filter-input">Buscar:</label>
               <input
-                id="filter-input"
+                id="filter-input-detalle"
                 type="text"
                 placeholder="Nombre del equipo"
                 value={filterText}
