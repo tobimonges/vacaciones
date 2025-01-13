@@ -17,6 +17,7 @@
   max-height: 80vh; /* Limitar altura al 80% del viewport */
   overflow-y: hidden; /* Evitar desplazamiento vertical fuera de las secciones */
 }
+
 .header-section {
   display: flex;
   flex-direction: column; /* Alinear en columna */
@@ -27,14 +28,12 @@
 
 .header-title-container {
   display: flex;
-  flex-wrap: wrap; /* Permitir que el contenido se envuelva en pantallas pequeñas */
-  justify-content: flex-end; /* Centrar los elementos */
+  justify-content: space-between; /* Espacio máximo entre los elementos */
   align-items: center;
   width: 100%;
   position: relative;
   margin-top: 20px;
   margin-bottom: 50px;
-  gap: 23rem; /* Espacio entre título y filtro */
 }
 
 h4 {
@@ -42,13 +41,16 @@ h4 {
   color: white;
   margin: 0;
   text-align: center; /* Centrar el texto siempre */
+  flex-grow: 1; /* Hace que el título ocupe todo el espacio disponible */
+  text-align: center;
 }
 
 .filter-container {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrar en pantalla pequeña */
+  justify-content: flex-end; /* Pegado a la derecha */
   gap: 0.5rem;
+  margin-left: auto; /* Empuja el filtro hacia la derecha */
 }
 
 .filter-input {
@@ -67,66 +69,37 @@ h4 {
   font-weight: bold;
 }
 
-@media screen and (max-width: 768px) {
-  .header-section {
-    gap: 0.5rem;
-  }
-
-  .header-title-container {
-    flex-direction: column; /* Alinear en columna en pantallas pequeñas */
-    align-items: center;
-    margin: 10px 0; /* Reducir márgenes */
-    gap: 0.5rem;
-  }
-
-  .filter-container {
-    justify-content: center; /* Centrar en pantallas pequeñas */
-  }
-
-  .filter-input {
-    width: 90%; /* Hacer el filtro más ancho en pantallas pequeñas */
-    max-width: 300px; /* Limitar el ancho máximo */
-  }
-
-  h4 {
-    font-size: 1.25rem; /* Reducir tamaño en pantallas pequeñas */
-  }
+.space {
+  padding-left: 20%;
 }
 
 @media screen and (max-width: 768px) {
-  .header-section {
-    gap: 0.5rem;
-  }
-
   .header-title-container {
     flex-direction: column; /* Cambiar a columna en pantallas pequeñas */
-    align-items: center; /* Alinear todo al centro */
-    margin-top: 10px;
-    margin-bottom: 30px;
+    align-items: center; /* Centrar todos los elementos */
+    gap: 1rem; /* Espacio entre el título y el filtro */
   }
 
   h4 {
-    position: static; /* Eliminar posición absoluta */
-    transform: none; /* Eliminar el desplazamiento */
-    text-align: center; /* Centrar el texto */
-    margin-bottom: 10px; /* Añadir espacio inferior */
+    font-size: 1.25rem; /* Reducir tamaño del título en pantallas pequeñas */
+    text-align: center; /* Asegurarse de que el texto se mantenga centrado */
+    margin-bottom: 10px; /* Espacio inferior */
   }
 
   .filter-container {
-    position: static; /* Cambiar de absoluto a estático */
-    margin: 0; /* Eliminar márgenes adicionales */
+    justify-content: center; /* Centrar el filtro en pantallas pequeñas */
+    width: 100%;
   }
 
   .filter-input {
-    margin: 0 auto; /* Centrar el input horizontalmente */
-    width: 90%; /* Hacerlo más ancho en pantallas pequeñas */
-    box-sizing: border-box; /* Asegurar que padding no afecte el tamaño */
+    width: 90%; /* Hacer el filtro más grande en pantallas pequeñas */
+    max-width: 300px; /* Limitar el ancho máximo */
+    margin-right: 0;
   }
 
   .filter-label {
-    margin-right: 0;
-    margin-bottom: 5px; /* Añadir espacio inferior */
-    text-align: center; /* Centrar el texto */
+    margin-bottom: 5px; /* Espacio inferior */
+    text-align: center; /* Alinear el texto al centro */
   }
 }
 
