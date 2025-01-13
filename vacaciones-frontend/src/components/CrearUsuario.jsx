@@ -29,6 +29,9 @@ function CrearUsuario() {
   const [cargos, setCargos] = useState([]);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState("");
+  //mi agredado
+  const [estado, setEstado] = useState(true);
+
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
@@ -118,7 +121,8 @@ function CrearUsuario() {
       !cargo ||
       !equipo
     ) {
-      setError("Por favor, completa todos los campos.");
+      setMessage("Por favor, rellene todos los campos.");
+      setPopupType("error");
       return;
     }
 

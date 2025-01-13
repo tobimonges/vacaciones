@@ -96,7 +96,7 @@ function ForgotPassword({ onBackToLogin }) {
             </div>
           </div>
           <button type="submit" className="buttonFPC">
-            <span>Correo de recuperación</span>
+            Correo de recuperación
           </button>
           <div className="forgotPassword">
             <div className="iconFPWrapini" onClick={handleBackToLogin}>
