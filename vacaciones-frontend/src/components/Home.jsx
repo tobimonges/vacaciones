@@ -9,8 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils"; // Asegúrate de que getUserRole esté disponible
 import "./Home.css";
 import Preloader from "./Preloader";
-import Logo from "./Logo";
-import LogoutButton from "./LogoutButton";
+
 
 import NavigationBar from "./NavigationBar";
 // 🌍 Localización de fechas

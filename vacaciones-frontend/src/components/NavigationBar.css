@@ -12,11 +12,7 @@
     justify-content: space-between; /* Espacia botones y logo */
     padding: 10px 15px;
     width: 100%;
-    
-    background: rgba(255, 255, 255, 0.007);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
     
   }
 
@@ -60,7 +56,7 @@
   /* Botón específico: Atrás */
   .back-button {
     backdrop-filter: blur(10px);
-    background-color: #fdcb4000;
+    background-color: #235ba1;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
   .text {
@@ -73,9 +69,8 @@
   
   /* Botón específico: Cerrar sesión */
   .logout {
-    background-color: #ff4d4f;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #fdcb4000;
+    background-color: #235ba1;
     backdrop-filter: blur(10px);
   }
   
@@ -89,12 +84,12 @@
     display: flex;
     justify-content: center;
   }
-  
+
   .nav-logo img {
     height: 40px;
     transition: transform 0.3s ease;
   }
-  
+
   .nav-logo img:hover {
     transform: scale(1.08);
   }
