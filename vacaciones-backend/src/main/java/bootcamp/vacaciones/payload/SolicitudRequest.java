@@ -8,6 +8,7 @@ public class SolicitudRequest {
     private Long liderId; // ID del líder seleccionado
     private Integer cantidadDias;
     private String comentario;
+    private Integer numeroAprobaciones;
 
     // Getters y Setters
     public LocalDate getFechaInicio() {
@@ -48,5 +49,13 @@ public class SolicitudRequest {
 
     public void setComentario(String comentario) {
         this.comentario = comentario;
+    }
+
+    public Integer getNumeroAprobaciones() {
+        return numeroAprobaciones;
+    }
+
+    public void setNumeroAprobaciones(Integer numeroAprobaciones) {
+        this.numeroAprobaciones = numeroAprobaciones;
     }
 }

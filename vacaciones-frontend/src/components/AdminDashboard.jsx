@@ -5,6 +5,7 @@ import { getUsuarioId, getUserRole } from "./authUtils";
 import Preloader from "./Preloader";
 import Logo from "./Logo";
 
+import NavigationBar from "./NavigationBar";
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
@@ -13,7 +14,7 @@ const AdminDashboard = () => {
   const [comentario, setComentario] = useState("");
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
   const [filterText, setFilterText] = useState("");
-
+  const userId = getUsuarioId();
   const userRole = getUserRole(); // Obtener el rol del usuario logueado
 
   useEffect(() => {
@@ -37,8 +38,13 @@ const AdminDashboard = () => {
           Rechazado: 5,
         };
 
+        let filteredByRole;
+        filteredByRole = response.data.filter(
+          (solicitud) => solicitud.usuario.id !== userId
+        );
+
         // Ordenar las solicitudes según el estado
-        const sortedSolicitudes = response.data.sort((a, b) => {
+        const sortedSolicitudes = filteredByRole.sort((a, b) => {
           const estadoA = estadoPrioridad[getEstadoSolicitud(a)] || 6;
           const estadoB = estadoPrioridad[getEstadoSolicitud(b)] || 6;
           return estadoA - estadoB;
@@ -57,7 +63,6 @@ const AdminDashboard = () => {
 
   const handleApprove = async (id) => {
     const token = localStorage.getItem("token");
-    const userId = getUsuarioId();
 
     try {
       const response = await axios.put(
@@ -112,6 +117,10 @@ const AdminDashboard = () => {
       console.error("Error al rechazar solicitud:", err.response.data);
       alert(`Error: ${err.response.data.message}`);
     }
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Eliminar el token de autenticación
+    navigate("/"); // Redirigir a la página de inicio de sesión
   };
 
   const handleAddComentario = async () => {
@@ -211,7 +220,9 @@ const AdminDashboard = () => {
       <Preloader duration={650} />
       <div className="container-admin">
         <div className="header-section">
-          <Logo />
+          {/* Barra de navegación */}
+          <NavigationBar onLogout={handleLogout} />
+          {/*<Logo /> */}
           <div className="header-title-container">
             <h4>Panel de Administrador</h4>
             <div className="filter-container">

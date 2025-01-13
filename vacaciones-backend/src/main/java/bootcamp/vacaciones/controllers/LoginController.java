@@ -37,37 +37,46 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
-            logger.info("Iniciando autenticación para: " + loginRequest.getEmail());
+            logger.info("Iniciando autenticación para: " + loginRequest.getUsuario());
 
-            // Autenticación del usuario
+            // Buscar el usuario por correo o número de cédula
+            UsuarioModel usuario;
+            if (loginRequest.getUsuario().contains("@")) {
+                usuario = usuarioRepository.findByCorreo(loginRequest.getUsuario())
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            } else {
+                int nroCedula;
+                try {
+                    nroCedula = Integer.parseInt(loginRequest.getUsuario());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Número de cédula inválido");
+                }
+                usuario = usuarioRepository.findByNroCedula(nroCedula)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            }
+
+            // Autenticar al usuario
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
+                            usuario.getCorreo(), // Usar el correo para la autenticación
                             loginRequest.getPassword()
                     )
             );
 
-            logger.info("Autenticación exitosa para: " + loginRequest.getEmail());
+            logger.info("Autenticación exitosa para: " + usuario.getCorreo());
 
-            // Establecer el contexto de seguridad
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Obtener el usuario desde la base de datos
-            UsuarioModel usuario = usuarioRepository.findByCorreo(loginRequest.getEmail())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-            String rol = usuario.getRol().getNombre(); // Extraer el nombre del rol
-
             // Generar el token JWT
-            String jwt = jwtUtils.generateJwtToken(usuario.getCorreo(), usuario.getId(), rol);
+            String jwt = jwtUtils.generateJwtToken(usuario.getCorreo(), usuario.getId(), usuario.getRol().getNombre());
 
-            // Retornar el token
             return ResponseEntity.ok(jwt);
         } catch (Exception e) {
             logger.error("Error en autenticación: " + e.getMessage());
             return ResponseEntity.status(401).body("Credenciales incorrectas");
         }
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {

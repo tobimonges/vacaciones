@@ -37,8 +37,8 @@ function Login() {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
         {
-          email: usuario, // El backend espera "email"
-          password: password, // El backend espera "password"
+          usuario: usuario,
+          password: password,
         }
       );
       console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar

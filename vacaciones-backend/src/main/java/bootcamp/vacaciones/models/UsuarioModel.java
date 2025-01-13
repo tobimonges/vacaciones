@@ -19,6 +19,9 @@ public class UsuarioModel {
     @Column(nullable = false,unique = true, name = "correo")
     private String correo;
 
+    @Column(nullable=true, name="fecha_nacimiento")
+    private LocalDate fechaNacimiento;
+
     private String contrasena;
 
     private String telefono;
@@ -48,12 +51,17 @@ public class UsuarioModel {
 
     public UsuarioModel() {
     }
-    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo, String contrasena, String telefono, LocalDate fechaIngreso, String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo, CargoModel cargo) {
+
+    public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
+                        LocalDate fechaNacimiento, String contrasena, String telefono, LocalDate fechaIngreso,
+                        String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo,
+                        CargoModel cargo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.nroCedula = nroCedula;
         this.correo = correo;
+        this.fechaNacimiento = fechaNacimiento;
         this.contrasena = contrasena;
         this.telefono = telefono;
         this.fechaIngreso = fechaIngreso;
@@ -95,6 +103,14 @@ public class UsuarioModel {
 
     public void setNroCedula(int nroCedula) {
         this.nroCedula = nroCedula;
+    }
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public String getCorreo() {
@@ -173,7 +189,5 @@ public class UsuarioModel {
         return cargo;
     }
 
-    public void setCargo(CargoModel cargo) {
-        this.cargo = cargo;
-    }
+    public void setCargo(CargoModel cargo) {this.cargo = cargo;}
 }

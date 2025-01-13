@@ -82,6 +82,15 @@ public class SolicitudService implements ISolicitudService {
                     .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
         }
 
+        // Validar conflictos de fechas
+        List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
+                idUsuario, solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin()
+        );
+
+        if (!solicitudesConflicto.isEmpty()) {
+            throw new IllegalArgumentException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
+        }
+
         SolicitudModel nuevaSolicitud = new SolicitudModel();
         nuevaSolicitud.setUsuario(usuario);
         nuevaSolicitud.setLider(lider);
@@ -89,8 +98,10 @@ public class SolicitudService implements ISolicitudService {
         nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
         nuevaSolicitud.setCantidadDias(solicitudRequest.getCantidadDias());
         nuevaSolicitud.setEstado(false); // Por defecto, pendiente
-        nuevaSolicitud.setNumeroAprobaciones(0); // Sin aprobaciones iniciales
-        nuevaSolicitud.setRechazado(false); // Por defecto, no rechazada
+        nuevaSolicitud.setNumeroAprobaciones(solicitudRequest.getNumeroAprobaciones() != null
+                ? solicitudRequest.getNumeroAprobaciones()
+                : 0); // Si no está presente, inicializa con 0
+        nuevaSolicitud.setRechazado(false);
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
         // Notificar al líder
@@ -145,6 +156,11 @@ public class SolicitudService implements ISolicitudService {
 
         UsuarioModel usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar que el usuario que aprueba no sea el mismo que creó la solicitud
+        if (solicitud.getUsuario().getId().equals(usuarioId)) {
+            throw new RuntimeException("El usuario no puede aprobar su propia solicitud.");
+        }
 
         if (solicitud.getNumeroAprobaciones() == 0) {
             validarLider(usuario, solicitud);
