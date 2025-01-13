@@ -7,6 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Logo from "./Logo";
 import Preloader from "./Preloader";
+import NavigationBar from "./NavigationBar";
 
 function CrearUsuario() {
   const navigate = useNavigate();
@@ -85,6 +86,10 @@ function CrearUsuario() {
     };
     fetchCargos();
   }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Eliminar el token de autenticación
+    navigate("/"); // Redirigir a la página de inicio de sesión
+  };
 
   //temporizador
   useEffect(() => {
@@ -172,7 +177,9 @@ function CrearUsuario() {
           error ? "datosIncorrectos" : ""
         }`}
       >
-        <Logo />
+        {/* Barra de navegación */}
+        <NavigationBar onLogout={handleLogout} />
+        {/*<Logo /> */}
         <h2 className="headerCreate">Crear Usuario</h2>
         <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">

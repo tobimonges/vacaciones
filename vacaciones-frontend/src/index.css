@@ -65,3 +65,48 @@ button span {
   
 }
 
+.rbc-button-link {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif !important; /* Cambia por la fuente que prefieras */
+  font-size: 15px; /* Ajusta el tamaño según sea necesario */
+  font-weight: 500; /* También puedes cambiar el peso si lo deseas */
+  color: #333; /* Personaliza el color de los números si es necesario */
+}
+
+button, select{
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif !important; /* Cambia por la fuente que prefieras */
+}
+
+
+.rbc-toolbar {
+  display: flex !important;
+  flex-direction: column !important; /* Establecemos la dirección de los elementos como columna */
+  justify-content: center !important; /* Centramos los elementos verticalmente */
+}
+
+.rbc-toolbar-label {
+  order: -1 !important; /* Asignamos un orden negativo para colocar este elemento primero */
+  margin-bottom: 0.8rem !important; /* Añadimos un margen inferior */
+  font-size: 1.5rem !important; /* Ajustamos el tamaño de la fuente */
+  font-weight: 600 !important; /* Ajustamos el peso de la fuente */
+  color: #555 !important; /* Personalizamos el color del texto */
+}
+.rbc-btn-group {
+  display: flex !important;
+}
+
+.rbc-btn-group button:nth-child(1) { /* Primer botón (Hoy) */
+  order: 2 !important;
+}
+
+.rbc-btn-group button:nth-child(2) { /* Segundo botón (Anterior) */
+  order: 1 !important;
+}
+
+.rbc-btn-group button:nth-child(3) { /* Tercer botón (Siguiente) */
+  order: 3 !important;
+}
+
+.rbc-btn-group button {
+  border-radius: 5px !important; /* Ajusta el valor según el grado de redondeo deseado */
+  margin: 0 0.2rem !important; /* Añade un margen horizontal */
+}

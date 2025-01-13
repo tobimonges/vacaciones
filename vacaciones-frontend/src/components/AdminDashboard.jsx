@@ -5,6 +5,7 @@ import { getUsuarioId, getUserRole } from "./authUtils";
 import Preloader from "./Preloader";
 import Logo from "./Logo";
 
+import NavigationBar from "./NavigationBar";
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
@@ -117,6 +118,10 @@ const AdminDashboard = () => {
       alert(`Error: ${err.response.data.message}`);
     }
   };
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Eliminar el token de autenticación
+    navigate("/"); // Redirigir a la página de inicio de sesión
+  };
 
   const handleAddComentario = async () => {
     const token = localStorage.getItem("token");
@@ -215,7 +220,9 @@ const AdminDashboard = () => {
       <Preloader duration={650} />
       <div className="container-admin">
         <div className="header-section">
-          <Logo />
+          {/* Barra de navegación */}
+          <NavigationBar onLogout={handleLogout} />
+          {/*<Logo /> */}
           <div className="header-title-container">
             <h4>Panel de Administrador</h4>
             <div className="filter-container">

@@ -1,0 +1,118 @@
+/* Contenedor principal del navbar */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  /* Barra de navegación */
+  .navigation-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Espacia botones y logo */
+    padding: 10px 15px;
+    width: 100%;
+    
+    background: rgba(255, 255, 255, 0.007);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
+  }
+
+
+  
+  
+  /* Contenedor individual para cada botón */
+  .nav-button-container {
+    display: flex;
+    width: 160px;
+    align-items: center;    /* Centra verticalmente */
+  }
+
+
+  .left {
+    justify-content: left;
+  }
+  .right {
+    justify-content: right;
+  }
+  
+  
+  /* Botón general */
+  .nav-button {
+    font-size: 14px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    margin: 0;
+  }
+  
+  /* Hover del botón */
+  .nav-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  /* Botón específico: Atrás */
+  .back-button {
+    backdrop-filter: blur(10px);
+    background-color: #fdcb4000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  .text {
+    color: #fff;
+  }
+  
+  .back-button:hover {
+    background-color: #fdcb4000;
+  }
+  
+  /* Botón específico: Cerrar sesión */
+  .logout {
+    background-color: #ff4d4f;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fdcb4000;
+    backdrop-filter: blur(10px);
+  }
+  
+  .logout:hover {
+    background-color: #fdcb4000;
+  }
+  
+  /* Logo centrado */
+  .nav-logo {
+    flex: 1; /* Permite al logo centrarse equilibradamente */
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nav-logo img {
+    height: 40px;
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-logo img:hover {
+    transform: scale(1.08);
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .nav-button {
+      font-size: 12px;
+      padding: 8px 16px;
+    }
+  
+    .nav-logo img {
+      height: 30px;
+    }
+  
+    .navigation-bar {
+      padding: 8px 15px;
+    }
+
+  }
+  

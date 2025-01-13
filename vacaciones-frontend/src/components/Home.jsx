@@ -12,6 +12,7 @@ import Preloader from "./Preloader";
 import Logo from "./Logo";
 import LogoutButton from "./LogoutButton";
 
+import NavigationBar from "./NavigationBar";
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
 
@@ -156,6 +157,10 @@ const Home = () => {
     fetchVacationRequests();
   }, [navigate]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Eliminar el token de autenticación
+    navigate("/"); // Redirigir a la página de inicio de sesión
+  };
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
     switch (event.type) {
@@ -199,11 +204,13 @@ const Home = () => {
   // 🎨 **Renderizado del Componente**
   return (
     <div className="calendar-container">
-      <LogoutButton />
+      {/*<LogoutButton />*/}
       <Preloader duration={650} />
 
       <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-        <Logo />
+        {/* Barra de navegación */}
+      <NavigationBar onLogout={handleLogout} />
+        {/*<Logo /> */}
         <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
         <p className="calendar-text">
           Fecha de ingreso:{" "}
