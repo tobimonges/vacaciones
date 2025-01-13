@@ -7,9 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
-@RequestMapping("/vacaciones")
+@RequestMapping("/api/equipos")
 public class EquipoController {
 
     @Autowired
