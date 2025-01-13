@@ -9,6 +9,12 @@ import AdminDashboard from "./components/AdminDashboard";
 import RestablecerContraseña from "./components/RestablecerContraseña";
 import LoginForgotPassword from "./components/LoginForgotPassword";
 import CrearUsuario from "./components/CrearUsuario";
+import CreaEquipo from "./components/CreaEquipo";
+import CreaCargo from "./components/CreaCargo";
+import EquipoDetalle from "./components/EquipoDetalle";
+
+
+
 
 
 function App() {
@@ -45,6 +51,33 @@ function App() {
           <PrivateRoute allowedRoles={["TH"]}>
             
             <CrearUsuario />
+          </PrivateRoute>
+        }
+        />
+        <Route
+        path="/CreaEquipo"
+        element={
+          <PrivateRoute allowedRoles={["TH"]}>
+            
+            <CreaEquipo />
+          </PrivateRoute>
+        }
+        />
+        <Route
+        path="/EquipoDetalle"
+        element={
+          <PrivateRoute allowedRoles={["TH"]}>
+            
+            <EquipoDetalle />
+          </PrivateRoute>
+        }
+        />
+        <Route
+        path="/CreaCargo"
+        element={
+          <PrivateRoute allowedRoles={["TH"]}>
+            
+            <CreaCargo />
           </PrivateRoute>
         }
         />

@@ -284,6 +284,9 @@ export default function NuevaSolicitud() {
               </select>
             </div>
             <div className="buttons">
+            <button className="btn" onClick={() => navigate("/Home")}>
+          <span>Volver a Home</span>
+        </button>
               <button
                 type="submit"
                 className="btn btn-primary"

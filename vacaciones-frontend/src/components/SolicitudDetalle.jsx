@@ -297,9 +297,9 @@ export default function SolicitudDetalle() {
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
         >
-          <option value="">Todas</option>
-          <option value="Confirmada">Confirmadas</option>
-          <option value="Pendiente">Pendientes</option>
+          <option value="Todas"> <span>Todas</span> </option>
+          <option value="Confirmada"><span>Confirmadas  </span></option>
+          <option value="Pendiente"><span>Pendientes</span></option>
         </select>
 
         <ul>
@@ -334,9 +334,11 @@ export default function SolicitudDetalle() {
                   <br />
                   <div className="buttons">
                     <button onClick={() => handleGuardar(solicitud.id)}>
-                      Guardar
+                      <span>Guardar</span>
                     </button>
-                    <button onClick={handleCancelar}>Cancelar</button>
+                    <button onClick={handleCancelar}>
+                      <span>Cancelar</span>
+                      </button>
                   </div>
                 </div>
               ) : (
@@ -377,12 +379,14 @@ export default function SolicitudDetalle() {
                     </div>
                   </div>
                   <div className="buttons">
-                    <button onClick={() => handleEditar(solicitud)}>Editar</button>
+                    <button onClick={() => handleEditar(solicitud)}>
+                      <span>Editar</span>
+                      </button>
                     <button
                       className="delete"
                       onClick={() => handleEliminar(solicitud.id)}
                     >
-                      Eliminar
+                      <span>Eliminar</span>
                     </button>
                   </div>
                 </div>
@@ -391,7 +395,7 @@ export default function SolicitudDetalle() {
           ))}
         </ul>
         <button className="volver-home" onClick={() => navigate("/Home")}>
-          Volver al Home
+          <span>Volver al Home</span>
         </button>
       </div>
     </LocalizationProvider>

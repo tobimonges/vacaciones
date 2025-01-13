@@ -1,4 +1,5 @@
 .containerRestablecerContraseña {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,6 +9,7 @@
 }
 
 .restablecerBox {
+  padding-bottom: 70px;
   border: none;
   height: 350px;
   width: 400px;
@@ -78,7 +80,8 @@
 }
 
 .buttonRC {
-  position: relative;
+  position: absolute;
+  bottom: 20px;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   width: 50%;
   padding: 10px;
@@ -87,6 +90,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  z-index: 10;
   font-size: 16px;
   margin-top: 95px;
   margin-left: 95px;
@@ -162,4 +166,48 @@
     0 32px 32px rgba(0, 0, 0, 0.07);
   transform: translateY(-2px);
   border-radius: 30px;
+}
+.mensajePopupp {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+  animation: fadeInOut 2s ease-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Color para mensajes de éxito */
+.mensajePopupp.success {
+  background-color: #155724;
+  color: white;
+}
+
+/* Color para mensajes de error */
+.mensajePopupp.error {
+  background-color: #f44336;
+  color: white;
+
+}
+
+/* Animación de entrada y salida */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
 }

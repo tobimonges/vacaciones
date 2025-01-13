@@ -80,8 +80,16 @@ function ForgotPassword({ onBackToLogin }) {
         }`}
         onAnimationEnd={handleAnimationEnd}
       >
+        <div className="backButtonWrapper">
+        <button className="backToLoginButton" onClick={handleBackToLogin}>
+          Atras
+        </button>
+        </div>
         <Logo />
         <h2 className="headerFP">Recuperar Contraseña</h2>
+        <div className="boxTextWrapper">
+          <p className="boxText">Inserte su correo</p>
+        </div>
         <form onSubmit={handleForgotPassword}>
           <div className="inputFPGroup">
             <div className="iconFPWrap">
@@ -96,12 +104,10 @@ function ForgotPassword({ onBackToLogin }) {
             </div>
           </div>
           <button type="submit" className="buttonFPC">
-            <span>Correo de recuperación</span>
+            Correo de recuperación
           </button>
           <div className="forgotPassword">
-            <div className="iconFPWrapini" onClick={handleBackToLogin}>
-              <img src="/flecha-pequena-izquierda.svg" alt="Usuario" className="iconFPBack" />
-            </div>
+            
           </div>
         </form>
       </div>

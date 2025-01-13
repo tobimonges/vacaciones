@@ -110,7 +110,11 @@
 }
 
 .MuiSvgIcon-root {
-  color: white !important; /* Cambiar el color del ícono a blanco */
+  color: rgb(
+    206,
+    206,
+    206
+  ) !important; /* Cambiar el color del ícono a blanco */
 }
 
 .warning {

@@ -7,6 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Logo from "./Logo";
 import Preloader from "./Preloader";
+import NavigationBar from "./NavigationBar";
 
 function CrearUsuario() {
   const navigate = useNavigate();
@@ -20,8 +21,6 @@ function CrearUsuario() {
   const [fechaIngreso, setFechaIngreso] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [contrasena, setPassword] = useState("");
-  const [ConfirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [roles, setRoles] = useState([]);
@@ -29,6 +28,9 @@ function CrearUsuario() {
   const [cargos, setCargos] = useState([]);
   const [message, setMessage] = useState("");
   const [popupType, setPopupType] = useState("");
+  //mi agredado
+  const [estado, setEstado] = useState(true);
+
 
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
@@ -85,6 +87,10 @@ function CrearUsuario() {
     };
     fetchCargos();
   }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Eliminar el token de autenticación
+    navigate("/"); // Redirigir a la página de inicio de sesión
+  };
 
   //temporizador
   useEffect(() => {
@@ -109,16 +115,15 @@ function CrearUsuario() {
       !apellido ||
       !nroCedula ||
       !correo ||
-      !contrasena ||
       !telefono ||
       !fechaIngreso ||
       !fechaNacimiento ||
-      !estado ||
       !rol ||
       !cargo ||
       !equipo
     ) {
-      setError("Por favor, completa todos los campos.");
+      setMessage("Por favor, rellene todos los campos.");
+      setPopupType("error");
       return;
     }
 
@@ -172,7 +177,9 @@ function CrearUsuario() {
           error ? "datosIncorrectos" : ""
         }`}
       >
-        <Logo />
+        {/* Barra de navegación */}
+        <NavigationBar onLogout={handleLogout} />
+        {/*<Logo /> */}
         <h2 className="headerCreate">Crear Usuario</h2>
         <form onSubmit={handleSubmit} action="login" method="post">
           <div className="inputGroup">
