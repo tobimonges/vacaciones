@@ -8,8 +8,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
-import Logo from "./Logo";
-import LogoutButton from "./LogoutButton";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 // 🌍 Localización de fechas
