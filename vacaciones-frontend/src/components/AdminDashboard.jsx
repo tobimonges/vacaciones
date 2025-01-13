@@ -6,6 +6,7 @@ import Preloader from "./Preloader";
 import Logo from "./Logo";
 
 import NavigationBar from "./NavigationBar";
+import {useNavigate} from "react-router-dom";
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
@@ -16,6 +17,7 @@ const AdminDashboard = () => {
   const [filterText, setFilterText] = useState("");
   const userId = getUsuarioId();
   const userRole = getUserRole(); // Obtener el rol del usuario logueado
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSolicitudes = async () => {
