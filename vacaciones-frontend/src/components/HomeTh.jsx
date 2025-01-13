@@ -6,7 +6,7 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import esLocale from "date-fns/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
-import { getUsuarioId, isTokenValid } from "./authUtils";
+import {getUserRole, getUsuarioId, isTokenValid} from "./authUtils";
 import "./Home.css";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
@@ -37,6 +37,14 @@ const HomeTh = () => {
   const [modalOpen, setModalOpen] = useState(false); // Estado para abrir/cerrar el modal
   const [modalEvents, setModalEvents] = useState([]); // Eventos a mostrar en el modal
   const navigate = useNavigate(); // Navegación entre rutas
+
+
+
+  const isUserAllowed = () => {
+    const allowedRoles = ["TH", "LIDER", "DIRECTORIO", "OPERACIONES"];
+    const userRole = getUserRole(); // Lógica para obtener el rol del usuario
+    return allowedRoles.includes(userRole);
+  };
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
@@ -239,6 +247,33 @@ const HomeTh = () => {
           >
             <span>Dashboard</span>
           </button>
+          {isUserAllowed() && (
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/HomeTh`)}
+              >
+                <span>Crear usuario</span>
+              </button>
+
+          )}
+          {isUserAllowed() && (
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/HomeTh`)}
+              >
+                <span>Crear equipo</span>
+              </button>
+
+          )}
+          {isUserAllowed() && (
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/HomeTh`)}
+              >
+                <span>Crear cargo</span>
+              </button>
+
+          )}
         </div>
 
         {/* 📆 Calendario */}
