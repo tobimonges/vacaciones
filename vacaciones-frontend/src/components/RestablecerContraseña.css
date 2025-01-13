@@ -169,7 +169,7 @@
 }
 .mensajePopupp {
   position: fixed;
-  top: 10px;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   padding: 15px 20px;
