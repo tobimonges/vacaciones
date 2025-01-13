@@ -87,6 +87,8 @@ const AdminDashboard = () => {
           solicitud.id === id ? response.data : solicitud
         )
       );
+
+      navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al aprobar solicitud:", err.response.data);
       const errorMessage =
@@ -121,6 +123,8 @@ const AdminDashboard = () => {
             : solicitud
         )
       );
+
+      navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al rechazar solicitud:", err.response.data);
       alert(`Error: ${err.response.data.message}`);
@@ -158,6 +162,7 @@ const AdminDashboard = () => {
             : solicitud
         )
       );
+      navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al añadir comentario:", err);
       alert(`Error: ${err.response.data}`);
