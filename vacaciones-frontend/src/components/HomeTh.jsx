@@ -41,7 +41,7 @@ const HomeTh = () => {
 
 
   const isUserAllowed = () => {
-    const allowedRoles = ["TH", "LIDER", "DIRECTORIO", "OPERACIONES"];
+    const allowedRoles = ["TH"];
     const userRole = getUserRole(); // Lógica para obtener el rol del usuario
     return allowedRoles.includes(userRole);
   };
