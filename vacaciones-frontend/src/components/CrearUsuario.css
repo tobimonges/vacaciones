@@ -8,7 +8,7 @@
 
 .createBox {
   border: none;
-  height: 840px;
+  height: 860px;
   width: 400px;
   padding: 20px;
   border-radius: 10px;
@@ -270,4 +270,11 @@ h3 .icon {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+.MuiSvgIcon-root {
+  color: rgb(
+    206,
+    206,
+    206
+  ) !important; /* Cambiar el color del ícono a blanco */
 }
