@@ -21,8 +21,6 @@ function CrearUsuario() {
   const [fechaIngreso, setFechaIngreso] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [telefono, setTelefono] = useState("");
-  const [contrasena, setPassword] = useState("");
-  const [ConfirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [roles, setRoles] = useState([]);
@@ -114,11 +112,9 @@ function CrearUsuario() {
       !apellido ||
       !nroCedula ||
       !correo ||
-      !contrasena ||
       !telefono ||
       !fechaIngreso ||
       !fechaNacimiento ||
-      !estado ||
       !rol ||
       !cargo ||
       !equipo
