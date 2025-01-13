@@ -6,7 +6,7 @@ import "./Solicitud.css";
 import Logo from "./Logo";
 import Preloader from "./Preloader";
 
-export default function EquipoDetalle() {
+function EquipoDetalle() {
   const { id } = useParams(); // ID del usuario
   const navigate = useNavigate();
   const [equipos, setEquipos] = useState([]); // Lista de equipos
@@ -76,3 +76,5 @@ export default function EquipoDetalle() {
     </div>
   );
 }
+
+export default EquipoDetalle;
