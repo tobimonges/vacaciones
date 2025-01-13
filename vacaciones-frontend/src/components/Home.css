@@ -189,6 +189,9 @@ button {
 .close-modal-btn:hover {
     background-color: #dfb755;
 }
+.rbc-day-bg.rbc-today {
+    background-color: #d8e5ef; !important;
+}
 
 /* 🎯 Reglas responsivas */
 @media (max-width: 768px) {

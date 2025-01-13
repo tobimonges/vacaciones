@@ -166,6 +166,18 @@ const HomeTh = () => {
     localStorage.removeItem("token"); // Eliminar el token de autenticación
     navigate("/"); // Redirigir a la página de inicio de sesión
   };
+  // 🎨 **Personalizar colores de días**
+  const dayPropGetter = (date) => {
+    const day = date.getDay();
+    if (day === 0 || day === 6) {
+      return {
+        style: {
+          backgroundColor: "#e5e5e5", // Color personalizado para sábados y domingos
+        },
+      };
+    }
+    return {};
+  };
 
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
@@ -238,9 +250,7 @@ const HomeTh = () => {
 
         {/* 🛠️ Botones de Acción */}
         <div className="buttons">
-          <button className="calendar-button" onClick={() => navigate("/Home")}>
-            <span>Home</span>
-          </button>
+
           <button
             className="calendar-button"
             onClick={() => navigate(`/AdminDashboard`)}
@@ -250,7 +260,7 @@ const HomeTh = () => {
           {isUserAllowed() && (
               <button
                   className="calendar-button"
-                  onClick={() => navigate(`/HomeTh`)}
+                  onClick={() => navigate(`/crearusuario`)}
               >
                 <span>Crear usuario</span>
               </button>
@@ -295,6 +305,7 @@ const HomeTh = () => {
             }}
             views={{ month: true }} // Mantener solo la vista de mes
             eventPropGetter={eventStyleGetter}
+            dayPropGetter={dayPropGetter}
             popup={false} // Desactivar el comportamiento predeterminado del popup
             showMultiDayTimes={true}
             onShowMore={(eventsOnDay, date) => {
