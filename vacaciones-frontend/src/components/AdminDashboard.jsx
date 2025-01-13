@@ -6,7 +6,7 @@ import Preloader from "./Preloader";
 import Logo from "./Logo";
 
 import NavigationBar from "./NavigationBar";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
@@ -41,9 +41,15 @@ const AdminDashboard = () => {
         };
 
         let filteredByRole;
-        filteredByRole = response.data.filter(
-          (solicitud) => solicitud.usuario.id !== userId
-        );
+        if (userRole === "LIDER") {
+          filteredByRole = response.data.filter(
+            (solicitud) => solicitud.lider.id === userId
+          );
+        } else {
+          filteredByRole = response.data.filter(
+            (solicitud) => solicitud.usuario.id !== userId
+          );
+        }
 
         // Ordenar las solicitudes según el estado
         const sortedSolicitudes = filteredByRole.sort((a, b) => {
@@ -81,6 +87,8 @@ const AdminDashboard = () => {
           solicitud.id === id ? response.data : solicitud
         )
       );
+
+      navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al aprobar solicitud:", err.response.data);
       const errorMessage =
@@ -115,6 +123,8 @@ const AdminDashboard = () => {
             : solicitud
         )
       );
+
+      navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al rechazar solicitud:", err.response.data);
       alert(`Error: ${err.response.data.message}`);
@@ -152,6 +162,7 @@ const AdminDashboard = () => {
             : solicitud
         )
       );
+      navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al añadir comentario:", err);
       alert(`Error: ${err.response.data}`);
@@ -291,13 +302,16 @@ const AdminDashboard = () => {
                           <>
                             <button
                               onClick={() => handleApprove(solicitud.id)}
-                              disabled={solicitud.numeroAprobaciones === 1}
+                              disabled={
+                                solicitud.numeroAprobaciones === 1 ||
+                                solicitud.usuario.id === userId
+                              } // Deshabilitar si el usuario es el logueado
                             >
                               <span>Aprobar</span>
                             </button>
                             <button
                               onClick={() => handleReject(solicitud.id)}
-                              disabled={false}
+                              disabled={solicitud.usuario.id === userId} // Deshabilitar si el usuario es el logueado
                             >
                               <span>Rechazar</span>
                             </button>

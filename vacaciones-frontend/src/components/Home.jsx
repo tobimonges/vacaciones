@@ -160,6 +160,20 @@ const Home = () => {
     localStorage.removeItem("token"); // Eliminar el token de autenticación
     navigate("/"); // Redirigir a la página de inicio de sesión
   };
+
+  // 🎨 **Personalizar colores de días**
+  const dayPropGetter = (date) => {
+    const day = date.getDay();
+    if (day === 0 || day === 6) {
+      return {
+        style: {
+          backgroundColor: "#e5e5e5", // Color personalizado para sábados y domingos
+        },
+      };
+    }
+    return {};
+  };
+
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
     switch (event.type) {
@@ -264,6 +278,7 @@ const Home = () => {
             }}
             views={{ month: true }}
             eventPropGetter={eventStyleGetter}
+            dayPropGetter={dayPropGetter}
           />
         </div>
 
