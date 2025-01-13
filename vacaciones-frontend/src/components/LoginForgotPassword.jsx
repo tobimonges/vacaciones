@@ -87,6 +87,9 @@ function ForgotPassword({ onBackToLogin }) {
         </div>
         <Logo />
         <h2 className="headerFP">Recuperar Contraseña</h2>
+        <div className="boxTextWrapper">
+          <p className="boxText">Inserte su correo</p>
+        </div>
         <form onSubmit={handleForgotPassword}>
           <div className="inputFPGroup">
             <div className="iconFPWrap">
