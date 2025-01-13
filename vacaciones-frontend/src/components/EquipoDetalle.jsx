@@ -5,11 +5,12 @@ import NavigationBar from "./NavigationBar";
 import { useNavigate } from "react-router-dom";
 import "./EquipoDetalle.css";
 
-
 const EquipoDetalle = () => {
   const [equipos, setEquipos] = useState([]);
   const [error, setError] = useState("");
   const [filterText, setFilterText] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [newName, setNewName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +32,6 @@ const EquipoDetalle = () => {
     fetchEquipos();
   }, []);
 
-  
-
   const handleFilterChange = (e) => {
     setFilterText(e.target.value);
   };
@@ -47,57 +46,78 @@ const EquipoDetalle = () => {
   };
 
   const handleEliminarEquipo = async (equipoId) => {
-    const confirm = window.confirm(
-      "¿Estás seguro de que deseas eliminar este equipo?"
-    );
+    const confirm = window.confirm("¿Estás seguro de que deseas eliminar este equipo?");
     if (!confirm) return;
-  
+
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(
-        `http://localhost:8080/api/equipos/${equipoId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-  
-      // Actualizar la lista de equipos
-      setEquipos((prev) =>
-        prev.filter((equipo) => equipo.id !== equipoId)
-      );
+      await axios.delete(`http://localhost:8080/api/equipos/${equipoId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setEquipos((prev) => prev.filter((equipo) => equipo.id !== equipoId));
       alert("Equipo eliminado correctamente.");
     } catch (error) {
       console.error("Error eliminando el equipo:", error);
       alert("No se pudo eliminar el equipo.");
     }
   };
-  
 
-  
+  const handleActualizarEquipo = async (equipoId) => {
+    if (!newName.trim()) {
+      alert("El nombre no puede estar vacío.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:8080/api/equipos/${equipoId}`,
+        { nombre: newName },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setEquipos((prev) =>
+        prev.map((equipo) =>
+          equipo.id === equipoId ? { ...equipo, nombre: newName } : equipo
+        )
+      );
+
+      setEditingId(null);
+      setNewName("");
+      alert("Equipo actualizado correctamente.");
+    } catch (error) {
+      console.error("Error actualizando el equipo:", error);
+      alert("No se pudo actualizar el equipo.");
+    }
+  };
 
   return (
     <div>
       <Preloader duration={650} />
       <div className="container-detalle">
+      <NavigationBar onLogout={handleLogout} />
         <div className="header-section-detalle">
-          <NavigationBar onLogout={handleLogout} />
-          <div className="header-title-container-detaller">
-            <h4>Lista de Equipos</h4>
-            <div className="filter-container-detalle">
+          
+          <div className="header-title-container-detalle">
+            <h4 className="title">Lista de Equipos</h4>
+          </div>
+          <div className="filter-container-detalle">
+            <h4>
               <label htmlFor="filter-input">Buscar:</label>
-              <input
-                id="filter-input-detalle"
-                type="text"
-                placeholder="Nombre del equipo"
-                value={filterText}
-                onChange={handleFilterChange}
-              />
-            </div>
+            </h4>
+            <input
+              id="filter-input-detalle"
+              type="text"
+              placeholder="Nombre del equipo"
+              value={filterText}
+              onChange={handleFilterChange}
+            />
           </div>
         </div>
-        <div className="content-section">
+        <div className="content-section-detalle">
           {error ? (
             <p className="error">{error}</p>
           ) : filteredEquipos.length === 0 ? (
@@ -108,18 +128,46 @@ const EquipoDetalle = () => {
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
-                  <th>Descripción</th>
-                  <th></th>
+                  <th>Opciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredEquipos.map((equipo) => (
                   <tr key={equipo.id}>
                     <td>{equipo.id}</td>
-                    <td>{equipo.nombre}</td>
-                    <td>.</td>
                     <td>
+                      {editingId === equipo.id ? (
+                        <input
+                          type="text"
+                          value={newName}
+                          onChange={(e) => setNewName(e.target.value)}
+                          className="edit-input"
+                        />
+                      ) : (
+                        equipo.nombre
+                      )}
+                    </td>
+                    <td className="buttons">
+                      {editingId === equipo.id ? (
+                        <button
+                          className="update-button"
+                          onClick={() => handleActualizarEquipo(equipo.id)}
+                        >
+                          Guardar
+                        </button>
+                      ) : (
+                        <button
+                          className="edit-button"
+                          onClick={() => {
+                            setEditingId(equipo.id);
+                            setNewName(equipo.nombre);
+                          }}
+                        >
+                          Actualizar
+                        </button>
+                      )}
                       <button
+                        className="delete-button"
                         onClick={() => handleEliminarEquipo(equipo.id)}
                       >
                         Eliminar
