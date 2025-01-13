@@ -297,9 +297,9 @@ export default function SolicitudDetalle() {
           value={filtro}
           onChange={(e) => setFiltro(e.target.value)}
         >
-          <option value="Todas"> <span>Todas</span> </option>
-          <option value="Confirmada"><span>Confirmadas  </span></option>
-          <option value="Pendiente"><span>Pendientes</span></option>
+          <option value="Todas"> Todas </option>
+          <option value="Confirmada">Confirmadas</option>
+          <option value="Pendiente">Pendientes</option>
         </select>
 
         <ul>
@@ -366,13 +366,13 @@ export default function SolicitudDetalle() {
                       <p>
                         <strong>Líder:</strong>{" "}
                           {lideres
-                            .filter((lider) => lider.id === solicitud.LiderId) // Filtra el líder asignado
+                            .filter((lider) => lider.id === solicitud.lider.id) // Filtra el líder asignado
                             .map((lider) => (
                               <span key={lider.id}>
                                 {lider.nombre} {lider.apellido}
                               </span>
                           ))}
-                      </p>
+                      </p> 
                       <p>
                         <strong>Comentario:</strong> {solicitud.comentario || "Sin comentario"}
                       </p>
