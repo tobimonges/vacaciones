@@ -49,6 +49,7 @@ export default function NuevaSolicitud() {
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const userRole = getUserRole();
+  const [file, setFile] = useState(null); // Nuevo estado para el archivo
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -170,6 +171,10 @@ export default function NuevaSolicitud() {
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]); // Guardar el archivo seleccionado
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -284,6 +289,17 @@ export default function NuevaSolicitud() {
                 ))}
               </select>
             </div>
+
+            <div className="mb-3">
+              <label htmlFor="file">Adjuntar aprobacion de vacaciones:</label>
+              <input
+                type="file"
+                id="file"
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx,.jpg,.png"
+              />
+            </div>
+
             <div className="buttons">
               <button className="btn" onClick={() => navigate("/Home")}>
                 <span>Volver a Home</span>

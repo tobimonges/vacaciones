@@ -89,7 +89,7 @@
 
 .select-usuarios {
   width: 100%; /* Ocupa el ancho completo */
-  max-width: 245px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
+  max-width: 265px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
   padding: 8px; /* Espaciado interno */
   font-size: 16px; /* Tamaño del texto */
   border: 1px solid #ccc; /* Borde gris */
