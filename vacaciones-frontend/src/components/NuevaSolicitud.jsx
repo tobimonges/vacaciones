@@ -297,28 +297,30 @@ export default function NuevaSolicitud() {
               </select>
             </div>
 
-            <div className="mb-3">
-              <p htmlFor="file">Adjuntar aprobación de vacación:</p>
-              <div className="file-upload-container">
-                <label htmlFor="file" className="file-upload-label">
-                  <img
-                    src="./public/clip-vertical.svg"
-                    alt="Subir archivo"
-                    className="file-upload-image"
+            {userRole === "TERCERIZADO" && (
+              <div className="mb-3">
+                <p htmlFor="file">Adjuntar aprobación de vacación:</p>
+                <div className="file-upload-container">
+                  <label htmlFor="file" className="file-upload-label">
+                    <img
+                      src="./public/clip-vertical.svg"
+                      alt="Subir archivo"
+                      className="file-upload-image"
+                    />
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    className="inputFile"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.jpg,.png"
                   />
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  className="inputFile"
-                  onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx,.jpg,.png"
-                />
-                <span id="file-name" className="file-name">
-                  Seleccionar adjunto
-                </span>
+                  <span id="file-name" className="file-name">
+                    Seleccionar adjunto
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="buttons">
               <button className="btn" onClick={() => navigate("/Home")}>
