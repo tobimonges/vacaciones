@@ -273,6 +273,7 @@ export default function SolicitudDetalle() {
   if (solicitudes.length === 0) {
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Preloader duration={650} />
         <div className="container-solicitudes">
           <h4>Solicitudes del Usuario</h4>
           <h4>No se encontraron solicitudes para este usuario.</h4>
