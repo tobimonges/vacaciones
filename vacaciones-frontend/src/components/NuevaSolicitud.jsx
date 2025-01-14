@@ -173,6 +173,13 @@ export default function NuevaSolicitud() {
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]); // Guardar el archivo seleccionado
+
+    const fileNameSpan = document.getElementById("file-name");
+    if (e.target.files.length > 0) {
+      fileNameSpan.textContent = e.target.files[0].name;
+    } else {
+      fileNameSpan.textContent = "Seleccionar adjunto"; // Texto predeterminado si no hay archivo
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -291,13 +298,26 @@ export default function NuevaSolicitud() {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="file">Adjuntar aprobacion de vacaciones:</label>
-              <input
-                type="file"
-                id="file"
-                onChange={handleFileChange}
-                accept=".pdf,.doc,.docx,.jpg,.png"
-              />
+              <p htmlFor="file">Adjuntar aprobación de vacación:</p>
+              <div className="file-upload-container">
+                <label htmlFor="file" className="file-upload-label">
+                  <img
+                    src="./public/clip-vertical.svg"
+                    alt="Subir archivo"
+                    className="file-upload-image"
+                  />
+                </label>
+                <input
+                  type="file"
+                  id="file"
+                  className="inputFile"
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.jpg,.png"
+                />
+                <span id="file-name" className="file-name">
+                  Seleccionar adjunto
+                </span>
+              </div>
             </div>
 
             <div className="buttons">
