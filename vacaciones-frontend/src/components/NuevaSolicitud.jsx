@@ -203,11 +203,28 @@ export default function NuevaSolicitud() {
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
-      await axios.post(url, solicitud, {
+      const solicitudResponse = await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      const solicitudId = solicitudResponse.data.id; // Obtener ID de la solicitud creada
+
+      // Subir archivo si existe
+      if (file) {
+        const formData = new FormData();
+        formData.append("archivo", file);
+        formData.append("idSolicitud", solicitudId);
+
+        await axios.post("http://localhost:8080/subir", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
       alert("Carga de solicitud exitosa");
       navigate("/Home");
     } catch (err) {
