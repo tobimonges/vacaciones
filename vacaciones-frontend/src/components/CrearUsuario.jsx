@@ -136,12 +136,12 @@ function CrearUsuario() {
   };
 
   return (
-    <div className="containerLogin">
+    <div className="containerCreate">
       <Preloader duration={650} />
       <div className={`createBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""}`}>
         <NavigationBar onLogout={handleLogout} />
         <h2 className="headerCreate">Crear Usuario</h2>
-        <form onSubmit={handleSubmit}>
+        <form className="formCreate" onSubmit={handleSubmit}>
           {[
             { name: "nombre", type: "text", placeholder: "Nombre", icon: "/circulo-de-usuario (2).svg" },
             { name: "apellido", type: "text", placeholder: "Apellido", icon: "/circulo-de-usuario (2).svg" },
@@ -149,7 +149,7 @@ function CrearUsuario() {
             { name: "correo", type: "text", placeholder: "Correo", icon: "/sobre.svg" },
             { name: "telefono", type: "text", placeholder: "Telefono", icon: "/circulo-de-telefono.svg" },
           ].map(({ name, type, placeholder, icon }) => (
-            <div className="inputGroup" key={name}>
+            <div className="inputGroupCreate" key={name}>
               <div className="iconWrap">
                 <img src={icon} alt={placeholder} className="icon" />
                 <input
@@ -170,7 +170,7 @@ function CrearUsuario() {
             { name: "fechaIngreso", label: "Seleccionar fecha de ingreso", icon: "/dias-del-calendario.svg" },
           ].map(({ name, label, icon }) => (
             <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
-              <div className="inputGroup datePickerGroup">
+              <div className="inputGroupCreate datePickerGroup">
                 <div className="iconWrap">
                   <img src={icon} alt={label} className="icon" />
                   <DatePicker
@@ -192,7 +192,7 @@ function CrearUsuario() {
             { name: "cargo", label: "Cargo asignado", options: cargos },
             { name: "equipo", label: "Equipo asignado", options: equipos },
           ].map(({ name, label, options }) => (
-            <div className="inputGroup" key={name}>
+            <div className="inputGroupCreate" key={name}>
               <div className="iconWrap">
                 <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
                 <select

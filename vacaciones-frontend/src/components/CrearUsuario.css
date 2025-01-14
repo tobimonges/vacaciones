@@ -1,4 +1,4 @@
-.containerLogin {
+.containerCreate {
   display: flex;
   justify-content: center;
   align-items: flex-start; /* Cambiado de center a flex-start */
@@ -31,7 +31,7 @@
   color: #ffffff;
 }
 
-.inputGroup {
+.inputGroupCreate {
   display: flex;
   align-items: center;
   width: 100%;
@@ -86,7 +86,7 @@
   background-color: rgba(32, 85, 170, 0.8);
   color: #ffffff;
 }
-form {
+.formCreate {
   display: flex;
   flex-direction: column;
   align-items: center; /* Añadido para centrar los elementos dentro del formulario */
