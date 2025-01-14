@@ -8,6 +8,7 @@ import Logo from "./Logo";
 function ForgotPassword({ onBackToLogin }) {
   const [email, setEmail] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [mensajeError, setMensajeError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const navigate = useNavigate();
@@ -29,7 +30,8 @@ function ForgotPassword({ onBackToLogin }) {
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     if (!isValidEmail(email)) {
-      setMensaje("Por favor ingresa un correo válido");
+      setMensajeError("Por favor ingresa un correo válido");
+      clearMessageAfterDelay();
       return;
     }
     try {
@@ -44,18 +46,25 @@ function ForgotPassword({ onBackToLogin }) {
       if (response.ok) {
         setMensaje("Correo de recuperación enviado!");
       } else if (response.status === 404) {
-        const data = await response.json();
-        setMensaje(data.message || "El correo no se encuentra registrado.");
+        const data = await response.json(); 
+        setMensajeError(data.message || "El correo no se encuentra registrado.");
       } else if (response.status === 429) {
-        setMensaje("Has excedido el límite de solicitudes. Intenta más tarde.");
+        setMensajeError("Has excedido el límite de solicitudes. Intenta más tarde.");
       } else if (response.status === 400) {
-        setMensaje("Correo inválido. Por favor verifica.");
+        setMensajeError("Correo inválido. Por favor verifica.");
       } else {
-        setMensaje("Hubo un problema, intente nuevamente.");
+        setMensajeError("Hubo un problema, intente nuevamente.");
       }
     } catch (error) {
-      setMensaje("Error de red. Intenta nuevamente.");
+      setMensajeError("Error de red. Intenta nuevamente.");
     }
+    clearMessageAfterDelay(); //para borrar los mensajes
+  };
+  const clearMessageAfterDelay = () => {  
+    setTimeout(() => {
+      setMensaje("");
+      setMensajeError("");
+    }, 2000);
   };
   const handleBackToLogin = () => {
     setIsExiting(true);
@@ -74,6 +83,11 @@ function ForgotPassword({ onBackToLogin }) {
           <p className="mensaje">{mensaje}</p>
         </div>
       )}
+      {mensajeError && (
+    <div className="SetMensajeError">
+      <p>{mensajeError}</p>
+    </div>
+  )}
       <div
         className={`loginFPBox ${isAnimating ? "forgotPasswordBox" : ""} ${
           isExiting ? "forgotPasswordExiting" : ""

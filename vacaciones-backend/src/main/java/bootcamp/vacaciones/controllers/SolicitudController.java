@@ -1,13 +1,18 @@
 package bootcamp.vacaciones.controllers;
 
 import bootcamp.vacaciones.models.SolicitudModel;
+import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.SolicitudRequest;
+import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.services.SolicitudService;
+import bootcamp.vacaciones.services.UsuarioService;
+import bootcamp.vacaciones.utils.CalendarioUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +21,11 @@ import java.util.Map;
 public class SolicitudController {
     
     private final SolicitudService solicitudService;
-    
+    private final UsuarioRepository usuarioRepository;
     @Autowired
-    public SolicitudController(SolicitudService solicitudService) {
+    public SolicitudController(SolicitudService solicitudService, UsuarioRepository usuarioRepository) {
         this.solicitudService = solicitudService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/solicitudes")
@@ -140,6 +146,29 @@ public class SolicitudController {
         }
     }
 
+
+    // Obtener todos los feriados
+    @GetMapping("/feriados")
+    public ResponseEntity<List<Map<String, String>>> obtenerFeriados() {
+        return ResponseEntity.ok(solicitudService.obtenerFeriados());
+    }
+
+    // Obtener el cumpleaños de un usuario específico
+    @GetMapping("/cumpleanos/{idUsuario}")
+    public ResponseEntity<Map<String, String>> obtenerCumpleanoPorIdUsuario(@PathVariable Long idUsuario) {
+        try {
+            Map<String, String> cumpleano = solicitudService.obtenerCumpleanoPorIdUsuario(idUsuario);
+            return ResponseEntity.ok(cumpleano);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // Obtener todos los eventos (feriados y cumpleaños)
+    @GetMapping("/eventos")
+    public ResponseEntity<List<Map<String, String>>> obtenerTodosLosEventos() {
+        return ResponseEntity.ok(solicitudService.obtenerTodosLosEventos());
+    }
 
 
 }

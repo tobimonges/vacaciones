@@ -89,7 +89,7 @@
 
 .select-usuarios {
   width: 100%; /* Ocupa el ancho completo */
-  max-width: 245px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
+  max-width: 250px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
   padding: 8px; /* Espaciado interno */
   font-size: 16px; /* Tamaño del texto */
   border: 1px solid #ccc; /* Borde gris */
@@ -107,6 +107,51 @@
 
 .select-usuarios option:hover {
   background-color: #f1f1f100; /* Cambia el fondo al pasar el mouse */
+}
+
+.inputFile {
+  display: none; /* Oculta el input original */
+}
+
+.file-upload-label {
+  cursor: pointer; /* Cambia el cursor para indicar clickeable */
+  display: inline-block;
+}
+
+.file-upload-image {
+  width: 30px; /* Ajusta el tamaño de la imagen */
+  height: auto;
+  transition: transform 0.3s ease; /* Animación al pasar el mouse */
+}
+
+.file-upload-image:hover {
+  transform: scale(1.1); /* Aumenta ligeramente el tamaño al pasar el mouse */
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #ffffff;
+  vertical-align: middle;
+}
+
+.file-upload-container {
+  display: flex;
+  width: 180px;
+  align-items: center;
+  padding: 15px;
+  padding-bottom: 10px;
+  border: 2px solid white;
+  border-radius: 20px;
+  background: transparent;
+  justify-content: flex-start;
+}
+
+.mb-3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .MuiSvgIcon-root {

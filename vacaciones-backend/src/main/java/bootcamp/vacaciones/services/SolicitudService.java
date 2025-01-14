@@ -5,10 +5,17 @@ import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.SolicitudRequest;
 import bootcamp.vacaciones.repositories.SolicitudRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
+import bootcamp.vacaciones.utils.CalendarioUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SolicitudService implements ISolicitudService {
@@ -91,12 +98,18 @@ public class SolicitudService implements ISolicitudService {
             throw new IllegalArgumentException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
         }
 
+        // Calcular días hábiles
+        int diasHabiles = calcularDiasHabiles(
+                solicitudRequest.getFechaInicio(),
+                solicitudRequest.getFechaFin()
+        );
+
         SolicitudModel nuevaSolicitud = new SolicitudModel();
         nuevaSolicitud.setUsuario(usuario);
         nuevaSolicitud.setLider(lider);
         nuevaSolicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
-        nuevaSolicitud.setCantidadDias(solicitudRequest.getCantidadDias());
+        nuevaSolicitud.setCantidadDias(diasHabiles);
         nuevaSolicitud.setEstado(false); // Por defecto, pendiente
         nuevaSolicitud.setNumeroAprobaciones(solicitudRequest.getNumeroAprobaciones() != null
                 ? solicitudRequest.getNumeroAprobaciones()
@@ -140,10 +153,15 @@ public class SolicitudService implements ISolicitudService {
                     .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
         }
 
+        int diasHabiles = calcularDiasHabiles(
+                solicitudRequest.getFechaInicio(),
+                solicitudRequest.getFechaFin()
+        );
+
         // Actualizar los campos de la solicitud
         solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         solicitud.setFechaFin(solicitudRequest.getFechaFin());
-        solicitud.setCantidadDias(solicitudRequest.getCantidadDias());
+        solicitud.setCantidadDias(diasHabiles);
 
 
         // Guardar y devolver la solicitud actualizada
@@ -318,9 +336,56 @@ public class SolicitudService implements ISolicitudService {
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
+    // Obtener todos los feriados
+    public List<Map<String, String>> obtenerFeriados() {
+        return CalendarioUtil.obtenerFeriados();
+    }
+
+    // Obtener el cumpleaños de un usuario específico
+    public Map<String, String> obtenerCumpleanoPorIdUsuario(Long idUsuario) {
+        UsuarioModel usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        return CalendarioUtil.obtenerCumpleanosPorUsuario(usuario);
+    }
+
+    // Obtener todos los eventos (feriados y cumpleaños)
+    public List<Map<String, String>> obtenerTodosLosEventos() {
+        List<UsuarioModel> usuarios = usuarioRepository.findAll();
+        List<Map<String, String>> feriados = CalendarioUtil.obtenerFeriados();
+        List<Map<String, String>> cumpleanos = CalendarioUtil.obtenerCumpleanos(usuarios);
+
+        List<Map<String, String>> eventos = new ArrayList<>();
+        eventos.addAll(feriados);
+        eventos.addAll(cumpleanos);
+
+        return eventos;
+    }
 
 
+    public int calcularDiasHabiles(LocalDate fechaInicio, LocalDate fechaFin) {
+        // Obtener feriados y cumpleaños
+        List<Map<String, String>> feriados = CalendarioUtil.obtenerFeriados();
+        List<Map<String, String>> cumpleanos = CalendarioUtil.obtenerCumpleanos(usuarioRepository.findAll());
+        Set<LocalDate> fechasEspeciales = feriados.stream()
+                .map(evento -> LocalDate.parse(evento.get("fecha")))
+                .collect(Collectors.toSet());
 
+        fechasEspeciales.addAll(cumpleanos.stream()
+                .map(evento -> LocalDate.parse(evento.get("fecha")))
+                .collect(Collectors.toSet()));
+
+        // Calcular días hábiles
+        int diasHabiles = 0;
+        for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha = fecha.plusDays(1)) {
+            if (fecha.getDayOfWeek() != DayOfWeek.SATURDAY &&
+                    fecha.getDayOfWeek() != DayOfWeek.SUNDAY &&
+                    !fechasEspeciales.contains(fecha)) {
+                diasHabiles++;
+            }
+        }
+        return diasHabiles;
+    }
 
 
 }
