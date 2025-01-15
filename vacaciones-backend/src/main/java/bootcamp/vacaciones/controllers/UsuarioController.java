@@ -126,18 +126,15 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/modificar/{id}")
-    public ResponseEntity<UsuarioModel> actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioModel usuarioRecibido) {
-        UsuarioModel usuario = usuarioService.buscarUsuarioPorId(id);
-        if (usuario == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            usuario.setNombre(usuarioRecibido.getNombre());
-            usuario.setApellido(usuarioRecibido.getApellido());
-            usuario.setCorreo(usuarioRecibido.getCorreo());
-            usuario.setContrasena(usuarioRecibido.getContrasena());
-            usuarioService.guardarUsuario(usuario);
-            return ResponseEntity.ok(usuario);
+    @PutMapping("/modificar/{idUsuario}")
+    public ResponseEntity<?> modificarUsuario(@PathVariable Long idUsuario, @RequestBody UsuarioModel usuarioData) {
+        try {
+            UsuarioModel usuarioActualizado = usuarioService.actualizarUsuario(idUsuario, usuarioData);
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el usuario.");
         }
     }
 

@@ -51,7 +51,7 @@ function CreaEquipo() {
     try {
       const token = localStorage.getItem("token"); // Obtener token de autenticación
       console.log(token);
-      const url = "http://localhost:8080/vacaciones"; // URL para la creación del nuevo equipo
+      const url = "http://localhost:8080/api/equipos"; // URL para la creación del nuevo equipo
       await axios.post(url, nuevoEquipo, {
         headers: {
           Authorization: `Bearer ${token}`, // Incluir el token en los encabezados

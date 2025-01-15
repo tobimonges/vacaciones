@@ -22,14 +22,14 @@ function CreaCargo() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:8080/vacaciones/roles/listar-roles", // Replace with actual endpoint
+          "http://localhost:8080/vacaciones/roles/listar-roles",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setRoles(response.data); // Assuming response.data is the list of roles
+        setRoles(response.data);
       } catch (err) {
         console.error("Error fetching roles:", err);
         setError("Error al cargar los roles.");
@@ -48,7 +48,7 @@ function CreaCargo() {
 
     try {
       const token = localStorage.getItem("token");
-      const url = "http://localhost:8080/vacaciones/crea/cargos"; // Endpoint for creating cargos
+      const url = "http://localhost:8080/api/cargos";
       await axios.post(url, nuevoCargo, {
         headers: {
           Authorization: `Bearer ${token}`,

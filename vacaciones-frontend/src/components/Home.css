@@ -93,13 +93,11 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
     overflow: hidden; /* Evita que los elementos sobresalgan */
+    padding-top: 10px;
 
 }
 
-button {
-    font-size: 14px;
-    padding: 0.3rem;
-}
+
 
 /* Popup Overlay */
 .popup-overlay,

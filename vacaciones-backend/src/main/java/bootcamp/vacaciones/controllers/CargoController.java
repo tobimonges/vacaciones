@@ -24,7 +24,7 @@ public class CargoController {
 
     @GetMapping
     public ResponseEntity<List<CargoModel>> listCargo() {
-        List<CargoModel> cargos = cargoService.listCargo();
+        List<CargoModel> cargos = cargoService.listarCargos();
         return ResponseEntity.ok(cargos);
     }
 

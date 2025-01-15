@@ -12,13 +12,22 @@ import java.util.Optional;
 public class CargoService {
 
     @Autowired
-    private CargoRepository cargoRepository;
+    private final CargoRepository cargoRepository;
+
+    public CargoService(CargoRepository cargoRepository) {
+        this.cargoRepository = cargoRepository;
+    }
+
+    public CargoModel obtenerCargoPorId(Long id) {
+        Optional<CargoModel> cargo = cargoRepository.findById(id);
+        return cargo.orElse(null);
+    }
 
     public CargoModel creaCargo(CargoModel cargo) {
         return cargoRepository.save(cargo);
     }
 
-    public List<CargoModel> listCargo() {
+    public List<CargoModel> listarCargos() {
         return cargoRepository.findAll();
     }
 
@@ -26,7 +35,7 @@ public class CargoService {
         Optional<CargoModel> existingCargo = cargoRepository.findById(id);
         if (existingCargo.isPresent()) {
             CargoModel cargo = existingCargo.get();
-            cargo.setName(updatedCargo.getName());
+            cargo.setNombre(updatedCargo.getNombre());
             return cargoRepository.save(cargo);
         }
         return null;
