@@ -92,6 +92,8 @@
     justify-content: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
+    overflow: hidden; /* Evita que los elementos sobresalgan */
+
 }
 
 button {
@@ -171,6 +173,38 @@ button {
     transition: background-color 0.3s ease;
     margin-top: 10px;
 }
+/*Selector de Equipos*/
+.calendar-select-Th {
+    font-size: 1.1rem; /* Tamaño del texto relativo (responsive) */
+    color: #363533; /* Color del texto */
+    background-color: #fbc940; /* Fondo amarillo */
+    height: auto; /* Ajusta la altura automáticamente */
+    width: 100%; /* Ocupa el 100% del contenedor */
+    max-width: 300px; /* Tamaño máximo para evitar ser demasiado grande */
+    min-width: 150px; /* Tamaño mínimo para evitar ser demasiado pequeño */
+    padding: 8px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil para resaltar */
+    transition: all 0.3s ease; /* Animación para cambios de estado */
+}
+
+/* Efecto al pasar el mouse */
+.calendar-select-Th:hover {
+    background-color: #dfb755; /* Cambia a un amarillo más intenso */
+    cursor: pointer; /* Indica interactividad */
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 768px) {
+    .calendar-select-Th {
+        font-size: 0.9rem; /* Reduce ligeramente el texto */
+        padding: 6px; /* Ajusta el espacio interno */
+        max-width: 100%; /* Permite ocupar todo el espacio disponible */
+    }
+}
+
+
+
 
 .close-modal-btn:hover {
     background-color: var(--button-hover-bg);
