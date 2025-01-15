@@ -145,14 +145,14 @@ function UsuarioDetalle() {
     return (
         <div className="container-usuario-detalle">
             <h2>Gestión de Usuarios</h2>
-            {error && <p className="error">{error}</p>}
-            {message && <p className="success">{message}</p>}
+            {error && <p className="err">{error}</p>}
+            {message && <p className="succ">{message}</p>}
             {!selectedUserId ? (
                 <>
                     {usuarios.length === 0 ? (
                         <p>No se encontraron usuarios.</p>
                     ) : (
-                        <table className="admin-table">
+                        <table className="table">
                             <thead>
                             <tr>
                                 <th>Nro Cedula</th>
@@ -195,7 +195,7 @@ function UsuarioDetalle() {
                         { name: "fechaIngreso", type: "date", label: "Fecha de Ingreso" }, // Nuevo campo
                         { name: "fechaNacimiento", type: "date", label: "Fecha de Nacimiento" },
                     ].map(({ name, type, label }) => (
-                        <div key={name} className="inputGroup">
+                        <div key={name} className="inputGroupp">
                             <label htmlFor={name}>{label}</label>
                             <input
                                 type={type}
@@ -213,7 +213,7 @@ function UsuarioDetalle() {
                         { name: "equipo", label: "Equipo Asignado", options: equipos },
                         { name: "cargo", label: "Cargo Asignado", options: cargos },
                     ].map(({ name, label, options }) => (
-                        <div key={name} className="inputGroup">
+                        <div key={name} className="inputGroupp">
                             <label htmlFor={name}>{label}</label>
                             <select
                                 id={name}
@@ -232,12 +232,12 @@ function UsuarioDetalle() {
                         </div>
                     ))}
 
-                    <button type="submit" className="btn">
+                    <button type="submit" className="boton">
                         Guardar Cambios
                     </button>
                     <button
                         type="button"
-                        className="btn"
+                        className="boton"
                         onClick={() => setSelectedUserId(null)}
                     >
                         Cancelar

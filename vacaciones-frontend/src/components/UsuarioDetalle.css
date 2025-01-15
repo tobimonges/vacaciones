@@ -23,37 +23,37 @@
     display: none; /* Ocultar barra de desplazamiento en navegadores basados en WebKit (Chrome, Edge, Safari) */
 }
 
-.error {
+.err {
     color: red;
     font-size: 0.9rem;
     text-align: center;
 }
 
-.success {
+.succ {
     color: green;
     font-size: 0.9rem;
     text-align: center;
 }
 
-.admin-table {
+.table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
 }
 
-.admin-table th,
-.admin-table td {
+.table th,
+.table td {
     padding: 0.8rem;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-.admin-table th {
+.table th {
     background-color: rgba(87, 145, 238, 0.25);;
     font-weight: bold;
 }
 
-.btn {
+.boton {
     background-color: #fdca40;
     font-size: 16px;
     border: none;
@@ -64,7 +64,7 @@
     transition: all 0.3s ease-in-out;
 }
 
-.btn:hover {
+.boton:hover {
     background-color: #fcbc0e;
     box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
     0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
@@ -72,19 +72,19 @@
     transform: translateY(-2px);
 }
 
-.inputGroup {
+.inputGroupp {
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.inputGroup label {
+.inputGroupp label {
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
 
-.inputGroup input {
+.inputGroupp input {
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
