@@ -8,6 +8,8 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
+
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,6 +42,7 @@ public class GoogleDriveService {
                 .build();
     }
 
+    @Async
     public String subirArchivo(String nombreArchivo, String tipoMime, InputStream archivoStream) throws IOException {
         File archivoMetadata = new File();
         archivoMetadata.setName(nombreArchivo);
