@@ -188,11 +188,12 @@ const AdminDashboard = () => {
         `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`.toLowerCase();
       const estado = getEstadoSolicitud(solicitud).toLowerCase();
       const nroSolicitud = solicitud.id.toString();
-
+      const equipo = `${solicitud.usuario.equipo.nombre}`.toLowerCase();
       return (
         fullName.includes(searchText) ||
         estado.includes(searchText) ||
-        nroSolicitud.includes(searchText)
+        nroSolicitud.includes(searchText) ||
+        equipo.includes(searchText)
       );
     });
 
@@ -265,6 +266,7 @@ const AdminDashboard = () => {
                 <tr>
                   <th>Nro. Solicitud</th>
                   <th>Usuario</th>
+                  <th>Equipo</th>
                   <th>Fecha Inicio</th>
                   <th>Fecha Fin</th>
                   <th>Estado</th>
@@ -280,6 +282,7 @@ const AdminDashboard = () => {
                         " " +
                         solicitud.usuario.apellido}
                     </td>
+                    <td>{solicitud.usuario.equipo.nombre}</td>
                     <td>
                       {new Date(solicitud.fechaInicio).toLocaleDateString(
                         "es-ES"
