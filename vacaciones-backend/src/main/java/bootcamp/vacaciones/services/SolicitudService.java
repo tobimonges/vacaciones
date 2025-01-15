@@ -185,35 +185,35 @@ public class SolicitudService implements ISolicitudService {
             solicitud.setNumeroAprobaciones(1);
             solicitud.setRechazado(false);
 
-            emailService.enviarCorreo(
-                    solicitud.getUsuario().getCorreo(),
-                    "Solicitud Aprobada por Líder",
-                    "<p>Tu solicitud ha sido aprobada por el líder.</p>"
-            );
+//            emailService.enviarCorreo(
+//                    solicitud.getUsuario().getCorreo(),
+//                    "Solicitud Aprobada por Líder",
+//                    "<p>Tu solicitud ha sido aprobada por el líder.</p>"
+//            );
         } else if (solicitud.getNumeroAprobaciones() == 1) {
             validarRolTh(usuario);
             solicitud.setNumeroAprobaciones(2);
             solicitud.setEstado(true);
             solicitud.setRechazado(false);
 
-            emailService.enviarCorreo(
-                    solicitud.getUsuario().getCorreo(),
-                    "Solicitud Completamente Aprobada",
-                    "<p>Tu solicitud ha sido completamente aprobada.</p>"
-            );
+//            emailService.enviarCorreo(
+//                    solicitud.getUsuario().getCorreo(),
+//                    "Solicitud Completamente Aprobada",
+//                    "<p>Tu solicitud ha sido completamente aprobada.</p>"
+//            );
 
             actualizarDiasVacaciones(solicitud);
 
-            // Notificar a todos los usuarios con rol "TH"
-            List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
-            for (UsuarioModel thUsuario : usuariosTh) {
-                emailService.enviarCorreo(
-                        thUsuario.getCorreo(),
-                        "Aprobación de Solicitud",
-                        "<p>La solicitud del usuario <b>" + solicitud.getUsuario().getNombre() + "</b> para las fechas " +
-                                solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + " ha sido aprobada por completo.</p>"
-                );
-            }
+//            // Notificar a todos los usuarios con rol "TH"
+//            List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+//            for (UsuarioModel thUsuario : usuariosTh) {
+//                emailService.enviarCorreo(
+//                        thUsuario.getCorreo(),
+//                        "Aprobación de Solicitud",
+//                        "<p>La solicitud del usuario <b>" + solicitud.getUsuario().getNombre() + "</b> para las fechas " +
+//                                solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + " ha sido aprobada por completo.</p>"
+//                );
+//            }
         } else {
             throw new RuntimeException("La solicitud ya está completamente aprobada.");
         }
