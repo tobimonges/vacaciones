@@ -13,7 +13,7 @@ const NavigationBar = ({ logo, onLogout }) => {
             {/* Botón de Atrás */}
             <div className="nav-button-container left">
               <button className="nav-button back-button" onClick={() => navigate(-1)}>
-                <span className="text">Atrás</span>
+                <img src=".\angulo-izquierdo.svg" alt="Atrás" className="button-icon" />
               </button>
             </div>
 
@@ -31,7 +31,7 @@ const NavigationBar = ({ logo, onLogout }) => {
             {/* Botón de Cerrar Sesión */}
             <div className="nav-button-container right">
               <button className="nav-button logout" onClick={onLogout}>
-                <span className="text">Cerrar sesión</span>
+              <img src=".\salida.svg" alt="Atrás" className="button-icon" />
               </button>
             </div>
         </nav>

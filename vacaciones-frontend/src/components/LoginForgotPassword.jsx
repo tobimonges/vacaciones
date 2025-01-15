@@ -96,7 +96,7 @@ function ForgotPassword({ onBackToLogin }) {
       >
         <div className="backButtonWrapper">
         <button className="backToLoginButton" onClick={handleBackToLogin}>
-          Atras
+          Volver
         </button>
         </div>
         <Logo />
@@ -118,7 +118,7 @@ function ForgotPassword({ onBackToLogin }) {
             </div>
           </div>
           <button type="submit" className="buttonFPC">
-            Correo de recuperación
+            Enviar
           </button>
           <div className="forgotPassword">
             
