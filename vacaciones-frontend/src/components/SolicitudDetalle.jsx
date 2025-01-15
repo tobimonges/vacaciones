@@ -258,13 +258,13 @@ export default function SolicitudDetalle() {
   };
 
   // Filtrar solicitudes según el estado
-  const solicitudesFiltradas = filtro
-    ? solicitudes.filter(
-        (solicitud) =>
-          (filtro === "Confirmada" && solicitud.estado === true) ||
-          (filtro === "Pendiente" && solicitud.estado === false)
-      )
-    : solicitudes;
+  const solicitudesFiltradas = filtro === "Todas" || !filtro
+   ? solicitudes
+   : solicitudes.filter(
+      (solicitud) =>
+        (filtro === "Confirmada" && solicitud.estado === true) ||
+        (filtro === "Pendiente" && solicitud.estado === false)
+    );
 
   if (error) {
     return <p className="error">{error}</p>;
@@ -275,7 +275,9 @@ export default function SolicitudDetalle() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Preloader duration={650} />
         <div className="container-solicitudes">
+        <Logo />
           <h4>Solicitudes del Usuario</h4>
+          <br />
           <h4>No se encontraron solicitudes para este usuario.</h4>
           <br />
           <button className="volver-home" onClick={() => navigate("/Home")}>
