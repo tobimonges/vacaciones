@@ -122,7 +122,7 @@ button, select{
   color: #333 !important; /* Color del texto */
   border: 1px solid #ddd !important; /* Borde del botón */
   padding: 0.5rem 1rem !important; /* Ajusta el relleno según sea necesario */
-  font-size: 1.2rem !important; /* Tamaño de la fuente */
+  font-size: 1rem !important; /* Tamaño de la fuente */
   font-weight: 500 !important; /* Peso de la fuente */
   cursor: pointer !important; /* Cambia el cursor al pasar el mouse */
   transition: all 0.3s ease !important
@@ -146,10 +146,15 @@ button, select{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
+.rbc-date-cell {
+  
+}
+
 .rbc-day-bg,
-.rbc-date-cell button {
-  border-radius: 5px !important; /* Redondea las celdas de los días y los botones */
+.rbc-date-cell button {/* Redondea las celdas de los días y los botones */
   transition: background-color 0.3s ease !important;
+  
+
 }
 
 .rbc-day-bg:hover {
@@ -177,5 +182,4 @@ button, select{
   text-align: center !important;
   padding: 5px 0 !important;
   background-color: #f7f7f7 !important;
-  border-radius: 10px 10px 0 0 !important;
 }
