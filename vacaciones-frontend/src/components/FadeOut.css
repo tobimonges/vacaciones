@@ -1,0 +1,13 @@
+/* FadeOut.css */
+
+/* Contenedor que envuelve el contenido */
+.fade-out-container {
+    opacity: 1;  /* Comienza visible */
+    transition: opacity 1s ease-in-out; /* Transición suave */
+  }
+  
+  /* Animación fadeOut */
+  .fade-out {
+    opacity: 0; /* Se desvanece */
+  }
+  
