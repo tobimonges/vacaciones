@@ -12,7 +12,7 @@ import CrearUsuario from "./components/CrearUsuario";
 import CreaEquipo from "./components/CreaEquipo";
 import CreaCargo from "./components/CreaCargo";
 import EquipoDetalle from "./components/EquipoDetalle";
-
+import UsuarioDetalle from "./components/UsuarioDetalle"
 
 
 
@@ -53,6 +53,15 @@ function App() {
             <CrearUsuario />
           </PrivateRoute>
         }
+        />
+        <Route
+            path="/UsuarioDetalle"
+            element={
+              <PrivateRoute allowedRoles={["TH"]}>
+
+                <UsuarioDetalle />
+              </PrivateRoute>
+            }
         />
         <Route
         path="/CreaEquipo"
