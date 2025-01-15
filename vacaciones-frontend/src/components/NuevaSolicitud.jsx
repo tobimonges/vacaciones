@@ -217,12 +217,16 @@ export default function NuevaSolicitud() {
         formData.append("archivo", file);
         formData.append("idSolicitud", solicitudId);
 
-        await axios.post("http://localhost:8080/subir", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await axios.post(
+          "http://localhost:8080/vacaciones/documentos/subir",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
 
       alert("Carga de solicitud exitosa");
@@ -314,7 +318,7 @@ export default function NuevaSolicitud() {
               </select>
             </div>
 
-            {userRole === "TERCERIZADO" && (
+            {userRole === "FUNCIONARIO_TERCERIZADO" && (
               <div className="mb-3">
                 <p htmlFor="file">Adjuntar aprobación de vacación:</p>
                 <div className="file-upload-container">
