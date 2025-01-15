@@ -92,6 +92,8 @@
     justify-content: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
+    overflow: hidden; /* Evita que los elementos sobresalgan */
+    padding-top: 10px;
 
 }
 
