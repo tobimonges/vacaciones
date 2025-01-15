@@ -86,6 +86,31 @@ public class UsuarioService implements IUsuarioService{
     }
 
     @Override
+    public UsuarioModel actualizarUsuario(Long idUsuario, UsuarioModel usuarioRecibido) {
+        UsuarioModel usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
+
+        usuario.setNombre(usuarioRecibido.getNombre());
+        usuario.setApellido(usuarioRecibido.getApellido());
+        usuario.setCorreo(usuarioRecibido.getCorreo());
+        usuario.setFechaNacimiento(usuarioRecibido.getFechaNacimiento());
+        usuario.setTelefono(usuarioRecibido.getTelefono());
+        usuario.setEstado(usuarioRecibido.isEstado());
+
+        if (usuarioRecibido.getRol() != null) {
+            usuario.setRol(usuarioRecibido.getRol());
+        }
+        if (usuarioRecibido.getEquipo() != null) {
+            usuario.setEquipo(usuarioRecibido.getEquipo());
+        }
+        if (usuarioRecibido.getCargo() != null) {
+            usuario.setCargo(usuarioRecibido.getCargo());
+        }
+
+        return usuarioRepository.save(usuario);
+    }
+
+    @Override
     public void eliminarUsuario(UsuarioModel usuario) {
         usuarioRepository.delete(usuario);
     }

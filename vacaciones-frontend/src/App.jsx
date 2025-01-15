@@ -15,6 +15,7 @@ import EquipoDetalle from "./components/EquipoDetalle";
 import CargoDetalle from "./components/CargoDetalle";
 
 
+import UsuarioDetalle from "./components/UsuarioDetalle"
 
 
 
@@ -55,6 +56,15 @@ function App() {
             <CrearUsuario />
           </PrivateRoute>
         }
+        />
+        <Route
+            path="/UsuarioDetalle"
+            element={
+              <PrivateRoute allowedRoles={["TH"]}>
+
+                <UsuarioDetalle />
+              </PrivateRoute>
+            }
         />
         <Route
         path="/CreaEquipo"
