@@ -203,11 +203,32 @@ export default function NuevaSolicitud() {
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
-      await axios.post(url, solicitud, {
+      const solicitudResponse = await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      const solicitudId = solicitudResponse.data.id; // Obtener ID de la solicitud creada
+
+      // Subir archivo si existe
+      if (file) {
+        const formData = new FormData();
+        formData.append("archivo", file);
+        formData.append("idSolicitud", solicitudId);
+
+        await axios.post(
+          "http://localhost:8080/vacaciones/documentos/subir",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+
       alert("Carga de solicitud exitosa");
       navigate("/Home");
     } catch (err) {
@@ -297,28 +318,30 @@ export default function NuevaSolicitud() {
               </select>
             </div>
 
-            <div className="mb-3">
-              <p htmlFor="file">Adjuntar aprobación de vacación:</p>
-              <div className="file-upload-container">
-                <label htmlFor="file" className="file-upload-label">
-                  <img
-                    src="./public/clip-vertical.svg"
-                    alt="Subir archivo"
-                    className="file-upload-image"
+            {userRole === "FUNCIONARIO_TERCERIZADO" && (
+              <div className="mb-3">
+                <p htmlFor="file">Adjuntar aprobación de vacación:</p>
+                <div className="file-upload-container">
+                  <label htmlFor="file" className="file-upload-label">
+                    <img
+                      src="./public/clip-vertical.svg"
+                      alt="Subir archivo"
+                      className="file-upload-image"
+                    />
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    className="inputFile"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.jpg,.png"
                   />
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  className="inputFile"
-                  onChange={handleFileChange}
-                  accept=".pdf,.doc,.docx,.jpg,.png"
-                />
-                <span id="file-name" className="file-name">
-                  Seleccionar adjunto
-                </span>
+                  <span id="file-name" className="file-name">
+                    Seleccionar adjunto
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="buttons">
               <button className="btn" onClick={() => navigate("/Home")}>

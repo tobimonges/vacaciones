@@ -208,7 +208,7 @@ const Home = () => {
       <Preloader duration={650} />
       <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
         <NavigationBar onLogout={handleLogout} />
-        <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
+        <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
         <p className="calendar-text">
           Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
         </p>
