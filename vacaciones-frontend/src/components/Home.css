@@ -1,83 +1,88 @@
+/* 🎨 Variables */
+:root {
+    --primary-bg: rgba(87, 145, 238, 0.25);
+    --primary-color: #ffffff;
+    --secondary-bg: #fffffff1;
+    --highlight-bg: #d8e5ef;
+    --button-bg: #fbc940;
+    --button-hover-bg: #dfb755;
+    --modal-bg: #39659f;
+    --modal-item-bg: #4c6da8;
+    --modal-shadow: rgba(0, 0, 0, 0.07);
+}
+
 /* 🖼 Contenedor principal del calendario */
 .calendar-container {
-    display: flex; /* Habilita Flexbox */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Alinea contenido al inicio para evitar recortes */
-    min-height: 100vh; /* Usa altura mínima para evitar problemas en pantallas pequeñas */
-    padding: 10px; /* Añade un relleno alrededor */
-    box-sizing: border-box; /* Asegura que padding no altere dimensiones */
-    margin: 0; /* Elimina cualquier margen adicional */
-    overflow-y: auto; /* Permite desplazamiento vertical si es necesario */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 0;
+    overflow-y: auto;
 }
 
 /* 📝 Tarjeta del calendario */
 .calendar-card {
     width: 100%;
     max-width: 1200px;
-    background: rgba(87, 145, 238, 0.25);
+    background: var(--primary-bg);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    box-sizing: border-box; /* Asegura consistencia en el diseño */
+    box-sizing: border-box;
 }
 
 /* 📌 Título del calendario */
 .calendar-title {
     font-size: 20px;
     margin-bottom: 10px;
-    line-height: 1.2; /* Mejor ajuste de espacio */
-    color: white;
+    line-height: 1.2;
+    color: var(--primary-color);
 }
 
 /* 📄 Texto dentro del calendario */
 .calendar-text {
-    font-size: 14px; /* Tamaño reducido para pantallas pequeñas */
+    font-size: 14px;
     margin: 5px 0;
-    color: white;
+    color: var(--primary-color);
 }
 
 /* 🗓 Contenedor grande del calendario */
 .calendar-big-container {
     margin-top: 20px;
-    background-color: #fffffff1;
+    background-color: var(--secondary-bg);
     border-radius: 15px;
-    padding: 0px 20px; /* Agrega padding interno */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6); /* Añade un pequeño sombreado */
-
+    padding: 0 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+    height: 570px;
+    overflow-y: auto;
 }
 
 /* Leyenda de colores alineada horizontalmente */
 .calendar-legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Espaciado menor para pantallas pequeñas */
+    gap: 10px;
     justify-content: center;
-    margin-top: 15px; /* Espaciado reducido */
-    padding: 5px; /* Ajustado */
+    margin-top: 15px;
+    padding: 5px;
     border-radius: 8px;
-
 }
 
-/* Estilo de los íconos de color */
 .calendar-legend p {
     display: flex;
     align-items: center;
     margin: 0;
-    padding: 5px 10px; /* Menor espaciado interno */
+    padding: 5px 10px;
     border-radius: 4px;
-
-}
-.calendar-big-container {
-    height: 570px; /* Ajusta la altura según tus necesidades */
-    overflow-y: auto; /* Agrega scroll si hay demasiados eventos */
 }
 
-
-/* Estilo de los íconos de color */
 .calendar-legend span {
     margin-right: 5px;
-    padding: 4px 8px; /* Ajuste de espacio */
+    padding: 4px 8px;
     border-radius: 4px;
 }
 
@@ -85,19 +90,21 @@
 .buttons {
     display: flex;
     justify-content: center;
-    gap: 0.5rem; /* Espaciado menor */
+    gap: 0.5rem;
     margin-top: 0.5rem;
+    overflow: hidden; /* Evita que los elementos sobresalgan */
 
 }
 
 button {
-
-    font-size: 14px; /* Tamaño reducido */
-    padding: 0.3rem; /* Ajustado */
+    font-size: 14px;
+    padding: 0.3rem;
 }
 
-
-.popup-overlay {
+/* Popup Overlay */
+.popup-overlay,
+.modal-overlay {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -110,35 +117,18 @@ button {
 }
 
 .popup {
-    background: white;
+    background: var(--primary-color);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
-
-/* Modal Overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(8px); /* Efecto de desenfoque */
-    -webkit-backdrop-filter: blur(8px);
-}
-
-/* Contenido del Modal */
+/* Modal Content */
 .modal-contentTh {
-    background: #39659f;
+    background: var(--modal-bg);
     max-height: 70vh;
-    overflow-y: auto; /* Permite el desplazamiento en caso de contenido largo */
+    overflow-y: auto;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -146,53 +136,85 @@ button {
     max-width: 90%;
     position: relative;
     display: flex;
-    flex-direction: column; /* Organiza el contenido en columna */
-    gap: 15px; /* Espaciado entre el contenido */
+    flex-direction: column;
+    gap: 15px;
 }
 
-/* Contenedor de los eventos */
 .modal-events-list {
-    flex: 1; /* Asegura que este contenedor ocupe el espacio disponible */
-    overflow-y: scroll; /* Habilitar desplazamiento vertical */
-    scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
-    max-height: calc(70vh - 50px); /* Ajusta la altura para no sobrepasar la altura total */
+    flex: 1;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    max-height: calc(70vh - 50px);
 }
 
-/* Elementos de la lista de eventos */
 .modal-contentTh li {
-    background-color: #4c6da8;
+    background-color: var(--modal-item-bg);
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    margin-bottom: 10px; /* Espaciado entre los elementos */
-    padding: 10px; /* Relleno dentro de los li */
+    margin-bottom: 10px;
+    padding: 10px;
     border-radius: 4px;
 }
 
 .modal-contentTh li:hover {
-    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
-    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
-    0 32px 32px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 -1px 1px var(--modal-shadow), 0 4px 4px var(--modal-shadow),
+    0 8px 8px var(--modal-shadow), 0 16px 16px var(--modal-shadow),
+    0 32px 32px var(--modal-shadow);
     transform: translateY(-2px);
 }
 
 /* Botón de cerrar */
 .close-modal-btn {
-    background-color: #fbc940;
+    background-color: var(--button-bg);
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 10px; /* Espaciado arriba del botón */
+    margin-top: 10px;
+}
+/*Selector de Equipos*/
+.calendar-select-Th {
+    font-size: 1.1rem; /* Tamaño del texto relativo (responsive) */
+    color: #363533; /* Color del texto */
+    background-color: #fbc940; /* Fondo amarillo */
+    height: auto; /* Ajusta la altura automáticamente */
+    width: 100%; /* Ocupa el 100% del contenedor */
+    max-width: 300px; /* Tamaño máximo para evitar ser demasiado grande */
+    min-width: 150px; /* Tamaño mínimo para evitar ser demasiado pequeño */
+    padding: 8px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil para resaltar */
+    transition: all 0.3s ease; /* Animación para cambios de estado */
 }
 
+/* Efecto al pasar el mouse */
+.calendar-select-Th:hover {
+    background-color: #dfb755; /* Cambia a un amarillo más intenso */
+    cursor: pointer; /* Indica interactividad */
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 768px) {
+    .calendar-select-Th {
+        font-size: 0.9rem; /* Reduce ligeramente el texto */
+        padding: 6px; /* Ajusta el espacio interno */
+        max-width: 100%; /* Permite ocupar todo el espacio disponible */
+    }
+}
+
+
+
+
 .close-modal-btn:hover {
-    background-color: #dfb755;
+    background-color: var(--button-hover-bg);
 }
+
+/* Estilo del día actual */
 .rbc-day-bg.rbc-today {
-    background-color: #d8e5ef; !important;
+    background-color: var(--highlight-bg) !important;
 }
-.
+
 /* 🎯 Reglas responsivas */
 @media (max-width: 768px) {
     .modal-contentTh {
@@ -204,29 +226,25 @@ button {
         font-size: 14px;
         padding: 8px 16px;
     }
-}
 
-
-/* 🎯 Reglas responsivas */
-@media (max-width: 768px) {
     .calendar-title {
-        font-size: 18px; /* Ajusta el tamaño del título */
+        font-size: 18px;
     }
 
     .calendar-text {
-        font-size: 12px; /* Reduce tamaño del texto */
+        font-size: 12px;
     }
 
     .calendar-card {
-        padding: 15px; /* Reduce el padding */
+        padding: 15px;
     }
 
     .calendar-legend {
-        gap: 8px; /* Menor espaciado */
+        gap: 8px;
     }
 
     button {
-        font-size: 12px; /* Botones más pequeños */
+        font-size: 12px;
         padding: 0.2rem;
     }
 }

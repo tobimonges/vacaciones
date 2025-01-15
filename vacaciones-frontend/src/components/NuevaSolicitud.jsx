@@ -49,6 +49,7 @@ export default function NuevaSolicitud() {
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const userRole = getUserRole();
+  const [file, setFile] = useState(null); // Nuevo estado para el archivo
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -122,7 +123,7 @@ export default function NuevaSolicitud() {
         let lideresData = [];
 
         // Si el usuario logueado es "TH", usar la ruta específica
-        if (userRole === "TH") {
+        if (userRole === "TH" || userRole === "OPERACIONES") {
           const thResponse = await axios.get(
             "http://localhost:8080/vacaciones/listar-TH",
             {
@@ -170,6 +171,17 @@ export default function NuevaSolicitud() {
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]); // Guardar el archivo seleccionado
+
+    const fileNameSpan = document.getElementById("file-name");
+    if (e.target.files.length > 0) {
+      fileNameSpan.textContent = e.target.files[0].name;
+    } else {
+      fileNameSpan.textContent = "Seleccionar adjunto"; // Texto predeterminado si no hay archivo
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -184,17 +196,39 @@ export default function NuevaSolicitud() {
       liderId: selectedLider,
       estado: false,
       cantidadDias: validDays,
-      numeroAprobaciones: userRole === "TH" ? 1 : 0, // Valor según el rol del usuario
+      numeroAprobaciones:
+        userRole === "TH" || userRole === "OPERACIONES" ? 1 : 0, // Valor según el rol del usuario
     };
 
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
-      await axios.post(url, solicitud, {
+      const solicitudResponse = await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      const solicitudId = solicitudResponse.data.id; // Obtener ID de la solicitud creada
+
+      // Subir archivo si existe
+      if (file) {
+        const formData = new FormData();
+        formData.append("archivo", file);
+        formData.append("idSolicitud", solicitudId);
+
+        await axios.post(
+          "http://localhost:8080/vacaciones/documentos/subir",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+
       alert("Carga de solicitud exitosa");
       navigate("/Home");
     } catch (err) {
@@ -283,10 +317,36 @@ export default function NuevaSolicitud() {
                 ))}
               </select>
             </div>
+
+            {userRole === "FUNCIONARIO_TERCERIZADO" && (
+              <div className="mb-3">
+                <p htmlFor="file">Adjuntar aprobación de vacación:</p>
+                <div className="file-upload-container">
+                  <label htmlFor="file" className="file-upload-label">
+                    <img
+                      src="./public/clip-vertical.svg"
+                      alt="Subir archivo"
+                      className="file-upload-image"
+                    />
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    className="inputFile"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.jpg,.png"
+                  />
+                  <span id="file-name" className="file-name">
+                    Seleccionar adjunto
+                  </span>
+                </div>
+              </div>
+            )}
+
             <div className="buttons">
-            <button className="btn" onClick={() => navigate("/Home")}>
-          <span>Volver a Home</span>
-        </button>
+              <button className="btn" onClick={() => navigate("/Home")}>
+                <span>Volver a Home</span>
+              </button>
               <button
                 type="submit"
                 className="btn btn-primary"

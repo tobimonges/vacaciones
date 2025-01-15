@@ -41,7 +41,6 @@ function Login() {
           password: password,
         }
       );
-      console.log("Respuesta de la API:", respuesta); // Agregar esto para depurar
 
       const token = respuesta.data;
       localStorage.setItem("token", token);
@@ -59,10 +58,11 @@ function Login() {
       //  setTimeout(() => setError(false), 2100);
       setTimeout(() => setShowError(false), 2000);
 
-
       if (error.response) {
         if (error.response.status === 401) {
-          setErrorMessage("Credenciales inválidas. Verifica tu email y contraseña.");
+          setErrorMessage(
+            "Credenciales inválidas. Verifica tu email y contraseña."
+          );
         } else if (error.response.status === 500) {
           setErrorMessage("Error del servidor. Inténtalo más tarde.");
         } else {
@@ -71,7 +71,6 @@ function Login() {
       } else {
         setErrorMessage("Error de red. Por favor, verifica tu conexión.");
       }
-
     }
 
     /*   const handleLogout = () => {
@@ -96,8 +95,9 @@ function Login() {
     <div className="containerLogin">
       <Preloader duration={650} />
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
-          }`}
+        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
+          error ? "datosIncorrectos" : ""
+        }`}
       >
         <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
@@ -151,11 +151,10 @@ function Login() {
         <div className="content"></div>
       </div>
       {showError && (
-        <div className={`errorPopup ${error ? 'error' : ''}`}>
+        <div className={`errorPopup ${error ? "error" : ""}`}>
           {errorMessage}
         </div>
       )}
-
     </div>
   );
 }

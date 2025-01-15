@@ -237,6 +237,7 @@ const AdminDashboard = () => {
           <NavigationBar onLogout={handleLogout} />
           {/*<Logo /> */}
           <div className="header-title-container">
+            <div className="space"></div>
             <h4>Panel de Administrador</h4>
             <div className="filter-container">
               <label htmlFor="filter-input" className="filter-label">

@@ -1,25 +1,27 @@
-.containerLogin {
+.containerCreate {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100%;
+  align-items: flex-start; /* Cambiado de center a flex-start */
+  height: 100vh;
   border: none;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Añadido para permitir el desplazamiento vertical */
 }
 
 .createBox {
   border: none;
-  height: 860px;
-  width: 400px;
+  width: 100%;
+  max-width: 800px;
   padding: 20px;
+  margin-top: 20px; /* Añadido para dar espacio a la barra de navegación */
   border-radius: 10px;
   background: rgba(87, 145, 238, 0.25);
-  transition: all 0.3 ease;
+  transition: all 0.3s ease;
   box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  -webkit-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 1px 10px 5px 0px rgba(0, 0, 0, 0.75);
-  justify-content: space-between; /* Esto empuja los elementos hacia los extremos */
+  display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
 }
 
 .headerCreate {
@@ -29,42 +31,29 @@
   color: #ffffff;
 }
 
-.inputGroup {
+.inputGroupCreate {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-top: 40px;
-  margin-bottom: -55px;
-}
-
-/* Estilos para los DatePickers */
-.datePickerGroup {
-  margin-top: 55px;
-  margin-bottom: -49px;
+  width: 100%;
+  margin-bottom: 10px; /* Reducido de 20px a 10px */
+  position: relative;
+  margin-top: 0px; /* Añadido para dar espacio entre los elementos */
 }
 
 .icon {
-  position: absolute;
   width: 25px;
-  height: 20px;
-  margin-bottom: 8px;
-  margin-top: 10px;
-  margin-left: -330px;
+  height: 25px;
+  margin-right: 10px;
 }
 
 .iconWrap {
   display: flex;
-  width: 72%;
   align-items: center;
-  justify-content: center;
-  height: 30px;
-  margin-left: 5px;
-  padding: 20px;
+  width: 100%;
 }
 
 .inputCreate {
-  width: 70%;
-  flex: 1;
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -72,10 +61,7 @@
   background-color: rgba(87, 145, 238, 0.25);
   font-size: 16px;
   transition: all 0.3s ease;
-}
-
-.inputCreate::placeholder {
-  color: rgba(255, 255, 255, 0.479);
+  
 }
 
 .inputCreate::placeholder {
@@ -88,18 +74,25 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Placeholder o texto inicial del <select> */
+.datePickerGroup {
+  width: 100%;
+}
+
 .inputCreate option[value=""][disabled] {
   color: rgba(255, 255, 255, 0.479);
 }
 
-/* Estilo para las opciones desplegadas */
 .inputCreate option {
-  background-color: rgba(32, 85, 170, 0.8); /* Fondo translúcido */
-  color: #ffffff; /* Texto blanco */
+  background-color: rgba(32, 85, 170, 0.8);
+  color: #ffffff;
+}
+.formCreate {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Añadido para centrar los elementos dentro del formulario */
 }
 
-.button {
+.buttonCreate {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   width: 50%;
   padding: 10px;
@@ -109,10 +102,10 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin: 0 auto;
-  margin-top: 80px;
-  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
   transition: all 0.4s ease;
+  align-self: center; /* Añadido para centrar el botón */
 }
 
 .button:hover {
@@ -148,14 +141,14 @@ h3 .icon {
 }
 
 .no-spinner {
-  appearance: none; /* Elimina los spinners en navegadores compatibles */
-  -moz-appearance: textfield; /* Elimina los spinners en Firefox */
-  -webkit-appearance: none; /* Elimina los spinners en Safari y Chrome */
+  appearance: none;
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
 }
 
 .no-spinner::-webkit-inner-spin-button,
 .no-spinner::-webkit-outer-spin-button {
-  -webkit-appearance: none; /* Oculta los botones en Chrome */
+  -webkit-appearance: none;
 }
 
 @keyframes datosIncorrectos {
@@ -205,9 +198,11 @@ h3 .icon {
     transform: scale(0);
   }
 }
+
 .LoginSlide {
   animation: LoginSlide 0.5s ease 0s 1 normal forwards;
 }
+
 @keyframes LoginSlide {
   0% {
     opacity: 1;
@@ -219,17 +214,18 @@ h3 .icon {
     transform: translateY(250px);
   }
 }
-.popupErrorCrearUsuario {
+
+.popupErrorCrearUsuario,
+.popupExitoso {
   position: absolute;
   top: 35px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #f44336; /* Color rojo para el error */
   color: white;
   padding: 20px 40px;
   border-radius: 7px;
-  max-width: 80%; /* Controla el ancho máximo */
-  width: 500px; /* Ajusta el ancho fijo */
+  max-width: 80%;
+  width: 500px;
   align-items: center;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -240,25 +236,12 @@ h3 .icon {
   transition: opacity 0.5s ease;
 }
 
+.popupErrorCrearUsuario {
+  background-color: #f44336;
+}
+
 .popupExitoso {
-  position: absolute;
-  top: 35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #4caf50; /* Color verde para el éxito */
-  color: white;
-  max-width: 80%; /* Controla el ancho máximo */
-  width: 500px; /* Ajusta el ancho fijo */
-  align-items: center;
-  text-align: center;
-  padding: 10px 20px;
-  border-radius: 7px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-  animation: shadeIn 0.5s forwards;
-  z-index: 10;
-  opacity: 0;
-  transition: opacity 0.5s ease;
+  background-color: #4caf50;
 }
 
 @keyframes shadeIn {
@@ -271,10 +254,7 @@ h3 .icon {
     transform: translateX(-50%) translateY(0);
   }
 }
+
 .MuiSvgIcon-root {
-  color: rgb(
-    206,
-    206,
-    206
-  ) !important; /* Cambiar el color del ícono a blanco */
+  color: rgb(206, 206, 206) !important;
 }

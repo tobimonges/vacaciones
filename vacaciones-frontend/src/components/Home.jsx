@@ -6,12 +6,11 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import esLocale from "date-fns/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
-import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils"; // Asegúrate de que getUserRole esté disponible
+import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils";
 import "./Home.css";
 import Preloader from "./Preloader";
-
-
 import NavigationBar from "./NavigationBar";
+
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
 
@@ -22,6 +21,57 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
+
+// 🎨 **Constantes de estilo y mensajes**
+const EVENT_TYPES = {
+  APROBADO: "aprobado",
+  RECHAZADO: "rechazado",
+  PENDIENTE: "pendiente",
+  FERIADO: "feriado",
+};
+
+const EVENT_COLORS = {
+  [EVENT_TYPES.APROBADO]: "#67bcc1",
+  [EVENT_TYPES.RECHAZADO]: "#6e6cba",
+  [EVENT_TYPES.PENDIENTE]: "#6b97c8",
+  [EVENT_TYPES.FERIADO]: "#479cf8",
+};
+
+const MESSAGES = {
+  SESSION_EXPIRED: "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
+  USER_DATA_ERROR: "No se pudieron cargar los datos del usuario.",
+  VACATION_REQUESTS_ERROR: "No se pudieron cargar las solicitudes de vacaciones.",
+};
+
+// 🎨 **Componente de leyenda del calendario**
+const CalendarLegend = () => (
+  <div className="calendar-legend">
+    {Object.entries(EVENT_COLORS).map(([type, color]) => (
+      <p key={type}>
+        <span style={{ backgroundColor: color, color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
+          {type.charAt(0).toUpperCase() + type.slice(1)}
+        </span>
+      </p>
+    ))}
+  </div>
+);
+
+// 🎨 **Componente de botones del calendario**
+const CalendarButtons = ({ navigate, isUserAllowed }) => (
+  <div className="buttons">
+    <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
+      <span>Solicitar</span>
+    </button>
+    <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
+      <span>Ver Solicitudes</span>
+    </button>
+    {isUserAllowed() && (
+      <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
+        <span>Home Talento Humano</span>
+      </button>
+    )}
+  </div>
+);
 
 // 🏠 **Componente Principal**
 const Home = () => {
@@ -40,87 +90,54 @@ const Home = () => {
     return allowedRoles.includes(userRole);
   };
 
-  // 📥 **Obtener Datos del Usuario**
+  // 📥 **Obtener Datos del Usuario y Solicitudes de Vacaciones**
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       const usuarioId = getUsuarioId();
 
       if (!usuarioId || !isTokenValid()) {
-        setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        setError(MESSAGES.SESSION_EXPIRED);
         navigate("/");
         return;
       }
 
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-          {
+        const [userDataResponse, vacationRequestsResponse] = await Promise.all([
+          axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
             headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+          }),
+          axios.get(`http://localhost:8080/vacaciones/usuario/${usuarioId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-        const { nombre, fechaIngreso, diasVacaciones } = response.data;
+        const { nombre, fechaIngreso, diasVacaciones } = userDataResponse.data;
         setUserName(nombre);
         setJoinDate(fechaIngreso);
         setVacationDays(diasVacaciones);
-      } catch (error) {
-        console.error("Error al obtener datos del usuario:", error);
-        setError("No se pudieron cargar los datos del usuario.");
-      }
-    };
 
-    fetchUserData();
-  }, [navigate]);
+        const eventsArray = vacationRequestsResponse.data.map((solicitud) => {
+          if (solicitud.fechaInicio && solicitud.fechaFin) {
+            const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
+            const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
-  // 📥 **Obtener Solicitudes de Vacaciones**
-  useEffect(() => {
-    const fetchVacationRequests = async () => {
-      const usuarioId = getUsuarioId();
+            const type = solicitud.rechazado
+              ? EVENT_TYPES.RECHAZADO
+              : solicitud.estado
+              ? EVENT_TYPES.APROBADO
+              : EVENT_TYPES.PENDIENTE;
 
-      if (!usuarioId || !isTokenValid()) {
-        setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-        navigate("/");
-        return;
-      }
-
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `http://localhost:8080/vacaciones/usuario/${usuarioId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+            return {
+              title: "Vacaciones",
+              start: new Date(`${startDate}T00:00:00`),
+              end: new Date(`${endDate}T23:59:59`),
+              allDay: true,
+              type,
+            };
           }
-        );
-
-        const eventsArray = [];
-
-        if (response.data && Array.isArray(response.data)) {
-          response.data.forEach((solicitud) => {
-            if (solicitud.fechaInicio && solicitud.fechaFin) {
-              const startDate = new Date(solicitud.fechaInicio)
-                .toISOString()
-                .split("T")[0];
-              const endDate = new Date(solicitud.fechaFin)
-                .toISOString()
-                .split("T")[0];
-
-              const type = solicitud.rechazado
-                ? "rechazado"
-                : solicitud.estado
-                ? "aprobado"
-                : "pendiente";
-
-              eventsArray.push({
-                title: "Vacaciones",
-                start: new Date(`${startDate}T00:00:00`),
-                end: new Date(`${endDate}T23:59:59`),
-                allDay: true,
-                type,
-              });
-            }
-          });
-        }
+          return null;
+        }).filter(Boolean);
 
         const feriados = [
           { date: "2025-01-01", title: "Año Nuevo" },
@@ -142,18 +159,18 @@ const Home = () => {
             start: new Date(`${feriado.date}T00:00:00`),
             end: new Date(`${feriado.date}T23:59:59`),
             allDay: true,
-            type: "feriado",
+            type: EVENT_TYPES.FERIADO,
           });
         });
 
         setEvents(eventsArray);
       } catch (error) {
-        console.error("Error al obtener solicitudes de vacaciones:", error);
-        setError("No se pudieron cargar las solicitudes de vacaciones.");
+        console.error("Error al obtener datos:", error);
+        setError(MESSAGES.USER_DATA_ERROR);
       }
     };
 
-    fetchVacationRequests();
+    fetchData();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -176,90 +193,30 @@ const Home = () => {
 
   // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
-    switch (event.type) {
-      case "aprobado":
-        return {
-          style: {
-            backgroundColor: "#67bcc1", // Verde para aprobados
-            color: "#ffffff",
-            borderRadius: "4px",
-          },
-        };
-      case "rechazado":
-        return {
-          style: {
-            backgroundColor: "#6e6cba", // Rojo para rechazados
-            color: "#ffffff",
-            borderRadius: "4px",
-          },
-        };
-      case "pendiente":
-        return {
-          style: {
-            backgroundColor: "#6b97c8", // Amarillo para pendientes
-            color: "#ffffff",
-            borderRadius: "4px",
-          },
-        };
-      case "feriado":
-        return {
-          style: {
-            backgroundColor: "#479cf8", // Azul para feriados
-            color: "#ffffff",
-            borderRadius: "4px",
-          },
-        };
-      default:
-        return {};
-    }
+    return {
+      style: {
+        backgroundColor: EVENT_COLORS[event.type],
+        color: "#ffffff",
+        borderRadius: "4px",
+      },
+    };
   };
 
   // 🎨 **Renderizado del Componente**
   return (
     <div className="calendar-container">
-      {/*<LogoutButton />*/}
       <Preloader duration={650} />
-
       <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-        {/* Barra de navegación */}
-      <NavigationBar onLogout={handleLogout} />
-        {/*<Logo /> */}
-        <h1 className="calendar-title">Bienvenido, {userName || "Usuario"}</h1>
+        <NavigationBar onLogout={handleLogout} />
+        <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
         <p className="calendar-text">
-          Fecha de ingreso:{" "}
-          {joinDate
-            ? new Date(joinDate).toLocaleDateString("es-ES")
-            : "Cargando..."}
+          Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
         </p>
         <p className="calendar-text">
-          Total de días de vacaciones disponibles:{" "}
-          {vacationDays !== undefined ? vacationDays : "Cargando..."}
+          Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
         </p>
         {error && <p className="calendar-error-message">{error}</p>}
-
-        <div className="buttons">
-          <button
-            className="calendar-button"
-            onClick={() => navigate("/NuevaSolicitud")}
-          >
-            <span>Solicitar</span>
-          </button>
-          <button
-            className="calendar-button"
-            onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
-          >
-            <span>Ver Solicitudes</span>
-          </button>
-          {isUserAllowed() && (
-            <button
-              className="calendar-button"
-              onClick={() => navigate(`/HomeTh`)}
-            >
-              <span>Home Talento Humano</span>
-            </button>
-          )}
-        </div>
-
+        <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
         <div className="calendar-big-container">
           <Calendar
             localizer={localizer}
@@ -281,57 +238,7 @@ const Home = () => {
             dayPropGetter={dayPropGetter}
           />
         </div>
-
-        <div className="calendar-legend">
-          <p>
-            <span
-              style={{
-                backgroundColor: "#67bcc1",
-                color: "#ffffff",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
-            >
-              Aprobado
-            </span>
-          </p>
-          <p>
-            <span
-              style={{
-                backgroundColor: "#6e6cba",
-                color: "#ffffff",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
-            >
-              Rechazado
-            </span>
-          </p>
-          <p>
-            <span
-              style={{
-                backgroundColor: "#6b97c8",
-                color: "#ffffff",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
-            >
-              Pendiente
-            </span>
-          </p>
-          <p>
-            <span
-              style={{
-                backgroundColor: "#479cf8",
-                color: "#ffffff",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
-            >
-              Feriado
-            </span>
-          </p>
-        </div>
+        <CalendarLegend />
       </div>
     </div>
   );
