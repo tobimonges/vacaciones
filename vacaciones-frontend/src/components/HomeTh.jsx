@@ -23,42 +23,42 @@ const localizer = dateFnsLocalizer({
 
 // 🏠 **Componente Principal**
 const HomeTh = () => {
-  // 🔄 Manejo de clic en "more"
-  const handleShowMore = (eventsOnDay, date) => {
-    setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
-    setModalOpen(true); // Abre el modal
-  };
+
   // 🧠 Estados
   const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
-  const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
-  const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
   const [events, setEvents] = useState([]); // Lista de eventos para el calendario
   const [error, setError] = useState(""); // Mensajes de error
   const [modalOpen, setModalOpen] = useState(false); // Estado para abrir/cerrar el modal
   const [modalEvents, setModalEvents] = useState([]); // Eventos a mostrar en el modal
   const navigate = useNavigate(); // Navegación entre rutas
-
-
-
+  const [equipos, setEquipos] = useState([]);
+  const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
+  // 🔄 Manejo de clic en "more"
+  const handleShowMore = (eventsOnDay, date) => {
+    setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
+    setModalOpen(true); // Abre el modal
+  };
+  // Verificar si el usuario tiene el rol adecuado
   const isUserAllowed = () => {
     const allowedRoles = ["TH"];
     const userRole = getUserRole(); // Lógica para obtener el rol del usuario
     return allowedRoles.includes(userRole);
   };
 
+
+
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
       const usuarioId = getUsuarioId();
-
       // Verificar autenticación
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
         return;
       }
-
       try {
+
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
@@ -78,6 +78,24 @@ const HomeTh = () => {
     fetchUserData();
   }, [navigate]);
 
+  // 📥 Obtener equipos
+  useEffect(() => {
+    const fetchEquipos = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/equipos", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEquipos(response.data);
+      } catch (err) {
+        console.error("Error al obtener equipos:", err);
+        setError("No se pudieron cargar los equipos.");
+      }
+    };
+
+    fetchEquipos();
+  }, []);
+
   // 📥 **Obtener Solicitudes de Vacaciones**
   useEffect(() => {
     const fetchVacationRequests = async () => {
@@ -93,39 +111,25 @@ const HomeTh = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:8080/vacaciones/solicitudes`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            "http://localhost:8080/vacaciones/solicitudes",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
         );
-        const eventsArray = [];
 
-        response.data.forEach((solicitud) => {
-          if (solicitud.fechaInicio && solicitud.fechaFin) {
-            const startDate = new Date(solicitud.fechaInicio)
-              .toISOString()
-              .split("T")[0];
-            const endDate = new Date(solicitud.fechaFin)
-              .toISOString()
-              .split("T")[0];
-
-            // Nueva lógica para asignar tipo de evento
-            const type = solicitud.rechazado
+        // Mapear las solicitudes a eventos
+        const eventsArray = response.data.map((solicitud) => ({
+          title: `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`,
+          start: new Date(solicitud.fechaInicio),
+          end: new Date(solicitud.fechaFin),
+          allDay: true,
+          type: solicitud.rechazado
               ? "rechazado"
               : solicitud.estado
-              ? "aprobado"
-              : "pendiente";
-
-            eventsArray.push({
-              title:
-                solicitud.usuario.nombre + " " + solicitud.usuario.apellido,
-              start: new Date(`${startDate}T00:00:00`),
-              end: new Date(`${endDate}T23:59:59`),
-              allDay: true,
-              type,
-            });
-          }
-        });
+                  ? "aprobado"
+                  : "pendiente",
+          equipo: solicitud.usuario.equipo.nombre, // Mantiene el equipo para futuros filtros
+        }));
 
         // Fechas fijas de feriados manuales
         const feriados = [
@@ -142,6 +146,7 @@ const HomeTh = () => {
           { date: "2025-12-25", title: "Navidad" },
         ];
 
+        // Agregar feriados a los eventos
         feriados.forEach((feriado) => {
           eventsArray.push({
             title: feriado.title,
@@ -161,6 +166,7 @@ const HomeTh = () => {
 
     fetchVacationRequests();
   }, [navigate]);
+
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Eliminar el token de autenticación
@@ -218,17 +224,15 @@ const HomeTh = () => {
         return {};
     }
   };
+  // Filtrar eventos por equipo
+  const filterEventsByTeam = equipoSeleccionado
+      ? events.filter(
+          (event) =>
+              event.equipo &&
+              event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
+      )
+      : events;
 
-  // 🖼️ **Mostrar Modal con Eventos del Día**
-  const handleDayClick = (date) => {
-    const eventsOnDate = events.filter(
-      (event) =>
-        new Date(event.start).toLocaleDateString() ===
-        new Date(date).toLocaleDateString()
-    );
-    setModalEvents(eventsOnDate);
-    setModalOpen(true);
-  };
 
   // 🎨 **Renderizado del Componente**
   return (
@@ -237,8 +241,8 @@ const HomeTh = () => {
       <Preloader duration={650} />
       <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
         {/* Barra de navegación */}
-<NavigationBar onLogout={handleLogout} />
-{/*<Logo /> */}
+        <NavigationBar onLogout={handleLogout} />
+        {/*<Logo /> */}
         {/* 👤 Información del Usuario */}
         <h1 className="calendar-title">
           Bienvenido, {userNameTh || "Usuario"}
@@ -252,8 +256,8 @@ const HomeTh = () => {
         <div className="buttons">
 
           <button
-            className="calendar-button"
-            onClick={() => navigate(`/AdminDashboard`)}
+              className="calendar-button"
+              onClick={() => navigate(`/AdminDashboard`)}
           >
             <span>Dashboard</span>
           </button>
@@ -284,29 +288,45 @@ const HomeTh = () => {
               </button>
 
           )}
+          <div className="calendar-filters-Th">
+            <select
+                className="calendar-select-Th"
+                value={equipoSeleccionado}
+                onChange={(e) => setEquipoSeleccionado(e.target.value)}
+            >
+              <option value="">Todos los equipos</option>
+              {equipos.map((equipo) => (
+                  <option key={equipo.nombre} value={equipo.nombre}>
+                    {equipo.nombre}
+                  </option>
+              ))}
+            </select>
+          </div>
+
+
         </div>
 
         {/* 📆 Calendario */}
         <div className="calendar-big-container">
           <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 500, margin: "20px 0" }}
-            messages={{
-              today: "Hoy",
-              previous: "Anterior",
-              next: "Siguiente",
-              month: "Mes",
-              week: "Semana",
-              day: "Día",
-              agenda: "Agenda",
+              localizer={localizer}
+              events={filterEventsByTeam}
+              startAccessor="start"
+              endAccessor="end"
+              style={{height: 500, margin: "20px 0"}}
+              messages={{
+                today: "Hoy",
+                previous: "Anterior",
+                next: "Siguiente",
+                month: "Mes",
+                week: "Semana",
+                day: "Día",
+                agenda: "Agenda",
             }}
             views={{ month: true }} // Mantener solo la vista de mes
             eventPropGetter={eventStyleGetter}
             dayPropGetter={dayPropGetter}
-            popup={false} // Desactivar el comportamiento predeterminado del popup
+            popup // Desactivar el comportamiento predeterminado del popup
             showMultiDayTimes={true}
             onShowMore={(eventsOnDay, date) => {
               // Prevenir cambio de vista
