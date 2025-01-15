@@ -238,7 +238,28 @@ const AdminDashboard = () => {
           <NavigationBar onLogout={handleLogout} />
           {/*<Logo /> */}
           <div className="header-title-container">
-            <div className="space"></div>
+            <div className="space">
+              {/* Contador basado en el estado de las solicitudes */}
+              <div className="counter-container">
+                <p>
+                  Pendientes a TH:{" "}
+                  {
+                    solicitudes.filter(
+                      (s) => getEstadoSolicitud(s) === "Pendiente a TH"
+                    ).length
+                  }
+                </p>
+                <p>
+                  Falta aprobación del líder:{" "}
+                  {
+                    solicitudes.filter(
+                      (s) =>
+                        getEstadoSolicitud(s) === "Falta aprobación del Líder"
+                    ).length
+                  }
+                </p>
+              </div>
+            </div>
             <h4>Panel de Administrador</h4>
             <div className="filter-container">
               <label htmlFor="filter-input" className="filter-label">
