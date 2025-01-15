@@ -19,4 +19,6 @@ public interface IUsuarioService {
 
     void eliminarUsuario(UsuarioModel usuario);
 
+    UsuarioModel actualizarUsuario(Long idUsuario, UsuarioModel usuario);
+
 }
