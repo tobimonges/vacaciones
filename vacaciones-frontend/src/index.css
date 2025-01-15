@@ -183,3 +183,7 @@ button, select{
   padding: 5px 0 !important;
   background-color: #f7f7f7 !important;
 }
+
+.rbc-row-bg {
+  right: 0 !important;
+}
