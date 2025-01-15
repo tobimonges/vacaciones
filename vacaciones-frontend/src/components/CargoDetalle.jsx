@@ -37,7 +37,7 @@ const CargoDetalle = () => {
   };
 
   const filteredCargos = cargos.filter((cargo) =>
-    cargo.nombre.toLowerCase().includes(filterText.toLowerCase())
+    cargo.nombre?.toLowerCase().includes(filterText.toLowerCase())
   );
   
 
