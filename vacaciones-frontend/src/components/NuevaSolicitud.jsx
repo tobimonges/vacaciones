@@ -176,7 +176,7 @@ export default function NuevaSolicitud() {
 
     const fileNameSpan = document.getElementById("file-name");
     if (e.target.files.length > 0) {
-      fileNameSpan.textContent = e.target.files[0].name;
+      fileNameSpan.textContent = "Archivo adjuntado";
     } else {
       fileNameSpan.textContent = "Seleccionar adjunto"; // Texto predeterminado si no hay archivo
     }
@@ -328,17 +328,18 @@ export default function NuevaSolicitud() {
                       alt="Subir archivo"
                       className="file-upload-image"
                     />
+
+                    <input
+                      type="file"
+                      id="file"
+                      className="inputFile"
+                      onChange={handleFileChange}
+                      accept=".pdf,.doc,.docx,.jpg,.png"
+                    />
+                    <span id="file-name" className="file-name">
+                      Seleccionar adjunto
+                    </span>
                   </label>
-                  <input
-                    type="file"
-                    id="file"
-                    className="inputFile"
-                    onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,.jpg,.png"
-                  />
-                  <span id="file-name" className="file-name">
-                    Seleccionar adjunto
-                  </span>
                 </div>
               </div>
             )}
