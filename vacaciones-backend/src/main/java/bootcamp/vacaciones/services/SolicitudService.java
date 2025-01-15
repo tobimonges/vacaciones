@@ -117,24 +117,24 @@ public class SolicitudService implements ISolicitudService {
         nuevaSolicitud.setRechazado(false);
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
-        // Notificar al líder
-        emailService.enviarCorreo(
-                lider.getCorreo(),
-                "Nueva Solicitud de Vacaciones",
-                "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
-                        nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
-        );
+//        // Notificar al líder
+//        emailService.enviarCorreo(
+//                lider.getCorreo(),
+//                "Nueva Solicitud de Vacaciones",
+//                "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+//                        nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+//        );
 
-        // Notificar a los usuarios con rol "TH"
-        List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
-        for (UsuarioModel thUsuario : usuariosTh) {
-            emailService.enviarCorreo(
-                    thUsuario.getCorreo(),
-                    "Nueva Solicitud de Vacaciones",
-                    "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
-                            nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
-            );
-        }
+//        // Notificar a los usuarios con rol "TH"
+//        List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+//        for (UsuarioModel thUsuario : usuariosTh) {
+//            emailService.enviarCorreo(
+//                    thUsuario.getCorreo(),
+//                    "Nueva Solicitud de Vacaciones",
+//                    "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+//                            nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+//            );
+//        }
 
         return solicitudRepository.save(nuevaSolicitud);
     }
