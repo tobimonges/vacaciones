@@ -3,10 +3,10 @@ import axios from "axios";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import { useNavigate } from "react-router-dom";
-import "./EquipoDetalle.css";
+import "./EquipoDetalle.css"; // Reusing the same CSS
 
-const EquipoDetalle = () => {
-  const [equipos, setEquipos] = useState([]);
+const CargoDetalle = () => {
+  const [cargos, setCargos] = useState([]);
   const [error, setError] = useState("");
   const [filterText, setFilterText] = useState("");
   const [editingId, setEditingId] = useState(null);
@@ -14,56 +14,57 @@ const EquipoDetalle = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchEquipos = async () => {
+    const fetchCargos = async () => {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await axios.get("http://localhost:8080/api/equipos", {
+        const response = await axios.get("http://localhost:8080/api/cargos", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        setEquipos(response.data);
+        setCargos(response.data);
       } catch (err) {
-        console.error("Error fetching equipos:", err.response?.data || err.message);
-        setError("No se pudieron cargar los equipos.");
+        console.error("Error fetching cargos:", err.response?.data || err.message);
+        setError("No se pudieron cargar los cargos.");
       }
     };
 
-    fetchEquipos();
+    fetchCargos();
   }, []);
 
   const handleFilterChange = (e) => {
     setFilterText(e.target.value);
   };
 
-  const filteredEquipos = equipos.filter((equipo) =>
-    equipo.nombre.toLowerCase().includes(filterText.toLowerCase())
+  const filteredCargos = cargos.filter((cargo) =>
+    cargo.nombre.toLowerCase().includes(filterText.toLowerCase())
   );
+  
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
 
-  const handleEliminarEquipo = async (equipoId) => {
-    const confirm = window.confirm("¿Estás seguro de que deseas eliminar este equipo?");
+  const handleEliminarCargo = async (cargoId) => {
+    const confirm = window.confirm("¿Estás seguro de que deseas eliminar este cargo?");
     if (!confirm) return;
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8080/api/equipos/${equipoId}`, {
+      await axios.delete(`http://localhost:8080/api/cargos/${cargoId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setEquipos((prev) => prev.filter((equipo) => equipo.id !== equipoId));
-      alert("Equipo eliminado correctamente.");
+      setCargos((prev) => prev.filter((cargo) => cargo.id !== cargoId));
+      alert("Cargo eliminado correctamente.");
     } catch (error) {
-      console.error("Error eliminando el equipo:", error);
-      alert("No se pudo eliminar el equipo.");
+      console.error("Error eliminando el cargo:", error);
+      alert("No se pudo eliminar el cargo.");
     }
   };
 
-  const handleActualizarEquipo = async (equipoId) => {
+  const handleActualizarCargo = async (cargoId) => {
     if (!newName.trim()) {
       alert("El nombre no puede estar vacío.");
       return;
@@ -72,25 +73,25 @@ const EquipoDetalle = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:8080/api/equipos/${equipoId}`,
+        `http://localhost:8080/api/cargos/${cargoId}`,
         { nombre: newName },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setEquipos((prev) =>
-        prev.map((equipo) =>
-          equipo.id === equipoId ? { ...equipo, nombre: newName } : equipo
+      setCargos((prev) =>
+        prev.map((cargo) =>
+          cargo.id === cargoId ? { ...cargo, nombre: newName } : cargo
         )
       );
 
       setEditingId(null);
       setNewName("");
-      alert("Equipo actualizado correctamente.");
+      alert("Cargo actualizado correctamente.");
     } catch (error) {
-      console.error("Error actualizando el equipo:", error);
-      alert("No se pudo actualizar el equipo.");
+      console.error("Error actualizando el cargo:", error);
+      alert("No se pudo actualizar el cargo.");
     }
   };
 
@@ -98,11 +99,10 @@ const EquipoDetalle = () => {
     <div>
       <Preloader duration={650} />
       <div className="container-detalle">
-      <NavigationBar onLogout={handleLogout} /> 
+        <NavigationBar onLogout={handleLogout} />
         <div className="header-section-detalle">
-          
           <div className="header-title-container-detalle">
-            <h4 className="title">Lista de Equipos</h4>
+            <h4 className="title">Lista de Cargos</h4>
           </div>
           <div className="filter-container-detalle">
             <h4>
@@ -111,7 +111,7 @@ const EquipoDetalle = () => {
             <input
               id="filter-input-detalle"
               type="text"
-              placeholder="Nombre del equipo"
+              placeholder="Nombre del cargo"
               value={filterText}
               onChange={handleFilterChange}
             />
@@ -120,8 +120,8 @@ const EquipoDetalle = () => {
         <div className="content-section-detalle">
           {error ? (
             <p className="error">{error}</p>
-          ) : filteredEquipos.length === 0 ? (
-            <p>No hay equipos que coincidan con el filtro.</p>
+          ) : filteredCargos.length === 0 ? (
+            <p>No hay cargos que coincidan con el filtro.</p>
           ) : (
             <table>
               <thead>
@@ -132,11 +132,11 @@ const EquipoDetalle = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredEquipos.map((equipo) => (
-                  <tr key={equipo.id}>
-                    <td>{equipo.id}</td>
+                {filteredCargos.map((cargo) => (
+                  <tr key={cargo.id}>
+                    <td>{cargo.id}</td>
                     <td>
-                      {editingId === equipo.id ? (
+                      {editingId === cargo.id ? (
                         <input
                           type="text"
                           value={newName}
@@ -144,14 +144,14 @@ const EquipoDetalle = () => {
                           className="edit-input"
                         />
                       ) : (
-                        equipo.nombre
+                        cargo.nombre
                       )}
                     </td>
                     <td className="buttons">
-                      {editingId === equipo.id ? (
+                      {editingId === cargo.id ? (
                         <button
                           className="update-button"
-                          onClick={() => handleActualizarEquipo(equipo.id)}
+                          onClick={() => handleActualizarCargo(cargo.id)}
                         >
                           Guardar
                         </button>
@@ -159,8 +159,8 @@ const EquipoDetalle = () => {
                         <button
                           className="edit-button"
                           onClick={() => {
-                            setEditingId(equipo.id);
-                            setNewName(equipo.nombre);
+                            setEditingId(cargo.id);
+                            setNewName(cargo.nombre);
                           }}
                         >
                           Actualizar
@@ -168,7 +168,7 @@ const EquipoDetalle = () => {
                       )}
                       <button
                         className="delete-button"
-                        onClick={() => handleEliminarEquipo(equipo.id)}
+                        onClick={() => handleEliminarCargo(cargo.id)}
                       >
                         Eliminar
                       </button>
@@ -184,4 +184,4 @@ const EquipoDetalle = () => {
   );
 };
 
-export default EquipoDetalle;
+export default CargoDetalle;

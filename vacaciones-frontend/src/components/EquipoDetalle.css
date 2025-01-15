@@ -75,8 +75,8 @@ tbody tr:hover {
 }
 
 .update-button {
-  background-color: #4caf50;
-  color: white;
+  background-color: #fdca40;
+  color: #2c2c2c;
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
@@ -85,13 +85,13 @@ tbody tr:hover {
 }
 
 .update-button:hover {
-  background-color: #45a049;
+  background-color: #fcbc0e;
   transform: translateY(-2px);
 }
 
 .edit-button {
-  background-color: #008cba;
-  color: white;
+  background-color: #fdca40;
+  color: #2c2c2c;
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
@@ -100,7 +100,7 @@ tbody tr:hover {
 }
 
 .edit-button:hover {
-  background-color: #0073a8;
+  background-color: #fcbc0e;
   transform: translateY(-2px);
 }
 
