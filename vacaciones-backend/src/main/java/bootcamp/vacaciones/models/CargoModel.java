@@ -17,7 +17,7 @@ public class CargoModel {
     public CargoModel() {
     }
 
-    public CargoModel(Long id, String name) {
+    public CargoModel(Long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }
@@ -30,11 +30,11 @@ public class CargoModel {
         this.id = id;
     }
 
-    public String getName() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setName(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 }

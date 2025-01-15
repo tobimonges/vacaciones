@@ -70,6 +70,7 @@ button span {
   font-size: 15px; /* Ajusta el tamaño según sea necesario */
   font-weight: 500; /* También puedes cambiar el peso si lo deseas */
   color: #333; /* Personaliza el color de los números si es necesario */
+  margin: 0.1rem !important; /* Añade un margen horizontal */
 }
 
 button, select{
@@ -109,4 +110,76 @@ button, select{
 .rbc-btn-group button {
   border-radius: 5px !important; /* Ajusta el valor según el grado de redondeo deseado */
   margin: 0 0.2rem !important; /* Añade un margen horizontal */
+}
+
+.rbc-btn-group button:focus {
+  outline: none !important; /* Elimina el contorno de foco */
+  box-shadow: none !important; /* Remueve cualquier sombra aplicada en el foco */
+}
+
+.rbc-btn-group button {
+  background-color: #f7f7f7 !important; /* Color de fondo */
+  color: #333 !important; /* Color del texto */
+  border: 1px solid #ddd !important; /* Borde del botón */
+  padding: 0.5rem 1rem !important; /* Ajusta el relleno según sea necesario */
+  font-size: 1rem !important; /* Tamaño de la fuente */
+  font-weight: 500 !important; /* Peso de la fuente */
+  cursor: pointer !important; /* Cambia el cursor al pasar el mouse */
+  transition: all 0.3s ease !important
+}
+
+.rbc-btn-group button:hover {
+  background-color: #f0f0f0 !important; /* Color al pasar el mouse */
+  /*sombreado */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0) !important;
+
+  /* animacion inicial al pasar el mouse */
+  transition: all 0.2s ease !important;
+}
+
+
+
+.rbc-month-view {
+  border-radius: 10px !important; /* Bordes redondeados generales */
+  overflow: hidden !important; /* Asegura que los bordes se recorten */
+  border: 1px solid #ddd !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.rbc-date-cell {
+  
+}
+
+.rbc-day-bg,
+.rbc-date-cell button {/* Redondea las celdas de los días y los botones */
+  transition: background-color 0.3s ease !important;
+  
+
+}
+
+.rbc-day-bg:hover {
+  background-color: rgba(71, 156, 248, 0.2) !important; /* Color al pasar el mouse */
+}
+
+.rbc-event {
+  border-radius: 4px !important; /* Redondea los eventos */
+  padding: 2px 4px !important;
+  font-size: 12px !important;
+}
+
+.rbc-date-cell button {
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.rbc-date-cell button:hover {
+  background-color: rgba(71, 156, 248, 0.1) !important;
+}
+
+/* Opcional: estilos para mejorar el diseño general */
+.rbc-header {
+  font-weight: bold !important;
+  text-align: center !important;
+  padding: 5px 0 !important;
+  background-color: #f7f7f7 !important;
 }
