@@ -361,7 +361,7 @@ const HomeTh = () => {
             <span
               style={{
                 backgroundColor: "#67bcc1",
-                color: "#ffffff",
+                color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
               }}
@@ -373,7 +373,7 @@ const HomeTh = () => {
             <span
               style={{
                 backgroundColor: "#6e6cba",
-                color: "#ffffff",
+                color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
               }}
@@ -385,7 +385,7 @@ const HomeTh = () => {
             <span
               style={{
                 backgroundColor: "#6b97c8",
-                color: "#ffffff",
+                color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
               }}
@@ -397,7 +397,7 @@ const HomeTh = () => {
             <span
               style={{
                 backgroundColor: "#479cf8",
-                color: "#ffffff",
+                color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
               }}
@@ -418,7 +418,20 @@ const HomeTh = () => {
                     {modalEvents.map((event, index) => (
                       <li key={index}>
                         <strong>{event.title}</strong> - {event.type} <br />
-                        <span>
+                        <span
+                        style={{ color: "#000000" }}>
+                          {event.type === "aprobado"
+                               ? "Aprobado"
+                                  : event.type === "rechazado"
+                                   ? "Rechazado"
+                                   : event.type === "pendiente"
+                                   ? "Pendiente"
+                                   : event.type === "feriado"
+                                   ? "Feriado"
+                                  : ""}
+                                  </span>
+                                  <br />
+                                  <span>
                           Desde: {event.start.toLocaleDateString()} hasta:{" "}
                           {event.end.toLocaleDateString()}
                         </span>

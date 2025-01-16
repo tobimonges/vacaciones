@@ -51,7 +51,6 @@ function Login() {
       }, 200);
     } catch (error) {
       console.error("Error al iniciar sesión", error);
-      setUsuario("");
       setPassword("");
       setError(true);
       setShowError(true);
