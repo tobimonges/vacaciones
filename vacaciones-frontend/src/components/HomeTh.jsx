@@ -195,32 +195,32 @@ const HomeTh = () => {
       case "aprobado":
         return {
           style: {
-            backgroundColor: "#67bcc1", // Verde para aprobados
-            color: "#ffffff",
+            backgroundColor: "#a0e2b3", // Verde para aprobados
+            color: "#000000",
             borderRadius: "4px",
           },
         };
       case "rechazado":
         return {
           style: {
-            backgroundColor: "#6e6cba", // Rojo para rechazados
-            color: "#ffffff",
+            backgroundColor: "#ed5c53", // Rojo para rechazados
+            color: "#000000",
             borderRadius: "4px",
           },
         };
       case "pendiente":
         return {
           style: {
-            backgroundColor: "#6b97c8", // Amarillo para pendientes
-            color: "#ffffff",
+            backgroundColor: "#fefda6", // Amarillo para pendientes
+            color: "#000000",
             borderRadius: "4px",
           },
         };
       case "feriado":
         return {
           style: {
-            backgroundColor: "#479cf8", // Azul para feriados
-            color: "#ffffff",
+            backgroundColor: "#c0a4c9", // Azul para feriados
+            color: "#000000",
             borderRadius: "4px",
           },
         };
@@ -360,7 +360,7 @@ const HomeTh = () => {
           <p>
             <span
               style={{
-                backgroundColor: "#67bcc1",
+                backgroundColor: "#a0e2b3",
                 color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
@@ -372,7 +372,7 @@ const HomeTh = () => {
           <p>
             <span
               style={{
-                backgroundColor: "#6e6cba",
+                backgroundColor: "#ed5c53",
                 color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
@@ -384,7 +384,7 @@ const HomeTh = () => {
           <p>
             <span
               style={{
-                backgroundColor: "#6b97c8",
+                backgroundColor: "#fefda6",
                 color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
@@ -396,7 +396,7 @@ const HomeTh = () => {
           <p>
             <span
               style={{
-                backgroundColor: "#479cf8",
+                backgroundColor: "#c0a4c9",
                 color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
@@ -419,7 +419,20 @@ const HomeTh = () => {
                       <li key={index}>
                         <strong>{event.title}</strong> - {event.type} <br />
                         <span
-                        style={{ color: "#000000" }}>
+                        style={{ color: "#000000",
+                          backgroundColor:
+                             event.type === "aprobado"
+                             ? "#A8E6A1"  // Verde pastel para aprobado
+                             : event.type === "rechazado"
+                             ? "#F5A9A1"  // Rojo pastel para rechazado
+                             : event.type === "pendiente"
+                             ? "#FFF5A9"  // Amarillo pastel para pendiente
+                             : event.type === "feriado"
+                             ? "#C1A7F1"  // Morado pastel para feriado
+                             : "", // Si no es ninguno de los tipos, no aplica color
+                             padding: "4px 8px",
+                             borderRadius: "4px",
+                         }}>
                           {event.type === "aprobado"
                                ? "Aprobado"
                                   : event.type === "rechazado"
