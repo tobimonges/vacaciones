@@ -15,12 +15,14 @@ import NavigationBar from "./NavigationBar";
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
+  format: (date, formatStr, options) => format(date, formatStr, { ...options, locale: esLocale }),
+  parse: (str, formatStr) => parse(str, formatStr, new Date(), { locale: esLocale }),
+  startOfWeek: () => startOfWeek(new Date(), { locale: esLocale }),
   getDay,
   locales,
 });
+
+
 
 // 🎨 **Constantes de estilo y mensajes**
 const EVENT_TYPES = {

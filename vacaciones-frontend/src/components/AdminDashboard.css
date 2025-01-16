@@ -70,7 +70,16 @@ h4 {
 }
 
 .space {
-  padding-left: 20%;
+  padding-left: 2%;
+}
+.counter-container {
+  display: flex;
+  gap: 15px;
+  font-size: 14px;
+}
+.counter-container p {
+  margin: 0;
+  font-weight: bold;
 }
 
 @media screen and (max-width: 768px) {
