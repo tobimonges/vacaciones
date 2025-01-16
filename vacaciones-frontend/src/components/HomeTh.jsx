@@ -26,6 +26,8 @@ const localizer = dateFnsLocalizer({
 const HomeTh = () => {
 
   // 🧠 Estados
+  const [showBirthdays, setShowBirthdays] = useState(true);
+  const [showHolidays, setShowHolidays] = useState(true);
   const userRole = getUserRole(); // Obtener el rol del usuario logueado
   const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
   const [events, setEvents] = useState([]); // Lista de eventos para el calendario
@@ -51,7 +53,6 @@ const HomeTh = () => {
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
-    console.log(userRole)
     const fetchUserData = async () => {
       const usuarioId = getUsuarioId();
       // Verificar autenticación
@@ -219,14 +220,19 @@ const HomeTh = () => {
         return {};
     }
   };
-  // Filtrar eventos por equipo
-  const filterEventsByTeam = equipoSeleccionado
-      ? events.filter(
-          (event) =>
-              event.equipo &&
-              event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
-      )
-      : events;
+  const filterEventsByTeam = events.filter((event) => {
+    // Filtrar por equipo
+    const isEquipoMatch = equipoSeleccionado
+        ? event.equipo && event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
+        : true; // Si no hay equipo seleccionado, no se filtra por equipo
+
+    // Filtrar por tipo de evento (cumpleaños y feriados)
+    const isBirthdayVisible = event.type !== "cumpleaños" || showBirthdays;
+    const isHolidayVisible = event.type !== "feriado" || showHolidays;
+
+    // Retornar el evento solo si pasa ambos filtros
+    return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
+  });
 
 
   // 🎨 **Renderizado del Componente**
@@ -236,14 +242,30 @@ const HomeTh = () => {
       <Preloader duration={650} />
       <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
         {/* Barra de navegación */}
-        <NavigationBar onLogout={handleLogout} />
+        <NavigationBar onLogout={handleLogout}/>
         {/*<Logo /> */}
         {/* 👤 Información del Usuario */}
         <h1 className="calendar-title">
           Bienvenido, {userNameTh || "Usuario"}
         </h1>
         <h2 className="calendar-title">Solicitudes</h2>
+        <label>
+          <input
+              type="checkbox"
+              checked={showBirthdays}
+              onChange={(e) => setShowBirthdays(e.target.checked)}
+          />
+          Mostrar cumpleaños
+        </label>
 
+        <label>
+          <input
+              type="checkbox"
+              checked={showHolidays}
+              onChange={(e) => setShowHolidays(e.target.checked)}
+          />
+          Mostrar feriados
+        </label>
         {/* 🚨 Mensajes de Error */}
         {error && <p className="calendar-error-message">{error}</p>}
 
@@ -333,16 +355,17 @@ const HomeTh = () => {
                 week: "Semana",
                 day: "Día",
                 agenda: "Agenda",
-            }}
-            views={{ month: true }} // Mantener solo la vista de mes
-            eventPropGetter={eventStyleGetter}
-            dayPropGetter={dayPropGetter}
-            popup // Desactivar el comportamiento predeterminado del popup
-            showMultiDayTimes={true}
-            onShowMore={(eventsOnDay, date) => {
-              // Prevenir cambio de vista
-              handleShowMore(eventsOnDay, date);
-            }}
+              }}
+              views={{month: true}} // Mantener solo la vista de mes
+              eventPropGetter={eventStyleGetter}
+              dayPropGetter={dayPropGetter}
+              popup // Desactivar el comportamiento predeterminado del popup
+              showMultiDayTimes={true}
+              onShowMore={(eventsOnDay, date) => {
+                // Prevenir cambio de vista
+                handleShowMore(eventsOnDay, date);
+              }}
+              dayLayoutAlgorithm="no-overlap"
           />
         </div>
 
@@ -350,48 +373,48 @@ const HomeTh = () => {
         <div className="calendar-legend">
           <p>
             <span
-              style={{
-                backgroundColor: "#a0e2b3",
-                color: "#000000",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
+                style={{
+                  backgroundColor: "#a0e2b3",
+                  color: "#000000",
+                  padding: "8px",
+                  borderRadius: "6px",
+                }}
             >
               Aprobado
             </span>
           </p>
           <p>
             <span
-              style={{
-                backgroundColor: "#ff7c70",
-                color: "#000000",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
+                style={{
+                  backgroundColor: "#ff7c70",
+                  color: "#000000",
+                  padding: "8px",
+                  borderRadius: "6px",
+                }}
             >
               Rechazado
             </span>
           </p>
           <p>
             <span
-              style={{
-                backgroundColor: "#fefda6",
-                color: "#000000",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
+                style={{
+                  backgroundColor: "#fefda6",
+                  color: "#000000",
+                  padding: "8px",
+                  borderRadius: "6px",
+                }}
             >
               Pendiente
             </span>
           </p>
           <p>
             <span
-              style={{
-                backgroundColor: "#c0a4c9",
-                color: "#000000",
-                padding: "8px",
-                borderRadius: "6px",
-              }}
+                style={{
+                  backgroundColor: "#c0a4c9",
+                  color: "#000000",
+                  padding: "8px",
+                  borderRadius: "6px",
+                }}
             >
               Feriado
             </span>
@@ -400,60 +423,61 @@ const HomeTh = () => {
 
         {/* 🔲 Modal para Solicitudes del Día */}
         {modalOpen && (
-          <div className="modal-overlay">
-            <div className="modal-contentTh">
-              <h4>Solicitudes en esta fecha:</h4> <br />
-              {modalEvents.length > 0 ? (
-                <div className="modal-events-list">
-                  <ul>
-                    {modalEvents.map((event, index) => (
-                      <li key={index}>
-                        <strong>{event.title}</strong> - {event.type} <br />
-                        <span
-                        style={{ color: "#000000",
-                          backgroundColor:
-                             event.type === "aprobado"
-                             ? "#a0e2b3"  // Verde pastel para aprobado
-                             : event.type === "rechazado"
-                             ? "#ff7c70"  // Rojo pastel para rechazado
-                             : event.type === "pendiente"
-                             ? "#fefda6"  // Amarillo pastel para pendiente
-                             : event.type === "feriado"
-                             ? "#c0a4c9"  // Morado pastel para feriado
-                             : "", // Si no es ninguno de los tipos, no aplica color
-                             padding: "4px 8px",
-                             borderRadius: "4px",
-                         }}>
+            <div className="modal-overlay">
+              <div className="modal-contentTh">
+                <h4>Solicitudes en esta fecha:</h4> <br/>
+                {modalEvents.length > 0 ? (
+                    <div className="modal-events-list">
+                      <ul>
+                        {modalEvents.map((event, index) => (
+                            <li key={index}>
+                              <strong>{event.title}</strong> - {event.type} <br/>
+                              <span
+                                  style={{
+                                    color: "#000000",
+                                    backgroundColor:
+                                        event.type === "aprobado"
+                                            ? "#a0e2b3"  // Verde pastel para aprobado
+                                            : event.type === "rechazado"
+                                                ? "#ff7c70"  // Rojo pastel para rechazado
+                                                : event.type === "pendiente"
+                                                    ? "#fefda6"  // Amarillo pastel para pendiente
+                                                    : event.type === "feriado"
+                                                        ? "#c0a4c9"  // Morado pastel para feriado
+                                                        : "", // Si no es ninguno de los tipos, no aplica color
+                                    padding: "4px 8px",
+                                    borderRadius: "4px",
+                                  }}>
                           {event.type === "aprobado"
-                               ? "Aprobado"
-                                  : event.type === "rechazado"
-                                   ? "Rechazado"
-                                   : event.type === "pendiente"
-                                   ? "Pendiente"
-                                   : event.type === "feriado"
-                                   ? "Feriado"
-                                  : ""}
+                              ? "Aprobado"
+                              : event.type === "rechazado"
+                                  ? "Rechazado"
+                                  : event.type === "pendiente"
+                                      ? "Pendiente"
+                                      : event.type === "feriado"
+                                          ? "Feriado"
+                                          : ""}
                                   </span>
-                                  <br />
-                                  <span>
+                              <br/>
+                              <span>
                           Desde: {event.start.toLocaleDateString()} hasta:{" "}
-                          {event.end.toLocaleDateString()}
+                                {event.end.toLocaleDateString()}
                         </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p>No hay solicitudes para esta fecha.</p>
-              )}
-              <button
-                className="close-modal-btn"
-                onClick={() => setModalOpen(false)}
-              >
-                <span>Cerrar</span>
-              </button>
+                            </li>
+                        ))}
+                      </ul>
+                    </div>
+                ) : (
+                    <p>No hay solicitudes para esta fecha.</p>
+                )}
+                <button
+                    className="close-modal-btn"
+                    onClick={() => setModalOpen(false)}
+                >
+                  <span>Cerrar</span>
+                </button>
+              </div>
             </div>
-          </div>
         )}
       </div>
     </div>
