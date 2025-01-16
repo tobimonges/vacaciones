@@ -181,34 +181,34 @@ button:hover {
   position: absolute;
   top: 2.3rem;
   right: 1.5rem;
-  background-color: #fdca40;
-  color: #2c2c2c;
+  background-color: rgba(87, 145, 238, 0.25);
+  color: #ffffff;
   font-family: "bold";
   font-size: 16px;
-  border: none;
+  border: 1px solid #ccc;
   border-radius: 5px;
   padding: 0.4rem 1rem;
   cursor: pointer;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
   0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
   0 32px 32px rgba(0, 0, 0, 0.07);  
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
   margin: 0 0.5rem;
 }
 
 /* Estilo del menú desplegable */
 .select-filtro option {
-  background-color: #F0E68C;
-  color: #2c2c2c;
+  background-color:  rgba(32, 85, 170, 0.8);
+  color: #ffffff;
   font-size: 16px;
   padding: 0.4rem;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
 }
 
 /* Cambio al pasar el mouse */
 .select-filtro option:hover {
-  background-color: rgba(252, 188, 14, 0.85);
+  border-color: #666;
+  background-color: rgba(255, 255, 255, 0.527);
 }
 .select-filtro:focus {
   outline: none; /* Eliminar el contorno negro */
