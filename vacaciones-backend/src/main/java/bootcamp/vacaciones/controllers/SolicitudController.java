@@ -7,10 +7,12 @@ import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.services.SolicitudService;
 import bootcamp.vacaciones.services.UsuarioService;
 import bootcamp.vacaciones.utils.CalendarioUtil;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/vacaciones")
 public class SolicitudController {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(SolicitudController.class);
     private final SolicitudService solicitudService;
     private final UsuarioRepository usuarioRepository;
     @Autowired
@@ -109,16 +112,21 @@ public class SolicitudController {
     }
 
     @PutMapping("/{id}/aprobar")
-    public ResponseEntity<?> aprobarSolicitud(
+    public ResponseEntity<Object> aprobarSolicitud(
             @PathVariable Long id,
             @RequestParam Long usuarioId) {
+        logger.info("Recibiendo solicitud de aprobación: idSolicitud={}, usuarioId={}", id, usuarioId);
         try {
             SolicitudModel solicitudActualizada = solicitudService.aprobarSolicitud(id, usuarioId);
             return ResponseEntity.ok(solicitudActualizada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
+
+
 
     @PutMapping("/{id}/rechazar-lider-th")
     public ResponseEntity<?> rechazarPorLiderOTh(
