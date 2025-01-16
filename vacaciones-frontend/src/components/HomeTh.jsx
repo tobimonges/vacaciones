@@ -10,6 +10,7 @@ import {getUserRole, getUsuarioId, isTokenValid} from "./authUtils";
 import "./Home.css";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
+
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
 
@@ -25,6 +26,7 @@ const localizer = dateFnsLocalizer({
 const HomeTh = () => {
 
   // 🧠 Estados
+  const userRole = getUserRole(); // Obtener el rol del usuario logueado
   const [userNameTh, setUserNameTh] = useState(""); // Nombre del usuario
   const [events, setEvents] = useState([]); // Lista de eventos para el calendario
   const [error, setError] = useState(""); // Mensajes de error
@@ -40,7 +42,7 @@ const HomeTh = () => {
   };
   // Verificar si el usuario tiene el rol adecuado
   const isUserAllowed = () => {
-    const allowedRoles = ["TH"];
+    const allowedRoles = ["TH", "LIDER", "OPERACIONES", "DIRECTORIO"];
     const userRole = getUserRole(); // Lógica para obtener el rol del usuario
     return allowedRoles.includes(userRole);
   };
@@ -49,6 +51,7 @@ const HomeTh = () => {
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
+    console.log(userRole)
     const fetchUserData = async () => {
       const usuarioId = getUsuarioId();
       // Verificar autenticación
@@ -179,6 +182,7 @@ const HomeTh = () => {
       return {
         style: {
           backgroundColor: "#e5e5e5", // Color personalizado para sábados y domingos
+          color: "#2b2d30",
         },
       };
     }
@@ -254,43 +258,59 @@ const HomeTh = () => {
 
         {/* 🛠️ Botones de Acción */}
         <div className="buttons">
+          {userRole === "LIDER" ? (
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/AdminDashboard`)}
+              >
+                <span>Bandeja de Solicitudes</span>
+              </button>
+          ) : userRole !== "LIDER" ? (
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/AdminDashboard`)}
+              >
+                <span>Listar Solicitudes</span>
+              </button>
+          ) : null}
 
-          <button
-              className="calendar-button"
-              onClick={() => navigate(`/AdminDashboard`)}
-          >
-            <span>Listar Solicitudes</span>
-          </button>
-          {isUserAllowed() && (
+          {/* 🛠️ Botones visibles solo para "TH" */}
+          {userRole === "TH" && (
               <button
                   className="calendar-button"
                   onClick={() => navigate(`/crearusuario`)}
               >
                 <span>Registrar Funcionario</span>
               </button>
-
           )}
-          {isUserAllowed() && (
+          {userRole === "TH" && (
               <button
                   className="calendar-button"
-                  onClick={() => navigate(`/HomeTh`)}
+                  onClick={() => navigate(`/UsuarioDetalle`)}
               >
-                <span>Crear equipo</span>
+                <span>Usuario Detalle</span>
               </button>
-
           )}
-          {isUserAllowed() && (
+          {userRole === "TH" && (
               <button
                   className="calendar-button"
-                  onClick={() => navigate(`/HomeTh`)}
+                  onClick={() => navigate(`/CrearEquipo`)}
               >
-                <span>Crear cargo</span>
+                <span>Crear Equipo</span>
               </button>
-
+          )}
+          {userRole === "TH" && (
+              <button
+                  className="calendar-button"
+                  onClick={() => navigate(`/CrearCargo`)}
+              >
+                <span>Crear Cargo</span>
+              </button>
           )}
           <div className="calendar-filters-Th">
             <select
-                className="calendar-select-Th"
+                // className="calendar-select-Th"
+                className="inputCreate"
                 value={equipoSeleccionado}
                 onChange={(e) => setEquipoSeleccionado(e.target.value)}
             >
