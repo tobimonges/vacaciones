@@ -87,41 +87,52 @@ public class SolicitudService implements ISolicitudService {
         String nombreRol = usuario.getRol().getNombre();
         UsuarioModel lider = null;
 
-        switch (nombreRol) {
-            case "FUNCIONARIO_FABRICA":
-                if (solicitudRequest.getLiderId() == null) {
-                    throw new IllegalArgumentException("Debe seleccionarse un líder para FUNCIONARIO_FABRICA.");
-                }
-                lider = usuarioRepository.findById(solicitudRequest.getLiderId())
-                        .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
+        if (solicitudRequest.getLiderId() != null) {
+            lider = usuarioRepository.findById(solicitudRequest.getLiderId())
+                    .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
 
-                if (lider.getId().equals(idUsuario)) {
-                    throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
-                }
-                break;
+            if (lider.getId().equals(idUsuario)) {
+                throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
+            }
 
-            case "OPERACIONES":
-                if (solicitudRequest.getLiderId() == null) {
-                    throw new IllegalArgumentException("Debe seleccionarse un líder para OPERACIONES.");
-                }
-                lider = usuarioRepository.findById(solicitudRequest.getLiderId())
-                        .orElseThrow(() -> new IllegalArgumentException("Líder de Operaciones no encontrado"));
+            switch (nombreRol) {
+                case "FUNCIONARIO_FABRICA":
+                    if (!esLiderValido(lider, new String[]{"LIDER", "OPERACIONES", "DIRECTORIO"})) {
+                        throw new IllegalArgumentException("El líder seleccionado debe tener el rol de LIDER, OPERACIONES o DIRECTORIO.");
+                    }
+                    break;
 
-                if (lider.getId().equals(idUsuario)) {
-                    throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
-                }
-                break;
+                case "FUNCIONARIO_TERCERIZADO":
+                    if (!esLiderValido(lider, new String[]{"OPERACIONES", "DIRECTORIO"})) {
+                        throw new IllegalArgumentException("El líder seleccionado debe tener el rol de OPERACIONES o DIRECTORIO.");
+                    }
+                    break;
 
-            case "FUNCIONARIO_TERCERIZADO":
-            case "TH":
-            case "LIDER":
-                if (solicitudRequest.getLiderId() != null) {
-                    throw new IllegalArgumentException("No se debe proporcionar un líder para el rol " + nombreRol + ".");
-                }
-                break;
+                case "TH":
+                    if (!esLiderValido(lider, new String[]{"OPERACIONES", "DIRECTORIO"})) {
+                        throw new IllegalArgumentException("El líder seleccionado debe tener el rol de OPERACIONES o DIRECTORIO.");
+                    }
+                    break;
 
-            default:
-                throw new IllegalArgumentException("Rol no soportado para la creación de solicitudes.");
+                case "OPERACIONES":
+                    if (!esLiderValido(lider, new String[]{"DIRECTORIO"})) {
+                        throw new IllegalArgumentException("El líder seleccionado debe tener el rol de DIRECTORIO.");
+                    }
+                    break;
+
+                case "LIDER":
+                    if (!esLiderValido(lider, new String[]{"OPERACIONES", "DIRECTORIO"})) {
+                        throw new IllegalArgumentException("El líder seleccionado debe tener el rol de OPERACIONES o DIRECTORIO.");
+                    }
+                    break;
+
+                case "DIRECTORIO":
+                    // El rol DIRECTORIO no selecciona un líder
+                    throw new IllegalArgumentException("El rol DIRECTORIO no selecciona un líder.");
+
+                default:
+                    throw new IllegalArgumentException("Rol no soportado para la creación de solicitudes.");
+            }
         }
 
         List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
@@ -145,42 +156,58 @@ public class SolicitudService implements ISolicitudService {
         nuevaSolicitud.setRechazado(false);
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
-        switch (nombreRol) {
-            case "FUNCIONARIO_FABRICA":
+        // Notificaciones según el rol
+//        switch (nombreRol) {
+//            case "FUNCIONARIO_FABRICA":
+//                // Notificar al líder seleccionado
 //                emailService.enviarCorreo(
 //                        lider.getCorreo(),
 //                        "Nueva Solicitud de Vacaciones (Líder)",
 //                        "<p>Se le ha asignado una nueva solicitud de vacaciones del usuario " + usuario.getNombre() + ".</p>" +
 //                                "<p>Fechas: " + nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
 //                );
-                break;
-
-            case "OPERACIONES":
+//                // Notificar a los usuarios con rol "TH" una vez aprobada por el líder
+//                break;
+//
+//            case "OPERACIONES":
+//                // Notificar al líder de Operaciones seleccionado
 //                emailService.enviarCorreo(
 //                        lider.getCorreo(),
 //                        "Nueva Solicitud de Vacaciones (Operaciones)",
 //                        "<p>Se le ha asignado una nueva solicitud de vacaciones del usuario " + usuario.getNombre() + ".</p>" +
 //                                "<p>Fechas: " + nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
 //                );
-                break;
-
-            case "FUNCIONARIO_TERCERIZADO":
-            case "TH":
-            case "LIDER":
-                List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
-                for (UsuarioModel thUsuario : usuariosTh) {
+//                // Una vez aprobada por el líder de Operaciones, se notificará a "TH"
+//                break;
+//
+//            case "FUNCIONARIO_TERCERIZADO":
+//            case "TH":
+//            case "LIDER":
+//                // Notificar a todos los usuarios con rol "TH"
+//                List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+//                for (UsuarioModel thUsuario : usuariosTh) {
 //                    emailService.enviarCorreo(
 //                            thUsuario.getCorreo(),
 //                            "Nueva Solicitud de Vacaciones",
 //                            "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
 //                                    nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
 //                    );
-                }
-                break;
-        }
+//                }
+//                break;
+//        }
 
         return solicitudRepository.save(nuevaSolicitud);
     }
+
+    public boolean esLiderValido(UsuarioModel lider, String[] rolesPermitidos) {
+        for (String rol : rolesPermitidos) {
+            if (lider.getRol().getNombre().equals(rol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
 
