@@ -24,12 +24,14 @@ public class SolicitudService implements ISolicitudService {
     private final UsuarioRepository usuarioRepository;
 
     private final EmailService emailService;
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public SolicitudService(SolicitudRepository solicitudRepository, UsuarioRepository usuarioRepository, EmailService emailService) {
+    public SolicitudService(SolicitudRepository solicitudRepository, UsuarioRepository usuarioRepository, EmailService emailService, UsuarioService usuarioService) {
         this.solicitudRepository = solicitudRepository;
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -98,11 +100,13 @@ public class SolicitudService implements ISolicitudService {
             throw new IllegalArgumentException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
         }
 
-        // Calcular días hábiles
+        // se calcula los dias solicitados dependiendo de los dias habiles
         int diasHabiles = calcularDiasHabiles(
                 solicitudRequest.getFechaInicio(),
-                solicitudRequest.getFechaFin()
+                solicitudRequest.getFechaFin(),
+                usuario.getId()
         );
+
 
         SolicitudModel nuevaSolicitud = new SolicitudModel();
         nuevaSolicitud.setUsuario(usuario);
@@ -153,18 +157,24 @@ public class SolicitudService implements ISolicitudService {
                     .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
         }
 
+        UsuarioModel usuario = solicitud.getUsuario();
+        if (usuario == null) {
+            throw new IllegalArgumentException("El usuario asociado a la solicitud no fue encontrado.");
+        }
+
+        //se hace el calculo de los dias solicitados
         int diasHabiles = calcularDiasHabiles(
                 solicitudRequest.getFechaInicio(),
-                solicitudRequest.getFechaFin()
+                solicitudRequest.getFechaFin(),
+                usuario.getId()
         );
 
-        // Actualizar los campos de la solicitud
         solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         solicitud.setFechaFin(solicitudRequest.getFechaFin());
         solicitud.setCantidadDias(diasHabiles);
 
 
-        // Guardar y devolver la solicitud actualizada
+
         return solicitudRepository.save(solicitud);
     }
 
@@ -234,17 +244,48 @@ public class SolicitudService implements ISolicitudService {
     }
 
     private void actualizarDiasVacaciones(SolicitudModel solicitud) {
-        int diasSolicitados = solicitud.getCantidadDias();
-        UsuarioModel usuarioRelacionado = solicitud.getUsuario();
-        int diasRestantes = usuarioRelacionado.getDiasVacaciones() - diasSolicitados;
+        UsuarioModel usuario = solicitud.getUsuario();
 
-        if (diasRestantes < 0) {
-            throw new RuntimeException("No hay suficientes días de vacaciones disponibles.");
+        int diasRestantesSolicitados = solicitud.getCantidadDias();
+
+        if (usuario.getDiasVacacionesRestante() >= diasRestantesSolicitados) {
+            usuario.setDiasVacacionesRestante(usuario.getDiasVacacionesRestante() - diasRestantesSolicitados);
+            diasRestantesSolicitados = 0;
+        } else {
+            diasRestantesSolicitados -= usuario.getDiasVacacionesRestante();
+            usuario.setDiasVacacionesRestante(0);
         }
 
-        usuarioRelacionado.setDiasVacaciones(diasRestantes);
-        usuarioRepository.save(usuarioRelacionado);
+        if (diasRestantesSolicitados > 0) {
+            if (usuario.getDiasVacaciones() >= diasRestantesSolicitados) {
+                usuario.setDiasVacaciones(usuario.getDiasVacaciones() - diasRestantesSolicitados);
+                diasRestantesSolicitados = 0;
+            } else {
+                throw new RuntimeException("No hay suficientes días de vacaciones disponibles.");
+            }
+        }
+        usuarioRepository.save(usuario);;
     }
+
+    private void actualizarDiasVacacionesRechazado(SolicitudModel solicitud) {
+        UsuarioModel usuario = solicitud.getUsuario();
+        int diasRecuperados = solicitud.getCantidadDias();
+
+        int years = usuarioRepository.obtenerYears(usuario.getId());
+        int maxDiasVacaciones = usuarioService.calcularDiasVacaciones(years);
+
+        if (usuario.getDiasVacaciones() + diasRecuperados <= maxDiasVacaciones) {
+            usuario.setDiasVacaciones(usuario.getDiasVacaciones() + diasRecuperados);
+        } else {
+            int sobrante = (usuario.getDiasVacaciones() + diasRecuperados) - maxDiasVacaciones;
+            usuario.setDiasVacaciones(maxDiasVacaciones);
+            usuario.setDiasVacacionesRestante(usuario.getDiasVacacionesRestante() + sobrante);
+        }
+
+        usuarioRepository.save(usuario);
+    }
+
+
 
 
 
@@ -313,14 +354,8 @@ public class SolicitudService implements ISolicitudService {
         if (comentario == null || comentario.isEmpty()) {
             throw new RuntimeException("El comentario es obligatorio para rechazar una solicitud.");
         }
+        //
 
-        if (solicitud.getEstado() && solicitud.getNumeroAprobaciones() == 2) {
-            UsuarioModel usuarioRelacionado = solicitud.getUsuario();
-            usuarioRelacionado.setDiasVacaciones(
-                    usuarioRelacionado.getDiasVacaciones() + solicitud.getCantidadDias()
-            );
-            usuarioRepository.save(usuarioRelacionado);
-        }
 
         solicitud.setEstado(false);
         solicitud.setRechazado(true); // Aquí está el problema: siempre se marca como true
@@ -336,44 +371,48 @@ public class SolicitudService implements ISolicitudService {
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
-    // Obtener todos los feriados
     public List<Map<String, String>> obtenerFeriados() {
         return CalendarioUtil.obtenerFeriados();
     }
 
-    // Obtener el cumpleaños de un usuario específico
     public Map<String, String> obtenerCumpleanoPorIdUsuario(Long idUsuario) {
         UsuarioModel usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-
         return CalendarioUtil.obtenerCumpleanosPorUsuario(usuario);
     }
 
-    // Obtener todos los eventos (feriados y cumpleaños)
     public List<Map<String, String>> obtenerTodosLosEventos() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
         List<Map<String, String>> feriados = CalendarioUtil.obtenerFeriados();
         List<Map<String, String>> cumpleanos = CalendarioUtil.obtenerCumpleanos(usuarios);
-
         List<Map<String, String>> eventos = new ArrayList<>();
         eventos.addAll(feriados);
         eventos.addAll(cumpleanos);
-
         return eventos;
     }
 
 
-    public int calcularDiasHabiles(LocalDate fechaInicio, LocalDate fechaFin) {
+    public int calcularDiasHabiles(LocalDate fechaInicio, LocalDate fechaFin, Long idUsuario) {
+        if (fechaInicio.isAfter(fechaFin)) {
+            throw new IllegalArgumentException("La fecha de inicio debe ser anterior o igual a la fecha de fin.");
+        }
+
         // Obtener feriados y cumpleaños
         List<Map<String, String>> feriados = CalendarioUtil.obtenerFeriados();
-        List<Map<String, String>> cumpleanos = CalendarioUtil.obtenerCumpleanos(usuarioRepository.findAll());
         Set<LocalDate> fechasEspeciales = feriados.stream()
                 .map(evento -> LocalDate.parse(evento.get("fecha")))
                 .collect(Collectors.toSet());
 
-        fechasEspeciales.addAll(cumpleanos.stream()
-                .map(evento -> LocalDate.parse(evento.get("fecha")))
-                .collect(Collectors.toSet()));
+        UsuarioModel usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        if (usuario.getFechaNacimiento() != null) {
+            LocalDate fechaCumpleanos = LocalDate.of(
+                    LocalDate.now().getYear(),
+                    usuario.getFechaNacimiento().getMonth(),
+                    usuario.getFechaNacimiento().getDayOfMonth()
+            );
+            fechasEspeciales.add(fechaCumpleanos);
+        }
 
         // Calcular días hábiles
         int diasHabiles = 0;
@@ -384,11 +423,14 @@ public class SolicitudService implements ISolicitudService {
                 diasHabiles++;
             }
         }
+
         return diasHabiles;
     }
-
-
 }
+
+
+
+
 
 
 
