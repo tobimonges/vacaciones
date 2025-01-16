@@ -1,5 +1,5 @@
 /* General Styles */
-body {
+.detalle-body {
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #0D47A1, #1565C0);
     color: white;
@@ -129,7 +129,7 @@ h1, h2, h3, label {
     box-shadow: 0 0 5px rgba(253, 202, 64, 0.7);
 }
 
-form {
+.detalle-form {
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
@@ -140,7 +140,7 @@ form {
 }
 
 @media (max-width: 480px) {
-    form {
+    .detalle-form {
         grid-template-columns: 1fr;
         padding: 15px;
     }
