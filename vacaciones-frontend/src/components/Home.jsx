@@ -33,10 +33,10 @@ const EVENT_TYPES = {
 };
 
 const EVENT_COLORS = {
-  [EVENT_TYPES.APROBADO]: "#67bcc1",
-  [EVENT_TYPES.RECHAZADO]: "#6e6cba",
-  [EVENT_TYPES.PENDIENTE]: "#6b97c8",
-  [EVENT_TYPES.FERIADO]: "#479cf8",
+  [EVENT_TYPES.APROBADO]: "#a0e2b3",
+  [EVENT_TYPES.RECHAZADO]: "#ed5c53",
+  [EVENT_TYPES.PENDIENTE]: "#fefda6",
+  [EVENT_TYPES.FERIADO]: "#c0a4c9",
 };
 
 const MESSAGES = {
@@ -50,7 +50,7 @@ const CalendarLegend = () => (
   <div className="calendar-legend">
     {Object.entries(EVENT_COLORS).map(([type, color]) => (
       <p key={type}>
-        <span style={{ backgroundColor: color, color: "#ffffff", padding: "8px", borderRadius: "6px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)", cursor: "pointer" }}>
+        <span style={{ backgroundColor: color, color: "#000000", padding: "8px", borderRadius: "6px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)", cursor: "pointer" }}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </span>
       </p>
@@ -198,7 +198,7 @@ const Home = () => {
     return {
       style: {
         backgroundColor: EVENT_COLORS[event.type],
-        color: "#ffffff",
+        color: "#000000",
         borderRadius: "4px",
       },
     };
