@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,16 +45,19 @@ public class SolicitudController {
     }
 
     @PostMapping("/solicitudes/dto/{idUsuario}")
-    public ResponseEntity<SolicitudModel> procesarSolicitudConDTO(
+    public ResponseEntity<Object> procesarSolicitudConDTO(
             @PathVariable Long idUsuario,
             @RequestBody SolicitudRequest solicitudRequest) {
         System.out.println(solicitudRequest.toString());
         try {
-            // Aquí llamamos a un método en el servicio que maneje el DTO
+            // Llamamos al servicio que maneja la solicitud
             SolicitudModel nuevaSolicitud = solicitudService.procesarSolicitudConDTO(idUsuario, solicitudRequest);
             return ResponseEntity.ok(nuevaSolicitud);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            // Enviar una respuesta de error detallada
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());  // Mensaje del error capturado
+            return ResponseEntity.badRequest().body(errorResponse);  // Respuesta con un cuerpo que contiene el error
         }
     }
 

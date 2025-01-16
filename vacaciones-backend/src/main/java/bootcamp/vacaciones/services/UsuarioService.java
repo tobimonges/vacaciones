@@ -68,14 +68,14 @@ public class UsuarioService implements IUsuarioService{
         if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
             String passwordAleatoria = GeneradorContraseña.generarContraseñaAleatoria();
 
-            // Enviar la contraseña generada al correo del usuario
+
             emailService.enviarCorreo(
                     usuario.getCorreo(),
-                    "Bienvenido a Roshka",
-                    "<p>Estimado(a) " + usuario.getNombre() + ",</p>" +
-                            "<p>Se ha creado una cuenta para usted en nuestro sistema. Su contraseña temporal es:</p>" +
+                    "Modificar Contraseña",
+                    "<p>Bienvenido/a " + usuario.getNombre() + ",</p>" +
+                            "<p>Se ha creado una cuenta en el sistema para solicitar vacaciones.  Su contraseña temporal es:</p>" +
                             "<h3>" + passwordAleatoria + "</h3>" +
-                            "<p>Por favor cambie su contraseña lo antes posible.</p>" +
+                            "<p>Por favor cambie su contraseña para acceder al sistema.</p>" +
                             "<p>Saludos</p>"
 
             );
@@ -115,7 +115,7 @@ public class UsuarioService implements IUsuarioService{
         usuarioRepository.delete(usuario);
     }
 
-    @Scheduled(cron = "0 00 00 * * ?")
+    @Scheduled(cron = "0 08 14 * * ?")
     public void actualizarAntiguedadYVacaciones() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
 
@@ -130,18 +130,19 @@ public class UsuarioService implements IUsuarioService{
 
             if (cumpleAniversario(months, days)) {
                 int nuevosDiasVacaciones = calcularDiasVacaciones(years);
-                usuarioActualizado.setDiasVacaciones(
-                        usuarioActualizado.getDiasVacaciones() + nuevosDiasVacaciones
-                );
+                if (usuarioActualizado.getDiasVacaciones()>0){
+                    usuarioActualizado.setDiasVacacionesRestante(usuarioActualizado.getDiasVacaciones());
+                }
+                usuarioActualizado.setDiasVacaciones(nuevosDiasVacaciones );
             }
             usuarioRepository.save(usuarioActualizado);
 
         }
     }
     public int calcularDiasVacaciones(int years) {
-        if (years >= 1 && years < 5) {
+        if (years >= 1 && years < 6) {
             return 12;
-        } else if (years >= 5 && years <= 10) {
+        } else if (years >= 6 && years <= 10) {
             return 18;
         } else if (years > 10) {
             return 30;
