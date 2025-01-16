@@ -203,7 +203,7 @@ const HomeTh = () => {
       case "rechazado":
         return {
           style: {
-            backgroundColor: "#ed5c53", // Rojo para rechazados
+            backgroundColor: "#ff7c70", // Rojo para rechazados
             color: "#000000",
             borderRadius: "4px",
           },
@@ -372,7 +372,7 @@ const HomeTh = () => {
           <p>
             <span
               style={{
-                backgroundColor: "#ed5c53",
+                backgroundColor: "#ff7c70",
                 color: "#000000",
                 padding: "8px",
                 borderRadius: "6px",
@@ -422,13 +422,13 @@ const HomeTh = () => {
                         style={{ color: "#000000",
                           backgroundColor:
                              event.type === "aprobado"
-                             ? "#A8E6A1"  // Verde pastel para aprobado
+                             ? "#a0e2b3"  // Verde pastel para aprobado
                              : event.type === "rechazado"
-                             ? "#F5A9A1"  // Rojo pastel para rechazado
+                             ? "#ff7c70"  // Rojo pastel para rechazado
                              : event.type === "pendiente"
-                             ? "#FFF5A9"  // Amarillo pastel para pendiente
+                             ? "#fefda6"  // Amarillo pastel para pendiente
                              : event.type === "feriado"
-                             ? "#C1A7F1"  // Morado pastel para feriado
+                             ? "#c0a4c9"  // Morado pastel para feriado
                              : "", // Si no es ninguno de los tipos, no aplica color
                              padding: "4px 8px",
                              borderRadius: "4px",
