@@ -11,8 +11,8 @@ function UsuarioDetalle() {
         nroCedula: "",
         correo: "",
         telefono: "",
-        fechaIngreso: "", // Nuevo campo
-        fechaNacimiento: "", // Nuevo campo
+        fechaIngreso: "",
+        fechaNacimiento: "",
         estado: true,
         rol: "",
         equipo: "",
@@ -185,7 +185,8 @@ function UsuarioDetalle() {
                 </>
             ) : (
                 <form onSubmit={handleSubmit}>
-                    <h3>Editar Usuario</h3>
+              
+
                     {[
                         { name: "nombre", type: "text", label: "Nombre" },
                         { name: "apellido", type: "text", label: "Apellido" },
@@ -194,6 +195,7 @@ function UsuarioDetalle() {
                         { name: "telefono", type: "text", label: "Teléfono" },
                         { name: "fechaIngreso", type: "date", label: "Fecha de Ingreso" }, // Nuevo campo
                         { name: "fechaNacimiento", type: "date", label: "Fecha de Nacimiento" },
+                        { name: "estado", type: "boolean", label: "Estado" },
                     ].map(({ name, type, label }) => (
                         <div key={name} className="inputGroupp">
                             <label htmlFor={name}>{label}</label>
@@ -231,7 +233,7 @@ function UsuarioDetalle() {
                             </select>
                         </div>
                     ))}
-
+                    <h3>‎ </h3>
                     <button type="submit" className="boton">
                         Guardar Cambios
                     </button>
