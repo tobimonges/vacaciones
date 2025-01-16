@@ -209,11 +209,12 @@ function UsuarioDetalle() {
                         { name: "nroCedula", type: "number", placeholder: "Nro de Cedula",label: "CI", icon: "/tarjeta-de-identificacion (1).svg" },
                         { name: "correo", type: "text", placeholder: "Correo",label: "Correo", icon: "/sobre.svg" },
                         { name: "telefono", type: "text", placeholder: "Telefono",label: "Telefono", icon: "/circulo-de-telefono.svg" },
-                        { name: "estado", type: "boolean", label: "Estado" },
-                    ].map(({ name, type, label }) => (
+                        { name: "estado", type: "boolean", label: "Estado", icon: "/circulo-de-usuario (2).svg" },
+                    ].map(({ name, type, label, icon }) => (
                         <div key={name}>
                             <label htmlFor={name}>{label}</label>
                             <div className="iconWrap">
+                            <img src={icon} className="icon" />
                             <input
                                 type={type}
                                 id={name}
@@ -223,7 +224,6 @@ function UsuarioDetalle() {
                                 onChange={handleInputChange}
                                 required
                             />
-
                             </div>
                         </div>
                     ))}
@@ -231,20 +231,22 @@ function UsuarioDetalle() {
                     {[
                         { name: "fechaIngreso", type: "date", label: "Fecha de Ingreso", icon: "/dias-del-calendario.svg"},
                         { name: "fechaNacimiento", type: "date", label: "Fecha de Nacimiento", icon: "/dias-del-calendario.svg"},
-                    ].map(({ name, type, label }) => (
+                    ].map(({ name, type, label, icon }) => (
                         <div key={name}>
                             <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
                             <div className="inputGroupCreate datePickerGroup">
                             <div className="iconWrap">
+                            <img src={icon} className="icon" />
                             <label htmlFor={name}>{label}</label>
+
                                 <DatePicker
                                     selected={formData[name]}
                                     onChange={(date) => handleDateChange(name, date)}
                                     dateFormat="yyyy-MM-dd"
                                     className="inputCreate"
-                                    placeholderText={label}
                                     required
                                 />
+
                             </div>
                             </div>
                             </LocalizationProvider>
