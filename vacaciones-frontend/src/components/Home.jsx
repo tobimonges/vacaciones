@@ -15,12 +15,14 @@ import NavigationBar from "./NavigationBar";
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
+  format: (date, formatStr, options) => format(date, formatStr, { ...options, locale: esLocale }),
+  parse: (str, formatStr) => parse(str, formatStr, new Date(), { locale: esLocale }),
+  startOfWeek: () => startOfWeek(new Date(), { locale: esLocale }),
   getDay,
   locales,
 });
+
+
 
 // 🎨 **Constantes de estilo y mensajes**
 const EVENT_TYPES = {
@@ -48,7 +50,7 @@ const CalendarLegend = () => (
   <div className="calendar-legend">
     {Object.entries(EVENT_COLORS).map(([type, color]) => (
       <p key={type}>
-        <span style={{ backgroundColor: color, color: "#ffffff", padding: "8px", borderRadius: "6px" }}>
+        <span style={{ backgroundColor: color, color: "#ffffff", padding: "8px", borderRadius: "6px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)", cursor: "pointer" }}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </span>
       </p>

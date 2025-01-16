@@ -45,8 +45,16 @@
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
     margin: 0;
+    /*mi agregado*/
+    display: flex; /* Asegura que el contenido (imagen) se alinee correctamente */
+  justify-content: center; /* Centra la imagen dentro del botón */
+  align-items: center; /* Centra la imagen dentro del botón */
+  padding: 10px; /* Controla el espacio alrededor de la imagen */
   }
-  
+  .button-icon {
+    width: 20px; /* Ajusta el tamaño del ícono */
+    height: 20px; /* Mantén la proporción */
+  }
   /* Hover del botón */
   .nav-button:hover {
     background-color: #0056b3;
@@ -56,7 +64,7 @@
   /* Botón específico: Atrás */
   .back-button {
     backdrop-filter: blur(10px);
-    background-color: #235ba1;
+    background-color: #FDCA40;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
   .text {
@@ -64,18 +72,18 @@
   }
   
   .back-button:hover {
-    background-color: #fdcb4000;
+    background-color: #fcbc0e;
   }
   
   /* Botón específico: Cerrar sesión */
   .logout {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #235ba1;
+    background-color: #FDCA40;
     backdrop-filter: blur(10px);
   }
   
   .logout:hover {
-    background-color: #fdcb4000;
+    background-color: #fcbc0e;
   }
   
   /* Logo centrado */

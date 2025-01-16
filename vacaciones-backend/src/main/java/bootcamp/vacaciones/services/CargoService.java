@@ -35,7 +35,7 @@ public class CargoService {
         Optional<CargoModel> existingCargo = cargoRepository.findById(id);
         if (existingCargo.isPresent()) {
             CargoModel cargo = existingCargo.get();
-            cargo.setName(updatedCargo.getName());
+            cargo.setNombre(updatedCargo.getNombre());
             return cargoRepository.save(cargo);
         }
         return null;

@@ -1,0 +1,147 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0D47A1, #1565C0);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.container-usuario-detalle {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 70rem;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly more transparent */
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.container-usuario-detalle::-webkit-scrollbar {
+    display: none;
+}
+
+h1, h2, h3, label {
+    color: white; /* Ensuring all titles and labels are white */
+}
+.container-usuario-detalle h3 {
+    color: white;
+    font-size: 1.2rem;
+}
+
+.err {
+    color: red;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.succ {
+    color: green;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.table th, .table td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.table th {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+.boton {
+    background-color: #fdca40;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    color: #2c2c2c;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.boton:hover {
+    background-color: #fcbc0e;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+}
+
+.inputGroupp {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.inputGroupp label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.inputGroupp input,
+.inputGroupp select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    color: #333;
+    appearance: none; /* Quitar la apariencia por defecto en algunos navegadores */
+}
+
+.inputGroupp select {
+    cursor: pointer;
+    padding-right: 2rem;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23333" width="16" height="16"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+
+.inputGroupp input:focus {
+    outline: none;
+    border-color: #fdca40;
+    box-shadow: 0 0 5px rgba(253, 202, 64, 0.7);
+}
+
+form {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+@media (max-width: 480px) {
+    form {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+}

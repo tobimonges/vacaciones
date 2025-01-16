@@ -120,8 +120,8 @@ const HomeTh = () => {
         // Mapear las solicitudes a eventos
         const eventsArray = response.data.map((solicitud) => ({
           title: `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`,
-          start: new Date(solicitud.fechaInicio),
-          end: new Date(solicitud.fechaFin),
+          start: new Date(`${solicitud.fechaInicio}T00:00:00`),
+          end: new Date(`${solicitud.fechaFin}T23:59:59`),
           allDay: true,
           type: solicitud.rechazado
               ? "rechazado"
@@ -247,7 +247,7 @@ const HomeTh = () => {
         <h1 className="calendar-title">
           Bienvenido, {userNameTh || "Usuario"}
         </h1>
-        <h2 className="calendar-title">Solicitudes Generales</h2>
+        <h2 className="calendar-title">Solicitudes</h2>
 
         {/* 🚨 Mensajes de Error */}
         {error && <p className="calendar-error-message">{error}</p>}
@@ -259,14 +259,14 @@ const HomeTh = () => {
               className="calendar-button"
               onClick={() => navigate(`/AdminDashboard`)}
           >
-            <span>Dashboard</span>
+            <span>Listar Solicitudes</span>
           </button>
           {isUserAllowed() && (
               <button
                   className="calendar-button"
                   onClick={() => navigate(`/crearusuario`)}
               >
-                <span>Crear usuario</span>
+                <span>Registrar Funcionario</span>
               </button>
 
           )}

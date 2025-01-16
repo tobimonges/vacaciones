@@ -96,13 +96,13 @@ function ForgotPassword({ onBackToLogin }) {
       >
         <div className="backButtonWrapper">
         <button className="backToLoginButton" onClick={handleBackToLogin}>
-          Atras
+        <img src=".\angulo-pequeno-izquierdo.svg" alt="Volver" />
         </button>
         </div>
         <Logo />
         <h2 className="headerFP">Recuperar Contraseña</h2>
         <div className="boxTextWrapper">
-          <p className="boxText">Inserte su correo</p>
+          <p className="boxText">Ingrese su correo para continuar</p>
         </div>
         <form onSubmit={handleForgotPassword}>
           <div className="inputFPGroup">
@@ -118,7 +118,7 @@ function ForgotPassword({ onBackToLogin }) {
             </div>
           </div>
           <button type="submit" className="buttonFPC">
-            Correo de recuperación
+          Enviar
           </button>
           <div className="forgotPassword">
             

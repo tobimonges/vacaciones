@@ -1,0 +1,13 @@
+/* FadeIn.css */
+
+/* Contenedor que envuelve el contenido */
+.fade-in-container {
+    opacity: 0;  /* Empieza invisible */
+    transition: opacity 1s ease-in-out; /* Transición suave */
+  }
+  
+  /* Animación fadeIn */
+  .fade-in {
+    opacity: 1; /* Se vuelve visible */
+  }
+  

@@ -188,11 +188,12 @@ const AdminDashboard = () => {
         `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`.toLowerCase();
       const estado = getEstadoSolicitud(solicitud).toLowerCase();
       const nroSolicitud = solicitud.id.toString();
-
+      const equipo = `${solicitud.usuario.equipo.nombre}`.toLowerCase();
       return (
         fullName.includes(searchText) ||
         estado.includes(searchText) ||
-        nroSolicitud.includes(searchText)
+        nroSolicitud.includes(searchText) ||
+        equipo.includes(searchText)
       );
     });
 
@@ -237,7 +238,28 @@ const AdminDashboard = () => {
           <NavigationBar onLogout={handleLogout} />
           {/*<Logo /> */}
           <div className="header-title-container">
-            <div className="space"></div>
+            <div className="space">
+              {/* Contador basado en el estado de las solicitudes */}
+              <div className="counter-container">
+                <p>
+                  Pendientes a TH:{" "}
+                  {
+                    solicitudes.filter(
+                      (s) => getEstadoSolicitud(s) === "Pendiente a TH"
+                    ).length
+                  }
+                </p>
+                <p>
+                  Falta aprobación del líder:{" "}
+                  {
+                    solicitudes.filter(
+                      (s) =>
+                        getEstadoSolicitud(s) === "Falta aprobación del Líder"
+                    ).length
+                  }
+                </p>
+              </div>
+            </div>
             <h4>Panel de Administrador</h4>
             <div className="filter-container">
               <label htmlFor="filter-input" className="filter-label">
@@ -265,6 +287,7 @@ const AdminDashboard = () => {
                 <tr>
                   <th>Nro. Solicitud</th>
                   <th>Usuario</th>
+                  <th>Equipo</th>
                   <th>Fecha Inicio</th>
                   <th>Fecha Fin</th>
                   <th>Estado</th>
@@ -280,6 +303,7 @@ const AdminDashboard = () => {
                         " " +
                         solicitud.usuario.apellido}
                     </td>
+                    <td>{solicitud.usuario.equipo.nombre}</td>
                     <td>
                       {new Date(solicitud.fechaInicio).toLocaleDateString(
                         "es-ES"
