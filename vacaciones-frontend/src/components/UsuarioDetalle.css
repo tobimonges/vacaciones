@@ -1,5 +1,11 @@
 /* General Styles */
-
+.detalle-body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0D47A1, #1565C0);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
 
 .container-usuario-detalle {
     display: flex;
