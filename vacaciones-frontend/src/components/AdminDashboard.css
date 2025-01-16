@@ -70,12 +70,14 @@ h4 {
 }
 
 .space {
-  padding-left: 2%;
+  padding-left: 8%;
 }
 .counter-container {
   display: flex;
   gap: 15px;
   font-size: 14px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .counter-container p {
   margin: 0;
