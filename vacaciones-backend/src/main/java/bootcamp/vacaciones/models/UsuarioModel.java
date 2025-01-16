@@ -34,8 +34,8 @@ public class UsuarioModel {
     @Column(name="dias_vacaciones")
     private int diasVacaciones;
 
-    @Column(name="dias_vacaciones_acumulado", nullable = true)
-    private int diasVacacionesAcumulado;
+    @Column(name="dias_vacaciones_restante", nullable = true)
+    private int diasVacacionesRestante;
 
     private boolean estado;
 
@@ -57,7 +57,7 @@ public class UsuarioModel {
 
     public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
                         LocalDate fechaNacimiento, String contrasena, String telefono, LocalDate fechaIngreso,
-                        String antiguedad, int diasVacaciones, int diasVacacionesAcumulado, boolean estado,
+                        String antiguedad, int diasVacaciones, int diasVacacionesRestante, boolean estado,
                         RolModel rol, EquipoModel equipo, CargoModel cargo) {
         this.id = id;
         this.nombre = nombre;
@@ -70,7 +70,7 @@ public class UsuarioModel {
         this.fechaIngreso = fechaIngreso;
         this.antiguedad = antiguedad;
         this.diasVacaciones = diasVacaciones;
-        this.diasVacacionesAcumulado = diasVacacionesAcumulado;
+        this.diasVacacionesRestante = diasVacacionesRestante;
         this.estado = estado;
         this.rol = rol;
         this.equipo = equipo;
@@ -165,9 +165,9 @@ public class UsuarioModel {
         this.diasVacaciones = diasVacaciones;
     }
 
-    public int getDiasVacacionesAcumulado() {return diasVacacionesAcumulado;}
+    public int getDiasVacacionesRestante() {return diasVacacionesRestante;}
 
-    public void setDiasVacacionesAcumulado(int diasVacacionesAcumulado) {this.diasVacacionesAcumulado = diasVacacionesAcumulado;}
+    public void setDiasVacacionesRestante(int diasVacacionesRestante) {this.diasVacacionesRestante = diasVacacionesRestante;}
 
     public boolean isEstado() {
         return estado;
