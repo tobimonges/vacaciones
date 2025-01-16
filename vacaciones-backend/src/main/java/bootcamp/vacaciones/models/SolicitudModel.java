@@ -39,7 +39,7 @@ public class SolicitudModel {
     private Boolean rechazado;
 
     @ManyToOne
-    @JoinColumn(name = "id_lider", nullable = false)
+    @JoinColumn(name = "id_lider", nullable = true)
     private UsuarioModel lider; // Relación con el líder
 
 
