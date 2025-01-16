@@ -184,7 +184,7 @@ function UsuarioDetalle() {
                     )}
                 </>
             ) : (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="detalle-form">
               
 
                     {[
