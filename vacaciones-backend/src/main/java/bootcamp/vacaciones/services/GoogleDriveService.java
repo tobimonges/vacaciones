@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class GoogleDriveService {
@@ -42,30 +43,36 @@ public class GoogleDriveService {
                 .build();
     }
 
+
     @Async
-    public String subirArchivo(String nombreArchivo, String tipoMime, InputStream archivoStream) throws IOException {
-        File archivoMetadata = new File();
-        archivoMetadata.setName(nombreArchivo);
-        archivoMetadata.setParents(Collections.singletonList(googleDriveConfig.getRootFolderId()));
+    public CompletableFuture<String> subirArchivo(String nombreArchivo, String tipoMime, InputStream archivoStream) {
+        try {
+            File archivoMetadata = new File();
+            archivoMetadata.setName(nombreArchivo);
+            archivoMetadata.setParents(Collections.singletonList(googleDriveConfig.getRootFolderId()));
 
-        // Crea un archivo temporal para copiar el contenido del InputStream
-        java.io.File archivoTemporal = java.io.File.createTempFile("temp", null);
-        try (java.io.FileOutputStream outputStream = new java.io.FileOutputStream(archivoTemporal)) {
-            archivoStream.transferTo(outputStream);
+            // Crea un archivo temporal para copiar el contenido del InputStream
+            java.io.File archivoTemporal = java.io.File.createTempFile("temp", null);
+            try (java.io.FileOutputStream outputStream = new java.io.FileOutputStream(archivoTemporal)) {
+                archivoStream.transferTo(outputStream);
+            }
+
+            // Convierte el archivo temporal a FileContent para Google Drive
+            FileContent contenidoArchivo = new FileContent(tipoMime, archivoTemporal);
+
+            File archivo = driveService.files().create(archivoMetadata, contenidoArchivo)
+                    .setFields("id, webViewLink")
+                    .execute();
+
+            // Elimina el archivo temporal después de la subida
+            archivoTemporal.delete();
+
+            return CompletableFuture.completedFuture(archivo.getWebViewLink());
+        } catch (IOException e) {
+            return CompletableFuture.failedFuture(e);
         }
-
-        // Convierte el archivo temporal a FileContent para Google Drive
-        FileContent contenidoArchivo = new FileContent(tipoMime, archivoTemporal);
-
-        File archivo = driveService.files().create(archivoMetadata, contenidoArchivo)
-                .setFields("id, webViewLink")
-                .execute();
-
-        // Elimina el archivo temporal después de la subida
-        archivoTemporal.delete();
-
-        return archivo.getWebViewLink();
     }
+
 
 
     public String getRootFolderId() {

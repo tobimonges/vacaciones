@@ -74,6 +74,7 @@ public class SolicitudService implements ISolicitudService {
         }
         return solicitudRepository.findByUsuarioId(usuarioId);
     }
+
     @Override
     public SolicitudModel procesarSolicitudConDTO(Long idUsuario, SolicitudRequest solicitudRequest) {
         if (!usuarioRepository.existsById(idUsuario)) {
@@ -83,13 +84,46 @@ public class SolicitudService implements ISolicitudService {
         UsuarioModel usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
+        String nombreRol = usuario.getRol().getNombre();
         UsuarioModel lider = null;
-        if (solicitudRequest.getLiderId() != null) {
-            lider = usuarioRepository.findById(solicitudRequest.getLiderId())
-                    .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
+
+        switch (nombreRol) {
+            case "FUNCIONARIO_FABRICA":
+                if (solicitudRequest.getLiderId() == null) {
+                    throw new IllegalArgumentException("Debe seleccionarse un líder para FUNCIONARIO_FABRICA.");
+                }
+                lider = usuarioRepository.findById(solicitudRequest.getLiderId())
+                        .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado"));
+
+                if (lider.getId().equals(idUsuario)) {
+                    throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
+                }
+                break;
+
+            case "OPERACIONES":
+                if (solicitudRequest.getLiderId() == null) {
+                    throw new IllegalArgumentException("Debe seleccionarse un líder para OPERACIONES.");
+                }
+                lider = usuarioRepository.findById(solicitudRequest.getLiderId())
+                        .orElseThrow(() -> new IllegalArgumentException("Líder de Operaciones no encontrado"));
+
+                if (lider.getId().equals(idUsuario)) {
+                    throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
+                }
+                break;
+
+            case "FUNCIONARIO_TERCERIZADO":
+            case "TH":
+            case "LIDER":
+                if (solicitudRequest.getLiderId() != null) {
+                    throw new IllegalArgumentException("No se debe proporcionar un líder para el rol " + nombreRol + ".");
+                }
+                break;
+
+            default:
+                throw new IllegalArgumentException("Rol no soportado para la creación de solicitudes.");
         }
 
-        // Validar conflictos de fechas
         List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
                 idUsuario, solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin()
         );
@@ -98,55 +132,65 @@ public class SolicitudService implements ISolicitudService {
             throw new IllegalArgumentException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
         }
 
-        // Calcular días hábiles
-        int diasHabiles = calcularDiasHabiles(
-                solicitudRequest.getFechaInicio(),
-                solicitudRequest.getFechaFin()
-        );
-
         SolicitudModel nuevaSolicitud = new SolicitudModel();
         nuevaSolicitud.setUsuario(usuario);
         nuevaSolicitud.setLider(lider);
         nuevaSolicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
-        nuevaSolicitud.setCantidadDias(diasHabiles);
-        nuevaSolicitud.setEstado(false); // Por defecto, pendiente
+        nuevaSolicitud.setCantidadDias(solicitudRequest.getCantidadDias());
+        nuevaSolicitud.setEstado(false);
         nuevaSolicitud.setNumeroAprobaciones(solicitudRequest.getNumeroAprobaciones() != null
                 ? solicitudRequest.getNumeroAprobaciones()
-                : 0); // Si no está presente, inicializa con 0
+                : 0);
         nuevaSolicitud.setRechazado(false);
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
-//        // Notificar al líder
-//        emailService.enviarCorreo(
-//                lider.getCorreo(),
-//                "Nueva Solicitud de Vacaciones",
-//                "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
-//                        nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
-//        );
+        switch (nombreRol) {
+            case "FUNCIONARIO_FABRICA":
+//                emailService.enviarCorreo(
+//                        lider.getCorreo(),
+//                        "Nueva Solicitud de Vacaciones (Líder)",
+//                        "<p>Se le ha asignado una nueva solicitud de vacaciones del usuario " + usuario.getNombre() + ".</p>" +
+//                                "<p>Fechas: " + nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+//                );
+                break;
 
-//        // Notificar a los usuarios con rol "TH"
-//        List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
-//        for (UsuarioModel thUsuario : usuariosTh) {
-//            emailService.enviarCorreo(
-//                    thUsuario.getCorreo(),
-//                    "Nueva Solicitud de Vacaciones",
-//                    "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
-//                            nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
-//            );
-//        }
+            case "OPERACIONES":
+//                emailService.enviarCorreo(
+//                        lider.getCorreo(),
+//                        "Nueva Solicitud de Vacaciones (Operaciones)",
+//                        "<p>Se le ha asignado una nueva solicitud de vacaciones del usuario " + usuario.getNombre() + ".</p>" +
+//                                "<p>Fechas: " + nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+//                );
+                break;
+
+            case "FUNCIONARIO_TERCERIZADO":
+            case "TH":
+            case "LIDER":
+                List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
+                for (UsuarioModel thUsuario : usuariosTh) {
+//                    emailService.enviarCorreo(
+//                            thUsuario.getCorreo(),
+//                            "Nueva Solicitud de Vacaciones",
+//                            "<p>El usuario " + usuario.getNombre() + " ha creado una solicitud de vacaciones para las fechas " +
+//                                    nuevaSolicitud.getFechaInicio() + " a " + nuevaSolicitud.getFechaFin() + ".</p>"
+//                    );
+                }
+                break;
+        }
 
         return solicitudRepository.save(nuevaSolicitud);
     }
 
 
+
+
+
     @Override
     public SolicitudModel actualizarSolicitudConDTO(Long idSolicitud, SolicitudRequest solicitudRequest) {
-        // Validar que la solicitud existe
         SolicitudModel solicitud = solicitudRepository.findById(idSolicitud)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
-        // Validar y buscar el líder si está presente en la solicitud
         UsuarioModel lider = null;
         if (solicitudRequest.getLiderId() != null) {
             lider = usuarioRepository.findById(solicitudRequest.getLiderId())
@@ -158,13 +202,11 @@ public class SolicitudService implements ISolicitudService {
                 solicitudRequest.getFechaFin()
         );
 
-        // Actualizar los campos de la solicitud
         solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         solicitud.setFechaFin(solicitudRequest.getFechaFin());
         solicitud.setCantidadDias(diasHabiles);
 
 
-        // Guardar y devolver la solicitud actualizada
         return solicitudRepository.save(solicitud);
     }
 
@@ -175,7 +217,6 @@ public class SolicitudService implements ISolicitudService {
         UsuarioModel usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Validar que el usuario que aprueba no sea el mismo que creó la solicitud
         if (solicitud.getUsuario().getId().equals(usuarioId)) {
             throw new RuntimeException("El usuario no puede aprobar su propia solicitud.");
         }
@@ -386,8 +427,6 @@ public class SolicitudService implements ISolicitudService {
         }
         return diasHabiles;
     }
-
-
 }
 
 
