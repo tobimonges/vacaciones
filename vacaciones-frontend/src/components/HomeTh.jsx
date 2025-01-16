@@ -100,8 +100,9 @@ const HomeTh = () => {
   }, []);
 
   // 📥 **Obtener Solicitudes de Vacaciones**
+  // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
-    const fetchVacationRequests = async () => {
+    const fetchVacationData = async () => {
       const usuarioId = getUsuarioId();
 
       // Verificar autenticación
@@ -113,15 +114,15 @@ const HomeTh = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
+
+        // Solicitudes de vacaciones
+        const solicitudesResponse = await axios.get(
             "http://localhost:8080/vacaciones/solicitudes",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            { headers: { Authorization: `Bearer ${token}` } }
         );
 
         // Mapear las solicitudes a eventos
-        const eventsArray = response.data.map((solicitud) => ({
+        const solicitudesEvents = solicitudesResponse.data.map((solicitud) => ({
           title: `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`,
           start: new Date(`${solicitud.fechaInicio}T00:00:00`),
           end: new Date(`${solicitud.fechaFin}T23:59:59`),
@@ -131,44 +132,34 @@ const HomeTh = () => {
               : solicitud.estado
                   ? "aprobado"
                   : "pendiente",
-          equipo: solicitud.usuario.equipo.nombre, // Mantiene el equipo para futuros filtros
+          equipo: solicitud.usuario.equipo.nombre,
         }));
 
-        // Fechas fijas de feriados manuales
-        const feriados = [
-          { date: "2025-01-01", title: "Año Nuevo" },
-          { date: "2025-03-02", title: "Día de los Héroes" },
-          { date: "2025-04-17", title: "Jueves Santo" },
-          { date: "2025-04-18", title: "Viernes Santo" },
-          { date: "2025-05-01", title: "Día del Trabajador" },
-          { date: "2025-05-14", title: "Día de la Independencia" },
-          { date: "2025-06-12", title: "Día de la Paz del Chaco" },
-          { date: "2025-08-15", title: "Fundación de Asunción" },
-          { date: "2025-09-29", title: "Victoria de Boquerón" },
-          { date: "2025-12-08", title: "Día de la Virgen de Caacupé" },
-          { date: "2025-12-25", title: "Navidad" },
-        ];
+        // Feriados dinámicos desde el endpoint
+        const feriadosResponse = await axios.get(
+            "http://localhost:8080/vacaciones/eventos",
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-        // Agregar feriados a los eventos
-        feriados.forEach((feriado) => {
-          eventsArray.push({
-            title: feriado.title,
-            start: new Date(`${feriado.date}T00:00:00`),
-            end: new Date(`${feriado.date}T23:59:59`),
-            allDay: true,
-            type: "feriado",
-          });
-        });
+        const feriadosEvents = feriadosResponse.data.map((feriado) => ({
+          title: feriado.descripcion,
+          start: new Date(`${feriado.fecha}T00:00:00`),
+          end: new Date(`${feriado.fecha}T23:59:59`),
+          allDay: true,
+          type: "feriado",
+        }));
 
-        setEvents(eventsArray);
+        // Combinar ambos eventos
+        setEvents([...solicitudesEvents, ...feriadosEvents]);
       } catch (error) {
-        console.error("Error al obtener solicitudes de vacaciones:", error);
-        setError("No se pudieron cargar las solicitudes de vacaciones.");
+        console.error("Error al obtener datos:", error);
+        setError("No se pudieron cargar los datos.");
       }
     };
 
-    fetchVacationRequests();
+    fetchVacationData();
   }, [navigate]);
+
 
 
   const handleLogout = () => {

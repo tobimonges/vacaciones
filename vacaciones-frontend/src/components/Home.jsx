@@ -77,6 +77,7 @@ const CalendarButtons = ({ navigate, isUserAllowed }) => (
 
 // 🏠 **Componente Principal**
 const Home = () => {
+
   // 🧠 Estados
   const [userName, setUserName] = useState(""); // Nombre del usuario
   const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
@@ -94,6 +95,7 @@ const Home = () => {
 
   // 📥 **Obtener Datos del Usuario y Solicitudes de Vacaciones**
   useEffect(() => {
+
     const fetchData = async () => {
       const usuarioId = getUsuarioId();
 
@@ -105,11 +107,19 @@ const Home = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const [userDataResponse, vacationRequestsResponse] = await Promise.all([
+
+        // Realizamos las solicitudes para obtener los datos
+        const [userDataResponse, vacationRequestsResponse, holidaysResponse, birthdaysResponse] = await Promise.all([
           axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
           axios.get(`http://localhost:8080/vacaciones/usuario/${usuarioId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("http://localhost:8080/vacaciones/feriados", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`http://localhost:8080/vacaciones/cumpleanos/${usuarioId}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -119,16 +129,17 @@ const Home = () => {
         setJoinDate(fechaIngreso);
         setVacationDays(diasVacaciones);
 
+        // Procesamos las solicitudes de vacaciones
         const eventsArray = vacationRequestsResponse.data.map((solicitud) => {
           if (solicitud.fechaInicio && solicitud.fechaFin) {
             const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
             const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
 
             const type = solicitud.rechazado
-              ? EVENT_TYPES.RECHAZADO
-              : solicitud.estado
-              ? EVENT_TYPES.APROBADO
-              : EVENT_TYPES.PENDIENTE;
+                ? EVENT_TYPES.RECHAZADO
+                : solicitud.estado
+                    ? EVENT_TYPES.APROBADO
+                    : EVENT_TYPES.PENDIENTE;
 
             return {
               title: "Vacaciones",
@@ -141,31 +152,47 @@ const Home = () => {
           return null;
         }).filter(Boolean);
 
-        const feriados = [
-          { date: "2025-01-01", title: "Año Nuevo" },
-          { date: "2025-03-02", title: "Día de los Héroes" },
-          { date: "2025-04-17", title: "Jueves Santo" },
-          { date: "2025-04-18", title: "Viernes Santo" },
-          { date: "2025-05-01", title: "Día del Trabajador" },
-          { date: "2025-05-14", title: "Día de la Independencia" },
-          { date: "2025-06-12", title: "Día de la Paz del Chaco" },
-          { date: "2025-08-15", title: "Fundación de Asunción" },
-          { date: "2025-09-29", title: "Victoria de Boquerón" },
-          { date: "2025-12-08", title: "Día de la Virgen de Caacupé" },
-          { date: "2025-12-25", title: "Navidad" },
-        ];
+        // Procesamos los feriados obtenidos de la API
+        if (Array.isArray(holidaysResponse.data)) {
+          holidaysResponse.data.forEach((feriado) => {
+            const descripcion = feriado.descripcion;
+            const fecha = feriado.fecha;
 
-        feriados.forEach((feriado) => {
-          eventsArray.push({
-            title: feriado.title,
-            start: new Date(`${feriado.date}T00:00:00`),
-            end: new Date(`${feriado.date}T23:59:59`),
-            allDay: true,
-            type: EVENT_TYPES.FERIADO,
+            if (!descripcion || !fecha) {
+              console.error("Error: Descripción o fecha faltante en", feriado);
+              return;
+            }
+
+            eventsArray.push({
+              title: descripcion,
+              start: new Date(`${fecha}T00:00:00`),
+              end: new Date(`${fecha}T23:59:59`),
+              allDay: true,
+              type: EVENT_TYPES.FERIADO,
+            });
           });
-        });
+        } else {
+          console.error("Error: holidaysResponse.data no es un arreglo válido", holidaysResponse);
+        }
+
+        // Procesamos los cumpleaños obtenidos de la API
+        if (birthdaysResponse.data && birthdaysResponse.data.descripcion && birthdaysResponse.data.fecha) {
+          const { descripcion, fecha } = birthdaysResponse.data;
+
+          eventsArray.push({
+            title: `${descripcion}`,
+            start: new Date(`${fecha}T00:00:00`),
+            end: new Date(`${fecha}T23:59:59`),
+            allDay: true,
+            type: EVENT_TYPES.cumpleano,
+          });
+        } else {
+          console.error("Error: birthdaysResponse.data no contiene datos válidos", birthdaysResponse);
+        }
+
 
         setEvents(eventsArray);
+
       } catch (error) {
         console.error("Error al obtener datos:", error);
         setError(MESSAGES.USER_DATA_ERROR);
@@ -174,6 +201,7 @@ const Home = () => {
 
     fetchData();
   }, [navigate]);
+
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Eliminar el token de autenticación
