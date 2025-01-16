@@ -120,6 +120,8 @@ h4 {
   width: 100%;
   overflow-y: scroll; /* Habilitar desplazamiento vertical */
   scrollbar-width: none; /* Ocultar barra de desplazamiento en Firefox */
+  border-radius: 15px;
+  border-top: 3px solid rgb(255, 255, 255);
 }
 
 p {
@@ -139,9 +141,7 @@ p {
   top: 0; /* Fijo en la parte superior */
   z-index: 2; /* Asegura que el thead esté por encima del tbody */
   backdrop-filter: blur(6px); /* Desenfoca el contenido detrás del thead */
-  -webkit-backdrop-filter: blur(
-    5px
-  ); /* Compatibilidad con navegadores basados en WebKit */
+  border-radius: 15px;
 }
 
 .admin-table tbody {
