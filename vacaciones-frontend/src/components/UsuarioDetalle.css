@@ -1,5 +1,5 @@
 /* General Styles */
-body {
+.detalle-body {
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #0D47A1, #1565C0);
     color: white;
