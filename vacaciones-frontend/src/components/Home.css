@@ -172,19 +172,19 @@
     margin-top: 10px;
 }
 /*Selector de Equipos*/
-.calendar-select-Th {
-    font-size: 1.1rem; /* Tamaño del texto relativo (responsive) */
-    color: #363533; /* Color del texto */
-    background-color: #fbc940; /* Fondo amarillo */
-    height: auto; /* Ajusta la altura automáticamente */
-    width: 100%; /* Ocupa el 100% del contenedor */
-    max-width: 300px; /* Tamaño máximo para evitar ser demasiado grande */
-    min-width: 150px; /* Tamaño mínimo para evitar ser demasiado pequeño */
-    padding: 8px; /* Espaciado interno */
-    border-radius: 5px; /* Bordes redondeados */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil para resaltar */
-    transition: all 0.3s ease; /* Animación para cambios de estado */
-}
+/*.calendar-select-Th {*/
+/*    font-size: 1.1rem; !* Tamaño del texto relativo (responsive) *!*/
+/*    color: #363533; !* Color del texto *!*/
+/*    background-color: #fbc940; !* Fondo amarillo *!*/
+/*    height: auto; !* Ajusta la altura automáticamente *!*/
+/*    width: 100%; !* Ocupa el 100% del contenedor *!*/
+/*    max-width: 300px; !* Tamaño máximo para evitar ser demasiado grande *!*/
+/*    min-width: 150px; !* Tamaño mínimo para evitar ser demasiado pequeño *!*/
+/*    padding: 8px; !* Espaciado interno *!*/
+/*    border-radius: 5px; !* Bordes redondeados *!*/
+/*    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); !* Sombra sutil para resaltar *!*/
+/*    transition: all 0.3s ease; !* Animación para cambios de estado *!*/
+/*}*/
 
 /* Efecto al pasar el mouse */
 .calendar-select-Th:hover {
