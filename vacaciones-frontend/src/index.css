@@ -1,15 +1,12 @@
 :root {
-  --sidebar-width: 21rem;
-  --navbar-height: 90px;
-  --sidebar-color: rgba(0, 0, 0, 0);
-  --navbar-color: rgba(255, 255, 255, 0);
-  --content-color: rgba(255, 255, 0, 0);
+  --sidebar-width: 250px;
+  --navbar-height: 100px;
+  --sidebar-color: rgba(255, 0, 0, 0.100);
+  --navbar-color: rgba(0, 0, 255, 0.100);
+  --content-color: rgba(255, 255, 0, 0.100);
   --text-color: white;
   --font-family-primary: "Montserrat", serif;
   --font-family-secondary: "Funnel Sans", serif;
-  --blur-effect: blur(5px);
-  --button-bg: #fbc940;
-
 }
 
 * {
@@ -22,8 +19,8 @@
 html,
 body,
 #root {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 
 body {
@@ -72,194 +69,90 @@ button span {
   background-size: cover;
   background-attachment: fixed;
   background-blend-mode: multiply;
-
-}
-.container > * {
-  box-sizing: border-box;
-  max-width: 100%;
-  max-height: 100%;
-  overflow: auto;
 }
 
+
+
+h1, h2, h3, p, span {
+  font-family: var(--font-family-primary);
+}
+
+input,
+button,
+select,
+button span {
+  font-family: var(--font-family-secondary);
+  font-weight: 400;
+  color: #333;
+}
+
+button span {
+  padding: 15px;
+  line-height: 1.6;
+  font-size: 1.1rem;
+  
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
 
 /* Barra lateral fija */
 .sidebar {
-  width: var(--sidebar-width); /* Ancho de la barra lateral */
-  height: 100%; /* Altura completa del contenedor padre menos el padding */
-  color: var(--text-color); /* Color del texto en la barra lateral */
-  position: static; /* Fija la barra lateral en su posición */
-  padding: 0; /* Elimina el margen y usa padding si es necesario */
-  display: flex; /* Utiliza flexbox para el diseño */
-  
-}
-
-.sidebar-content {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  width: var(--sidebar-width);
   height: 100%;
-  padding: 1rem;
-  border-radius: 10px;
-  background-color: #007bff3a;
-}
-
-/* Contenedor del logo en la barra lateral */
-.sidebar-logo {
-  width: 100%; /* Ancho completo */
-  flex:auto; 
-  display: flex; /* Utiliza flexbox para el diseño */
-  justify-content: center; /* Centra el logo horizontalmente */
-  align-items: start;
-  padding: 0.2rem 1rem; /* Espaciado interno */
-}
-
-/* Estilos para la imagen del logo */
-.sidebar-logo img {
-  width: 100%;
-  transition: transform 0.3s ease; /* Transición suave para el efecto de escala */
-}
-
-/* Efecto hover para la imagen del logo */
-.sidebar-logo img:hover {
-  transform: scale(1.08); /* Aumenta el tamaño de la imagen al pasar el mouse */
-}
-
-
-.sidebar-buttons, .sidebar-logout {
+  background-color: var(--sidebar-color);
+  color: var(--text-color);
   display: flex;
-  width: 100%; /* Ancho completo */
-  padding: 1rem; /* Espaciado interno */
-}
-
-.sidebar-buttons {
-  flex-direction: column; /* Coloca los elementos en una columna */
-  gap: 1rem; /* Espacio entre los elementos */
-  flex: content;
-  align-items: first baseline;
-}
-
-.sidebar-buttons .sidebar-buttons {
-  padding: 0;
-}
-
-.sidebar-buttons .sidebar-button, .sidebar-logout .logout-button {
-  margin: 0;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 3.2rem;
-  padding: 0.5rem;
-  border-radius: 8px;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
 }
-
-
-.sidebar-buttons .sidebar-button {  
-  background-color: var(--button-bg); /* Color de fondo */
-
-}
-
-
-.sidebar-logout {
-  justify-content: center; /* Centra los elementos horizontalmente */
-  align-items: center; /* Centra los elementos verticalmente */
-  
-}
-
-.sidebar-logout .logout-button {
-  gap: 1rem;
-  background-color: #ff0000; /* Color de fondo */
-}
-.logout-button span {
-  padding: 0;
-  margin: 0;
-}
-
 
 /* Área de contenido */
-.content-area { /* Deja espacio para la barra lateral y el padding del contenedor */
-  width: calc(100% - var(--sidebar-width)); /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
-  height: 100%; /* Ajusta la altura restando el padding del contenedor */
-  display: flex; /* Utiliza flexbox para el diseño */
-  flex-wrap: wrap; /* Coloca los elementos en una columna */
- }
+.content-area {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
 /* Barra de navegación fija */
 .navbar {
-  box-sizing: border-box;
-  height: var(--navbar-height); /* Altura de la barra de navegación */
-  width: 100%; /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
-  color: var(--text-color); /* Color del texto en la barra de navegación */
-  display: flex; /* Utiliza flexbox para el diseño */
-  align-items: center; /* Centra los elementos verticalmente */
-  justify-content: center; /* Centra los elementos horizontalmente */
-  position: static; /* Fija la barra de navegación en su posición */
-  
-}
-
-.navbar-content {
-  /* contenedor de la barra de navegacion */
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    margin-left: 20px;
-    /* Añade un sombreado a la barra de navegación */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Añade un borde redondeado a la barra de navegación */
-    border-radius: 10px;
-    background-color: #007bff3a;
-}
-.main {
-  box-sizing: border-box;
-  height: calc(100% - var(--navbar-height)); /* Ajusta la altura restando la altura de la barra de navegación y el margen */
-  width: 100%; /* Ajusta el ancho restando el margen */
-   /* Deja espacio para la barra de navegación */
+  height: var(--navbar-height);
+  background-color: var(--navbar-color);
+  color: var(--text-color);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: static;
-  
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  z-index: 1000;
 }
 
 /* Contenido principal con scroll */
 .main-content {
-  display: flex; /* Utiliza flexbox para el diseño */
-  flex-direction: column; /* Coloca los elementos en una columna */
-  align-items: center; /* Centra los elementos horizontalmente */
-  justify-content: flex-start; /* Alinea los elementos al inicio verticalmente */
+  margin-top: var(--navbar-height);
+  background-color: var(--content-color);
+  height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+  padding: 20px;
   width: 100%;
-  height: calc(100% - 20px);
-  margin-left: 20px;
-  margin-top: 20px;
-  padding: 1rem;
-  overflow-y: auto; /* Añade scroll vertical */
-  border-radius: 10px;
-  background-color: #007bff3a;
-  box-sizing: border-box;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.main::-webkit-scrollbar:window-inactive {
-  display: none;
-  }
-.main ::-webkit-scrollbar {
-  width: 8px;
-  background-color: var(--button-bg);
-  border-radius: 20px;
+.main-content p {
+  text-align: center;
+  font-weight: bold;
 }
-
-.main::-webkit-scrollbar-thumb  {
-  background-color: #09C;
-  border-radius: 6px;
-}
-
-
 
 /* Estilos para el calendario */
 
@@ -338,7 +231,6 @@ button span {
   overflow: hidden !important; /* Asegura que los bordes se recorten */
   border: 1px solid #ddd !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  
 }
 
 
