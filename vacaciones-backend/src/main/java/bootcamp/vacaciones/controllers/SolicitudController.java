@@ -157,13 +157,12 @@ public class SolicitudController {
     }
 
 
-    // Obtener todos los feriados
     @GetMapping("/feriados")
     public ResponseEntity<List<Map<String, String>>> obtenerFeriados() {
         return ResponseEntity.ok(solicitudService.obtenerFeriados());
     }
 
-    // Obtener el cumpleaños de un usuario específico
+
     @GetMapping("/cumpleanos/{idUsuario}")
     public ResponseEntity<Map<String, String>> obtenerCumpleanoPorIdUsuario(@PathVariable Long idUsuario) {
         try {
@@ -174,10 +173,10 @@ public class SolicitudController {
         }
     }
 
-    // Obtener todos los eventos (feriados y cumpleaños)
-    @GetMapping("/eventos")
-    public ResponseEntity<List<Map<String, String>>> obtenerTodosLosEventos() {
-        return ResponseEntity.ok(solicitudService.obtenerTodosLosEventos());
+
+    @GetMapping("/obtenercumpleanos")
+    public ResponseEntity<List<Map<String, String>>> obtenerLosCumpleaños() {
+        return ResponseEntity.ok(solicitudService.obtenerTodosLosCumpleaños());
     }
 
     @GetMapping("/{liderId}/solicitudes")
