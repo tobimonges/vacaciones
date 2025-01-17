@@ -186,12 +186,14 @@ const AdminDashboard = () => {
     setFilterText(searchText);
 
     const filtered = solicitudes.filter((solicitud) => {
+      const nroCedula = solicitud.usuario.nroCedula.toString();
       const fullName =
         `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`.toLowerCase();
       const estado = getEstadoSolicitud(solicitud).toLowerCase();
       const nroSolicitud = solicitud.id.toString();
       const equipo = `${solicitud.usuario.equipo.nombre}`.toLowerCase();
       return (
+        nroCedula.includes(searchText) ||
         fullName.includes(searchText) ||
         estado.includes(searchText) ||
         nroSolicitud.includes(searchText) ||
@@ -240,28 +242,7 @@ const AdminDashboard = () => {
           <NavigationBar onLogout={handleLogout} />
           {/*<Logo /> */}
           <div className="header-title-container">
-            <div className="space">
-              {/* Contador basado en el estado de las solicitudes */}
-              <div className="counter-container">
-                <p>
-                  Pendientes a TH:{" "}
-                  {
-                    solicitudes.filter(
-                      (s) => getEstadoSolicitud(s) === "Pendiente a TH"
-                    ).length
-                  }
-                </p>
-                <p>
-                  Falta aprobación del líder:{" "}
-                  {
-                    solicitudes.filter(
-                      (s) =>
-                        getEstadoSolicitud(s) === "Falta aprobación del Líder"
-                    ).length
-                  }
-                </p>
-              </div>
-            </div>
+            <div className="space"></div>
             <h4>Panel de Administrador</h4>
             <div className="filter-container">
               <label htmlFor="filter-input" className="filter-label">
@@ -270,7 +251,7 @@ const AdminDashboard = () => {
               <input
                 id="filter-input"
                 type="text"
-                placeholder="Usuario, estado o nro. solicitud"
+                placeholder="Ingrese un campo"
                 value={filterText}
                 onChange={handleFilterChange}
                 className="inputCreate"
@@ -294,6 +275,7 @@ const AdminDashboard = () => {
                     <th>Equipo</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
+                    <th>Total Dias</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -323,7 +305,13 @@ const AdminDashboard = () => {
                           "es-ES"
                         )}
                       </td>
+                      <td>
+                        {solicitud.cantidadDias === 1
+                          ? `${solicitud.cantidadDias} día`
+                          : `${solicitud.cantidadDias} días`}
+                      </td>
                       <td>{getEstadoSolicitud(solicitud)}</td>
+
                       <td>
                         {userRole === "OPERACIONES" ? (
                           <button
