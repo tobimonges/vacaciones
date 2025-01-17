@@ -1,7 +1,13 @@
 package bootcamp.vacaciones.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -13,6 +19,11 @@ public class UsuarioModel {
     private Long id;
     private String nombre;
     private String apellido;
+
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference
+    private Set<SolicitudModel> solicitudes = new HashSet<>();
 
     @Column(nullable = false,unique = true, name = "nro_cedula")
     private int nroCedula;
@@ -50,6 +61,11 @@ public class UsuarioModel {
     @ManyToOne
     @JoinColumn(name="id_cargo", nullable = true)
     private CargoModel cargo;
+
+    @ManyToMany(mappedBy = "lideres")
+    @JsonBackReference
+    private Set<SolicitudModel> solicitudesComoLider = new HashSet<>();
+
 
 
     public UsuarioModel() {
@@ -197,5 +213,25 @@ public class UsuarioModel {
         return cargo;
     }
 
-    public void setCargo(CargoModel cargo) {this.cargo = cargo;}
+    public void setCargo(CargoModel cargo) {
+        this.cargo = cargo;
+    }
+
+    public Set<SolicitudModel> getSolicitudes() {
+        return solicitudes;
+    }
+
+    public void setSolicitudes(Set<SolicitudModel> solicitudes) {
+        this.solicitudes = solicitudes;
+    }
+
+    public Set<SolicitudModel> getSolicitudesComoLider() {
+        return solicitudesComoLider;
+    }
+
+    public void setSolicitudesComoLider(Set<SolicitudModel> solicitudesComoLider) {
+        this.solicitudesComoLider = solicitudesComoLider;
+    }
+
+
 }
