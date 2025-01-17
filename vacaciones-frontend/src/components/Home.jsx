@@ -22,8 +22,6 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-
-
 // 🎨 **Constantes de estilo y mensajes**
 const EVENT_TYPES = {
   APROBADO: "aprobado",
@@ -47,37 +45,36 @@ const MESSAGES = {
 
 // 🎨 **Componente de leyenda del calendario**
 const CalendarLegend = () => (
-  <div className="calendar-legend">
-    {Object.entries(EVENT_COLORS).map(([type, color]) => (
-      <p key={type}>
+    <div className="calendar-legend">
+      {Object.entries(EVENT_COLORS).map(([type, color]) => (
+          <p key={type}>
         <span style={{ backgroundColor: color, color: "#000000", padding: "8px", borderRadius: "6px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)", cursor: "pointer" }}>
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </span>
-      </p>
-    ))}
-  </div>
+          </p>
+      ))}
+    </div>
 );
 
 // 🎨 **Componente de botones del calendario**
 const CalendarButtons = ({ navigate, isUserAllowed }) => (
-  <div className="buttons">
-    <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
-      <span>Solicitar</span>
-    </button>
-    <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
-      <span>Ver Solicitudes</span>
-    </button>
-    {isUserAllowed() && (
-      <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
-        <span>Home Talento Humano</span>
+    <div className="buttons">
+      <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
+        <span>Solicitar</span>
       </button>
-    )}
-  </div>
+      <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
+        <span>Ver Solicitudes</span>
+      </button>
+      {isUserAllowed() && (
+          <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
+            <span>Home Talento Humano</span>
+          </button>
+      )}
+    </div>
 );
 
 // 🏠 **Componente Principal**
 const Home = () => {
-
   // 🧠 Estados
   const [userName, setUserName] = useState(""); // Nombre del usuario
   const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
@@ -95,7 +92,6 @@ const Home = () => {
 
   // 📥 **Obtener Datos del Usuario y Solicitudes de Vacaciones**
   useEffect(() => {
-
     const fetchData = async () => {
       const usuarioId = getUsuarioId();
 
@@ -108,7 +104,14 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token");
 
-        // Realizamos las solicitudes para obtener los datos
+        // Solicitar días de vacaciones disponibles dinámicamente
+        const vacationDaysResponse = await axios.get(`http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setVacationDays(vacationDaysResponse.data.diasDisponibles || 0);
+
+        // Realizamos las solicitudes para obtener otros datos
         const [userDataResponse, vacationRequestsResponse, holidaysResponse, birthdaysResponse] = await Promise.all([
           axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -124,12 +127,11 @@ const Home = () => {
           }),
         ]);
 
-        const { nombre, fechaIngreso, diasVacaciones } = userDataResponse.data;
+        const { nombre, fechaIngreso } = userDataResponse.data;
         setUserName(nombre);
         setJoinDate(fechaIngreso);
-        setVacationDays(diasVacaciones);
 
-        // Procesamos las solicitudes de vacaciones
+        // Procesar eventos
         const eventsArray = vacationRequestsResponse.data.map((solicitud) => {
           if (solicitud.fechaInicio && solicitud.fechaFin) {
             const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
@@ -152,47 +154,17 @@ const Home = () => {
           return null;
         }).filter(Boolean);
 
-        // Procesamos los feriados obtenidos de la API
-        if (Array.isArray(holidaysResponse.data)) {
-          holidaysResponse.data.forEach((feriado) => {
-            const descripcion = feriado.descripcion;
-            const fecha = feriado.fecha;
-
-            if (!descripcion || !fecha) {
-              console.error("Error: Descripción o fecha faltante en", feriado);
-              return;
-            }
-
-            eventsArray.push({
-              title: descripcion,
-              start: new Date(`${fecha}T00:00:00`),
-              end: new Date(`${fecha}T23:59:59`),
-              allDay: true,
-              type: EVENT_TYPES.FERIADO,
-            });
-          });
-        } else {
-          console.error("Error: holidaysResponse.data no es un arreglo válido", holidaysResponse);
-        }
-
-        // Procesamos los cumpleaños obtenidos de la API
-        if (birthdaysResponse.data && birthdaysResponse.data.descripcion && birthdaysResponse.data.fecha) {
-          const { descripcion, fecha } = birthdaysResponse.data;
-
+        holidaysResponse.data.forEach((feriado) => {
           eventsArray.push({
-            title: `${descripcion}`,
-            start: new Date(`${fecha}T00:00:00`),
-            end: new Date(`${fecha}T23:59:59`),
+            title: feriado.descripcion,
+            start: new Date(`${feriado.fecha}T00:00:00`),
+            end: new Date(`${feriado.fecha}T23:59:59`),
             allDay: true,
-            type: EVENT_TYPES.cumpleano,
+            type: EVENT_TYPES.FERIADO,
           });
-        } else {
-          console.error("Error: birthdaysResponse.data no contiene datos válidos", birthdaysResponse);
-        }
-
+        });
 
         setEvents(eventsArray);
-
       } catch (error) {
         console.error("Error al obtener datos:", error);
         setError(MESSAGES.USER_DATA_ERROR);
@@ -202,26 +174,23 @@ const Home = () => {
     fetchData();
   }, [navigate]);
 
-
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Eliminar el token de autenticación
-    navigate("/"); // Redirigir a la página de inicio de sesión
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
-  // 🎨 **Personalizar colores de días**
   const dayPropGetter = (date) => {
     const day = date.getDay();
     if (day === 0 || day === 6) {
       return {
         style: {
-          backgroundColor: "#e5e5e5", // Color personalizado para sábados y domingos
+          backgroundColor: "#e5e5e5",
         },
       };
     }
     return {};
   };
 
-  // 🎨 **Personalizar colores de eventos**
   const eventStyleGetter = (event) => {
     return {
       style: {
@@ -232,37 +201,36 @@ const Home = () => {
     };
   };
 
-  // 🎨 **Renderizado del Componente**
   return (
-    <div className="calendar-container">
-      <Preloader duration={650} />
-      <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-        <NavigationBar onLogout={handleLogout} />
-        <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
-        <p className="calendar-text">
-          Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-        </p>
-        <p className="calendar-text">
-          Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
-        </p>
-        {error && <p className="calendar-error-message">{error}</p>}
-        <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
-        <div className="calendar-big-container">
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 500, margin: "20px 0" }}
-            messages={{
-              today: "Hoy",
-              previous: "Anterior",
-              next: "Siguiente",
-              month: "Mes",
-              week: "Semana",
-              day: "Día",
-              agenda: "Agenda",
-            }}
+      <div className="calendar-container">
+        <Preloader duration={650} />
+        <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+          <NavigationBar onLogout={handleLogout} />
+          <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
+          <p className="calendar-text">
+            Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
+          </p>
+          <p className="calendar-text">
+            Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
+          </p>
+          {error && <p className="calendar-error-message">{error}</p>}
+          <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
+          <div className="calendar-big-container">
+            <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 500, margin: "20px 0" }}
+                messages={{
+                  today: "Hoy",
+                  previous: "Anterior",
+                  next: "Siguiente",
+                  month: "Mes",
+                  week: "Semana",
+                  day: "Día",
+                  agenda: "Agenda",
+                }}
             views={{ month: true }}
             eventPropGetter={eventStyleGetter}
             dayPropGetter={dayPropGetter}
