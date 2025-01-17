@@ -91,6 +91,7 @@ public class SolicitudService implements ISolicitudService {
             throw new IllegalArgumentException("Debe seleccionar al menos un líder para este rol.");
         }
 
+
         Set<UsuarioModel> lideres = recuperarYValidarLideres(solicitudRequest.getLiderIds(), idUsuario, nombreRol);
 
         int diasDisponibles = usuario.getDiasVacaciones();
@@ -126,7 +127,7 @@ public class SolicitudService implements ISolicitudService {
             actualizarDiasVacaciones(nuevaSolicitud);
         }
 
-//        notificarPorRol(nombreRol, lideres, usuario, nuevaSolicitud);
+        notificarPorRol(nombreRol, lideres, usuario, nuevaSolicitud);
 
         return solicitudRepository.save(nuevaSolicitud);
     }
@@ -143,6 +144,7 @@ public class SolicitudService implements ISolicitudService {
                     throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
                 }
 
+                System.out.println(nombreRol);
                 validarLiderPorRol(nombreRol, lider);
 
                 lideres.add(lider);
@@ -152,21 +154,24 @@ public class SolicitudService implements ISolicitudService {
     }
 
     private void notificarPorRol(String nombreRol, Set<UsuarioModel> lideres, UsuarioModel usuario, SolicitudModel solicitud) {
+
+        if ("DIRECTORIO".equals(nombreRol)) {
+            logger.info("Enviando notificación a un usuario con rol: " + nombreRol);
+            notificarDirectorio(usuario, solicitud);
+            return;
+        }
+
         for (UsuarioModel lider : lideres) {
             switch (nombreRol) {
                 case "FUNCIONARIO_FABRICA":
                 case "FUNCIONARIO_TERCERIZADO":
                 case "TH":
                 case "LIDER":
-//                    notificarLider(lider, usuario, solicitud);
-                    break;
-
+                case "GTH":
                 case "OPERACIONES":
-//                    notificarOperaciones(lider, usuario, solicitud);
-                    break;
 
-                case "DIRECTORIO":
-//                    notificarDirectorio(usuario, solicitud);
+                    logger.info(nombreRol);
+                    notificarLider(lider, usuario, solicitud);
                     break;
 
                 default:
@@ -179,16 +184,6 @@ public class SolicitudService implements ISolicitudService {
         emailService.enviarCorreo(
                 lider.getCorreo(),
                 "Nueva Solicitud de Vacaciones (Líder)",
-                "<p>El usuario " + usuario.getNombre() + " " + usuario.getApellido() +
-                        " ha creado una solicitud de vacaciones para las fechas " +
-                        solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>"
-        );
-    }
-
-    private void notificarOperaciones(UsuarioModel lider, UsuarioModel usuario, SolicitudModel solicitud) {
-        emailService.enviarCorreo(
-                lider.getCorreo(),
-                "Nueva Solicitud de Vacaciones (Operaciones)",
                 "<p>El usuario " + usuario.getNombre() + " " + usuario.getApellido() +
                         " ha creado una solicitud de vacaciones para las fechas " +
                         solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>"
@@ -239,6 +234,13 @@ public class SolicitudService implements ISolicitudService {
 
             case "DIRECTORIO":
                 throw new IllegalArgumentException("El rol DIRECTORIO no selecciona un líder.");
+
+            case "GTH":
+                if (!esLiderValido(lider, new String[]{"DIRECTORIO"})) {
+                    throw new IllegalArgumentException("El líder seleccionado debe tener el rol de DIRECTORIO para usuarios GTH.");
+                }
+                break;
+
             default:
                 throw new IllegalArgumentException("Rol no soportado para la creación de solicitudes.");
         }
@@ -306,13 +308,10 @@ public class SolicitudService implements ISolicitudService {
 
         logger.info("Validación de aprobación: El usuario con ID: {} está intentando aprobar la solicitud con ID: {}", usuarioQueApruebaId, solicitudId);
 
-        // 3. Verificar si el solicitante es DIRECTORIO
         String rolSolicitante = solicitud.getUsuario().getRol().getNombre();
         if ("DIRECTORIO".equals(rolSolicitante)) {
-            // El rol DIRECTORIO ya aprueba la solicitud en el momento de la creación
             logger.info("El solicitante con ID: {} es DIRECTORIO, la solicitud ya está aprobada.", solicitud.getUsuario().getId());
         } else {
-            // 4. Flujo normal de dos pasos si no es DIRECTORIO
             if (solicitud.getNumeroAprobaciones() == 0) {
                 logger.info("Paso 1: La solicitud con ID: {} requiere la aprobación de un líder.", solicitudId);
 
@@ -324,18 +323,18 @@ public class SolicitudService implements ISolicitudService {
                 solicitud.setNumeroAprobaciones(1);
                 solicitud.setRechazado(false);
 
-//                notificarUsuario(
-//                        solicitud.getUsuario().getCorreo(),
-//                        "Solicitud Aprobada por Líder",
-//                        "<p>Tu solicitud ha sido aprobada por un líder.</p>" +
-//                                "<p>Ahora está pendiente la aprobación de TH.</p>"
-//                );
+                notificarUsuario(
+                        solicitud.getUsuario().getCorreo(),
+                        "Solicitud Aprobada por Líder",
+                        "<p>Tu solicitud ha sido aprobada por un líder.</p>" +
+                                "<p>Ahora está pendiente la aprobación de TH.</p>"
+                );
 
-//                notificarTH(
-//                        "Solicitud Pendiente de Aprobación (TH)",
-//                        "La solicitud del usuario " + solicitud.getUsuario().getNombre() +
-//                                " está pendiente de aprobación por parte de TH."
-//                );
+                notificarTH(
+                        "Solicitud Pendiente de Aprobación (TH)",
+                        "La solicitud del usuario " + solicitud.getUsuario().getNombre() +
+                                " está pendiente de aprobación por parte de TH."
+                );
             } else if (solicitud.getNumeroAprobaciones() == 1) {
                 logger.info("Paso 2: La solicitud con ID: {} requiere la aprobación de un TH.", solicitudId);
 
@@ -344,11 +343,11 @@ public class SolicitudService implements ISolicitudService {
                 solicitud.setEstado(true);
                 solicitud.setRechazado(false);
 
-//                notificarUsuario(
-//                        solicitud.getUsuario().getCorreo(),
-//                        "Solicitud Completamente Aprobada",
-//                        "<p>Tu solicitud ha sido aprobada por TH y se encuentra activa.</p>"
-//                );
+                notificarUsuario(
+                        solicitud.getUsuario().getCorreo(),
+                        "Solicitud Completamente Aprobada",
+                        "<p>Tu solicitud ha sido aprobada por TH y se encuentra activa.</p>"
+                );
 
                 logger.info("La solicitud con ID: {} ha sido aprobada, actualizando los días de vacaciones.", solicitudId);
                 actualizarDiasVacaciones(solicitud);
@@ -482,11 +481,11 @@ public class SolicitudService implements ISolicitudService {
         if (comentario == null || comentario.isEmpty()) {
             throw new RuntimeException("El comentario es obligatorio para rechazar una solicitud.");
         }
-        //
+
 
 
         solicitud.setEstado(false);
-        solicitud.setRechazado(true); // Aquí está el problema: siempre se marca como true
+        solicitud.setRechazado(true);
         solicitud.setComentario(comentario);
         solicitud.setNumeroAprobaciones(0);
 
@@ -496,7 +495,7 @@ public class SolicitudService implements ISolicitudService {
                 "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Operaciones. <br> Motivo: " + comentario + "</p>"
         );
         actualizarDiasVacacionesRechazado(solicitud);
-        return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
+        return solicitudRepository.save(solicitud);
     }
 
     public List<Map<String, String>> obtenerFeriados() {
@@ -541,7 +540,6 @@ public class SolicitudService implements ISolicitudService {
             fechasEspeciales.add(fechaCumpleanos);
         }
 
-        // Calcular días hábiles
         int diasHabiles = 0;
         for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha = fecha.plusDays(1)) {
             if (fecha.getDayOfWeek() != DayOfWeek.SATURDAY &&
