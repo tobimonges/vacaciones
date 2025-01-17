@@ -38,18 +38,22 @@ public class UsuarioService implements IUsuarioService{
 
     @Override
     public int obtenerDiasVacacionesPorCedula(int nroCedula) {
+        int diasVacacionesDisponibles=0;
         UsuarioModel usuario = usuarioRepository.findByNroCedula(nroCedula)
                 .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
-        return usuario.getDiasVacaciones();
+        diasVacacionesDisponibles=usuario.getDiasVacaciones()+usuario.getDiasVacacionesRestante();
+        return diasVacacionesDisponibles;
     }
 
 
     public int obtenerDiasVacacionesPorIdUsuario(Long idUsuario) {
+        int diasVacacionesDisponibles=0;
         UsuarioModel usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if (usuario == null) {
             throw new IllegalArgumentException("El usuario no existe");
         }
-        return usuario.getDiasVacaciones();
+        diasVacacionesDisponibles=usuario.getDiasVacaciones()+usuario.getDiasVacacionesRestante();
+        return diasVacacionesDisponibles;
     }
 
     @Override

@@ -284,7 +284,6 @@ public class SolicitudService implements ISolicitudService {
         return solicitudRepository.save(solicitud);
     }
 
-
     public SolicitudModel aprobarSolicitud(Long solicitudId, Long usuarioQueApruebaId) {
         logger.info("Iniciando el proceso de aprobación de solicitud con ID: {} por el usuario con ID: {}", solicitudId, usuarioQueApruebaId);
 
@@ -307,10 +306,13 @@ public class SolicitudService implements ISolicitudService {
 
         logger.info("Validación de aprobación: El usuario con ID: {} está intentando aprobar la solicitud con ID: {}", usuarioQueApruebaId, solicitudId);
 
+        // 3. Verificar si el solicitante es DIRECTORIO
         String rolSolicitante = solicitud.getUsuario().getRol().getNombre();
         if ("DIRECTORIO".equals(rolSolicitante)) {
+            // El rol DIRECTORIO ya aprueba la solicitud en el momento de la creación
             logger.info("El solicitante con ID: {} es DIRECTORIO, la solicitud ya está aprobada.", solicitud.getUsuario().getId());
         } else {
+            // 4. Flujo normal de dos pasos si no es DIRECTORIO
             if (solicitud.getNumeroAprobaciones() == 0) {
                 logger.info("Paso 1: La solicitud con ID: {} requiere la aprobación de un líder.", solicitudId);
 
@@ -421,6 +423,8 @@ public class SolicitudService implements ISolicitudService {
 
 
 
+
+
     public SolicitudModel rechazarSolicitudPorLiderOTh(Long solicitudId, Long usuarioId) {
         SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
@@ -435,6 +439,7 @@ public class SolicitudService implements ISolicitudService {
         }
         // Validar si el usuario es TH y la solicitud está en su etapa de aprobación
         else if (solicitud.getNumeroAprobaciones() == 1 && "TH".equals(usuario.getRol().getNombre())) {
+            actualizarDiasVacacionesRechazado(solicitud);
             procesarRechazo(solicitud, "Solicitud Rechazada",
                     "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>");
         }
@@ -490,7 +495,7 @@ public class SolicitudService implements ISolicitudService {
                 "Solicitud Rechazada",
                 "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Operaciones. <br> Motivo: " + comentario + "</p>"
         );
-
+        actualizarDiasVacacionesRechazado(solicitud);
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
