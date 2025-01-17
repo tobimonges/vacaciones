@@ -364,11 +364,17 @@ export default function NuevaSolicitud() {
                   <option value="" disabled>
                     Selecciona un líder
                   </option>
-                  {lideres.map((lider) => (
-                    <option key={lider.id} value={lider.id}>
-                      {lider.nombre} {lider.apellido}
-                    </option>
-                  ))}
+                  {lideres
+                    .filter(
+                      (lider) =>
+                        !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                        selectedLider === lider.id // Mantener el líder previamente seleccionado
+                    )
+                    .map((lider) => (
+                      <option key={lider.id} value={lider.id}>
+                        {lider.nombre} {lider.apellido}
+                      </option>
+                    ))}
                 </select>
                 {index === selectedLideres.length - 1 &&
                   selectedLideres.length < 3 && (
