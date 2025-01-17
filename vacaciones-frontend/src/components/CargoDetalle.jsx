@@ -24,7 +24,10 @@ const CargoDetalle = () => {
 
         setCargos(response.data);
       } catch (err) {
-        console.error("Error fetching cargos:", err.response?.data || err.message);
+        console.error(
+          "Error fetching cargos:",
+          err.response?.data || err.message
+        );
         setError("No se pudieron cargar los cargos.");
       }
     };
@@ -39,7 +42,6 @@ const CargoDetalle = () => {
   const filteredCargos = cargos.filter((cargo) =>
     cargo.nombre?.toLowerCase().includes(filterText.toLowerCase())
   );
-  
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -47,7 +49,9 @@ const CargoDetalle = () => {
   };
 
   const handleEliminarCargo = async (cargoId) => {
-    const confirm = window.confirm("¿Estás seguro de que deseas eliminar este cargo?");
+    const confirm = window.confirm(
+      "¿Estás seguro de que deseas eliminar este cargo?"
+    );
     if (!confirm) return;
 
     try {
@@ -123,7 +127,7 @@ const CargoDetalle = () => {
           ) : filteredCargos.length === 0 ? (
             <p>No hay cargos que coincidan con el filtro.</p>
           ) : (
-            <table>
+            <table className="table">
               <thead>
                 <tr>
                   <th>ID</th>

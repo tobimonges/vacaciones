@@ -153,6 +153,9 @@ p {
 .admin-table td {
   padding: 0.75rem;
   text-align: center;
+}
+
+.admin-table td {
   border-bottom: 1px solid #ffffff9c;
 }
 
