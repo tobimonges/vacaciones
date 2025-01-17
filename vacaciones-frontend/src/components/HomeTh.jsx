@@ -262,6 +262,8 @@ const HomeTh = () => {
           Bienvenido, {userNameTh || "Usuario"}
         </h1>
         <h2 className="calendar-title">Solicitudes</h2>
+
+        {/* 🛠️ Checkbox con filtros*/}
         <label>
           <input
               type="checkbox"
