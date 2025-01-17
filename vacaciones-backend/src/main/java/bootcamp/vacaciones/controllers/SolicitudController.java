@@ -22,13 +22,11 @@ public class SolicitudController {
 
     private static final Logger logger = LoggerFactory.getLogger(SolicitudController.class);
     private final SolicitudService solicitudService;
-    private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
 
     @Autowired
     public SolicitudController(SolicitudService solicitudService, UsuarioRepository usuarioRepository, UsuarioService usuarioService) {
         this.solicitudService = solicitudService;
-        this.usuarioRepository = usuarioRepository;
         this.usuarioService = usuarioService;
     }
 
