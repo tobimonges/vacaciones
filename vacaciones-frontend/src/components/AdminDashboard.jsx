@@ -40,6 +40,7 @@ const AdminDashboard = () => {
           Rechazado: 5,
         };
 
+        //PROBAR LOGUEO CON LIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDER
         let filteredByRole;
         if (userRole === "LIDER") {
           filteredByRole = response.data.filter(
@@ -60,6 +61,7 @@ const AdminDashboard = () => {
 
         setSolicitudes(sortedSolicitudes);
         setFilteredSolicitudes(sortedSolicitudes);
+        console.log(sortedSolicitudes);
       } catch (err) {
         console.error("Error al obtener solicitudes:", err.response.data);
         setError("No se pudieron cargar las solicitudes.");
@@ -287,6 +289,7 @@ const AdminDashboard = () => {
                 <thead>
                   <tr>
                     <th>Nro. Solicitud</th>
+                    <th>Cedula</th>
                     <th>Usuario</th>
                     <th>Equipo</th>
                     <th>Fecha Inicio</th>
@@ -299,6 +302,11 @@ const AdminDashboard = () => {
                   {filteredSolicitudes.map((solicitud) => (
                     <tr key={solicitud.id}>
                       <td>{solicitud.id}</td>
+                      <td>
+                        {new Intl.NumberFormat("es-ES").format(
+                          solicitud.usuario.nroCedula
+                        )}
+                      </td>
                       <td>
                         {solicitud.usuario.nombre +
                           " " +
