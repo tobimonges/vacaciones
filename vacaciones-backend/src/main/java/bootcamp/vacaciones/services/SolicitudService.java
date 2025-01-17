@@ -477,38 +477,38 @@ public class SolicitudService implements ISolicitudService {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
-            emailService.enviarCorreo(
+         /*   emailService.enviarCorreo(
                     solicitud.getUsuario().getCorreo(),
                     "Solicitud Rechazada",
                     "<p>Tu solicitud de vacaciones ha sido rechazada por el líder asignado.</p>"
-            );
+            );*/
         } else if (solicitud.getNumeroAprobaciones() == 1 && solicitud.getLider().getId().equals(usuario.getId())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
-            emailService.enviarCorreo(
+           /* emailService.enviarCorreo(
                     solicitud.getUsuario().getCorreo(),
                     "Solicitud Rechazada",
                     "<p>Tu solicitud de vacaciones ha sido rechazada por el líder asignado.</p>"
-            );
+            );*/
         } else if (solicitud.getNumeroAprobaciones() == 1 && "TH".equals(usuario.getRol().getNombre())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
-            emailService.enviarCorreo(
+            /*emailService.enviarCorreo(
                     solicitud.getUsuario().getCorreo(),
                     "Solicitud Rechazada",
                     "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
-            );
+            );*/
         } else if (solicitud.getNumeroAprobaciones() == 2 && "TH".equals(usuario.getRol().getNombre())) {
             solicitud.setEstado(false);
             solicitud.setRechazado(true);
             solicitud.setNumeroAprobaciones(0);
-            emailService.enviarCorreo(
+            /*emailService.enviarCorreo(
                     solicitud.getUsuario().getCorreo(),
                     "Solicitud Rechazada",
                     "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
-            );
+            );*/
             actualizarDiasVacacionesRechazado(solicitud);
 
         } else {
@@ -540,11 +540,11 @@ public class SolicitudService implements ISolicitudService {
         solicitud.setComentario(comentario);
         solicitud.setNumeroAprobaciones(0);
 
-        emailService.enviarCorreo(
+        /*emailService.enviarCorreo(
                 solicitud.getUsuario().getCorreo(),
                 "Solicitud Rechazada",
                 "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Operaciones. <br> Motivo: " + comentario + "</p>"
-        );
+        );*/
         actualizarDiasVacacionesRechazado(solicitud);
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
