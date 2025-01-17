@@ -13,8 +13,6 @@ import CreaEquipo from "./components/CreaEquipo";
 import CreaCargo from "./components/CreaCargo";
 import EquipoDetalle from "./components/EquipoDetalle";
 import CargoDetalle from "./components/CargoDetalle";
-
-
 import UsuarioDetalle from "./components/UsuarioDetalle"
 
 

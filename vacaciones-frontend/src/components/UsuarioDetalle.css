@@ -1,3 +1,12 @@
+/* General Styles */
+.detalle-body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #0D47A1, #1565C0);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
 .container-usuario-detalle {
     display: flex;
     flex-direction: column;
@@ -6,21 +15,30 @@
     gap: 1.5rem;
     padding: 2rem;
     border-radius: 8px;
-    max-width: 650px;
+    max-width: 90rem;
     width: 100%;
-    background-color: rgba(87, 145, 238, 0.25); /* Fondo translúcido */
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly more transparent */
     margin: 0 auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Centrado en la pantalla */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 80vh; /* Limitar altura al 80% del viewport */
-    overflow-y: scroll; /* Habilitar desplazamiento vertical */
+    max-height: 80vh;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .container-usuario-detalle::-webkit-scrollbar {
-    display: none; /* Ocultar barra de desplazamiento en navegadores basados en WebKit (Chrome, Edge, Safari) */
+    display: none;
+}
+
+h1, h2, h3, label {
+    color: white; /* Ensuring all titles and labels are white */
+}
+.container-usuario-detalle h3 {
+    color: white;
+    font-size: 1.2rem;
 }
 
 .err {
@@ -39,17 +57,18 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
+    background-color: rgba(255, 255, 255, 0);
 }
 
-.table th,
-.table td {
+.table th, .table td {
     padding: 0.8rem;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
 }
 
 .table th {
-    background-color: rgba(87, 145, 238, 0.25);;
+    background-color: rgba(255, 255, 255, 0.2);
     font-weight: bold;
 }
 
@@ -58,7 +77,8 @@
     font-size: 16px;
     border: none;
     border-radius: 5px;
-    padding: 0.4rem;
+    width: 10rem;
+    height: 3.5rem;
     color: #2c2c2c;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
@@ -84,9 +104,99 @@
     margin-bottom: 0.5rem;
 }
 
-.inputGroupp input {
+.inputGroupp input,
+.inputGroupp select {
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
+    background-color: white;
+    color: #333;
+    appearance: none; /* Quitar la apariencia por defecto en algunos navegadores */
+}
+
+.inputGroupp select {
+    cursor: pointer;
+    padding-right: 2rem;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%23333" width="16" height="16"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+
+.inputGroupp input:focus {
+    outline: none;
+    border-color: #fdca40;
+    box-shadow: 0 0 5px rgba(253, 202, 64, 0.7);
+}
+
+.detalle-form {
+    width: 100%;
+    max-width: 100rem;
+    margin: 0 auto;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8%;
+}
+
+.formCreate {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Añadido para centrar los elementos dentro del formulario */
+  }
+
+.inputCreate {
+  width: 90%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #ffffff;
+  background-color: rgba(87, 145, 238, 0.25);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  
+}
+
+.iconWrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.icon {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+
+
+.inputGroupCreate {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px; /* Reducido de 20px a 10px */
+    position: relative;
+    margin-top: 0px; /* Añadido para dar espacio entre los elementos */
+}
+
+.datePickerGroup {
+  width: 100%;
+}
+
+.MuiSvgIcon-root {
+  color: rgb(206, 206, 206) !important;
+}
+
+h3 .icon {
+  margin-right: 10px;
+}
+
+@media (max-width: 480px) {
+    .detalle-form {
+        grid-template-columns: 1fr;
+        display: flex;
+        padding: 10px;
+    }
 }

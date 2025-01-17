@@ -34,6 +34,9 @@ public class UsuarioModel {
     @Column(name="dias_vacaciones")
     private int diasVacaciones;
 
+    @Column(name="dias_vacaciones_restante", nullable = true)
+    private int diasVacacionesRestante;
+
     private boolean estado;
 
     @ManyToOne
@@ -54,8 +57,8 @@ public class UsuarioModel {
 
     public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
                         LocalDate fechaNacimiento, String contrasena, String telefono, LocalDate fechaIngreso,
-                        String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo,
-                        CargoModel cargo) {
+                        String antiguedad, int diasVacaciones, int diasVacacionesRestante, boolean estado,
+                        RolModel rol, EquipoModel equipo, CargoModel cargo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -67,6 +70,7 @@ public class UsuarioModel {
         this.fechaIngreso = fechaIngreso;
         this.antiguedad = antiguedad;
         this.diasVacaciones = diasVacaciones;
+        this.diasVacacionesRestante = diasVacacionesRestante;
         this.estado = estado;
         this.rol = rol;
         this.equipo = equipo;
@@ -160,6 +164,10 @@ public class UsuarioModel {
     public void setDiasVacaciones(int diasVacaciones) {
         this.diasVacaciones = diasVacaciones;
     }
+
+    public int getDiasVacacionesRestante() {return diasVacacionesRestante;}
+
+    public void setDiasVacacionesRestante(int diasVacacionesRestante) {this.diasVacacionesRestante = diasVacacionesRestante;}
 
     public boolean isEstado() {
         return estado;
