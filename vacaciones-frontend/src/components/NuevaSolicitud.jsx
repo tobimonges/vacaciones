@@ -44,12 +44,24 @@ export default function NuevaSolicitud() {
     useState(null);
   const [reservedDates, setReservedDates] = useState([]);
   const [lideres, setLideres] = useState([]); // Lista de líderes
-  const [selectedLider, setSelectedLider] = useState(""); // Líder seleccionado
+  const [selectedLideres, setSelectedLideres] = useState([null]); // Líder seleccionado
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const userRole = getUserRole();
-  const [file, setFile] = useState(null); // Nuevo estado para el archivo
+  const [file, setFile] = useState(null);
+
+  const handleAddLiderSelector = () => {
+    if (selectedLideres.length < 3) {
+      setSelectedLideres([...selectedLideres, null]);
+    }
+  };
+
+  const handleLiderChange = (value, index) => {
+    const newSelectedLideres = [...selectedLideres];
+    newSelectedLideres[index] = parseInt(value, 10);
+    setSelectedLideres(newSelectedLideres);
+  };
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -128,7 +140,6 @@ export default function NuevaSolicitud() {
         );
 
         const usuarios = response.data;
-        console.log(usuarios);
 
         // Validar usuarios según el rol del usuario logueado
         let usuariosFiltrados = [];
@@ -183,7 +194,6 @@ export default function NuevaSolicitud() {
         );
 
         setLideres(usuariosFiltrados);
-        console.log(usuariosFiltrados);
       } catch (err) {
         console.error("Error al obtener usuarios:", err);
         setError("No se pudo obtener la información de los usuarios.");
@@ -221,19 +231,16 @@ export default function NuevaSolicitud() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!startDate || !endDate || !selectedLider) {
-      setError("Por favor, selecciona ambas fechas y un líder.");
+    if (!startDate || !endDate || !selectedLideres) {
+      setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
       return;
     }
 
     const solicitud = {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
-      liderId: selectedLider,
-      estado: false,
+      liderIds: selectedLideres.filter((lider) => lider !== null), // Filtrar valores nulos
       cantidadDias: validDays,
-      numeroAprobaciones:
-        userRole === "TH" || userRole === "OPERACIONES" ? 1 : 0, // Valor según el rol del usuario
     };
 
     try {
@@ -336,23 +343,48 @@ export default function NuevaSolicitud() {
                 disabled={!startDate}
               />
             </div>
-            <div className="mb-3">
-              <select
-                value={selectedLider}
-                onChange={(e) => setSelectedLider(parseInt(e.target.value, 10))}
-                className="select-usuarios"
+            {selectedLideres.map((selectedLider, index) => (
+              <div
+                className={`mb-3-lideres ${
+                  index !== selectedLideres.length - 1 ||
+                  selectedLideres.length === 3
+                    ? "flex-column"
+                    : ""
+                }`}
+                key={index}
               >
-                <option value="" disabled>
-                  Selecciona un líder
-                </option>
-                {lideres.map((lider) => (
-                  <option key={lider.id} value={lider.id}>
-                    {lider.nombre} {lider.apellido}{" "}
-                    {/* Concatenar nombre y apellido */}
+                <select
+                  value={selectedLider || ""}
+                  onChange={(e) => handleLiderChange(e.target.value, index)}
+                  className="select-usuarios"
+                >
+                  <option value="" disabled>
+                    Selecciona un líder
                   </option>
-                ))}
-              </select>
-            </div>
+                  {lideres
+                    .filter(
+                      (lider) =>
+                        !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                        selectedLider === lider.id // Mantener el líder previamente seleccionado
+                    )
+                    .map((lider) => (
+                      <option key={lider.id} value={lider.id}>
+                        {lider.nombre} {lider.apellido}
+                      </option>
+                    ))}
+                </select>
+                {index === selectedLideres.length - 1 &&
+                  selectedLideres.length < 3 && (
+                    <div onClick={handleAddLiderSelector}>
+                      <img
+                        src="./public/yamada-btn.png"
+                        alt="Añadir líder"
+                        title="Añadir líder"
+                      />
+                    </div>
+                  )}
+              </div>
+            ))}
 
             {userRole === "FUNCIONARIO_TERCERIZADO" && (
               <div className="mb-3">
@@ -388,7 +420,7 @@ export default function NuevaSolicitud() {
                 type="submit"
                 className="btn btn-primary"
                 disabled={
-                  validDays > diasVacacionesDisponibles || !selectedLider
+                  validDays > diasVacacionesDisponibles || !selectedLideres
                 }
               >
                 <span>Crear Solicitud</span>
