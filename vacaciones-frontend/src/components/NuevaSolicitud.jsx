@@ -10,6 +10,7 @@ import "./NuevaSolicitud.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
+
 import Preloader from "./Preloader";
 
 const today = dayjs();
@@ -50,13 +51,30 @@ export default function NuevaSolicitud() {
   const navigate = useNavigate();
   const userRole = getUserRole();
   const [file, setFile] = useState(null); // Nuevo estado para el archivo
+  const [mensaje, setMensaje] = useState("");
+  const [tipoMensaje, setTipoMensaje] = useState(""); // Success, Error, Warning
 
+  useEffect(() => {
+    if (mensaje) {
+      // Ocultar el mensaje automáticamente después de 3 segundos
+      const timer = setTimeout(() => {
+        setMensaje("");
+        setTipoMensaje("");
+      }, 3000);
+  
+      return () => clearTimeout(timer); // Limpiar el temporizador en caso de que el componente se desmonte
+    }
+  }, [mensaje]);
+
+  
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("No se encontró un token. Inicia sesión nuevamente.");
+       //   setError("No se encontró un token. Inicia sesión nuevamente.");
+          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+          setTipoMensaje("Error");
           return;
         }
 
@@ -85,7 +103,9 @@ export default function NuevaSolicitud() {
         setReservedDates(dates);
       } catch (err) {
         console.error("Error al obtener fechas reservadas:", err);
-        setError("No se pudo obtener la información de las solicitudes.");
+       // setError("No se pudo obtener la información de las solicitudes.");
+        setMensaje("No se pudo obtener la información de las solicitudes.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -97,7 +117,9 @@ export default function NuevaSolicitud() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("No se encontró un token. Inicia sesión nuevamente.");
+      //    setError("No se encontró un token. Inicia sesión nuevamente.");
+          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+          setTipoMensaje("Error");
           return;
         }
 
@@ -109,7 +131,9 @@ export default function NuevaSolicitud() {
         setDiasVacacionesDisponibles(response.data);
       } catch (err) {
         console.error("Error al obtener días de vacaciones disponibles:", err);
-        setError("No se pudo obtener la información de días de vacaciones.");
+     //   setError("No se pudo obtener la información de días de vacaciones.");
+        setMensaje("No se pudo obtener la información de días de vacaciones.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -150,7 +174,9 @@ export default function NuevaSolicitud() {
         setLideres(lideresFiltrados);
       } catch (err) {
         console.error("Error al obtener líderes:", err);
-        setError("No se pudo obtener la información de los líderes.");
+      //  setError("No se pudo obtener la información de los líderes.");
+        setMensaje("No se pudo obtener la información de los líderes.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -165,7 +191,9 @@ export default function NuevaSolicitud() {
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-      setWarning("No puedes seleccionar más días de los disponibles.");
+    //  setWarning("No puedes seleccionar más días de los disponibles.");
+      setMensaje("No puedes seleccionar más días de los disponibles.");
+      setTipoMensaje("Warning");
     } else {
       setWarning("");
     }
@@ -186,7 +214,9 @@ export default function NuevaSolicitud() {
     e.preventDefault();
 
     if (!startDate || !endDate || !selectedLider) {
-      setError("Por favor, selecciona ambas fechas y un líder.");
+   //   setError("Por favor, selecciona ambas fechas y un líder.");
+      setMensaje("Por favor, selecciona ambas fechas y un líder.");
+      setTipoMensaje("Error");
       return;
     }
 
@@ -229,13 +259,17 @@ export default function NuevaSolicitud() {
         );
       }
 
-      alert("Carga de solicitud exitosa");
+   //   alert("Carga de solicitud exitosa");
+      setMensaje("Carga de solicitud exitosa");
+      setTipoMensaje("Success");
       navigate("/Home");
     } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
-        setError("Error al crear la solicitud.");
+    //    setError("Error al crear la solicitud.");
+        setMensaje("Error al crear la solicitud.");
+        setTipoMensaje("Error");
       }
     }
   };
@@ -247,6 +281,12 @@ export default function NuevaSolicitud() {
         <div className="DatePicker">
           <Logo />
           <h2>Nueva Solicitud</h2>
+          {mensaje && (
+  <div className={`MensajePopuppNS ${tipoMensaje}`}>
+    <p>{mensaje}</p>
+  </div>
+)}
+
           <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
             <div className="info-card">
               <p className="info-number">{diasVacacionesDisponibles}</p>
