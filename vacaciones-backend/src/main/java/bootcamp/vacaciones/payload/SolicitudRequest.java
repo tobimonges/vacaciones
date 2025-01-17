@@ -1,11 +1,12 @@
 package bootcamp.vacaciones.payload;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class SolicitudRequest {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private Long liderId; // ID del líder seleccionado
+    private List<Long> liderIds; // IDs de los líderes asociados
     private Integer cantidadDias;
     private String comentario;
     private Integer numeroAprobaciones;
@@ -25,14 +26,6 @@ public class SolicitudRequest {
 
     public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
-    }
-
-    public Long getLiderId() {
-        return liderId;
-    }
-
-    public void setLiderId(Long liderId) {
-        this.liderId = liderId;
     }
 
     public Integer getCantidadDias() {
@@ -58,4 +51,13 @@ public class SolicitudRequest {
     public void setNumeroAprobaciones(Integer numeroAprobaciones) {
         this.numeroAprobaciones = numeroAprobaciones;
     }
+
+    public List<Long> getLiderIds() {
+        return liderIds;
+    }
+
+    public void setLiderIds(List<Long> liderIds) {
+        this.liderIds = liderIds;
+    }
+
 }
