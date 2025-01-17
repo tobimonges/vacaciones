@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/vacaciones")
@@ -26,10 +23,13 @@ public class SolicitudController {
     private static final Logger logger = LoggerFactory.getLogger(SolicitudController.class);
     private final SolicitudService solicitudService;
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
+
     @Autowired
-    public SolicitudController(SolicitudService solicitudService, UsuarioRepository usuarioRepository) {
+    public SolicitudController(SolicitudService solicitudService, UsuarioRepository usuarioRepository, UsuarioService usuarioService) {
         this.solicitudService = solicitudService;
         this.usuarioRepository = usuarioRepository;
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping("/solicitudes")
@@ -180,6 +180,26 @@ public class SolicitudController {
     @GetMapping("/eventos")
     public ResponseEntity<List<Map<String, String>>> obtenerTodosLosEventos() {
         return ResponseEntity.ok(solicitudService.obtenerTodosLosEventos());
+    }
+
+    @GetMapping("/{liderId}/solicitudes")
+    public ResponseEntity<?> obtenerSolicitudesPorLider(@PathVariable Long liderId) {
+        try {
+            UsuarioModel lider = usuarioService.buscarUsuarioPorId(liderId);
+            if (lider == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensaje", "Líder no encontrado"));
+            }
+
+            // Accede a las solicitudes del líder
+            Set<SolicitudModel> solicitudes = lider.getSolicitudesComoLider();
+
+            return ResponseEntity.ok(solicitudes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener solicitudes del líder.",
+                    "detalle", e.getMessage()
+            ));
+        }
     }
 
 
