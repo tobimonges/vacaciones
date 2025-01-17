@@ -239,11 +239,8 @@ export default function NuevaSolicitud() {
     const solicitud = {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
-      liderId: selectedLideres,
-      estado: false,
+      liderIds: selectedLideres.filter((lider) => lider !== null), // Filtrar valores nulos
       cantidadDias: validDays,
-      numeroAprobaciones:
-        userRole === "TH" || userRole === "OPERACIONES" ? 1 : 0, // Valor según el rol del usuario
     };
 
     try {
