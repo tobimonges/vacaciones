@@ -1,7 +1,13 @@
 package bootcamp.vacaciones.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -13,6 +19,11 @@ public class UsuarioModel {
     private Long id;
     private String nombre;
     private String apellido;
+
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference
+    private Set<SolicitudModel> solicitudes = new HashSet<>();
 
     @Column(nullable = false,unique = true, name = "nro_cedula")
     private int nroCedula;
@@ -34,6 +45,9 @@ public class UsuarioModel {
     @Column(name="dias_vacaciones")
     private int diasVacaciones;
 
+    @Column(name="dias_vacaciones_restante", nullable = true)
+    private int diasVacacionesRestante;
+
     private boolean estado;
 
     @ManyToOne
@@ -48,14 +62,19 @@ public class UsuarioModel {
     @JoinColumn(name="id_cargo", nullable = true)
     private CargoModel cargo;
 
+    @ManyToMany(mappedBy = "lideres")
+    @JsonBackReference
+    private Set<SolicitudModel> solicitudesComoLider = new HashSet<>();
+
+
 
     public UsuarioModel() {
     }
 
     public UsuarioModel(Long id, String nombre, String apellido, int nroCedula, String correo,
                         LocalDate fechaNacimiento, String contrasena, String telefono, LocalDate fechaIngreso,
-                        String antiguedad, int diasVacaciones, boolean estado, RolModel rol, EquipoModel equipo,
-                        CargoModel cargo) {
+                        String antiguedad, int diasVacaciones, int diasVacacionesRestante, boolean estado,
+                        RolModel rol, EquipoModel equipo, CargoModel cargo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -67,6 +86,7 @@ public class UsuarioModel {
         this.fechaIngreso = fechaIngreso;
         this.antiguedad = antiguedad;
         this.diasVacaciones = diasVacaciones;
+        this.diasVacacionesRestante = diasVacacionesRestante;
         this.estado = estado;
         this.rol = rol;
         this.equipo = equipo;
@@ -161,6 +181,10 @@ public class UsuarioModel {
         this.diasVacaciones = diasVacaciones;
     }
 
+    public int getDiasVacacionesRestante() {return diasVacacionesRestante;}
+
+    public void setDiasVacacionesRestante(int diasVacacionesRestante) {this.diasVacacionesRestante = diasVacacionesRestante;}
+
     public boolean isEstado() {
         return estado;
     }
@@ -189,5 +213,25 @@ public class UsuarioModel {
         return cargo;
     }
 
-    public void setCargo(CargoModel cargo) {this.cargo = cargo;}
+    public void setCargo(CargoModel cargo) {
+        this.cargo = cargo;
+    }
+
+    public Set<SolicitudModel> getSolicitudes() {
+        return solicitudes;
+    }
+
+    public void setSolicitudes(Set<SolicitudModel> solicitudes) {
+        this.solicitudes = solicitudes;
+    }
+
+    public Set<SolicitudModel> getSolicitudesComoLider() {
+        return solicitudesComoLider;
+    }
+
+    public void setSolicitudesComoLider(Set<SolicitudModel> solicitudesComoLider) {
+        this.solicitudesComoLider = solicitudesComoLider;
+    }
+
+
 }

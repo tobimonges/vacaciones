@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import axios from "axios";
+import Preloader from "./Preloader";
+import NavigationBar from "./NavigationBar";
 import "./UsuarioDetalle.css";
 
 function UsuarioDetalle() {
@@ -108,10 +113,19 @@ function UsuarioDetalle() {
         setError("");
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/");
+      };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: value }));
     };
+
+    const handleDateChange = (name, date) => {
+        setFormData((prevData) => ({ ...prevData, [name]: date }));
+      };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -144,6 +158,8 @@ function UsuarioDetalle() {
 
     return (
         <div className="container-usuario-detalle">
+            <Preloader duration={650} />
+            <NavigationBar onLogout={handleLogout} /> 
             <h2>Gestión de Usuarios</h2>
             {error && <p className="err">{error}</p>}
             {message && <p className="succ">{message}</p>}
@@ -188,25 +204,52 @@ function UsuarioDetalle() {
               
 
                     {[
-                        { name: "nombre", type: "text", label: "Nombre" },
-                        { name: "apellido", type: "text", label: "Apellido" },
-                        { name: "nroCedula", type: "number", label: "Número de Cédula" },
-                        { name: "correo", type: "email", label: "Correo Electrónico" },
-                        { name: "telefono", type: "text", label: "Teléfono" },
-                        { name: "fechaIngreso", type: "date", label: "Fecha de Ingreso" }, // Nuevo campo
-                        { name: "fechaNacimiento", type: "date", label: "Fecha de Nacimiento" },
-                        { name: "estado", type: "boolean", label: "Estado" },
-                    ].map(({ name, type, label }) => (
-                        <div key={name} className="inputGroupp">
+                        { name: "nombre", type: "text", placeholder: "Nombre", label: "Nombre", icon: "/circulo-de-usuario (2).svg" },
+                        { name: "apellido", type: "text", placeholder: "Apellido", label: "Apellido", icon: "/circulo-de-usuario (2).svg" },
+                        { name: "nroCedula", type: "number", placeholder: "Nro de Cedula",label: "CI", icon: "/tarjeta-de-identificacion (1).svg" },
+                        { name: "correo", type: "text", placeholder: "Correo",label: "Correo", icon: "/sobre.svg" },
+                        { name: "telefono", type: "text", placeholder: "Telefono",label: "Telefono", icon: "/circulo-de-telefono.svg" },
+                        { name: "estado", type: "boolean", label: "Estado", icon: "/circulo-de-usuario (2).svg" },
+                    ].map(({ name, type, label, icon }) => (
+                        <div key={name}>
                             <label htmlFor={name}>{label}</label>
+                            <div className="iconWrap">
+                            <img src={icon} className="icon" />
                             <input
                                 type={type}
                                 id={name}
                                 name={name}
                                 value={formData[name]}
+                                className="inputCreate"
                                 onChange={handleInputChange}
                                 required
                             />
+                            </div>
+                        </div>
+                    ))}
+
+                    {[
+                        { name: "fechaIngreso", type: "date", label: "Fecha de Ingreso", icon: "/dias-del-calendario.svg"},
+                        { name: "fechaNacimiento", type: "date", label: "Fecha de Nacimiento", icon: "/dias-del-calendario.svg"},
+                    ].map(({ name, type, label, icon }) => (
+                        <div key={name}>
+                            <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
+                            <div className="inputGroupCreate datePickerGroup">
+                            <div className="iconWrap">
+                            <img src={icon} className="icon" />
+                            <label htmlFor={name}>{label}</label>
+
+                                <DatePicker
+                                    selected={formData[name]}
+                                    onChange={(date) => handleDateChange(name, date)}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="inputCreate"
+                                    required
+                                />
+
+                            </div>
+                            </div>
+                            </LocalizationProvider>
                         </div>
                     ))}
 
@@ -215,12 +258,14 @@ function UsuarioDetalle() {
                         { name: "equipo", label: "Equipo Asignado", options: equipos },
                         { name: "cargo", label: "Cargo Asignado", options: cargos },
                     ].map(({ name, label, options }) => (
-                        <div key={name} className="inputGroupp">
+                        <div key={name} className="inputGroupCreate">
+                            <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
                             <label htmlFor={name}>{label}</label>
                             <select
                                 id={name}
                                 name={name}
                                 value={formData[name]}
+                                className="inputCreate"
                                 onChange={handleInputChange}
                                 required
                             >

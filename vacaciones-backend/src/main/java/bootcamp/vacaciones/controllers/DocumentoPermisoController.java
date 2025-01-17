@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/vacaciones/documentos")
@@ -105,6 +106,17 @@ public class DocumentoPermisoController {
                 ));
             }
 
+            // Validar si la solicitud existe
+            SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+            if (solicitud == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "error", "No se encontró la solicitud con ID " + idSolicitud
+                ));
+            }
+            List<String> correosLideres = solicitud.getLideres().stream()
+                    .map(UsuarioModel::getCorreo)
+                    .collect(Collectors.toList());
+
             CompletableFuture<String> urlArchivoFuture = googleDriveService.subirArchivo(
                     archivo.getOriginalFilename(),
                     tipoMime,
@@ -117,21 +129,22 @@ public class DocumentoPermisoController {
                 nuevoDocumento.setUrlDocumento(urlArchivo);
                 documentoPermisoService.guardarDocumento(nuevoDocumento);
 
-                SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
-                if (solicitud != null && solicitud.getLider() != null) {
-                    UsuarioModel lider = solicitud.getLider();
-//                    emailService.enviarCorreo(
-//                            lider.getCorreo(),
-//                            "Nuevo documento cargado",
-//                            "<p>Se ha cargado un nuevo documento para la solicitud #" + idSolicitud + ".</p>" +
-//                                    "<p>Puede acceder al documento desde el siguiente enlace:</p>" +
-//                                    "<a href='" + urlArchivo + "'>Ver Documento</a>"
-//                    );
+                if (!correosLideres.isEmpty()) {
+                    for (String correoLider : correosLideres) {
+                        emailService.enviarCorreo(
+                                correoLider,
+                                "Nuevo documento cargado",
+                                "<p>Se ha cargado un nuevo documento para la solicitud #" + idSolicitud + ".</p>" +
+                                        "<p>Puede acceder al documento desde el siguiente enlace:</p>" +
+                                        "<a href='" + urlArchivo + "'>Ver Documento</a>"
+                        );
+                    }
                 }
             }).exceptionally(ex -> {
                 System.err.println("Error al subir el archivo: " + ex.getMessage());
                 return null;
             });
+
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(Map.of("mensaje", "Archivo subido con éxito y notificación enviada al líder."));
         } catch (Exception e) {
@@ -141,6 +154,7 @@ public class DocumentoPermisoController {
             ));
         }
     }
+
 
 
 

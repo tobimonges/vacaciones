@@ -1,8 +1,12 @@
 package bootcamp.vacaciones.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "solicitudes")
@@ -15,7 +19,17 @@ public class SolicitudModel {
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonBackReference
     private UsuarioModel usuario;
+
+    @ManyToMany
+    @JsonManagedReference
+    @JoinTable(
+            name = "solicitud_lideres",
+            joinColumns = @JoinColumn(name = "id_solicitud"),
+            inverseJoinColumns = @JoinColumn(name = "id_lider")
+    )
+    private Set<UsuarioModel> lideres = new HashSet<>();
 
     @Column(nullable = false,name = "fecha_inicio")
     private LocalDate fechaInicio;
@@ -38,9 +52,6 @@ public class SolicitudModel {
     @Column(nullable = false)
     private Boolean rechazado;
 
-    @ManyToOne
-    @JoinColumn(name = "id_lider", nullable = true)
-    private UsuarioModel lider; // Relación con el líder
 
 
     public SolicitudModel() {
@@ -58,7 +69,6 @@ public class SolicitudModel {
         this.cantidadDias = cantidadDias;
         this.comentario = comentario;
         this.rechazado = rechazado;
-        this.lider = lider;
     }
 
     public Long getId() {
@@ -133,12 +143,12 @@ public class SolicitudModel {
         this.rechazado = rechazado;
     }
 
-    public UsuarioModel getLider() {
-        return lider;
+    public Set<UsuarioModel> getLideres() {
+        return lideres;
     }
 
-    public void setLider(UsuarioModel lider) {
-        this.lider = lider;
+    public void setLideres(Set<UsuarioModel> lideres) {
+        this.lideres = lideres;
     }
 
 }

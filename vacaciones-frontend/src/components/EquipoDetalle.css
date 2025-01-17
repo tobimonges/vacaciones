@@ -52,13 +52,14 @@
   color: white;
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   color: rgb(225, 225, 225);
 }
 
-th, td {
+.table th,
+.table td {
   padding: 0.75rem;
   text-align: center; /* Centered table contents */
   border-bottom: 1px solid #ffffff9c;

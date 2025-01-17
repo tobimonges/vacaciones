@@ -45,14 +45,30 @@ export default function NuevaSolicitud() {
     useState(null);
   const [reservedDates, setReservedDates] = useState([]);
   const [lideres, setLideres] = useState([]); // Lista de líderes
-  const [selectedLider, setSelectedLider] = useState(""); // Líder seleccionado
+  const [selectedLideres, setSelectedLideres] = useState([null]); // Líder seleccionado
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const userRole = getUserRole();
+<<<<<<< HEAD
   const [file, setFile] = useState(null); // Nuevo estado para el archivo
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState(""); // Success, Error, Warning
+=======
+  const [file, setFile] = useState(null);
+
+  const handleAddLiderSelector = () => {
+    if (selectedLideres.length < 3) {
+      setSelectedLideres([...selectedLideres, null]);
+    }
+  };
+
+  const handleLiderChange = (value, index) => {
+    const newSelectedLideres = [...selectedLideres];
+    newSelectedLideres[index] = parseInt(value, 10);
+    setSelectedLideres(newSelectedLideres);
+  };
+>>>>>>> develop
 
   useEffect(() => {
     if (mensaje) {
@@ -141,47 +157,86 @@ export default function NuevaSolicitud() {
   }, [usuarioId]);
 
   useEffect(() => {
-    const fetchLideres = async () => {
+    const fetchUsuarios = async () => {
       try {
         const token = localStorage.getItem("token");
-        let lideresData = [];
-
-        // Si el usuario logueado es "TH", usar la ruta específica
-        if (userRole === "TH" || userRole === "OPERACIONES") {
-          const thResponse = await axios.get(
-            "http://localhost:8080/vacaciones/listar-TH",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          lideresData = thResponse.data;
-        } else {
-          // En otros casos, usar la ruta estándar
-          const response = await axios.get(
-            "http://localhost:8080/vacaciones/lideres",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          lideresData = response.data;
-        }
-
-        // Filtrar líderes excluyendo al usuario logueado
-        const lideresFiltrados = lideresData.filter(
-          (lider) => lider.id !== usuarioId
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/listarusuarios",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
-        setLideres(lideresFiltrados);
+        const usuarios = response.data;
+
+        // Validar usuarios según el rol del usuario logueado
+        let usuariosFiltrados = [];
+
+        switch (userRole) {
+          case "FUNCIONARIO_FABRICA":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["LIDER", "OPERACIONES", "DIRECTORIO"].includes(
+                usuario.rol.nombre
+              )
+            );
+            break;
+
+          case "FUNCIONARIO_TERCERIZADO":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "TH":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "OPERACIONES":
+            usuariosFiltrados = usuarios.filter(
+              (usuario) => usuario.rol.nombre === "DIRECTORIO"
+            );
+            break;
+
+          case "LIDER":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "DIRECTORIO":
+            throw new Error(
+              "El rol DIRECTORIO no selecciona un líder. Por favor, revisa tu configuración."
+            );
+
+          default:
+            throw new Error(
+              "Rol no soportado para la creación de solicitudes. Contacta al administrador."
+            );
+        }
+
+        // Excluir al usuario logueado de la lista
+        usuariosFiltrados = usuariosFiltrados.filter(
+          (usuario) => usuario.id !== usuarioId
+        );
+
+        setLideres(usuariosFiltrados);
       } catch (err) {
+<<<<<<< HEAD
         console.error("Error al obtener líderes:", err);
       //  setError("No se pudo obtener la información de los líderes.");
         setMensaje("No se pudo obtener la información de los líderes.");
         setTipoMensaje("Error");
+=======
+        console.error("Error al obtener usuarios:", err);
+        setError("No se pudo obtener la información de los usuarios.");
+>>>>>>> develop
       }
     };
 
-    fetchLideres();
-  }, []);
+    fetchUsuarios();
+  }, [userRole, usuarioId]);
 
   useEffect(() => {
     const days = countValidDays(startDate, endDate, reservedDates);
@@ -213,21 +268,23 @@ export default function NuevaSolicitud() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+<<<<<<< HEAD
     if (!startDate || !endDate || !selectedLider) {
    //   setError("Por favor, selecciona ambas fechas y un líder.");
       setMensaje("Por favor, selecciona ambas fechas y un líder.");
       setTipoMensaje("Error");
+=======
+    if (!startDate || !endDate || !selectedLideres) {
+      setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
+>>>>>>> develop
       return;
     }
 
     const solicitud = {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
-      liderId: selectedLider,
-      estado: false,
+      liderIds: selectedLideres.filter((lider) => lider !== null), // Filtrar valores nulos
       cantidadDias: validDays,
-      numeroAprobaciones:
-        userRole === "TH" || userRole === "OPERACIONES" ? 1 : 0, // Valor según el rol del usuario
     };
 
     try {
@@ -340,23 +397,48 @@ export default function NuevaSolicitud() {
                 disabled={!startDate}
               />
             </div>
-            <div className="mb-3">
-              <select
-                value={selectedLider}
-                onChange={(e) => setSelectedLider(parseInt(e.target.value, 10))}
-                className="select-usuarios"
+            {selectedLideres.map((selectedLider, index) => (
+              <div
+                className={`mb-3-lideres ${
+                  index !== selectedLideres.length - 1 ||
+                  selectedLideres.length === 3
+                    ? "flex-column"
+                    : ""
+                }`}
+                key={index}
               >
-                <option value="" disabled>
-                  Selecciona un líder
-                </option>
-                {lideres.map((lider) => (
-                  <option key={lider.id} value={lider.id}>
-                    {lider.nombre} {lider.apellido}{" "}
-                    {/* Concatenar nombre y apellido */}
+                <select
+                  value={selectedLider || ""}
+                  onChange={(e) => handleLiderChange(e.target.value, index)}
+                  className="select-usuarios"
+                >
+                  <option value="" disabled>
+                    Selecciona un líder
                   </option>
-                ))}
-              </select>
-            </div>
+                  {lideres
+                    .filter(
+                      (lider) =>
+                        !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                        selectedLider === lider.id // Mantener el líder previamente seleccionado
+                    )
+                    .map((lider) => (
+                      <option key={lider.id} value={lider.id}>
+                        {lider.nombre} {lider.apellido}
+                      </option>
+                    ))}
+                </select>
+                {index === selectedLideres.length - 1 &&
+                  selectedLideres.length < 3 && (
+                    <div onClick={handleAddLiderSelector}>
+                      <img
+                        src="./public/yamada-btn.png"
+                        alt="Añadir líder"
+                        title="Añadir líder"
+                      />
+                    </div>
+                  )}
+              </div>
+            ))}
 
             {userRole === "FUNCIONARIO_TERCERIZADO" && (
               <div className="mb-3">
@@ -392,7 +474,7 @@ export default function NuevaSolicitud() {
                 type="submit"
                 className="btn btn-primary"
                 disabled={
-                  validDays > diasVacacionesDisponibles || !selectedLider
+                  validDays > diasVacacionesDisponibles || !selectedLideres
                 }
               >
                 <span>Crear Solicitud</span>
