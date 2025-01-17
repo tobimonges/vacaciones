@@ -100,7 +100,6 @@ const HomeTh = () => {
     fetchEquipos();
   }, []);
 
-  // 📥 **Obtener Solicitudes de Vacaciones**
   // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
     const fetchVacationData = async () => {
@@ -122,7 +121,6 @@ const HomeTh = () => {
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        // Mapear las solicitudes a eventos
         const solicitudesEvents = solicitudesResponse.data.map((solicitud) => ({
           title: `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`,
           start: new Date(`${solicitud.fechaInicio}T00:00:00`),
@@ -136,9 +134,9 @@ const HomeTh = () => {
           equipo: solicitud.usuario.equipo.nombre,
         }));
 
-        // Feriados dinámicos desde el endpoint
+        // Feriados
         const feriadosResponse = await axios.get(
-            "http://localhost:8080/vacaciones/eventos",
+            "http://localhost:8080/vacaciones/feriados",
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -150,8 +148,21 @@ const HomeTh = () => {
           type: "feriado",
         }));
 
-        // Combinar ambos eventos
-        setEvents([...solicitudesEvents, ...feriadosEvents]);
+        // Cumpleaños
+        const cumpleanosResponse = await axios.get(
+            "http://localhost:8080/vacaciones/obtenercumpleanos",
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const cumpleanosEvents = cumpleanosResponse.data.map((cumpleanos) => ({
+          title: cumpleanos.descripcion,
+          start: new Date(`${cumpleanos.fecha}T00:00:00`),
+          end: new Date(`${cumpleanos.fecha}T23:59:59`),
+          allDay: true,
+          type: "cumpleanos",
+        }));
+
+        // Combinar todos los eventos
+        setEvents([...solicitudesEvents, ...feriadosEvents, ...cumpleanosEvents]);
       } catch (error) {
         console.error("Error al obtener datos:", error);
         setError("No se pudieron cargar los datos.");
@@ -160,6 +171,7 @@ const HomeTh = () => {
 
     fetchVacationData();
   }, [navigate]);
+
 
 
 
@@ -221,13 +233,14 @@ const HomeTh = () => {
     }
   };
   const filterEventsByTeam = events.filter((event) => {
+
     // Filtrar por equipo
     const isEquipoMatch = equipoSeleccionado
         ? event.equipo && event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
         : true; // Si no hay equipo seleccionado, no se filtra por equipo
 
     // Filtrar por tipo de evento (cumpleaños y feriados)
-    const isBirthdayVisible = event.type !== "cumpleaños" || showBirthdays;
+    const isBirthdayVisible = event.type !== "cumpleanos" || showBirthdays;
     const isHolidayVisible = event.type !== "feriado" || showHolidays;
 
     // Retornar el evento solo si pasa ambos filtros
