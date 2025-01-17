@@ -117,45 +117,81 @@ export default function NuevaSolicitud() {
   }, [usuarioId]);
 
   useEffect(() => {
-    const fetchLideres = async () => {
+    const fetchUsuarios = async () => {
       try {
         const token = localStorage.getItem("token");
-        let lideresData = [];
-
-        // Si el usuario logueado es "TH", usar la ruta específica
-        if (userRole === "TH" || userRole === "OPERACIONES") {
-          const thResponse = await axios.get(
-            "http://localhost:8080/vacaciones/listar-TH",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          lideresData = thResponse.data;
-        } else {
-          // En otros casos, usar la ruta estándar
-          const response = await axios.get(
-            "http://localhost:8080/vacaciones/lideres",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          lideresData = response.data;
-        }
-
-        // Filtrar líderes excluyendo al usuario logueado
-        const lideresFiltrados = lideresData.filter(
-          (lider) => lider.id !== usuarioId
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/listarusuarios",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
-        setLideres(lideresFiltrados);
+        const usuarios = response.data;
+        console.log(usuarios);
+
+        // Validar usuarios según el rol del usuario logueado
+        let usuariosFiltrados = [];
+
+        switch (userRole) {
+          case "FUNCIONARIO_FABRICA":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["LIDER", "OPERACIONES", "DIRECTORIO"].includes(
+                usuario.rol.nombre
+              )
+            );
+            break;
+
+          case "FUNCIONARIO_TERCERIZADO":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "TH":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "OPERACIONES":
+            usuariosFiltrados = usuarios.filter(
+              (usuario) => usuario.rol.nombre === "DIRECTORIO"
+            );
+            break;
+
+          case "LIDER":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "DIRECTORIO":
+            throw new Error(
+              "El rol DIRECTORIO no selecciona un líder. Por favor, revisa tu configuración."
+            );
+
+          default:
+            throw new Error(
+              "Rol no soportado para la creación de solicitudes. Contacta al administrador."
+            );
+        }
+
+        // Excluir al usuario logueado de la lista
+        usuariosFiltrados = usuariosFiltrados.filter(
+          (usuario) => usuario.id !== usuarioId
+        );
+
+        setLideres(usuariosFiltrados);
+        console.log(usuariosFiltrados);
       } catch (err) {
-        console.error("Error al obtener líderes:", err);
-        setError("No se pudo obtener la información de los líderes.");
+        console.error("Error al obtener usuarios:", err);
+        setError("No se pudo obtener la información de los usuarios.");
       }
     };
 
-    fetchLideres();
-  }, []);
+    fetchUsuarios();
+  }, [userRole, usuarioId]);
 
   useEffect(() => {
     const days = countValidDays(startDate, endDate, reservedDates);

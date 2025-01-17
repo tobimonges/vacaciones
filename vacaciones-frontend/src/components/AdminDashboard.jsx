@@ -11,6 +11,7 @@ const AdminDashboard = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // Modal de confirmación de rechazo
   const [selectedSolicitudId, setSelectedSolicitudId] = useState(null);
   const [comentario, setComentario] = useState("");
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
@@ -40,6 +41,7 @@ const AdminDashboard = () => {
           Rechazado: 5,
         };
 
+        //PROBAR LOGUEO CON LIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDER
         let filteredByRole;
         if (userRole === "LIDER") {
           filteredByRole = response.data.filter(
@@ -98,12 +100,21 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleRejectConfirm = (id) => {
+    setSelectedSolicitudId(id);
+    setShowConfirmModal(true); // Mostrar modal de confirmación
+  };
+
+  const closeConfirmModal = () => {
+    setShowConfirmModal(false); // Cerrar modal de confirmación
+  };
+
   const handleReject = async (id) => {
     const token = localStorage.getItem("token");
     const userId = getUsuarioId();
 
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:8080/vacaciones/${id}/rechazar-lider-th?usuarioId=${userId}`,
         null,
         {
@@ -123,7 +134,7 @@ const AdminDashboard = () => {
             : solicitud
         )
       );
-
+      setShowConfirmModal(false);
       navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al rechazar solicitud:", err.response.data);
@@ -137,17 +148,25 @@ const AdminDashboard = () => {
 
   const handleAddComentario = async () => {
     const token = localStorage.getItem("token");
-    const userId = getUsuarioId();
+    const url = `http://localhost:8080/vacaciones/buscarid/${userId}`;
 
-    if (!comentario.trim()) {
-      alert("El comentario no puede estar vacío.");
-      return;
-    }
+    const { data: usuario } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log(usuario); // Verifica que los datos están correctamente en usuario
+
+    // Si el comentario está vacío, asignar "Rechazado por <nombre del usuario>"
+    const comentarioFinal = comentario.trim()
+      ? comentario.trim()
+      : `Rechazado por ${usuario.nombre} de Operaciones`;
 
     try {
       await axios.put(
         `http://localhost:8080/vacaciones/${selectedSolicitudId}/rechazar-operador?usuarioId=${userId}`,
-        { comentario },
+        { comentario: comentarioFinal },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -158,7 +177,12 @@ const AdminDashboard = () => {
       setSolicitudes((prev) =>
         prev.map((solicitud) =>
           solicitud.id === selectedSolicitudId
-            ? { ...solicitud, estado: false, rechazado: true, comentario }
+            ? {
+                ...solicitud,
+                estado: false,
+                rechazado: true,
+                comentario: comentarioFinal,
+              }
             : solicitud
         )
       );
@@ -184,12 +208,14 @@ const AdminDashboard = () => {
     setFilterText(searchText);
 
     const filtered = solicitudes.filter((solicitud) => {
+      const nroCedula = solicitud.usuario.nroCedula.toString();
       const fullName =
         `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`.toLowerCase();
       const estado = getEstadoSolicitud(solicitud).toLowerCase();
       const nroSolicitud = solicitud.id.toString();
       const equipo = `${solicitud.usuario.equipo.nombre}`.toLowerCase();
       return (
+        nroCedula.includes(searchText) ||
         fullName.includes(searchText) ||
         estado.includes(searchText) ||
         nroSolicitud.includes(searchText) ||
@@ -238,28 +264,7 @@ const AdminDashboard = () => {
           <NavigationBar onLogout={handleLogout} />
           {/*<Logo /> */}
           <div className="header-title-container">
-            <div className="space">
-              {/* Contador basado en el estado de las solicitudes */}
-              <div className="counter-container">
-                <p>
-                  Pendientes a TH:{" "}
-                  {
-                    solicitudes.filter(
-                      (s) => getEstadoSolicitud(s) === "Pendiente a TH"
-                    ).length
-                  }
-                </p>
-                <p>
-                  Falta aprobación del líder:{" "}
-                  {
-                    solicitudes.filter(
-                      (s) =>
-                        getEstadoSolicitud(s) === "Falta aprobación del Líder"
-                    ).length
-                  }
-                </p>
-              </div>
-            </div>
+            <div className="space"></div>
             <h4>Panel de Administrador</h4>
             <div className="filter-container">
               <label htmlFor="filter-input" className="filter-label">
@@ -268,7 +273,7 @@ const AdminDashboard = () => {
               <input
                 id="filter-input"
                 type="text"
-                placeholder="Usuario, estado o nro. solicitud"
+                placeholder="Ingrese un campo"
                 value={filterText}
                 onChange={handleFilterChange}
                 className="inputCreate"
@@ -287,10 +292,12 @@ const AdminDashboard = () => {
                 <thead>
                   <tr>
                     <th>Nro. Solicitud</th>
+                    <th>Cedula</th>
                     <th>Usuario</th>
                     <th>Equipo</th>
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
+                    <th>Total Dias</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -299,6 +306,11 @@ const AdminDashboard = () => {
                   {filteredSolicitudes.map((solicitud) => (
                     <tr key={solicitud.id}>
                       <td>{solicitud.id}</td>
+                      <td>
+                        {new Intl.NumberFormat("es-ES").format(
+                          solicitud.usuario.nroCedula
+                        )}
+                      </td>
                       <td>
                         {solicitud.usuario.nombre +
                           " " +
@@ -315,15 +327,49 @@ const AdminDashboard = () => {
                           "es-ES"
                         )}
                       </td>
+                      <td>
+                        {solicitud.cantidadDias === 1
+                          ? `${solicitud.cantidadDias} día`
+                          : `${solicitud.cantidadDias} días`}
+                      </td>
                       <td>{getEstadoSolicitud(solicitud)}</td>
+
                       <td>
                         {userRole === "OPERACIONES" ? (
-                          <button
-                            onClick={() => openModal(solicitud.id)}
-                            disabled={solicitud.rechazado}
-                          >
-                            <span>Añadir comentario</span>
-                          </button>
+                          <>
+                            {!solicitud.rechazado && !solicitud.estado ? (
+                              // Mostrar botones de Aprobar y Rechazar si la solicitud no está rechazada ni aprobada
+                              <>
+                                <button
+                                  onClick={() => handleApprove(solicitud.id)}
+                                >
+                                  <span>Aprobar</span>
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleRejectConfirm(solicitud.id)
+                                  }
+                                >
+                                  <span>Rechazar</span>
+                                </button>
+                              </>
+                            ) : solicitud.estado ? (
+                              // Mostrar botón de Añadir Comentario si la solicitud está aprobada
+                              <button onClick={() => openModal(solicitud.id)}>
+                                <span>Añadir comentario</span>
+                              </button>
+                            ) : (
+                              // Mostrar botones de Aprobar y Rechazar deshabilitados si la solicitud está rechazada
+                              <>
+                                <button disabled>
+                                  <span>Aprobar</span>
+                                </button>
+                                <button disabled>
+                                  <span>Rechazar</span>
+                                </button>
+                              </>
+                            )}
+                          </>
                         ) : !solicitud.rechazado ? (
                           userRole === "LIDER" ? (
                             <>
@@ -337,7 +383,9 @@ const AdminDashboard = () => {
                                 <span>Aprobar</span>
                               </button>
                               <button
-                                onClick={() => handleReject(solicitud.id)}
+                                onClick={() =>
+                                  handleRejectConfirm(solicitud.id)
+                                }
                                 disabled={solicitud.usuario.id === userId}
                               >
                                 <span>Rechazar</span>
@@ -355,7 +403,9 @@ const AdminDashboard = () => {
                                 <span>Aprobar</span>
                               </button>
                               <button
-                                onClick={() => handleReject(solicitud.id)}
+                                onClick={() =>
+                                  handleRejectConfirm(solicitud.id)
+                                }
                                 disabled={
                                   solicitud.numeroAprobaciones === 0 &&
                                   !solicitud.estado
@@ -373,7 +423,9 @@ const AdminDashboard = () => {
                                 <span>Aprobar</span>
                               </button>
                               <button
-                                onClick={() => handleReject(solicitud.id)}
+                                onClick={() =>
+                                  handleRejectConfirm(solicitud.id)
+                                }
                                 disabled
                               >
                                 <span>Rechazar</span>
@@ -389,7 +441,7 @@ const AdminDashboard = () => {
                               <span>Aprobar</span>
                             </button>
                             <button
-                              onClick={() => handleReject(solicitud.id)}
+                              onClick={() => handleRejectConfirm(solicitud.id)}
                               disabled
                             >
                               <span>Rechazar</span>
@@ -417,6 +469,29 @@ const AdminDashboard = () => {
             <div className="modal-buttons">
               <button onClick={handleAddComentario}>Guardar</button>
               <button onClick={closeModal}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showConfirmModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h4>Confirmar Rechazo</h4>
+            <p>¿Estás seguro que quieres rechazar esta solicitud?</p>
+            <div className="modal-buttons">
+              <button
+                onClick={() =>
+                  userRole === "OPERACIONES"
+                    ? handleAddComentario()
+                    : handleReject()
+                }
+                className="btn-confirm"
+              >
+                Sí
+              </button>
+              <button onClick={closeConfirmModal} className="btn-cancel">
+                No
+              </button>
             </div>
           </div>
         </div>

@@ -24,7 +24,10 @@ const EquipoDetalle = () => {
 
         setEquipos(response.data);
       } catch (err) {
-        console.error("Error fetching equipos:", err.response?.data || err.message);
+        console.error(
+          "Error fetching equipos:",
+          err.response?.data || err.message
+        );
         setError("No se pudieron cargar los equipos.");
       }
     };
@@ -46,7 +49,9 @@ const EquipoDetalle = () => {
   };
 
   const handleEliminarEquipo = async (equipoId) => {
-    const confirm = window.confirm("¿Estás seguro de que deseas eliminar este equipo?");
+    const confirm = window.confirm(
+      "¿Estás seguro de que deseas eliminar este equipo?"
+    );
     if (!confirm) return;
 
     try {
@@ -98,9 +103,8 @@ const EquipoDetalle = () => {
     <div>
       <Preloader duration={650} />
       <div className="container-detalle">
-      <NavigationBar onLogout={handleLogout} /> 
+        <NavigationBar onLogout={handleLogout} />
         <div className="header-section-detalle">
-          
           <div className="header-title-container-detalle">
             <h4 className="title">Lista de Equipos</h4>
           </div>
@@ -123,7 +127,7 @@ const EquipoDetalle = () => {
           ) : filteredEquipos.length === 0 ? (
             <p>No hay equipos que coincidan con el filtro.</p>
           ) : (
-            <table>
+            <table className="table">
               <thead>
                 <tr>
                   <th>ID</th>
