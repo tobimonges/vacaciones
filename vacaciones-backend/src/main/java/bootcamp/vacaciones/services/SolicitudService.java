@@ -335,20 +335,20 @@ public class SolicitudService implements ISolicitudService {
                 solicitud.setNumeroAprobaciones(1);
                 solicitud.setRechazado(false);
 
-                // Notificamos al solicitante que su solicitud fue aprobada por el líder
-                notificarUsuario(
-                        solicitud.getUsuario().getCorreo(),
-                        "Solicitud Aprobada por Líder",
-                        "<p>Tu solicitud ha sido aprobada por tu líder.</p>" +
-                                "<p>Ahora está pendiente la aprobación de TH.</p>"
-                );
-
-                // Notificamos a los usuarios TH que hay una solicitud pendiente de su aprobación
-                notificarTH(
-                        "Solicitud Pendiente de Aprobación (TH)",
-                        "La solicitud del usuario " + solicitud.getUsuario().getNombre() +
-                                " está pendiente de aprobación por parte de TH."
-                );
+//                // Notificamos al solicitante que su solicitud fue aprobada por el líder
+//                notificarUsuario(
+//                        solicitud.getUsuario().getCorreo(),
+//                        "Solicitud Aprobada por Líder",
+//                        "<p>Tu solicitud ha sido aprobada por tu líder.</p>" +
+//                                "<p>Ahora está pendiente la aprobación de TH.</p>"
+//                );
+//
+//                // Notificamos a los usuarios TH que hay una solicitud pendiente de su aprobación
+//                notificarTH(
+//                        "Solicitud Pendiente de Aprobación (TH)",
+//                        "La solicitud del usuario " + solicitud.getUsuario().getNombre() +
+//                                " está pendiente de aprobación por parte de TH."
+//                );
             } else if (solicitud.getNumeroAprobaciones() == 1) {
                 // Paso 2: Debe aprobar un usuario con rol TH
                 logger.info("Paso 2: La solicitud con ID: {} requiere la aprobación de TH.", solicitudId);
@@ -357,12 +357,12 @@ public class SolicitudService implements ISolicitudService {
                 solicitud.setEstado(true);
                 solicitud.setRechazado(false);
 
-                // Notificar al solicitante que su solicitud fue completamente aprobada
-                notificarUsuario(
-                        solicitud.getUsuario().getCorreo(),
-                        "Solicitud Completamente Aprobada",
-                        "<p>Tu solicitud ha sido aprobada por TH y se encuentra activa.</p>"
-                );
+//                // Notificar al solicitante que su solicitud fue completamente aprobada
+//                notificarUsuario(
+//                        solicitud.getUsuario().getCorreo(),
+//                        "Solicitud Completamente Aprobada",
+//                        "<p>Tu solicitud ha sido aprobada por TH y se encuentra activa.</p>"
+//                );
 
                 // Actualizar los días de vacaciones ya que la solicitud ha sido aprobada
                 logger.info("La solicitud con ID: {} ha sido aprobada, actualizando los días de vacaciones.", solicitudId);
