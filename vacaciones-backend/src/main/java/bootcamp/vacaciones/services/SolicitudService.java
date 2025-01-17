@@ -509,12 +509,10 @@ public class SolicitudService implements ISolicitudService {
         return CalendarioUtil.obtenerCumpleanosPorUsuario(usuario);
     }
 
-    public List<Map<String, String>> obtenerTodosLosEventos() {
+    public List<Map<String, String>> obtenerTodosLosCumpleaños() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
-        List<Map<String, String>> feriados = CalendarioUtil.obtenerFeriados();
         List<Map<String, String>> cumpleanos = CalendarioUtil.obtenerCumpleanos(usuarios);
         List<Map<String, String>> eventos = new ArrayList<>();
-        eventos.addAll(feriados);
         eventos.addAll(cumpleanos);
         return eventos;
     }
