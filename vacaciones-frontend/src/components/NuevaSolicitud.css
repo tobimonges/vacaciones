@@ -91,7 +91,7 @@
 
 .select-usuarios {
   width: 100%; /* Ocupa el ancho completo */
-  max-width: 250px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
+  max-width: 244px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
   padding: 8px; /* Espaciado interno */
   padding-top: 10px;
   padding-bottom: 10px;
@@ -159,7 +159,27 @@
   align-items: center;
   flex-direction: column;
 }
+.mb-3-lideres {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 
+.mb-3-lideres.flex-column {
+  flex-direction: column; /* Cambia la dirección a columna */
+  justify-content: flex-start; /* Alinea elementos al inicio vertical */
+}
+
+.mb-3-lideres img {
+  width: 80px; /* Ancho de la imagen */
+  height: 80px; /* Altura de la imagen */
+  cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
+  transition: transform 0.2s ease; /* Suaviza la animación */
+}
+
+.mb-3-lideres img:hover {
+  transform: scale(1.1); /* Amplía ligeramente la imagen al pasar el mouse */
+}
 .MuiSvgIcon-root {
   color: rgb(
     206,
