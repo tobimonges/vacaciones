@@ -184,7 +184,7 @@
 /*    border-radius: 5px; !* Bordes redondeados *!*/
 /*    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); !* Sombra sutil para resaltar *!*/
 /*    transition: all 0.3s ease; !* Animación para cambios de estado *!*/
-/*}*/
+/*}*/   
 
 /* Efecto al pasar el mouse */
 .calendar-select-Th:hover {
