@@ -509,6 +509,8 @@ public class SolicitudService implements ISolicitudService {
                     "Solicitud Rechazada",
                     "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Talento Humano (TH).</p>"
             );
+            actualizarDiasVacacionesRechazado(solicitud);
+
         } else {
             throw new RuntimeException("No tienes permiso suficiente para rechazar esta solicitud.");
         }
@@ -543,7 +545,7 @@ public class SolicitudService implements ISolicitudService {
                 "Solicitud Rechazada",
                 "<p>Tu solicitud de vacaciones ha sido rechazada por el área de Operaciones. <br> Motivo: " + comentario + "</p>"
         );
-
+        actualizarDiasVacacionesRechazado(solicitud);
         return solicitudRepository.save(solicitud); // Retorna la solicitud actualizada
     }
 
