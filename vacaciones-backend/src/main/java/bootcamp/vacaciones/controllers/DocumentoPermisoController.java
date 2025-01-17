@@ -105,6 +105,14 @@ public class DocumentoPermisoController {
                 ));
             }
 
+            // Validar si la solicitud existe
+            SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
+            if (solicitud == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "error", "No se encontró la solicitud con ID " + idSolicitud
+                ));
+            }
+
             CompletableFuture<String> urlArchivoFuture = googleDriveService.subirArchivo(
                     archivo.getOriginalFilename(),
                     tipoMime,
@@ -117,16 +125,16 @@ public class DocumentoPermisoController {
                 nuevoDocumento.setUrlDocumento(urlArchivo);
                 documentoPermisoService.guardarDocumento(nuevoDocumento);
 
-                SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(idSolicitud);
-                if (solicitud != null && solicitud.getLider() != null) {
-                    UsuarioModel lider = solicitud.getLider();
-//                    emailService.enviarCorreo(
-//                            lider.getCorreo(),
-//                            "Nuevo documento cargado",
-//                            "<p>Se ha cargado un nuevo documento para la solicitud #" + idSolicitud + ".</p>" +
-//                                    "<p>Puede acceder al documento desde el siguiente enlace:</p>" +
-//                                    "<a href='" + urlArchivo + "'>Ver Documento</a>"
-//                    );
+                if (solicitud.getLideres() != null && !solicitud.getLideres().isEmpty()) {
+                    solicitud.getLideres().forEach(lider -> {
+                        emailService.enviarCorreo(
+                                lider.getCorreo(),
+                                "Nuevo documento cargado",
+                                "<p>Se ha cargado un nuevo documento para la solicitud #" + idSolicitud + ".</p>" +
+                                        "<p>Puede acceder al documento desde el siguiente enlace:</p>" +
+                                        "<a href='" + urlArchivo + "'>Ver Documento</a>"
+                        );
+                    });
                 }
             }).exceptionally(ex -> {
                 System.err.println("Error al subir el archivo: " + ex.getMessage());
@@ -141,6 +149,7 @@ public class DocumentoPermisoController {
             ));
         }
     }
+
 
 
 
