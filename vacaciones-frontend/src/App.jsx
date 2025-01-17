@@ -13,10 +13,7 @@ import CreaEquipo from "./components/CreaEquipo";
 import CreaCargo from "./components/CreaCargo";
 import EquipoDetalle from "./components/EquipoDetalle";
 import CargoDetalle from "./components/CargoDetalle";
-import UsuarioDetalle from "./components/UsuarioDetalle"
-
-
-
+import UsuarioDetalle from "./components/UsuarioDetalle";
 
 function App() {
   return (
@@ -24,7 +21,7 @@ function App() {
       <Routes>
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />
- 
+
         {/* Rutas para funcionarios */}
         <Route path="/Home" element={<Home />} />
         <Route path="/NuevaSolicitud" element={<NuevaSolicitud />} />
@@ -47,67 +44,62 @@ function App() {
         />
 
         <Route
-        path="/CrearUsuario"
-        element={
-          <PrivateRoute allowedRoles={["TH"]}>
-            
-            <CrearUsuario />
-          </PrivateRoute>
-        }
+          path="/CrearUsuario"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <CrearUsuario />
+            </PrivateRoute>
+          }
         />
         <Route
-            path="/UsuarioDetalle"
-            element={
-              <PrivateRoute allowedRoles={["TH"]}>
-
-                <UsuarioDetalle />
-              </PrivateRoute>
-            }
+          path="/UsuarioDetalle"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <UsuarioDetalle />
+            </PrivateRoute>
+          }
         />
         <Route
-        path="/CreaEquipo"
-        element={
-          <PrivateRoute allowedRoles={["TH"]}>
-            
-            <CreaEquipo />
-          </PrivateRoute>
-        }
+          path="/CreaEquipo"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <CreaEquipo />
+            </PrivateRoute>
+          }
         />
         <Route
-        path="/EquipoDetalle"
-        element={
-          <PrivateRoute allowedRoles={["TH"]}>
-            
-            <EquipoDetalle />
-          </PrivateRoute>
-        }
+          path="/EquipoDetalle"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <EquipoDetalle />
+            </PrivateRoute>
+          }
         />
         <Route
-        path="/CreaCargo"
-        element={
-          <PrivateRoute allowedRoles={["TH"]}>
-            
-            <CreaCargo />
-          </PrivateRoute>
-        }
+          path="/CreaCargo"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <CreaCargo />
+            </PrivateRoute>
+          }
         />
         <Route
-        path="/CargoDetalle"
-        element={
-          <PrivateRoute allowedRoles={["TH"]}>
-            
-            <CargoDetalle />
-          </PrivateRoute>
-        }
+          path="/CargoDetalle"
+          element={
+            <PrivateRoute allowedRoles={["TH"]}>
+              <CargoDetalle />
+            </PrivateRoute>
+          }
         />
         <Route
-        path="/HomeTh"
-        element={
-          <PrivateRoute allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}>
-            
-            <HomeTh />
-          </PrivateRoute>
-        }
+          path="/HomeTh"
+          element={
+            <PrivateRoute
+              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
+            >
+              <HomeTh />
+            </PrivateRoute>
+          }
         />
       </Routes>
     </Router>
