@@ -108,8 +108,8 @@ const Home = () => {
         const vacationDaysResponse = await axios.get(`http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        setVacationDays(vacationDaysResponse.data.diasDisponibles || 0);
+        console.log(vacationDaysResponse.data)
+        setVacationDays(vacationDaysResponse.data || 0);
 
         // Realizamos las solicitudes para obtener otros datos
         const [userDataResponse, vacationRequestsResponse, holidaysResponse, birthdaysResponse] = await Promise.all([
