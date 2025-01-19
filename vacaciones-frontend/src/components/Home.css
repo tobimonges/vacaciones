@@ -95,12 +95,8 @@
     overflow: hidden; /* Evita que los elementos sobresalgan */
     padding-top: 10px;
 }
-.calendar-button.logout {
-    background-color: red;
-}
-.calendar-button.logout:hover {
-    background-color: rgba(255, 0, 0, 0.801);
-}
+
+
 .calendar-button {
     margin: 0 10px !important;
 }
