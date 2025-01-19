@@ -8,6 +8,7 @@
   --font-family-primary: "Montserrat", serif;
   --font-family-secondary: "Funnel Sans", serif;
   --blur-effect: blur(5px);
+  --button-bg: #fbc940;
 
 }
 
@@ -56,6 +57,7 @@ button span {
 .container {
   display: flex;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
   background: linear-gradient(
     45deg,
@@ -70,60 +72,110 @@ background-blend-mode: multiply;
 
 /* Barra lateral fija */
 .sidebar {
-  width: var(--sidebar-width);
-  height: 100%;
-  background-color: var(--sidebar-color);
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  /* añade blur solo al fondo*/
-  backdrop-filter: var(--blur-effect);
+  width: var(--sidebar-width); /* Ancho de la barra lateral */
+  height: 100vh; /* Altura completa de la ventana */
+  color: var(--text-color); /* Color del texto en la barra lateral */
+  display: flex; /* Utiliza flexbox para el diseño */
+  flex-direction: column; /* Coloca los elementos en una columna */
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: center; /* Centra los elementos verticalmente */
+  position: fixed; /* Fija la barra lateral en su posición */
+  /*z-index: 1000;  Asegura que la barra lateral esté por encima de otros elementos */
+  backdrop-filter: var(--blur-effect); /* Añade un efecto de desenfoque al fondo */
 }
+
 .sidebar-content {
+  /* se posiciona siempre dentro de su contenedor */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  width: 100%;
-  height: 100vh;
-  margin: 10px;
+  /* no se sale de su contenedor */
+  width: 95%;
+  height: 98%;
+  padding: 1rem;
+  /* Añade un sombreado a la barra lateral */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Añade un borde redondeado a la barra lateral */
+  border-radius: 10px;
+  /* fondo */
   background-color: #007bff3a;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 12px ;
-  padding: 40px 10px;
-  text-align: center;
-  box-sizing: border-box;
-
-
 }
 
+/* Contenedor del logo en la barra lateral */
 .sidebar-logo {
-  flex: 1;
-  /* Permite al logo centrarse equilibradamente */
+  width: 100%; /* Ancho completo */
+  flex:auto; 
+  display: flex; /* Utiliza flexbox para el diseño */
+  justify-content: center; /* Centra el logo horizontalmente */
+  align-items: start;
+  padding: 1rem; /* Espaciado interno */
+}
+
+/* Estilos para la imagen del logo */
+.sidebar-logo img {
+  width: 100%;
+  transition: transform 0.3s ease; /* Transición suave para el efecto de escala */
+}
+
+/* Efecto hover para la imagen del logo */
+.sidebar-logo img:hover {
+  transform: scale(1.08); /* Aumenta el tamaño de la imagen al pasar el mouse */
+}
+
+
+.sidebar-buttons, .sidebar-logout {
+  display: flex;
+  width: 100%; /* Ancho completo */
+  padding: 1rem; /* Espaciado interno */
+}
+
+.sidebar-buttons {
+  flex-direction: column; /* Coloca los elementos en una columna */
+  gap: 1rem; /* Espacio entre los elementos */
+  flex: content;
+  align-items: first baseline;
+}
+
+.sidebar-buttons .sidebar-buttons {
+  padding: 0;
+}
+
+.sidebar-buttons .sidebar-button, .sidebar-logout .logout-button {
+  margin: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 3.2rem;
+  padding: 0.5rem;
+  border-radius: 8px;
 }
 
-.sidebar-logo img {
-  height: 48px;
-  transition: transform 0.3s ease;
+
+.sidebar-buttons .sidebar-button {  
+  background-color: var(--button-bg); /* Color de fondo */
+
 }
 
-.sidebar-logo img:hover {
-  transform: scale(1.08);
+
+.sidebar-logout {
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+  gap: 0.5rem; /* Espacio entre los elementos */
+  
 }
 
-.sidebar-logo img {
-  width: 300px;
-  max-width: 100px;
+.sidebar-logout .logout-button {
+  gap: 0.3rem;
+  background-color: #ff0000; /* Color de fondo */
 }
+.logout-button span {
+  padding: 0;
+  margin: 0;
+}
+
 
 /* Área de contenido */
 .content-area {
@@ -147,9 +199,6 @@ background-blend-mode: multiply;
   left: var(--sidebar-width);
   width: calc(100% - var(--sidebar-width));
   z-index: 1000;
-  /* Añade blur solo al fondo */
-  /* backdrop-filter: var(--blur-effect); */
-  
   margin: 0 auto; /* Centra horizontalmente */
   }
 

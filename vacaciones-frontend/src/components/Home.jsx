@@ -57,26 +57,22 @@ const CalendarLegend = () => (
 
 // 🎨 **Componente de botones del calendario**
 const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
-    <div className="buttons">
-      <button className="calendar-button calendar-button-focus" onClick={() => navigate("/Home")}>
-        <span className="calendar-text-focus">Home</span>
+    <div className="sidebar-buttons">
+      <button className="sidebar-button" onClick={() => navigate("/Home")}>
+        <span className="sidebar-text-focus">Home</span>
       </button>
-      <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
+      <button className="sidebar-button" onClick={() => navigate("/NuevaSolicitud")}>
         <span>Solicitar</span>
       </button>
-      <button className="calendar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
+      <button className="sidebar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
         <span>Ver Solicitudes</span>
       </button>
       {isUserAllowed() && (
-          <button className="calendar-button" onClick={() => navigate(`/HomeTh`)}>
+          <button className="sidebar-button" onClick={() => navigate(`/HomeTh`)}>
             <span>Home Talento Humano</span>
           </button>
       )}
-      
-      <button className="calendar-button logout" onClick={onLogout}>
-        <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
-      </button>
-    
+
     </div>
 );
 
@@ -226,8 +222,16 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* 🖼️ Botones de la barra lateral */}
-          <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
+          <div className="sidebar-buttons">
+            <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
+          </div>
+
+          <div className="sidebar-logout">
+            <button className="logout-button" onClick={handleLogout}>
+              <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
 
         </div>
       </div>
@@ -239,46 +243,50 @@ const Home = () => {
 
         { /* 📚 **Barra de navegación** */ }
         <div className="navbar">
-          <NavigationBar onLogout={handleLogout} />
+          <div className="navbar-content">
+            <NavigationBar onLogout={handleLogout} />
+          </div>
         </div>
 
 
         { /* 📚 **Contenido principal** */ }
-        <div className="main-content">
-          <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-            <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
-              <p className="calendar-text">
-                Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-              </p>
-              <p className="calendar-text">
-                Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
-              </p>
-              {error && <p className="calendar-error-message">{error}</p>}
-              
-              <div className="calendar-big-container">
-                <Calendar
-                  localizer={localizer}
-                  events={events}
-                  startAccessor="start"
-                  endAccessor="end"
-                  style={{ height: 500, margin: "20px 0" }}
-                  messages={{
-                    today: "Hoy",
-                    previous: "Anterior",
-                    next: "Siguiente",
-                    month: "Mes",
-                    week: "Semana",
-                    day: "Día",
-                    agenda: "Agenda",
-                  }}
-                  views={{ month: true }}
-                  eventPropGetter={eventStyleGetter}
-                  dayPropGetter={dayPropGetter}
-                />
+        <div className="main">
+          <div className="main-content">
+            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+              <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
+                <p className="calendar-text">
+                  Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
+                </p>
+                <p className="calendar-text">
+                  Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
+                </p>
+                {error && <p className="calendar-error-message">{error}</p>}
+                
+                <div className="calendar-big-container">
+                  <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500, margin: "20px 0" }}
+                    messages={{
+                      today: "Hoy",
+                      previous: "Anterior",
+                      next: "Siguiente",
+                      month: "Mes",
+                      week: "Semana",
+                      day: "Día",
+                      agenda: "Agenda",
+                    }}
+                    views={{ month: true }}
+                    eventPropGetter={eventStyleGetter}
+                    dayPropGetter={dayPropGetter}
+                  />
+              </div>
+            <CalendarLegend />
+            
             </div>
-          <CalendarLegend />
           </div>
-
         </div>
 
       </div>
