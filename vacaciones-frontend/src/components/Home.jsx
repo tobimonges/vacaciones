@@ -5,10 +5,9 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import esLocale from "date-fns/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils";
 import "./Home.css";
-import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 
 // 🌍 Localización de fechas
@@ -57,8 +56,11 @@ const CalendarLegend = () => (
 );
 
 // 🎨 **Componente de botones del calendario**
-const CalendarButtons = ({ navigate, isUserAllowed }) => (
+const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
     <div className="buttons">
+      <button className="calendar-button calendar-button-focus" onClick={() => navigate("/Home")}>
+        <span className="calendar-text-focus">Home</span>
+      </button>
       <button className="calendar-button" onClick={() => navigate("/NuevaSolicitud")}>
         <span>Solicitar</span>
       </button>
@@ -70,6 +72,11 @@ const CalendarButtons = ({ navigate, isUserAllowed }) => (
             <span>Home Talento Humano</span>
           </button>
       )}
+      
+      <button className="calendar-button logout" onClick={onLogout}>
+        <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
+      </button>
+    
     </div>
 );
 
@@ -204,13 +211,25 @@ const Home = () => {
   return (
 
     // 🖼️ **Estructura de la página** 
-    <div className="container">
-      <Preloader duration={650} />
+    <div className="container home-container">
+      
 
 
       { /* 📚 **Barra lateral** */ }
       <div className="sidebar">
-        <p>barra lateral</p>
+        <div className="sidebar-content">
+          
+          {/* 🖼️ Logo de la barra lateral */}
+          <div className="sidebar-logo">
+            <Link to="/home">
+              <img src=".\logo-white.svg" alt="Logo" className="logo" />
+            </Link>
+          </div>
+
+          {/* 🖼️ Botones de la barra lateral */}
+          <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
+
+        </div>
       </div>
 
 
@@ -220,14 +239,12 @@ const Home = () => {
 
         { /* 📚 **Barra de navegación** */ }
         <div className="navbar">
-          <p>barra de navegación</p>
           <NavigationBar onLogout={handleLogout} />
         </div>
 
 
         { /* 📚 **Contenido principal** */ }
         <div className="main-content">
-          <p>contenido</p>
           <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
             <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
               <p className="calendar-text">
@@ -237,7 +254,7 @@ const Home = () => {
                 Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
               </p>
               {error && <p className="calendar-error-message">{error}</p>}
-              <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
+              
               <div className="calendar-big-container">
                 <Calendar
                   localizer={localizer}

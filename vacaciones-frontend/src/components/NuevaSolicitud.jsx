@@ -322,7 +322,7 @@ export default function NuevaSolicitud() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <Preloader duration={650} />
-      <div className="container">
+      <div className="nueva-solicitud-container">
         <div className="DatePicker">
           <Logo />
           <h2>Nueva Solicitud</h2>
