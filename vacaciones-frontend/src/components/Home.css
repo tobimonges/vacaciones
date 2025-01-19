@@ -11,26 +11,18 @@
     --modal-shadow: rgba(0, 0, 0, 0.07);
 }
 
-/* 🖼 Contenedor principal del calendario */
-.calendar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 10px;
-    box-sizing: border-box;
-    margin: 0;
-    overflow-y: auto;
-}
 
 /* 📝 Tarjeta del calendario */
 .calendar-card {
-    width: 100%;
-    max-width: 1200px;
-    background: var(--primary-bg);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    width: 98%;
+    margin: 10px;
+    
+    background-color: #007bff3a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+
+    border-radius: 12px ;
+    padding: 30px;
     text-align: center;
     box-sizing: border-box;
 }
@@ -52,14 +44,19 @@
 
 /* 🗓 Contenedor grande del calendario */
 .calendar-big-container {
-    margin-top: 20px;
+    top: 20px;
     background-color: var(--secondary-bg);
     border-radius: 15px;
     padding: 0 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
-    height: 570px;
+    height: 600px;
+    width: 75%;
+    margin: 40px auto;
     overflow-y: auto;
 }
+.rbc-calendar {
+    height: 90% !important;
+}   
 
 /* Leyenda de colores alineada horizontalmente */
 .calendar-legend {
@@ -86,15 +83,36 @@
     border-radius: 4px;
 }
 
+
+
 /* Estilos de los botones */
 .buttons {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     gap: 0.5rem;
     margin-top: 0.5rem;
     overflow: hidden; /* Evita que los elementos sobresalgan */
     padding-top: 10px;
-
+}
+.calendar-button.logout {
+    background-color: red;
+}
+.calendar-button.logout:hover {
+    background-color: rgba(255, 0, 0, 0.801);
+}
+.calendar-button {
+    margin: 0 10px !important;
+}
+.calendar-button-focus {
+    background-color: #fc9d0e;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
+        0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+        0 32px 32px rgba(0, 0, 0, 0.07);
+    transform: translateY(-1px);
+}
+.calendar-text-focus {
+    font-weight: 600 !important;
 }
 
 
@@ -171,6 +189,8 @@
     transition: background-color 0.3s ease;
     margin-top: 10px;
 }
+
+
 /*Selector de Equipos*/
 /*.calendar-select-Th {*/
 /*    font-size: 1.1rem; !* Tamaño del texto relativo (responsive) *!*/
@@ -200,8 +220,6 @@
         max-width: 100%; /* Permite ocupar todo el espacio disponible */
     }
 }
-
-
 
 
 .close-modal-btn:hover {
@@ -239,10 +257,5 @@
 
     .calendar-legend {
         gap: 8px;
-    }
-
-    button {
-        font-size: 12px;
-        padding: 0.2rem;
     }
 }
