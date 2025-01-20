@@ -1,69 +1,280 @@
-/* index.css */
+:root {
+  --sidebar-width: 21rem;
+  --navbar-height: 90px;
+  --sidebar-color: rgba(0, 0, 0, 0);
+  --navbar-color: rgba(255, 255, 255, 0);
+  --content-color: rgba(255, 255, 0, 0);
+  --text-color: white;
+  --font-family-primary: "Montserrat", serif;
+  --font-family-secondary: "Funnel Sans", serif;
+  --blur-effect: blur(5px);
+  --button-bg: #fbc940;
 
-/* Asegura que html, body y #root ocupen toda la altura y ancho */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-family-primary);
+}
+
 html,
 body,
 #root {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+  height: 100vh;
+  width: 100vw;
 }
 
-/* Elimina el display:flex y place-items:center del body si lo tienes */
 body {
-  /* display: flex; */ /* Comenta o elimina esta línea */
-  /* place-items: center; */ /* Comenta o elimina esta línea */
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(
-      45deg,
-      rgba(99, 12, 0, 0.25),
-      rgba(30, 148, 227, 0.25)
-    ),
-    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1560%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%23SvgjsRadialGradient1561)'%3e%3c/rect%3e%3cpath d='M0 0L52.91 0L0 5.82z' fill='rgba(255%2c 255%2c 255%2c .1)'%3e%3c/path%3e%3cpath d='M0 5.82L52.91 0L223.41 0L0 198.10999999999999z' fill='rgba(255%2c 255%2c 255%2c .075)'%3e%3c/path%3e%3cpath d='M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z' fill='rgba(255%2c 255%2c 255%2c .05)'%3e%3c/path%3e%3cpath d='M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z' fill='rgba(255%2c 255%2c 255%2c .025)'%3e%3c/path%3e%3cpath d='M1440 560L1266.7 560L1440 289.19z' fill='rgba(0%2c 0%2c 0%2c .1)'%3e%3c/path%3e%3cpath d='M1440 289.19L1266.7 560L701.63 560L1440 233.49z' fill='rgba(0%2c 0%2c 0%2c .075)'%3e%3c/path%3e%3cpath d='M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z' fill='rgba(0%2c 0%2c 0%2c .05)'%3e%3c/path%3e%3cpath d='M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z' fill='rgba(0%2c 0%2c 0%2c .025)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1560'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx='100%25' cy='100%25' r='1545.06' gradientUnits='userSpaceOnUse' id='SvgjsRadialGradient1561'%3e%3cstop stop-color='rgba(9%2c 82%2c 158%2c 1)' offset='1'%3e%3c/stop%3e%3cstop stop-color='rgba(0%2c 69%2c 158%2c 0)' offset='1'%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e");
-  background-size: cover;
-  background-attachment: fixed;
-  background-blend-mode: multiply;
+
 }
 
 
-* {
-  font-family: "Montserrat", serif; /* Fuente principal */
+
+h1, h2, h3, p, span {
+  font-family: var(--font-family-primary);
 }
 
-/* Si deseas personalizar más, puedes agregar selectores más específicos: */
-
-h1, h2, h3, p {
-  font-family: "Montserrat", serif; /* Fuente para títulos */
+input,
+button,
+select,
+button span {
+  font-family: var(--font-family-secondary) !important;
+  font-weight: 400 !important;
+  color: #333 !important;
 }
-
-input {
-  font-family: "Funnel Sans", serif; /* Fuente para textos pequeños */
-  font-weight: 400;
-  color: #333;
-}
-
 
 button span {
-  font-family: "Funnel Sans", serif;
-  font-weight: 400;
-  color: #333;color: #333;
   padding: 15px;
   line-height: 1.6;
   font-size: 1.1rem;
   
 }
+
+.container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  position:static;
+  padding: 20px 50px;
+  background: linear-gradient(
+    45deg,
+    rgba(99, 12, 0, 0.25),
+    rgba(30, 148, 227, 0.25)
+  ),
+  url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1560%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%23SvgjsRadialGradient1561)'%3e%3c/rect%3e%3cpath d='M0 0L52.91 0L0 5.82z' fill='rgba(255%2c 255%2c 255%2c .1)'%3e%3c/path%3e%3cpath d='M0 5.82L52.91 0L223.41 0L0 198.10999999999999z' fill='rgba(255%2c 255%2c 255%2c .075)'%3e%3c/path%3e%3cpath d='M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z' fill='rgba(255%2c 255%2c 255%2c .05)'%3e%3c/path%3e%3cpath d='M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z' fill='rgba(255%2c 255%2c 255%2c .025)'%3e%3c/path%3e%3cpath d='M1440 560L1266.7 560L1440 289.19z' fill='rgba(0%2c 0%2c 0%2c .1)'%3e%3c/path%3e%3cpath d='M1440 289.19L1266.7 560L701.63 560L1440 233.49z' fill='rgba(0%2c 0%2c 0%2c .075)'%3e%3c/path%3e%3cpath d='M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z' fill='rgba(0%2c 0%2c 0%2c .05)'%3e%3c/path%3e%3cpath d='M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z' fill='rgba(0%2c 0%2c 0%2c .025)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1560'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx='100%25' cy='100%25' r='1545.06' gradientUnits='userSpaceOnUse' id='SvgjsRadialGradient1561'%3e%3cstop stop-color='rgba(9%2c 82%2c 158%2c 1)' offset='1'%3e%3c/stop%3e%3cstop stop-color='rgba(0%2c 69%2c 158%2c 0)' offset='1'%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e");
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: multiply;
+
+}
+.container > * {
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
+
+/* Barra lateral fija */
+.sidebar {
+  width: var(--sidebar-width); /* Ancho de la barra lateral */
+  height: 100%; /* Altura completa del contenedor padre menos el padding */
+  color: var(--text-color); /* Color del texto en la barra lateral */
+  position: static; /* Fija la barra lateral en su posición */
+  padding: 0; /* Elimina el margen y usa padding si es necesario */
+  display: flex; /* Utiliza flexbox para el diseño */
+  
+}
+
+.sidebar-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: #007bff3a;
+}
+
+/* Contenedor del logo en la barra lateral */
+.sidebar-logo {
+  width: 100%; /* Ancho completo */
+  flex:auto; 
+  display: flex; /* Utiliza flexbox para el diseño */
+  justify-content: center; /* Centra el logo horizontalmente */
+  align-items: start;
+  padding: 0.2rem 1rem; /* Espaciado interno */
+}
+
+/* Estilos para la imagen del logo */
+.sidebar-logo img {
+  width: 100%;
+  transition: transform 0.3s ease; /* Transición suave para el efecto de escala */
+}
+
+/* Efecto hover para la imagen del logo */
+.sidebar-logo img:hover {
+  transform: scale(1.08); /* Aumenta el tamaño de la imagen al pasar el mouse */
+}
+
+
+.sidebar-buttons, .sidebar-logout {
+  display: flex;
+  width: 100%; /* Ancho completo */
+  padding: 1rem; /* Espaciado interno */
+}
+
+.sidebar-buttons {
+  flex-direction: column; /* Coloca los elementos en una columna */
+  gap: 1rem; /* Espacio entre los elementos */
+  flex: content;
+  align-items: first baseline;
+}
+
+.sidebar-buttons .sidebar-buttons {
+  padding: 0;
+}
+
+.sidebar-buttons .sidebar-button, .sidebar-logout .logout-button {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 3.2rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+
+.sidebar-buttons .sidebar-button {  
+  background-color: var(--button-bg); /* Color de fondo */
+
+}
+
+
+.sidebar-logout {
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+  
+}
+
+.sidebar-logout .logout-button {
+  gap: 1rem;
+  background-color: #ff0000; /* Color de fondo */
+}
+.logout-button span {
+  padding: 0;
+  margin: 0;
+}
+
+
+/* Área de contenido */
+.content-area { /* Deja espacio para la barra lateral y el padding del contenedor */
+  width: calc(100% - var(--sidebar-width)); /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
+  height: 100%; /* Ajusta la altura restando el padding del contenedor */
+  display: flex; /* Utiliza flexbox para el diseño */
+  flex-wrap: wrap; /* Coloca los elementos en una columna */
+ }
+
+/* Barra de navegación fija */
+.navbar {
+  box-sizing: border-box;
+  height: var(--navbar-height); /* Altura de la barra de navegación */
+  width: 100%; /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
+  color: var(--text-color); /* Color del texto en la barra de navegación */
+  display: flex; /* Utiliza flexbox para el diseño */
+  align-items: center; /* Centra los elementos verticalmente */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  position: static; /* Fija la barra de navegación en su posición */
+  
+}
+
+.navbar-content {
+  /* contenedor de la barra de navegacion */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-left: 20px;
+    /* Añade un sombreado a la barra de navegación */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Añade un borde redondeado a la barra de navegación */
+    border-radius: 10px;
+    background-color: #007bff3a;
+}
+.main {
+  box-sizing: border-box;
+  height: calc(100% - var(--navbar-height)); /* Ajusta la altura restando la altura de la barra de navegación y el margen */
+  width: 100%; /* Ajusta el ancho restando el margen */
+   /* Deja espacio para la barra de navegación */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: static;
+  
+}
+
+/* Contenido principal con scroll */
+.main-content {
+  display: flex; /* Utiliza flexbox para el diseño */
+  flex-direction: column; /* Coloca los elementos en una columna */
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: flex-start; /* Alinea los elementos al inicio verticalmente */
+  width: 100%;
+  height: calc(100% - 20px);
+  margin-left: 20px;
+  margin-top: 20px;
+  padding: 1rem;
+  overflow-y: auto; /* Añade scroll vertical */
+  border-radius: 10px;
+  background-color: #007bff3a;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+*::-webkit-scrollbar:window-inactive {
+  display: none;
+  }
+*::-webkit-scrollbar {
+  width: 8px;
+  background-color: var(--button-bg);
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb  {
+  background-color: #09C;
+  border-radius: 6px;
+}
+
+.main::-webkit-scrollbar:window-inactive {
+  display: none;
+  }
+.main ::-webkit-scrollbar {
+  width: 8px;
+  background-color: var(--button-bg);
+  border-radius: 20px;
+}
+
+.main::-webkit-scrollbar-thumb  {
+  background-color: #09C;
+  border-radius: 6px;
+}
+
+
+
+/* Estilos para el calendario */
 
 .rbc-button-link {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif !important; /* Cambia por la fuente que prefieras */
@@ -71,10 +282,6 @@ button span {
   font-weight: 500; /* También puedes cambiar el peso si lo deseas */
   color: #333; /* Personaliza el color de los números si es necesario */
   margin: 0.1rem !important; /* Añade un margen horizontal */
-}
-
-button, select{
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif !important; /* Cambia por la fuente que prefieras */
 }
 
 
@@ -144,11 +351,9 @@ button, select{
   overflow: hidden !important; /* Asegura que los bordes se recorten */
   border: 1px solid #ddd !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-.rbc-date-cell {
   
 }
+
 
 .rbc-day-bg,
 .rbc-date-cell button {/* Redondea las celdas de los días y los botones */

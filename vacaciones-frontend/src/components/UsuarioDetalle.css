@@ -58,6 +58,7 @@ h1, h2, h3, label {
     border-collapse: collapse;
     margin-top: 1rem;
     background-color: rgba(255, 255, 255, 0);
+    
 }
 
 .table th, .table td {

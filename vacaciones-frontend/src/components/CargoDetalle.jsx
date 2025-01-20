@@ -100,7 +100,7 @@ const CargoDetalle = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <Preloader duration={650} />
       <div className="container-detalle">
         <NavigationBar onLogout={handleLogout} />

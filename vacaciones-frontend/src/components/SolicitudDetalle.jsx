@@ -272,135 +272,141 @@ export default function SolicitudDetalle() {
 
   if (solicitudes.length === 0) {
     return (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Preloader duration={650} />
-        <div className="container-solicitudes">
-        <Logo />
-          <h4>Solicitudes del Usuario</h4>
-          <br />
-          <h4>No se encontraron solicitudes para este usuario.</h4>
-          <br />
-          <button className="volver-home" onClick={() => navigate("/Home")}>
-            Volver al Home
-          </button>
-        </div>
-      </LocalizationProvider>
+      <div className="container">
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Preloader duration={650} />
+          <div className="container-solicitudes">
+          <Logo />
+            <h4>Solicitudes del Usuario</h4>
+            <br />
+            <h4>No se encontraron solicitudes para este usuario.</h4>
+            <br />
+            <button className="volver-home" onClick={() => navigate("/Home")}>
+              Volver al Home
+            </button>
+          </div>
+        </LocalizationProvider>
+      </div>
     );
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" >
-      <Preloader duration={650} />
-      <div className="container-solicitudes">
-        <Logo />
-        <h4>Solicitudes del Usuario</h4>
-        {/* Lista desplegable para filtro */}
-        <select
-          className="select-filtro"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-        >
-          <option value="Todas"> Todas </option>
-          <option value="Confirmada">Confirmadas</option>
-          <option value="Pendiente">Pendientes</option>
-        </select>
+    <div className="container">
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" >
+        <Preloader duration={650} />
+        <div className="container-solicitudes">
+          <Logo />
+          <h4>Solicitudes del Usuario</h4>
+          {/* Lista desplegable para filtro */}
+          <select
+            className="select-filtro"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+          >
+            <option value="Todas"> Todas </option>
+            <option value="Confirmada">Confirmadas</option>
+            <option value="Pendiente">Pendientes</option>
+          </select>
 
-        <ul>
-          {solicitudesFiltradas.map((solicitud, index) => (
-            <li key={solicitud.id}>
-              {editando === solicitud.id ? (
-                <div>
-                  <p>
-                    <strong>Solicitud N°{index + 1}</strong>
-                    <br />
-                    <br />
-                  </p>
-                  <div className="datepicker-container">
-                    <DatePicker
-                      label="Fecha de inicio"
-                      value={nuevaFechaInicio}
-                      onChange={(newValue) => setNuevaFechaInicio(newValue)}
-                      shouldDisableDate={shouldDisableDate}
-                      renderInput={(params) => <input {...params} />}
-                    />
-                    <DatePicker
-                      label="Fecha de fin"
-                      value={nuevaFechaFin}
-                      onChange={(newValue) => setNuevaFechaFin(newValue)}
-                      shouldDisableDate={(date) =>
-                        shouldDisableDate(date) ||
-                        (nuevaFechaInicio && date.isBefore(nuevaFechaInicio, "day"))
-                      }
-                      renderInput={(params) => <input {...params} />}
-                    />
-                  </div>
-                  <br />
-                  <div className="buttons">
-                    <button onClick={() => handleGuardar(solicitud.id)}>
-                      <span>Guardar</span>
-                    </button>
-                    <button onClick={handleCancelar}>
-                      <span>Cancelar</span>
-                      </button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="titulo-solicitud"><strong>Solicitud N°{index + 1}</strong></div>
-                  <div className="solicitud-contenedor">
-                    <div className="columna">
-                      <p>
-                        <strong>Fecha de inicio:</strong>{" "}
-                        {dayjs(solicitud.fechaInicio).format("DD/MM/YYYY")}
-                      </p>
-                      <p>
-                        <strong>Fecha de fin:</strong>{" "}
-                        {dayjs(solicitud.fechaFin).format("DD/MM/YYYY")}
-                      </p>
-                      <p>
-                        <strong>Cantidad de días:</strong> {solicitud.cantidadDias}
-                      </p>
+          <ul>
+            {solicitudesFiltradas.map((solicitud, index) => (
+              <li key={solicitud.id}>
+                {editando === solicitud.id ? (
+                  <div>
+                    <p>
+                      <strong>Solicitud N°{index + 1}</strong>
+                      <br />
+                      <br />
+                    </p>
+                    <div className="datepicker-container">
+                      <DatePicker
+                        label="Fecha de inicio"
+                        value={nuevaFechaInicio}
+                        onChange={(newValue) => setNuevaFechaInicio(newValue)}
+                        shouldDisableDate={shouldDisableDate}
+                        renderInput={(params) => <input {...params} />}
+                      />
+                      <DatePicker
+                        label="Fecha de fin"
+                        value={nuevaFechaFin}
+                        onChange={(newValue) => setNuevaFechaFin(newValue)}
+                        shouldDisableDate={(date) =>
+                          shouldDisableDate(date) ||
+                          (nuevaFechaInicio && date.isBefore(nuevaFechaInicio, "day"))
+                        }
+                        renderInput={(params) => <input {...params} />}
+                      />
                     </div>
-                    <div className="columna">
-                      <p>
-                        <strong>Estado:</strong>{" "}
-                        {solicitud.estado ? "Confirmada" : "Pendiente"}
-                      </p>
-                      <p>
-                        <strong>Líder:</strong>{" "}
-                          {lideres
-                            .filter((lider) => lider.id === solicitud.lider.id) // Filtra el líder asignado
-                            .map((lider) => (
-                              <span key={lider.id}>
-                                {lider.nombre} {lider.apellido}
-                              </span>
-                          ))}
-                      </p> 
-                      <p>
-                        <strong>Comentario:</strong> {solicitud.comentario || "Sin comentario"}
-                      </p>
+                    <br />
+                    <div className="buttons">
+                      <button onClick={() => handleGuardar(solicitud.id)}>
+                        <span>Guardar</span>
+                      </button>
+                      <button onClick={handleCancelar}>
+                        <span>Cancelar</span>
+                        </button>
                     </div>
                   </div>
-                  <div className="buttons">
-                    <button onClick={() => handleEditar(solicitud)}>
-                      <span>Editar</span>
+                ) : (
+                  <div>
+                    <div className="titulo-solicitud"><strong>Solicitud N°{index + 1}</strong></div>
+                    <div className="solicitud-contenedor">
+                      <div className="columna">
+                        <p>
+                          <strong>Fecha de inicio:</strong>{" "}
+                          {dayjs(solicitud.fechaInicio).format("DD/MM/YYYY")}
+                        </p>
+                        <p>
+                          <strong>Fecha de fin:</strong>{" "}
+                          {dayjs(solicitud.fechaFin).format("DD/MM/YYYY")}
+                        </p>
+                        <p>
+                          <strong>Cantidad de días:</strong> {solicitud.cantidadDias}
+                        </p>
+                      </div>
+                      <div className="columna">
+                        <p>
+                          <strong>Estado:</strong>{" "}
+                          {solicitud.estado ? "Confirmada" : "Pendiente"}
+                        </p>
+                        <p>
+                          <strong>Líder:</strong>{" "}
+                            {lideres
+                              .filter((lider) => lider.id === solicitud.lider.id) // Filtra el líder asignado
+                              .map((lider) => (
+                                <span key={lider.id}>
+                                  {lider.nombre} {lider.apellido}
+                                </span>
+                            ))}
+                        </p> 
+                        <p>
+                          <strong>Comentario:</strong> {solicitud.comentario || "Sin comentario"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="buttons">
+                      <button onClick={() => handleEditar(solicitud)}>
+                        <span>Editar</span>
+                        </button>
+                      <button
+                        className="delete"
+                        onClick={() => handleEliminar(solicitud.id)}
+                      >
+                        <span>Eliminar</span>
                       </button>
-                    <button
-                      className="delete"
-                      onClick={() => handleEliminar(solicitud.id)}
-                    >
-                      <span>Eliminar</span>
-                    </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-        <button className="volver-home" onClick={() => navigate("/Home")}>
-          <span>Volver al Home</span>
-        </button>
-      </div>
-    </LocalizationProvider>
+                )}
+              </li>
+            ))}
+          </ul>
+          <button className="volver-home" onClick={() => navigate("/Home")}>
+            <span>Volver al Home</span>
+          </button>
+        </div>
+      </LocalizationProvider>
+
+    </div>
   );
 }

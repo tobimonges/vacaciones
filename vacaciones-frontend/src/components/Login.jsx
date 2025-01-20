@@ -91,16 +91,14 @@ function Login() {
     );
   }
   return (
-    <div className="containerLogin">
-      <Preloader duration={650} />
+    <div className="container containerLogin">
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${
-          error ? "datosIncorrectos" : ""
-        }`}
+        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
+          }`}
       >
         <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
-        <form onSubmit={handleLogin} action="login" method="post">
+        <form onSubmit={handleLogin} action="login" method="post" className="loginForm">
           <div className="inputGroup">
             <div className="iconWrap">
               <img src="/avatar.svg" alt="Usuario" className="icon" />
@@ -116,31 +114,30 @@ function Login() {
           </div>
           <div className="inputGroup">
             <div className="iconWrap">
-              <img
-                src="/cerrar-con-llave.svg"
-                alt="Contraseña"
-                className="icon"
-              />
+              <img src="/cerrar-con-llave.svg" alt="Contraseña" className="icon" />
               <input
                 type="password"
                 placeholder="Contraseña"
                 className="input"
-                value={password} // Vincula el valor con el estado
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <div className="forgotPassword">
-              <a
-                href="#"
-                className="link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleForgotPassword();
-                }}
-              >
-                Olvidaste tu contraseña?
-              </a>
+            <div className="inputGroup">
+
+              <div className="forgotPassword">
+                <a
+                  href="#"
+                  className="link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleForgotPassword();
+                  }}
+                >
+                  Olvidaste tu contraseña?
+                </a>
+              </div>
             </div>
           </div>
           <button type="submit" className="buttonLogin">

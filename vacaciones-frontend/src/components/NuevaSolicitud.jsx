@@ -10,6 +10,7 @@ import "./NuevaSolicitud.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
+
 import Preloader from "./Preloader";
 
 const today = dayjs();
@@ -50,6 +51,8 @@ export default function NuevaSolicitud() {
   const navigate = useNavigate();
   const userRole = getUserRole();
   const [file, setFile] = useState(null);
+  const [mensaje, setMensaje] = useState("");
+  const [tipoMensaje, setTipoMensaje] = useState("");
 
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
@@ -64,11 +67,26 @@ export default function NuevaSolicitud() {
   };
 
   useEffect(() => {
+    if (mensaje) {
+      // Ocultar el mensaje automáticamente después de 3 segundos
+      const timer = setTimeout(() => {
+        setMensaje("");
+        setTipoMensaje("");
+      }, 3000);
+  
+      return () => clearTimeout(timer); // Limpiar el temporizador en caso de que el componente se desmonte
+    }
+  }, [mensaje]);
+
+  
+  useEffect(() => {
     const fetchReservedDates = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("No se encontró un token. Inicia sesión nuevamente.");
+       //   setError("No se encontró un token. Inicia sesión nuevamente.");
+          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+          setTipoMensaje("Error");
           return;
         }
 
@@ -97,7 +115,9 @@ export default function NuevaSolicitud() {
         setReservedDates(dates);
       } catch (err) {
         console.error("Error al obtener fechas reservadas:", err);
-        setError("No se pudo obtener la información de las solicitudes.");
+       // setError("No se pudo obtener la información de las solicitudes.");
+        setMensaje("No se pudo obtener la información de las solicitudes.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -109,7 +129,9 @@ export default function NuevaSolicitud() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("No se encontró un token. Inicia sesión nuevamente.");
+      //    setError("No se encontró un token. Inicia sesión nuevamente.");
+          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+          setTipoMensaje("Error");
           return;
         }
 
@@ -121,7 +143,9 @@ export default function NuevaSolicitud() {
         setDiasVacacionesDisponibles(response.data);
       } catch (err) {
         console.error("Error al obtener días de vacaciones disponibles:", err);
-        setError("No se pudo obtener la información de días de vacaciones.");
+     //   setError("No se pudo obtener la información de días de vacaciones.");
+        setMensaje("No se pudo obtener la información de días de vacaciones.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -196,7 +220,9 @@ export default function NuevaSolicitud() {
         setLideres(usuariosFiltrados);
       } catch (err) {
         console.error("Error al obtener usuarios:", err);
-        setError("No se pudo obtener la información de los usuarios.");
+       // setError("No se pudo obtener la información de los usuarios.");
+        setMensaje("No se pudo obtener la información de los usuarios.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -211,7 +237,9 @@ export default function NuevaSolicitud() {
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-      setWarning("No puedes seleccionar más días de los disponibles.");
+    //  setWarning("No puedes seleccionar más días de los disponibles.");
+      setMensaje("No puedes seleccionar más días de los disponibles.");
+      setTipoMensaje("Warning");
     } else {
       setWarning("");
     }
@@ -232,7 +260,9 @@ export default function NuevaSolicitud() {
     e.preventDefault();
 
     if (!startDate || !endDate || !selectedLideres) {
-      setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
+     // setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      setMensaje("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      setTipoMensaje("Error");
       return;
     }
 
@@ -272,13 +302,19 @@ export default function NuevaSolicitud() {
         );
       }
 
-      alert("Carga de solicitud exitosa");
-      navigate("/Home");
+   //   alert("Carga de solicitud exitosa");
+      setMensaje("Carga de solicitud exitosa");
+      setTipoMensaje("Success");
+      setTimeout(() => {
+        navigate("/Home");
+      }, 1500);
     } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
-        setError("Error al crear la solicitud.");
+    //    setError("Error al crear la solicitud.");
+        setMensaje("Error al crear la solicitud.");
+        setTipoMensaje("Error");
       }
     }
   };
@@ -286,10 +322,16 @@ export default function NuevaSolicitud() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <Preloader duration={650} />
-      <div className="container">
+      <div className="nueva-solicitud-container">
         <div className="DatePicker">
           <Logo />
           <h2>Nueva Solicitud</h2>
+          {mensaje && (
+  <div className={`MensajePopuppNS ${tipoMensaje}`}>
+    <p>{mensaje}</p>
+  </div>
+)}
+
           <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
             <div className="info-card">
               <p className="info-number">{diasVacacionesDisponibles}</p>
@@ -375,11 +417,14 @@ export default function NuevaSolicitud() {
                 </select>
                 {index === selectedLideres.length - 1 &&
                   selectedLideres.length < 3 && (
-                    <div onClick={handleAddLiderSelector}>
+                    <div 
+                    className="imagenBotonMas"
+                    onClick={handleAddLiderSelector}>
                       <img
-                        src="./public/yamada-btn.png"
+                        src="./public/agregar.svg"
                         alt="Añadir líder"
                         title="Añadir líder"
+                        className="imagenBotonMas-img"
                       />
                     </div>
                   )}

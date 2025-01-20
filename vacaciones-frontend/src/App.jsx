@@ -14,10 +14,12 @@ import CreaCargo from "./components/CreaCargo";
 import EquipoDetalle from "./components/EquipoDetalle";
 import CargoDetalle from "./components/CargoDetalle";
 import UsuarioDetalle from "./components/UsuarioDetalle";
+import Preloader from "./components/Preloader";
 
 function App() {
   return (
     <Router>
+      <Preloader duration={650} />
       <Routes>
         {/* Ruta pública */}
         <Route path="/" element={<Login />} />

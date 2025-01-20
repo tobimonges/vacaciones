@@ -1,121 +1,166 @@
 /* Contenedor principal del navbar */
 .nav-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-  
-  /* Barra de navegación */
-  .navigation-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Espacia botones y logo */
-    padding: 10px 15px;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  width: 98%;
+  height: 95px;
+  max-width: 100%;
+  /* Asegura que nunca exceda el ancho de su contenedor */
 
-    
-  }
+  margin: 0 auto;
+  /* Centra horizontalmente */
+}
+
+.weather {
+  height: 100%;
+}
+
+.weather-info {
+  height: 70px;
+}
+
+.weather-icon {
+  height: 60px;
+}
+
+.temperature {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Barra de navegación */
+.navigation-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Espacia los elementos: logo y botones */
+  width: 100%;
+  /* Se ajusta al tamaño del contenedor */
+  margin: 0 auto;
+  /* Centra horizontalmente */
+  padding: 0 15px;
+  /* ESPACIADO INTERNO 
+  background-color: #007bff3a;*/
+  /*backdrop-filter: blur(10px);*/
+  border-radius: 10px;
+}
 
 
-  
-  
-  /* Contenedor individual para cada botón */
-  .nav-button-container {
-    display: flex;
-    width: 160px;
-    align-items: center;    /* Centra verticalmente */
-  }
+
+/* Contenedor individual para cada botón */
+.nav-button-container {
+  display: flex;
+  width: 165px;
+  align-items: center;
+  /* Centra verticalmente */
+}
 
 
-  .left {
-    justify-content: left;
-  }
-  .right {
-    justify-content: right;
-  }
-  
-  
-  /* Botón general */
+.left {
+  justify-content: left;
+}
+
+.right {
+  justify-content: right;
+}
+
+
+/* Botón general */
+.nav-button {
+  font-size: 14px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin: 0;
+  /*mi agregado*/
+  display: flex;
+  /* Asegura que el contenido (imagen) se alinee correctamente */
+  justify-content: center;
+  /* Centra la imagen dentro del botón */
+  align-items: center;
+  /* Centra la imagen dentro del botón */
+  padding: 10px;
+  /* Controla el espacio alrededor de la imagen */
+}
+
+.button-icon {
+  width: 20px;
+  /* Ajusta el tamaño del ícono */
+  height: 20px;
+  /* Mantén la proporción */
+}
+
+/* Hover del botón */
+.nav-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Botón específico: Atrás */
+.back-button {
+  backdrop-filter: blur(10px);
+  background-color: #FDCA40;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.text {
+  color: #fff;
+}
+
+.back-button:hover {
+  background-color: #fcbc0e;
+}
+
+/* Botón específico: Cerrar sesión */
+.logout {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #FDCA40;
+  backdrop-filter: blur(10px);
+}
+
+.logout:hover {
+  background-color: #fcbc0e;
+}
+
+/* Logo centrado */
+.nav-logo {
+  flex: 1;
+  /* Permite al logo centrarse equilibradamente */
+  display: flex;
+  justify-content: center;
+}
+
+.nav-logo img {
+  height: 48px;
+  transition: transform 0.3s ease;
+}
+
+.nav-logo img:hover {
+  transform: scale(1.08);
+}
+.saludo {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
   .nav-button {
-    font-size: 14px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    margin: 0;
-    /*mi agregado*/
-    display: flex; /* Asegura que el contenido (imagen) se alinee correctamente */
-  justify-content: center; /* Centra la imagen dentro del botón */
-  align-items: center; /* Centra la imagen dentro del botón */
-  padding: 10px; /* Controla el espacio alrededor de la imagen */
-  }
-  .button-icon {
-    width: 20px; /* Ajusta el tamaño del ícono */
-    height: 20px; /* Mantén la proporción */
-  }
-  /* Hover del botón */
-  .nav-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-  }
-  
-  /* Botón específico: Atrás */
-  .back-button {
-    backdrop-filter: blur(10px);
-    background-color: #FDCA40;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  .text {
-    color: #fff;
-  }
-  
-  .back-button:hover {
-    background-color: #fcbc0e;
-  }
-  
-  /* Botón específico: Cerrar sesión */
-  .logout {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #FDCA40;
-    backdrop-filter: blur(10px);
-  }
-  
-  .logout:hover {
-    background-color: #fcbc0e;
-  }
-  
-  /* Logo centrado */
-  .nav-logo {
-    flex: 1; /* Permite al logo centrarse equilibradamente */
-    display: flex;
-    justify-content: center;
+    font-size: 12px;
+    padding: 8px 16px;
   }
 
   .nav-logo img {
-    height: 40px;
-    transition: transform 0.3s ease;
+    height: 30px;
   }
 
-  .nav-logo img:hover {
-    transform: scale(1.08);
+  .navigation-bar {
+    padding: 8px 15px;
   }
-  
-  /* Responsividad */
-  @media (max-width: 768px) {
-    .nav-button {
-      font-size: 12px;
-      padding: 8px 16px;
-    }
-  
-    .nav-logo img {
-      height: 30px;
-    }
-  
-    .navigation-bar {
-      padding: 8px 15px;
-    }
 
-  }
-  
+}

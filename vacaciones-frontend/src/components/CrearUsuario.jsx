@@ -136,7 +136,7 @@ function CrearUsuario() {
   };
 
   return (
-    <div className="containerCreate">
+    <div className="container containerCreate">
       <Preloader duration={650} />
       <div className={`createBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""}`}>
         <NavigationBar onLogout={handleLogout} />

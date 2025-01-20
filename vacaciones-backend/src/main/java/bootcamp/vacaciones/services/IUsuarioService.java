@@ -1,6 +1,7 @@
 package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.UsuarioModel;
+import bootcamp.vacaciones.payload.UsuarioRequest;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ public interface IUsuarioService {
 
     int obtenerDiasVacacionesPorCedula(int nroCedula);
 
-    UsuarioModel guardarUsuario(UsuarioModel usuario);
+    UsuarioModel guardarUsuario(UsuarioRequest usuarioRequest);
 
     void eliminarUsuario(UsuarioModel usuario);
 
-    UsuarioModel actualizarUsuario(Long idUsuario, UsuarioModel usuario);
+    UsuarioModel actualizarUsuario(Long idUsuario, UsuarioRequest usuarioRequest);
 
 }

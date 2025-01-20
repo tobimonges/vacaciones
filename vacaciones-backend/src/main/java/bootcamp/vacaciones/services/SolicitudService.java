@@ -133,23 +133,47 @@ public class SolicitudService implements ISolicitudService {
     }
 
     private Set<UsuarioModel> recuperarYValidarLideres(List<Long> liderIds, Long idUsuario, String nombreRol) {
+        Logger logger = LoggerFactory.getLogger(SolicitudService.class);
+
+        logger.info("Iniciando validación de líderes...");
+        logger.debug("IDs de líderes proporcionados: {}", liderIds);
+        logger.debug("ID del usuario asociado: {}", idUsuario);
+        logger.debug("Rol del usuario asociado: {}", nombreRol);
+
         Set<UsuarioModel> lideres = new HashSet<>();
 
         if (liderIds != null) {
             for (Long liderId : liderIds) {
-                UsuarioModel lider = usuarioRepository.findById(liderId)
-                        .orElseThrow(() -> new IllegalArgumentException("Líder no encontrado: ID " + liderId));
+                logger.info("Validando líder con ID: {}", liderId);
 
+                // Verificar si el líder existe en la base de datos
+                UsuarioModel lider = usuarioRepository.findById(liderId)
+                        .orElseThrow(() -> {
+                            logger.error("Líder no encontrado: ID {}", liderId);
+                            return new IllegalArgumentException("Líder no encontrado: ID " + liderId);
+                        });
+
+                logger.info("Líder encontrado: {} - {}", lider.getId(), lider.getNombre());
+
+                // Validar que el usuario no se seleccione a sí mismo como líder
                 if (lider.getId().equals(idUsuario)) {
+                    logger.error("El usuario con ID {} no puede seleccionarse como líder.", idUsuario);
                     throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
                 }
 
-                System.out.println(nombreRol);
+                // Validar que el líder cumple con los requisitos del rol
+                logger.debug("Validando líder contra rol: {}", nombreRol);
                 validarLiderPorRol(nombreRol, lider);
+                logger.info("Líder con ID {} validado correctamente.", lider.getId());
 
+                // Agregar el líder al conjunto
                 lideres.add(lider);
             }
+        } else {
+            logger.warn("No se proporcionaron IDs de líderes para validar.");
         }
+
+        logger.info("Validación de líderes completada. Total de líderes validados: {}", lideres.size());
         return lideres;
     }
 
@@ -257,20 +281,44 @@ public class SolicitudService implements ISolicitudService {
 
     @Override
     public SolicitudModel actualizarSolicitudConDTO(Long idSolicitud, SolicitudRequest solicitudRequest) {
+        logger.info("Iniciando actualización de la solicitud con ID: {}", idSolicitud);
+
+        // Buscar la solicitud en la base de datos
         SolicitudModel solicitud = solicitudRepository.findById(idSolicitud)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
-        Set<UsuarioModel> lideres = new HashSet<>();
-        if (solicitudRequest.getLiderIds() != null && !solicitudRequest.getLiderIds().isEmpty()) {
-            lideres = recuperarYValidarLideres(solicitudRequest.getLiderIds(), solicitud.getUsuario().getId(), solicitud.getUsuario().getRol().getNombre());
-            solicitud.setLideres(lideres);
-        } else {
-            throw new IllegalArgumentException("Debe seleccionarse al menos un líder para esta solicitud.");
-        }
+        logger.info("Solicitud encontrada: {}", solicitud.getId());
 
         UsuarioModel usuario = solicitud.getUsuario();
         if (usuario == null) {
+            logger.error("El usuario asociado a la solicitud no fue encontrado.");
             throw new IllegalArgumentException("El usuario asociado a la solicitud no fue encontrado.");
+        }
+
+        logger.info("Usuario asociado a la solicitud: {} - Rol: {}", usuario.getId(), usuario.getRol().getNombre());
+
+        // Validar líderes solo si el usuario no es DIRECTORIO
+        Set<UsuarioModel> lideres = new HashSet<>();
+        if (!"DIRECTORIO".equals(usuario.getRol().getNombre())) {
+            logger.info("Validando líderes para un usuario no DIRECTORIO...");
+
+            if (solicitudRequest.getLiderIds() != null && !solicitudRequest.getLiderIds().isEmpty()) {
+                lideres = recuperarYValidarLideres(solicitudRequest.getLiderIds(), usuario.getId(), usuario.getRol().getNombre());
+                solicitud.setLideres(lideres);
+                logger.info("Líderes asignados a la solicitud: {}", lideres.stream().map(UsuarioModel::getId).toList());
+            } else {
+                logger.error("Debe seleccionarse al menos un líder para esta solicitud.");
+                throw new IllegalArgumentException("Debe seleccionarse al menos un líder para esta solicitud.");
+            }
+        } else {
+            logger.info("El usuario con rol DIRECTORIO no requiere líderes para la solicitud.");
+            solicitud.setLideres(Collections.emptySet()); // Asignar un conjunto vacío en caso de DIRECTORIO
+        }
+
+        // Validar las fechas
+        if (solicitudRequest.getFechaInicio().isAfter(solicitudRequest.getFechaFin())) {
+            logger.error("La fecha de inicio no puede ser posterior a la fecha de fin.");
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin.");
         }
 
         int diasHabiles = calcularDiasHabiles(
@@ -279,10 +327,14 @@ public class SolicitudService implements ISolicitudService {
                 usuario.getId()
         );
 
+        logger.info("Días hábiles calculados: {}", diasHabiles);
+
+        // Actualizar los datos de la solicitud
         solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         solicitud.setFechaFin(solicitudRequest.getFechaFin());
         solicitud.setCantidadDias(diasHabiles);
 
+        logger.info("Solicitud actualizada correctamente con ID: {}", solicitud.getId());
         return solicitudRepository.save(solicitud);
     }
 
@@ -515,7 +567,6 @@ public class SolicitudService implements ISolicitudService {
         eventos.addAll(cumpleanos);
         return eventos;
     }
-
 
     public int calcularDiasHabiles(LocalDate fechaInicio, LocalDate fechaFin, Long idUsuario) {
         if (fechaInicio.isAfter(fechaFin)) {

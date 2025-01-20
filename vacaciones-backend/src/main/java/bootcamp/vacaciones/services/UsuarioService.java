@@ -1,6 +1,9 @@
 package bootcamp.vacaciones.services;
 
+import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
+import bootcamp.vacaciones.payload.UsuarioRequest;
+import bootcamp.vacaciones.repositories.RolRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.utils.GeneradorContraseña;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UsuarioService implements IUsuarioService{
     @Autowired
@@ -18,6 +23,8 @@ public class UsuarioService implements IUsuarioService{
     private PasswordEncoder passwordEncoder;
 
     private final EmailService emailService;
+    @Autowired
+    private RolRepository rolRepository;
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
@@ -61,58 +68,82 @@ public class UsuarioService implements IUsuarioService{
         return usuarioRepository.findById(idUsuario).orElse(null);
     }
 
-    @Override
-    public UsuarioModel guardarUsuario(UsuarioModel usuario) {
-        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+
+    public UsuarioModel guardarUsuario(UsuarioRequest usuarioRequest) {
+        if (usuarioRepository.findByCorreo(usuarioRequest.getCorreo()).isPresent()) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
-        if (usuarioRepository.findByNroCedula(usuario.getNroCedula()).isPresent()) {
+        if (usuarioRepository.findByNroCedula(usuarioRequest.getNroCedula()).isPresent()) {
             throw new IllegalArgumentException("La cédula ya está registrada");
         }
-        if (usuario.getContrasena() == null || usuario.getContrasena().isEmpty()) {
+
+
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setNombre(usuarioRequest.getNombre());
+        usuario.setApellido(usuarioRequest.getApellido());
+        usuario.setNroCedula(usuarioRequest.getNroCedula());
+        usuario.setCorreo(usuarioRequest.getCorreo());
+        usuario.setFechaNacimiento(usuarioRequest.getFechaNacimiento());
+        usuario.setTelefono(usuarioRequest.getTelefono());
+        usuario.setFechaIngreso(usuarioRequest.getFechaIngreso());
+        usuario.setEstado(usuarioRequest.isEstado());
+        usuario.setRol(usuarioRequest.getRol());
+        usuario.setCargo(usuarioRequest.getCargo());
+        usuario.setEquipo(usuarioRequest.getEquipo());
+
+
+
+        if (usuarioRequest.getContrasena() == null || usuarioRequest.getContrasena().isEmpty()) {
             String passwordAleatoria = GeneradorContraseña.generarContraseñaAleatoria();
 
-
             emailService.enviarCorreo(
-                    usuario.getCorreo(),
+                    usuarioRequest.getCorreo(),
                     "Modificar Contraseña",
-                    "<p>Bienvenido/a " + usuario.getNombre() + ",</p>" +
-                            "<p>Se ha creado una cuenta en el sistema para solicitar vacaciones.  Su contraseña temporal es:</p>" +
+                    "<p>Bienvenido/a " + usuarioRequest.getNombre() + ",</p>" +
+                            "<p>Se ha creado una cuenta en el sistema para solicitar vacaciones. Su contraseña temporal es:</p>" +
                             "<h3>" + passwordAleatoria + "</h3>" +
                             "<p>Por favor cambie su contraseña para acceder al sistema.</p>" +
                             "<p>Saludos</p>"
-
             );
 
             usuario.setContrasena(passwordEncoder.encode(passwordAleatoria));
         }
+
         return usuarioRepository.save(usuario);
     }
 
     @Override
-    public UsuarioModel actualizarUsuario(Long idUsuario, UsuarioModel usuarioRecibido) {
+    public UsuarioModel actualizarUsuario(Long idUsuario, UsuarioRequest usuarioRequest) {
         UsuarioModel usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
 
-        usuario.setNombre(usuarioRecibido.getNombre());
-        usuario.setApellido(usuarioRecibido.getApellido());
-        usuario.setCorreo(usuarioRecibido.getCorreo());
-        usuario.setFechaNacimiento(usuarioRecibido.getFechaNacimiento());
-        usuario.setTelefono(usuarioRecibido.getTelefono());
-        usuario.setEstado(usuarioRecibido.isEstado());
+        Optional<UsuarioModel> usuarioConCorreo = usuarioRepository.findByCorreo(usuarioRequest.getCorreo());
+        if (usuarioConCorreo.isPresent() && !usuarioConCorreo.get().getId().equals(idUsuario)) {
+            throw new IllegalArgumentException("El correo ya está en uso.");
+        }
 
-        if (usuarioRecibido.getRol() != null) {
-            usuario.setRol(usuarioRecibido.getRol());
+        Optional<UsuarioModel> usuarioConCedula = usuarioRepository.findByNroCedula(usuarioRequest.getNroCedula());
+        if (usuarioConCedula.isPresent() && !usuarioConCedula.get().getId().equals(idUsuario)) {
+            throw new IllegalArgumentException("El número de cédula ya está registrado.");
         }
-        if (usuarioRecibido.getEquipo() != null) {
-            usuario.setEquipo(usuarioRecibido.getEquipo());
-        }
-        if (usuarioRecibido.getCargo() != null) {
-            usuario.setCargo(usuarioRecibido.getCargo());
-        }
+
+        usuario.setNombre(usuarioRequest.getNombre());
+        usuario.setApellido(usuarioRequest.getApellido());
+        usuario.setNroCedula(usuarioRequest.getNroCedula());
+        usuario.setCorreo(usuarioRequest.getCorreo());
+        usuario.setFechaIngreso(usuarioRequest.getFechaIngreso());
+        usuario.setFechaNacimiento(usuarioRequest.getFechaNacimiento());
+        usuario.setTelefono(usuarioRequest.getTelefono());
+        usuario.setEstado(usuarioRequest.isEstado());
+        usuario.setRol(usuarioRequest.getRol());
+        usuario.setCargo(usuarioRequest.getCargo());
+        usuario.setEquipo(usuarioRequest.getEquipo());
+
+
 
         return usuarioRepository.save(usuario);
     }
+
 
     @Override
     public void eliminarUsuario(UsuarioModel usuario) {

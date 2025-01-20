@@ -6,10 +6,11 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import esLocale from "date-fns/locale/es";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
-import {getUserRole, getUsuarioId, isTokenValid} from "./authUtils";
+import { getUserRole, getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
+import { Link } from "react-router-dom";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -66,10 +67,10 @@ const HomeTh = () => {
 
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
         );
 
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
@@ -122,18 +123,35 @@ const HomeTh = () => {
             { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const solicitudesEvents = solicitudesResponse.data.map((solicitud) => ({
-          title: `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`,
-          start: new Date(`${solicitud.fechaInicio}T00:00:00`),
-          end: new Date(`${solicitud.fechaFin}T23:59:59`),
-          allDay: true,
-          type: solicitud.rechazado
-              ? "rechazado"
-              : solicitud.estado
-                  ? "aprobado"
-                  : "pendiente",
-          equipo: solicitud.usuario.equipo.nombre,
-        }));
+        const solicitudesEvents = solicitudesResponse.data.map((solicitud) => {
+          // Extraer usuario de solicitud
+          const usuario = solicitud.usuario;
+
+          // Verificar si usuario existe, y si no, usar un valor por defecto
+          const nombre = usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Nombre no disponible';
+
+          // Verificar si equipo existe dentro de usuario, y si no, usar un valor por defecto
+          const equipo = usuario && usuario.equipo ? usuario.equipo.nombre : 'Equipo no disponible';
+
+          // Crear objetos de fecha de forma segura
+          const fechaInicio = solicitud.fechaInicio ? new Date(`${solicitud.fechaInicio}T00:00:00`) : null;
+          const fechaFin = solicitud.fechaFin ? new Date(`${solicitud.fechaFin}T23:59:59`) : null;
+
+          // Retornar el evento con los datos correctamente manejados
+          return {
+            title: nombre,  // Nombre del usuario
+            start: fechaInicio,  // Fecha de inicio
+            end: fechaFin,  // Fecha de fin
+            allDay: true,  // Evento todo el día
+            type: solicitud.rechazado
+                ? "rechazado"
+                : solicitud.estado
+                    ? "aprobado"
+                    : "pendiente",  // Tipo basado en estado y rechazado
+            equipo: equipo,  // Nombre del equipo
+          };
+        });
+
 
         // Feriados
         const feriadosResponse = await axios.get(
@@ -251,252 +269,298 @@ const HomeTh = () => {
 
   // 🎨 **Renderizado del Componente**
   return (
-    <div className="calendar-container">
-      {/*<LogoutButton />*/}
-      <Preloader duration={650} />
-      <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-        {/* Barra de navegación */}
-        <NavigationBar onLogout={handleLogout}/>
-        {/*<Logo /> */}
-        {/* 👤 Información del Usuario */}
-        <h1 className="calendar-title">
-          Bienvenido, {userNameTh || "Usuario"}
-        </h1>
-        <h2 className="calendar-title">Solicitudes</h2>
+      <div className="container homeTH-container">
 
-        {/* 🛠️ Checkbox con filtros*/}
-        <label>
-          <input
-              type="checkbox"
-              checked={showBirthdays}
-              onChange={(e) => setShowBirthdays(e.target.checked)}
-          />
-          Mostrar cumpleaños
-        </label>
+        { /* 📚 **Barra lateral** */}
+        <div className="sidebar">
+          <div className="sidebar-content">
 
-        <label>
-          <input
-              type="checkbox"
-              checked={showHolidays}
-              onChange={(e) => setShowHolidays(e.target.checked)}
-          />
-          Mostrar feriados
-        </label>
-        {/* 🚨 Mensajes de Error */}
-        {error && <p className="calendar-error-message">{error}</p>}
+            {/* 🖼️ Logo de la barra lateral */}
+            <div className="sidebar-logo">
+              <Link to="/home">
+                <img src=".\logo-white.svg" alt="Logo" className="logo" />
+              </Link>
+            </div>
 
-        {/* 🛠️ Botones de Acción */}
-        <div className="buttons">
-          {userRole === "LIDER" ? (
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/AdminDashboard`)}
-              >
-                <span>Bandeja de Solicitudes</span>
-              </button>
-          ) : userRole !== "LIDER" ? (
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/AdminDashboard`)}
-              >
-                <span>Listar Solicitudes</span>
-              </button>
-          ) : null}
+            <div className="sidebar-buttons">
+              <div className="sidebar-buttons">
+                {userRole === "LIDER" ? (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/AdminDashboard`)}
+                    >
+                      <span>Bandeja de Solicitudes</span>
+                    </button>
+                ) : userRole !== "LIDER" ? (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/AdminDashboard`)}
+                    >
+                      <span>Listar Solicitudes</span>
+                    </button>
+                ) : null}
 
-          {/* 🛠️ Botones visibles solo para "TH" */}
-          {userRole === "TH" && (
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/crearusuario`)}
-              >
-                <span>Registrar Funcionario</span>
-              </button>
-          )}
-          {userRole === "TH" && (
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/UsuarioDetalle`)}
-              >
-                <span>Usuario Detalle</span>
-              </button>
-          )}
-          {userRole === "TH" && (
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/CrearEquipo`)}
-              >
-                <span>Crear Equipo</span>
-              </button>
-          )}
-          {userRole === "TH" && (
-              <button
-                  className="calendar-button"
-                  onClick={() => navigate(`/CrearCargo`)}
-              >
-                <span>Crear Cargo</span>
-              </button>
-          )}
-          <div className="calendar-filters-Th">
-            <select
-                // className="calendar-select-Th"
-                className="inputCreate"
-                value={equipoSeleccionado}
-                onChange={(e) => setEquipoSeleccionado(e.target.value)}
-            >
-              <option value="">Todos los equipos</option>
-              {equipos.map((equipo) => (
-                  <option key={equipo.nombre} value={equipo.nombre}>
-                    {equipo.nombre}
-                  </option>
-              ))}
-            </select>
-          </div>
-
-
-        </div>
-
-        {/* 📆 Calendario */}
-        <div className="calendar-big-container">
-          <Calendar
-              localizer={localizer}
-              events={filterEventsByTeam}
-              startAccessor="start"
-              endAccessor="end"
-              style={{height: 500, margin: "20px 0"}}
-              messages={{
-                today: "Hoy",
-                previous: "Anterior",
-                next: "Siguiente",
-                month: "Mes",
-                week: "Semana",
-                day: "Día",
-                agenda: "Agenda",
-              }}
-              views={{month: true}} // Mantener solo la vista de mes
-              eventPropGetter={eventStyleGetter}
-              dayPropGetter={dayPropGetter}
-              popup // Desactivar el comportamiento predeterminado del popup
-              showMultiDayTimes={true}
-              onShowMore={(eventsOnDay, date) => {
-                // Prevenir cambio de vista
-                handleShowMore(eventsOnDay, date);
-              }}
-              dayLayoutAlgorithm="no-overlap"
-          />
-        </div>
-
-        {/* 🖍️ Leyenda de Colores */}
-        <div className="calendar-legend">
-          <p>
-            <span
-                style={{
-                  backgroundColor: "#a0e2b3",
-                  color: "#000000",
-                  padding: "8px",
-                  borderRadius: "6px",
-                }}
-            >
-              Aprobado
-            </span>
-          </p>
-          <p>
-            <span
-                style={{
-                  backgroundColor: "#ff7c70",
-                  color: "#000000",
-                  padding: "8px",
-                  borderRadius: "6px",
-                }}
-            >
-              Rechazado
-            </span>
-          </p>
-          <p>
-            <span
-                style={{
-                  backgroundColor: "#fefda6",
-                  color: "#000000",
-                  padding: "8px",
-                  borderRadius: "6px",
-                }}
-            >
-              Pendiente
-            </span>
-          </p>
-          <p>
-            <span
-                style={{
-                  backgroundColor: "#c0a4c9",
-                  color: "#000000",
-                  padding: "8px",
-                  borderRadius: "6px",
-                }}
-            >
-              Feriado
-            </span>
-          </p>
-        </div>
-
-        {/* 🔲 Modal para Solicitudes del Día */}
-        {modalOpen && (
-            <div className="modal-overlay">
-              <div className="modal-contentTh">
-                <h4>Solicitudes en esta fecha:</h4> <br/>
-                {modalEvents.length > 0 ? (
-                    <div className="modal-events-list">
-                      <ul>
-                        {modalEvents.map((event, index) => (
-                            <li key={index}>
-                              <strong>{event.title}</strong> - {event.type} <br/>
-                              <span
-                                  style={{
-                                    color: "#000000",
-                                    backgroundColor:
-                                        event.type === "aprobado"
-                                            ? "#a0e2b3"  // Verde pastel para aprobado
-                                            : event.type === "rechazado"
-                                                ? "#ff7c70"  // Rojo pastel para rechazado
-                                                : event.type === "pendiente"
-                                                    ? "#fefda6"  // Amarillo pastel para pendiente
-                                                    : event.type === "feriado"
-                                                        ? "#c0a4c9"  // Morado pastel para feriado
-                                                        : "", // Si no es ninguno de los tipos, no aplica color
-                                    padding: "4px 8px",
-                                    borderRadius: "4px",
-                                  }}>
-                          {event.type === "aprobado"
-                              ? "Aprobado"
-                              : event.type === "rechazado"
-                                  ? "Rechazado"
-                                  : event.type === "pendiente"
-                                      ? "Pendiente"
-                                      : event.type === "feriado"
-                                          ? "Feriado"
-                                          : ""}
-                                  </span>
-                              <br/>
-                              <span>
-                          Desde: {event.start.toLocaleDateString()} hasta:{" "}
-                                {event.end.toLocaleDateString()}
-                        </span>
-                            </li>
-                        ))}
-                      </ul>
-                    </div>
-                ) : (
-                    <p>No hay solicitudes para esta fecha.</p>
+                {/* 🛠️ Botones visibles solo para "TH" */}
+                {userRole === "TH" && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/crearusuario`)}
+                    >
+                      <span>Registrar Funcionario</span>
+                    </button>
                 )}
-                <button
-                    className="close-modal-btn"
-                    onClick={() => setModalOpen(false)}
-                >
-                  <span>Cerrar</span>
-                </button>
+                {userRole === "TH" && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/UsuarioDetalle`)}
+                    >
+                      <span>Usuario Detalle</span>
+                    </button>
+                )}
+                {userRole === "TH" && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/CrearEquipo`)}
+                    >
+                      <span>Crear Equipo</span>
+                    </button>
+                )}
+                {userRole === "TH" && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/CrearCargo`)}
+                    >
+                      <span>Crear Cargo</span>
+                    </button>
+                )}
+                <div className="calendar-filters-Th sidebar-button">
+                  <select
+                      // className="calendar-select-Th"
+                      className="inputCreate"
+                      value={equipoSeleccionado}
+                      onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                  >
+                    <option value="">Todos los equipos</option>
+                    {equipos.map((equipo) => (
+                        <option key={equipo.nombre} value={equipo.nombre}>
+                          {equipo.nombre}
+                        </option>
+                    ))}
+                  </select>
+                </div>
+
+
               </div>
             </div>
-        )}
+
+            <div className="sidebar-logout">
+              <button className="logout-button" onClick={handleLogout}>
+                <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
+                <span>Cerrar sesión</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+
+
+        { /* 📚 **Área de contenido** */}
+        <div className="content-area">
+
+          { /* 📚 **Barra superior** */}
+          <div className="navbar">
+            <div className="navbar-content">
+              <NavigationBar onLogout={handleLogout} />
+            </div>
+          </div>
+
+          { /* 📚 **Contenido principal** */}
+          <div className="main">
+            <div className="main-content">
+
+
+              <div className="calendar-title-th">
+                <span>Solicitudes</span>
+              </div>
+
+              {/*<LogoutButton />*/}
+              <Preloader duration={650} />
+              <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+
+                {/* 🛠️ Checkbox con filtros*/}
+                <div className="checkbox-container">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                          type="checkbox"
+                          checked={showBirthdays}
+                          onChange={(e) => setShowBirthdays(e.target.checked)}
+                      />
+                      Mostrar cumpleaños
+                    </label>
+                  </div>
+
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                          type="checkbox"
+                          checked={showHolidays}
+                          onChange={(e) => setShowHolidays(e.target.checked)}
+                      />
+                      Mostrar feriados
+                    </label>
+                  </div>
+                </div>
+                {/* 🚨 Mensajes de Error */}
+                {error && <p className="calendar-error-message">{error}</p>}
+                <div className="calendar-big-container">
+                  <Calendar
+                      localizer={localizer}
+                      events={filterEventsByTeam}
+                      startAccessor="start"
+                      endAccessor="end"
+                      style={{ height: 500, margin: "20px 0" }}
+                      messages={{
+                        today: "Hoy",
+                        previous: "Anterior",
+                        next: "Siguiente",
+                        month: "Mes",
+                        week: "Semana",
+                        day: "Día",
+                        agenda: "Agenda",
+                      }}
+                      views={{ month: true }} // Mantener solo la vista de mes
+                      eventPropGetter={eventStyleGetter}
+                      dayPropGetter={dayPropGetter}
+                      popup // Desactivar el comportamiento predeterminado del popup
+                      showMultiDayTimes={true}
+                      onShowMore={(eventsOnDay, date) => {
+                        // Prevenir cambio de vista
+                        handleShowMore(eventsOnDay, date);
+                      }}
+                      dayLayoutAlgorithm="no-overlap"
+                  />
+                </div>
+
+                {/* 🖍️ Leyenda de Colores */}
+                <div className="calendar-legend">
+                  <p>
+                    <span
+                        style={{
+                          backgroundColor: "#a0e2b3",
+                          color: "#000000",
+                          padding: "8px",
+                          borderRadius: "6px",
+                        }}
+                    >
+                      Aprobado
+                    </span>
+                  </p>
+                  <p>
+                    <span
+                        style={{
+                          backgroundColor: "#ff7c70",
+                          color: "#000000",
+                          padding: "8px",
+                          borderRadius: "6px",
+                        }}
+                    >
+                      Rechazado
+                    </span>
+                  </p>
+                  <p>
+                    <span
+                        style={{
+                          backgroundColor: "#fefda6",
+                          color: "#000000",
+                          padding: "8px",
+                          borderRadius: "6px",
+                        }}
+                    >
+                      Pendiente
+                    </span>
+                  </p>
+                  <p>
+                    <span
+                        style={{
+                          backgroundColor: "#c0a4c9",
+                          color: "#000000",
+                          padding: "8px",
+                          borderRadius: "6px",
+                        }}
+                    >
+                      Feriado
+                    </span>
+                  </p>
+                </div>
+
+                {/* 🔲 Modal para Solicitudes del Día */}
+                {modalOpen && (
+                    <div className="modal-overlay">
+                      <div className="modal-contentTh">
+                        <h4>Solicitudes en esta fecha:</h4> <br />
+                        {modalEvents.length > 0 ? (
+                            <div className="modal-events-list">
+                              <ul>
+                                {modalEvents.map((event, index) => (
+                                    <li key={index}>
+                                      <strong>{event.title}</strong> - {event.type} <br />
+                                      <span
+                                          style={{
+                                            color: "#000000",
+                                            backgroundColor:
+                                                event.type === "aprobado"
+                                                    ? "#a0e2b3"  // Verde pastel para aprobado
+                                                    : event.type === "rechazado"
+                                                        ? "#ff7c70"  // Rojo pastel para rechazado
+                                                        : event.type === "pendiente"
+                                                            ? "#fefda6"  // Amarillo pastel para pendiente
+                                                            : event.type === "feriado"
+                                                                ? "#c0a4c9"  // Morado pastel para feriado
+                                                                : "", // Si no es ninguno de los tipos, no aplica color
+                                            padding: "4px 8px",
+                                            borderRadius: "4px",
+                                          }}>
+                                  {event.type === "aprobado"
+                                      ? "Aprobado"
+                                      : event.type === "rechazado"
+                                          ? "Rechazado"
+                                          : event.type === "pendiente"
+                                              ? "Pendiente"
+                                              : event.type === "feriado"
+                                                  ? "Feriado"
+                                                  : ""}
+                                </span>
+                                      <br />
+                                      <span>
+                                  Desde: {event.start.toLocaleDateString()} hasta:{" "}
+                                        {event.end.toLocaleDateString()}
+                                </span>
+                                    </li>
+                                ))}
+                              </ul>
+                            </div>
+                        ) : (
+                            <p>No hay solicitudes para esta fecha.</p>
+                        )}
+                        <button
+                            className="close-modal-btn"
+                            onClick={() => setModalOpen(false)}
+                        >
+                          <span>Cerrar</span>
+                        </button>
+                      </div>
+                    </div>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
-    </div>
+
+
   );
 };
 
