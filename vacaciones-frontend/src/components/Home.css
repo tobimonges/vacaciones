@@ -173,6 +173,64 @@
     margin: 0 10px !important;
 }
 
+
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.checkbox-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding-bottom: 5px;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #fff;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 2px solid #f0c647; /* Amarillo, similar a los botones */
+    border-radius: 4px;
+    background-color: transparent; /* Fondo transparente */
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox input[type="checkbox"]::after {
+    content: ''; /* Reservar espacio */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #001b5e;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked::after {
+    content: '✔';
+    color: var(--primary-color);
+}
+
+
+
+
 .calendar-button-focus {
     background-color: #fc9d0e;
     box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
