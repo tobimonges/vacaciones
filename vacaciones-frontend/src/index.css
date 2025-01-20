@@ -1,6 +1,6 @@
 :root {
-  --sidebar-width: 330px;
-  --navbar-height: 130px;
+  --sidebar-width: 380px;
+  --navbar-height: 90px;
   --sidebar-color: rgba(0, 0, 0, 0);
   --navbar-color: rgba(255, 255, 255, 0);
   --content-color: rgba(255, 255, 0, 0);
@@ -22,8 +22,8 @@
 html,
 body,
 #root {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 
 body {
@@ -56,50 +56,53 @@ button span {
 
 .container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  position:static;
+  padding: 20px 50px;
   background: linear-gradient(
     45deg,
     rgba(99, 12, 0, 0.25),
     rgba(30, 148, 227, 0.25)
   ),
   url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1560%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%23SvgjsRadialGradient1561)'%3e%3c/rect%3e%3cpath d='M0 0L52.91 0L0 5.82z' fill='rgba(255%2c 255%2c 255%2c .1)'%3e%3c/path%3e%3cpath d='M0 5.82L52.91 0L223.41 0L0 198.10999999999999z' fill='rgba(255%2c 255%2c 255%2c .075)'%3e%3c/path%3e%3cpath d='M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z' fill='rgba(255%2c 255%2c 255%2c .05)'%3e%3c/path%3e%3cpath d='M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z' fill='rgba(255%2c 255%2c 255%2c .025)'%3e%3c/path%3e%3cpath d='M1440 560L1266.7 560L1440 289.19z' fill='rgba(0%2c 0%2c 0%2c .1)'%3e%3c/path%3e%3cpath d='M1440 289.19L1266.7 560L701.63 560L1440 233.49z' fill='rgba(0%2c 0%2c 0%2c .075)'%3e%3c/path%3e%3cpath d='M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z' fill='rgba(0%2c 0%2c 0%2c .05)'%3e%3c/path%3e%3cpath d='M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z' fill='rgba(0%2c 0%2c 0%2c .025)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1560'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx='100%25' cy='100%25' r='1545.06' gradientUnits='userSpaceOnUse' id='SvgjsRadialGradient1561'%3e%3cstop stop-color='rgba(9%2c 82%2c 158%2c 1)' offset='1'%3e%3c/stop%3e%3cstop stop-color='rgba(0%2c 69%2c 158%2c 0)' offset='1'%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e");
-background-size: cover;
-background-attachment: fixed;
-background-blend-mode: multiply;
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: multiply;
+
 }
+.container > * {
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
 
 /* Barra lateral fija */
 .sidebar {
   width: var(--sidebar-width); /* Ancho de la barra lateral */
-  height: 100vh; /* Altura completa de la ventana */
+  height: 100%; /* Altura completa del contenedor padre menos el padding */
   color: var(--text-color); /* Color del texto en la barra lateral */
+  position: static; /* Fija la barra lateral en su posición */
+  padding: 0; /* Elimina el margen y usa padding si es necesario */
   display: flex; /* Utiliza flexbox para el diseño */
-  flex-direction: column; /* Coloca los elementos en una columna */
-  align-items: center; /* Centra los elementos horizontalmente */
-  justify-content: center; /* Centra los elementos verticalmente */
-  position: fixed; /* Fija la barra lateral en su posición */
-  /*z-index: 1000;  Asegura que la barra lateral esté por encima de otros elementos */
-  backdrop-filter: var(--blur-effect); /* Añade un efecto de desenfoque al fondo */
+  
 }
 
 .sidebar-content {
-  /* se posiciona siempre dentro de su contenedor */
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  /* no se sale de su contenedor */
-  width: 95%;
-  height: 98%;
+  width: 100%;
+  height: 100%;
   padding: 1rem;
-  /* Añade un sombreado a la barra lateral */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Añade un borde redondeado a la barra lateral */
   border-radius: 10px;
-  /* fondo */
   background-color: #007bff3a;
 }
 
@@ -110,7 +113,7 @@ background-blend-mode: multiply;
   display: flex; /* Utiliza flexbox para el diseño */
   justify-content: center; /* Centra el logo horizontalmente */
   align-items: start;
-  padding: 1rem; /* Espaciado interno */
+  padding: 0.2rem 1rem; /* Espaciado interno */
 }
 
 /* Estilos para la imagen del logo */
@@ -163,12 +166,11 @@ background-blend-mode: multiply;
 .sidebar-logout {
   justify-content: center; /* Centra los elementos horizontalmente */
   align-items: center; /* Centra los elementos verticalmente */
-  gap: 0.5rem; /* Espacio entre los elementos */
   
 }
 
 .sidebar-logout .logout-button {
-  gap: 0.3rem;
+  gap: 1rem;
   background-color: #ff0000; /* Color de fondo */
 }
 .logout-button span {
@@ -178,45 +180,83 @@ background-blend-mode: multiply;
 
 
 /* Área de contenido */
-.content-area {
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
+.content-area { /* Deja espacio para la barra lateral y el padding del contenedor */
+  width: calc(100% - var(--sidebar-width)); /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
+  height: 100%; /* Ajusta la altura restando el padding del contenedor */
+  display: flex; /* Utiliza flexbox para el diseño */
+  flex-wrap: wrap; /* Coloca los elementos en una columna */
+ }
 
 /* Barra de navegación fija */
 .navbar {
-  height: var(--navbar-height);
-  background-color: var(--navbar-color);
-  color: var(--text-color);
+  box-sizing: border-box;
+  height: var(--navbar-height); /* Altura de la barra de navegación */
+  width: 100%; /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
+  color: var(--text-color); /* Color del texto en la barra de navegación */
+  display: flex; /* Utiliza flexbox para el diseño */
+  align-items: center; /* Centra los elementos verticalmente */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  position: static; /* Fija la barra de navegación en su posición */
+  
+}
+
+.navbar-content {
+  /* contenedor de la barra de navegacion */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-left: 20px;
+    /* Añade un sombreado a la barra de navegación */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Añade un borde redondeado a la barra de navegación */
+    border-radius: 10px;
+    background-color: #007bff3a;
+}
+.main {
+  box-sizing: border-box;
+  height: calc(100% - var(--navbar-height)); /* Ajusta la altura restando la altura de la barra de navegación y el margen */
+  width: 100%; /* Ajusta el ancho restando el margen */
+   /* Deja espacio para la barra de navegación */
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  z-index: 1000;
-  margin: 0 auto; /* Centra horizontalmente */
-  }
-
+  justify-content: space-between;
+  position: static;
+  
+}
 
 /* Contenido principal con scroll */
 .main-content {
-  margin-top: var(--navbar-height);
-  background-color: var(--content-color);
-  height: calc(100vh - var(--navbar-height));
-  overflow-y: auto;
+  display: flex; /* Utiliza flexbox para el diseño */
+  flex-direction: column; /* Coloca los elementos en una columna */
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: flex-start; /* Alinea los elementos al inicio verticalmente */
   width: 100%;
-  position: relative;
+  height: calc(100% - 20px);
+  margin-left: 20px;
+  margin-top: 20px;
+  padding: 1rem;
+  overflow-y: auto; /* Añade scroll vertical */
+  border-radius: 10px;
+  background-color: #007bff3a;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  /* Añade flexbox para centrar el contenido */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+.main::-webkit-scrollbar:window-inactive {
+  display: none;
+  }
+.main ::-webkit-scrollbar {
+  width: 8px;
+  background-color: var(--button-bg);
+  border-radius: 20px;
+}
+
+.main::-webkit-scrollbar-thumb  {
+  background-color: #09C;
+  border-radius: 6px;
 }
 
 
