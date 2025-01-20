@@ -107,7 +107,7 @@ function RestablecerContraseña() {
       <div className={`restablecerBox ${error ? "error" : ""}`}>
 
         <Logo />
-        <h2 className="headerRC">Restablecer Contraseña</h2>
+        <h2 className="headerrRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">
             <div className="inputRCGroup">
               <div className="iconRCWrap">
@@ -119,7 +119,7 @@ function RestablecerContraseña() {
                 <input
                   type="password"
                   placeholder="Nueva Contraseña"
-                  className="inputRC"
+                  className="entradatextoRC"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
@@ -137,7 +137,7 @@ function RestablecerContraseña() {
                 <input
                   type="password"
                   placeholder="Confirmar Contraseña"
-                  className="inputRC"
+                  className="entradatextoRC"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -149,7 +149,7 @@ function RestablecerContraseña() {
               <p className="error-message">Las Contraseñas no coinciden</p>
             )}
 
-            <button type="submit" className="buttonRC">
+            <button type="submit" className="botoncitoRC">
               <span>Restablecer</span>
             </button>
         </form>
