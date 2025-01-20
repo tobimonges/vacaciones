@@ -1,6 +1,7 @@
 package bootcamp.vacaciones.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -22,8 +23,9 @@ public class UsuarioModel {
 
 
     @OneToMany(mappedBy = "usuario")
-    @JsonManagedReference
+    @JsonIgnoreProperties({"usuario"}) // Ignora la relación inversa para evitar ciclos
     private Set<SolicitudModel> solicitudes = new HashSet<>();
+
 
     @Column(nullable = false,unique = true, name = "nro_cedula")
     private int nroCedula;
