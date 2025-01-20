@@ -273,7 +273,7 @@ export default function SolicitudDetalle() {
   if (solicitudes.length === 0) {
     return (
       <div className="container">
-
+<Preloader duration={650} />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Preloader duration={650} />
           <div className="container-solicitudes">
