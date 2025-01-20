@@ -31,6 +31,11 @@ const AdminDashboard = () => {
           }
         );
 
+        // Validar que la respuesta sea válida
+        if (!response || !response.data) {
+          throw new Error("La respuesta de la API no es válida.");
+        }
+
         // Definir el orden de prioridad de los estados
         const estadoPrioridad = {
           "Pendiente a TH": 1,
@@ -40,10 +45,11 @@ const AdminDashboard = () => {
           Rechazado: 5,
         };
 
+        // Filtrar según el rol del usuario
         let filteredByRole;
         if (userRole === "LIDER") {
-          filteredByRole = response.data.filter(
-            (solicitud) => solicitud.lider.id === userId
+          filteredByRole = response.data.filter((solicitud) =>
+            solicitud.lideres.some((lider) => lider.id === userId)
           );
         } else {
           filteredByRole = response.data.filter(
@@ -61,7 +67,7 @@ const AdminDashboard = () => {
         setSolicitudes(sortedSolicitudes);
         setFilteredSolicitudes(sortedSolicitudes);
       } catch (err) {
-        console.error("Error al obtener solicitudes:", err.response.data);
+        console.error("Error al obtener solicitudes:", err.message || err);
         setError("No se pudieron cargar las solicitudes.");
       }
     };
