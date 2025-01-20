@@ -99,24 +99,24 @@ function ForgotPassword({ onBackToLogin }) {
           </button>
         </div>
         <Logo />
-        <h2 className="headerFP">Recuperar Contraseña</h2>
+        <h2 className="headerrFP">Recuperar Contraseña</h2>
         <div className="boxTextWrapper">
           <p className="boxText">Ingrese su correo para continuar</p>
         </div>
         <form className="formClass" onSubmit={handleForgotPassword}>
-          <div className="inputFPGroup">
+          <div className="inpuutFPGroup">
             <div className="iconFPWrap">
               <input
                 type="email"
                 placeholder="Correo electrónico"
-                className="inputFP"
+                className="inpuutFP"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
           </div>
-          <button type="submit" className="buttonFPC">
+          <button type="submit" className="buttonnFPC">
             Enviar
           </button>
           <div className="forgotPassword">

@@ -105,7 +105,7 @@ function Login() {
               <input
                 type="text"
                 placeholder="Usuario"
-                className="input"
+                className="inpuutLogin"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
                 required
@@ -118,7 +118,7 @@ function Login() {
               <input
                 type="password"
                 placeholder="Contraseña"
-                className="input"
+                className="inpuutLogin"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
