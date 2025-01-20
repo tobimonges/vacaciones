@@ -335,5 +335,16 @@
     }
 }
 .sidebar-button-homeTH{
-    background-color:  rgba(255, 255, 0, 0);
+    background-color:  rgba(87, 145, 238, 0.25);;
+}
+
+.sidebar-button-homeTH option{
+    background-color:  rgba(87, 145, 238, 0.25);
+    background: #39659f;
+    color: white;
+}
+.sidebar-button-homeTH select:focus-visible, .sidebar-button-homeTH select:focus {
+    background-color: white;
+    color: white;
+    background: white;
 }
