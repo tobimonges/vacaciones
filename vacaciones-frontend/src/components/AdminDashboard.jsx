@@ -376,7 +376,17 @@ const AdminDashboard = () => {
                             )}
                           </>
                         ) : !solicitud.rechazado ? (
-                          userRole === "LIDER" ? (
+                          userRole === "DIRECTORIO" ? (
+                            // Si el usuario es DIRECTORIO, todos los botones están deshabilitados
+                            <>
+                              <button disabled>
+                                <span>Aprobar</span>
+                              </button>
+                              <button disabled>
+                                <span>Rechazar</span>
+                              </button>
+                            </>
+                          ) : userRole === "LIDER" ? (
                             <>
                               {getEstadoSolicitud(solicitud) ===
                                 "Pendiente a TH" ||
