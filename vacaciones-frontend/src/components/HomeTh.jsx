@@ -333,10 +333,10 @@ const HomeTh = () => {
                   <span>Crear Cargo</span>
                 </button>
               )}
-              <div className="calendar-filters-Th sidebar-button">
+              <div className="sidebar-buttons">
                 <select
                   // className="calendar-select-Th"
-                  className="inputCreate"
+                  className="sidebar-button sidebar-button-homeTH"
                   value={equipoSeleccionado}
                   onChange={(e) => setEquipoSeleccionado(e.target.value)}
                 >

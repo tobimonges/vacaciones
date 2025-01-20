@@ -173,6 +173,11 @@ button span {
   gap: 1rem;
   background-color: #ff0000; /* Color de fondo */
 }
+/*agregado de botonslide*/
+.sidebar-button-homeTH{
+font-size: 1.2rem;
+}
+
 .logout-button span {
   padding: 0;
   margin: 0;
@@ -258,7 +263,20 @@ button span {
   background-color: #09C;
   border-radius: 6px;
 }
+/*scroll detalles de equipos*/
+.sidebar-button-homeTH::-webkit-scrollbar:window-inactive {
+  display: none;
+  }
+.sidebar-button-homeTH ::-webkit-scrollbar {
+  width: 8px;
+  background-color: var(--button-bg);
+  border-radius: 20px;
+}
 
+.sidebar-button-homeTH::-webkit-scrollbar-thumb  {
+  background-color: #09C;
+  border-radius: 6px;
+}
 
 
 /* Estilos para el calendario */
