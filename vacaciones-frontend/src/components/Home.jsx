@@ -57,23 +57,23 @@ const CalendarLegend = () => (
 
 // 🎨 **Componente de botones del calendario**
 const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
-    <div className="sidebar-buttons">
-      <button className="sidebar-button" onClick={() => navigate("/Home")}>
-        <span className="sidebar-text-focus">Home</span>
+  <div className="sidebar-buttons">
+    <button className="sidebar-button" onClick={() => navigate("/Home")}>
+      <span className="sidebar-text-focus">Home</span>
+    </button>
+    <button className="sidebar-button" onClick={() => navigate("/NuevaSolicitud")}>
+      <span>Solicitar</span>
+    </button>
+    <button className="sidebar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
+      <span>Ver Solicitudes</span>
+    </button>
+    {isUserAllowed() && (
+      <button className="sidebar-button" onClick={() => navigate(`/HomeTh`)}>
+        <span>Home Talento Humano</span>
       </button>
-      <button className="sidebar-button" onClick={() => navigate("/NuevaSolicitud")}>
-        <span>Solicitar</span>
-      </button>
-      <button className="sidebar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
-        <span>Ver Solicitudes</span>
-      </button>
-      {isUserAllowed() && (
-          <button className="sidebar-button" onClick={() => navigate(`/HomeTh`)}>
-            <span>Home Talento Humano</span>
-          </button>
-      )}
+    )}
 
-    </div>
+  </div>
 );
 
 // 🏠 **Componente Principal**
@@ -260,11 +260,10 @@ const Home = () => {
         </div>
 
 
-        { /* 📚 **Contenido principal** */ }
+        { /* 📚 **Contenido principal** */}
         <div className="main">
           <div className="main-content">
-            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-              <h1 className="calendar-title">Hola, {userName || "Usuario"}</h1>
+              <div className="calendar-title">
                 <p className="calendar-text">
                   Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
                 </p>
@@ -272,30 +271,32 @@ const Home = () => {
                   Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
                 </p>
                 {error && <p className="calendar-error-message">{error}</p>}
-                
-                <div className="calendar-big-container">
-                  <Calendar
-                    localizer={localizer}
-                    events={events}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: 500, margin: "20px 0" }}
-                    messages={{
-                      today: "Hoy",
-                      previous: "Anterior",
-                      next: "Siguiente",
-                      month: "Mes",
-                      week: "Semana",
-                      day: "Día",
-                      agenda: "Agenda",
-                    }}
-                    views={{ month: true }}
-                    eventPropGetter={eventStyleGetter}
-                    dayPropGetter={dayPropGetter}
-                  />
+
               </div>
-            <CalendarLegend />
-            
+            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+              <div className="calendar-big-container">
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: 500, margin: "20px 0" }}
+                  messages={{
+                    today: "Hoy",
+                    previous: "Anterior",
+                    next: "Siguiente",
+                    month: "Mes",
+                    week: "Semana",
+                    day: "Día",
+                    agenda: "Agenda",
+                  }}
+                  views={{ month: true }}
+                  eventPropGetter={eventStyleGetter}
+                  dayPropGetter={dayPropGetter}
+                />
+              </div>
+              <CalendarLegend />
+
             </div>
           </div>
         </div>
