@@ -50,11 +50,6 @@ export default function NuevaSolicitud() {
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const userRole = getUserRole();
-<<<<<<< HEAD
-  const [file, setFile] = useState(null); // Nuevo estado para el archivo
-  const [mensaje, setMensaje] = useState("");
-  const [tipoMensaje, setTipoMensaje] = useState(""); // Success, Error, Warning
-=======
   const [file, setFile] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
@@ -70,7 +65,6 @@ export default function NuevaSolicitud() {
     newSelectedLideres[index] = parseInt(value, 10);
     setSelectedLideres(newSelectedLideres);
   };
->>>>>>> develop
 
   useEffect(() => {
     if (mensaje) {
@@ -225,15 +219,10 @@ export default function NuevaSolicitud() {
 
         setLideres(usuariosFiltrados);
       } catch (err) {
-<<<<<<< HEAD
-        console.error("Error al obtener líderes:", err);
-      //  setError("No se pudo obtener la información de los líderes.");
-        setMensaje("No se pudo obtener la información de los líderes.");
-        setTipoMensaje("Error");
-=======
         console.error("Error al obtener usuarios:", err);
-        setError("No se pudo obtener la información de los usuarios.");
->>>>>>> develop
+       // setError("No se pudo obtener la información de los usuarios.");
+        setMensaje("No se pudo obtener la información de los usuarios.");
+        setTipoMensaje("Error");
       }
     };
 
@@ -270,15 +259,10 @@ export default function NuevaSolicitud() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-<<<<<<< HEAD
-    if (!startDate || !endDate || !selectedLider) {
-   //   setError("Por favor, selecciona ambas fechas y un líder.");
-      setMensaje("Por favor, selecciona ambas fechas y un líder.");
-      setTipoMensaje("Error");
-=======
     if (!startDate || !endDate || !selectedLideres) {
-      setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
->>>>>>> develop
+     // setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      setMensaje("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      setTipoMensaje("Error");
       return;
     }
 
@@ -321,7 +305,9 @@ export default function NuevaSolicitud() {
    //   alert("Carga de solicitud exitosa");
       setMensaje("Carga de solicitud exitosa");
       setTipoMensaje("Success");
-      navigate("/Home");
+      setTimeout(() => {
+        navigate("/Home");
+      }, 1500);
     } catch (err) {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
@@ -431,11 +417,14 @@ export default function NuevaSolicitud() {
                 </select>
                 {index === selectedLideres.length - 1 &&
                   selectedLideres.length < 3 && (
-                    <div onClick={handleAddLiderSelector}>
+                    <div 
+                    className="imagenBotonMas"
+                    onClick={handleAddLiderSelector}>
                       <img
-                        src="./public/yamada-btn.png"
+                        src="./public/agregar.svg"
                         alt="Añadir líder"
                         title="Añadir líder"
+                        className="imagenBotonMas-img"
                       />
                     </div>
                   )}

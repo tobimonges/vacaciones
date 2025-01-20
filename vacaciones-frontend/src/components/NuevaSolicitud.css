@@ -333,3 +333,23 @@
     transform: translateX(-50%) translateY(20px);
   }
 }
+/*Formato y hover para boton agregar o boton mas*/
+.imagenBotonMas {
+  display: inline-block;
+  width: 30px; /* Ajusta según el tamaño que desees */
+  height: 30px;
+  cursor: pointer;
+  margin-left: 50px;
+  border-radius: 50%; /* Opcional: para hacerlo circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.imagenBotonMas-img {
+  margin-right: 85px;
+  max-width: 70%; /* Ajusta el tamaño de la imagen */
+  max-height: 70%;
+  object-fit: contain; /* Para que la imagen conserve proporciones */
+}
