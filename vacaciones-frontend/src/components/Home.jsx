@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils";
 import "./Home.css";
 import NavigationBar from "./NavigationBar";
-import Preloader from "./components/Preloader";
+import Preloader from "./Preloader";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
