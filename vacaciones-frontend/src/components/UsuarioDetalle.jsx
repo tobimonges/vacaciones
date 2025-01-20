@@ -96,16 +96,19 @@ function UsuarioDetalle() {
                         rol: usuario.rol?.id || "",
                         equipo: usuario.equipo?.id || "",
                         cargo: usuario.cargo?.id || "",
+                        fechaNacimiento: usuario.fecha_nacimiento || "",
+                        fechaIngreso: usuario.fecha_ingreso || "",
                     });
                 } catch (err) {
                     setError("Error al cargar los datos del usuario.");
                     console.error(err);
                 }
             };
-
+    
             fetchUsuario();
         }
     }, [selectedUserId]);
+    
 
     const handleEditClick = (id) => {
         setSelectedUserId(id);
@@ -243,7 +246,7 @@ function UsuarioDetalle() {
                             { name: "equipo", label: "Equipo Asignado", options: equipos },
                             { name: "cargo", label: "Cargo Asignado", options: cargos },
                         ].map(({ name, label, options }) => (
-                            <div key={name} className="inputGroupCreate">
+                            <div key={name} className="inputGroupCreate2">
                                 <label htmlFor={name}>{label}</label>
                                 <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
                                 <select
@@ -270,12 +273,13 @@ function UsuarioDetalle() {
                     ].map(({ name, type, label, icon }) => (
                         <div key={name}>
                             <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
-                            <div className="inputGroupCreate datePickerGroup">
+                            <div className="inputGroupCreate2 datePickerGroup">
                             <div className="iconWrap">
                             <label htmlFor={name}>{label}</label>
                             <img src={icon} className="icon" />
 
                                 <DatePicker
+                                    id= {name}
                                     selected={formData[name]}
                                     onChange={(date) => handleDateChange(name, date)}
                                     dateFormat="yyyy-MM-dd"
