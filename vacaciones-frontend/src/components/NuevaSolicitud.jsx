@@ -56,6 +56,8 @@ export default function NuevaSolicitud() {
   const [tipoMensaje, setTipoMensaje] = useState(""); // Success, Error, Warning
 =======
   const [file, setFile] = useState(null);
+  const [mensaje, setMensaje] = useState("");
+  const [tipoMensaje, setTipoMensaje] = useState("");
 
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
