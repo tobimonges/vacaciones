@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils";
 import "./Home.css";
 import NavigationBar from "./NavigationBar";
+import Preloader from "./Preloader";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
@@ -207,7 +208,7 @@ const Home = () => {
 
     // 🖼️ **Estructura de la página** 
     <div className="container home-container">
-      
+      <Preloader duration={650} />
       { /* 📚 **Barra lateral** */}
       <div className="sidebar">
         <div className="sidebar-content">

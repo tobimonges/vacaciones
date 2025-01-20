@@ -3,7 +3,6 @@ import axios from "axios";
 import "./AdminDashboard.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Preloader from "./Preloader";
-import Logo from "./Logo";
 
 import NavigationBar from "./NavigationBar";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +31,11 @@ const AdminDashboard = () => {
           }
         );
 
+        // Validar que la respuesta sea válida
+        if (!response || !response.data) {
+          throw new Error("La respuesta de la API no es válida.");
+        }
+
         // Definir el orden de prioridad de los estados
         const estadoPrioridad = {
           "Pendiente a TH": 1,
@@ -41,11 +45,11 @@ const AdminDashboard = () => {
           Rechazado: 5,
         };
 
-        //PROBAR LOGUEO CON LIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDER
+        // Filtrar según el rol del usuario
         let filteredByRole;
         if (userRole === "LIDER") {
-          filteredByRole = response.data.filter(
-            (solicitud) => solicitud.lider.id === userId
+          filteredByRole = response.data.filter((solicitud) =>
+            solicitud.lideres.some((lider) => lider.id === userId)
           );
         } else {
           filteredByRole = response.data.filter(
@@ -63,7 +67,7 @@ const AdminDashboard = () => {
         setSolicitudes(sortedSolicitudes);
         setFilteredSolicitudes(sortedSolicitudes);
       } catch (err) {
-        console.error("Error al obtener solicitudes:", err.response.data);
+        console.error("Error al obtener solicitudes:", err.message || err);
         setError("No se pudieron cargar las solicitudes.");
       }
     };
@@ -337,8 +341,9 @@ const AdminDashboard = () => {
                       <td>
                         {userRole === "OPERACIONES" ? (
                           <>
-                            {!solicitud.rechazado && !solicitud.estado ? (
-                              // Mostrar botones de Aprobar y Rechazar si la solicitud no está rechazada ni aprobada
+                            {getEstadoSolicitud(solicitud) ===
+                            "Falta aprobación del Líder" ? (
+                              // Mostrar botones de Aprobar y Rechazar
                               <>
                                 <button
                                   onClick={() => handleApprove(solicitud.id)}
@@ -353,13 +358,13 @@ const AdminDashboard = () => {
                                   <span>Rechazar</span>
                                 </button>
                               </>
-                            ) : solicitud.estado ? (
-                              // Mostrar botón de Añadir Comentario si la solicitud está aprobada
+                            ) : getEstadoSolicitud(solicitud) === "Aprobado" ? (
+                              // Mostrar botón de Añadir Comentario
                               <button onClick={() => openModal(solicitud.id)}>
                                 <span>Añadir comentario</span>
                               </button>
                             ) : (
-                              // Mostrar botones de Aprobar y Rechazar deshabilitados si la solicitud está rechazada
+                              // Mostrar botones deshabilitados
                               <>
                                 <button disabled>
                                   <span>Aprobar</span>
@@ -397,7 +402,7 @@ const AdminDashboard = () => {
                                 onClick={() => handleApprove(solicitud.id)}
                                 disabled={
                                   solicitud.numeroAprobaciones === 0 ||
-                                  solicitud.estado === true
+                                  solicitud.estado
                                 }
                               >
                                 <span>Aprobar</span>
@@ -416,34 +421,20 @@ const AdminDashboard = () => {
                             </>
                           ) : (
                             <>
-                              <button
-                                onClick={() => handleApprove(solicitud.id)}
-                                disabled
-                              >
+                              <button disabled>
                                 <span>Aprobar</span>
                               </button>
-                              <button
-                                onClick={() =>
-                                  handleRejectConfirm(solicitud.id)
-                                }
-                                disabled
-                              >
+                              <button disabled>
                                 <span>Rechazar</span>
                               </button>
                             </>
                           )
                         ) : (
                           <>
-                            <button
-                              onClick={() => handleApprove(solicitud.id)}
-                              disabled
-                            >
+                            <button disabled>
                               <span>Aprobar</span>
                             </button>
-                            <button
-                              onClick={() => handleRejectConfirm(solicitud.id)}
-                              disabled
-                            >
+                            <button disabled>
                               <span>Rechazar</span>
                             </button>
                           </>

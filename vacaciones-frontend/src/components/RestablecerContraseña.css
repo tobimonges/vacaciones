@@ -47,7 +47,6 @@
   width: 25px;
   height: 25px;
   margin-bottom: 5px;
-  margin-top: 9px;
   margin-left: -40px;
 }
 .iconWrapRC {
@@ -61,10 +60,12 @@
   padding: 10px;
 }
 
-.inputRC {
+.entradatextoRC {
   position: relative;
-  margin-left: px;
+  top: -10px;
+  margin-bottom: px;
   width: 300px;
+  height: 40px;
   flex: 1;
   padding: 9px;
   border: 1px solid #ccc;
@@ -73,13 +74,13 @@
   transition: all 0.3s ease;
 }
 
-.inputRC:hover {
+.entradatextoRC:hover {
   border-color: #666;
   background-color: #f9f9f9;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.buttonRC {
+.botoncitoRC {
   position: absolute;
   bottom: 20px;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -93,12 +94,12 @@
   z-index: 10;
   font-size: 16px;
   margin-top: 95px;
-  margin-left: 95px;
+  margin-left: 75px;
   display: block;
   transition: all 0.4s ease;
 }
 
-.buttonRC:hover {
+.botoncitoRC:hover {
   background-color: #fcbc0e;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
     0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
@@ -137,7 +138,6 @@
   width: 25px;
   height: 25px;
   margin-bottom: 5px;
-  margin-top: 9px;
   margin-left: -40px;
 }
 .iconWrapRC1 {
@@ -167,6 +167,7 @@
   transform: translateY(-2px);
   border-radius: 30px;
 }
+/*Pop-ups de mensajes*/
 .mensajePopupp {
   position: fixed;
   top: 10%;
