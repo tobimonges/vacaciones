@@ -4,6 +4,8 @@ import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import { useNavigate } from "react-router-dom";
 import "./EquipoDetalle.css";
+import { Link } from "react-router-dom";
+import { getUserRole, getUsuarioId, isTokenValid } from "./authUtils";
 
 const EquipoDetalle = () => {
   const [equipos, setEquipos] = useState([]);
@@ -12,6 +14,8 @@ const EquipoDetalle = () => {
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState("");
   const navigate = useNavigate();
+
+  const userRole = getUserRole(); // Obtener el rol del usuario logueado
 
   useEffect(() => {
     const fetchEquipos = async () => {
@@ -101,87 +105,171 @@ const EquipoDetalle = () => {
 
   return (
     <div className="container">
-      <Preloader duration={650} />
-      <div className="container-detalle">
-        <NavigationBar onLogout={handleLogout} />
-        <div className="header-section-detalle">
-          <div className="header-title-container-detalle">
-            <h4 className="title">Lista de Equipos</h4>
+      <div className="sidebar">
+        <div className="sidebar-content">
+          {/* 🖼️ Logo de la barra lateral */}
+          <div className="sidebar-logo">
+            <Link to="/home">
+              <img src=".\logo-white.svg" alt="Logo" className="logo" />
+            </Link>
           </div>
-          <div className="filter-container-detalle">
-            <h4>
-              <label htmlFor="filter-input">Buscar:</label>
-            </h4>
-            <input
-              id="filter-input-detalle"
-              type="text"
-              placeholder="Nombre del equipo"
-              value={filterText}
-              onChange={handleFilterChange}
-            />
+
+          <div className="sidebar-buttons">
+            <div className="sidebar-buttons">
+              {userRole === "LIDER" ? (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/AdminDashboard`)}
+                >
+                  <span>Bandeja de Solicitudes</span>
+                </button>
+              ) : userRole !== "LIDER" ? (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/AdminDashboard`)}
+                >
+                  <span>Listar Solicitudes</span>
+                </button>
+              ) : null}
+
+              {/* 🛠️ Botones visibles solo para "TH" */}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/crearusuario`)}
+                >
+                  <span>Registrar Funcionario</span>
+                </button>
+              )}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/UsuarioDetalle`)}
+                >
+                  <span>Usuario Detalle</span>
+                </button>
+              )}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/CrearEquipo`)}
+                >
+                  <span>Crear Equipo</span>
+                </button>
+              )}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/CrearCargo`)}
+                >
+                  <span>Crear Cargo</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="sidebar-logout">
+            <button className="logout-button" onClick={handleLogout}>
+              <img
+                src=".\salida.svg"
+                alt="Cerrar sesión"
+                className="button-icon"
+              />
+              <span>Cerrar sesión</span>
+            </button>
           </div>
         </div>
-        <div className="content-section-detalle">
-          {error ? (
-            <p className="error">{error}</p>
-          ) : filteredEquipos.length === 0 ? (
-            <p>No hay equipos que coincidan con el filtro.</p>
-          ) : (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Opciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEquipos.map((equipo) => (
-                  <tr key={equipo.id}>
-                    <td>{equipo.id}</td>
-                    <td>
-                      {editingId === equipo.id ? (
-                        <input
-                          type="text"
-                          value={newName}
-                          onChange={(e) => setNewName(e.target.value)}
-                          className="edit-input"
-                        />
-                      ) : (
-                        equipo.nombre
-                      )}
-                    </td>
-                    <td className="buttons">
-                      {editingId === equipo.id ? (
-                        <button
-                          className="update-button"
-                          onClick={() => handleActualizarEquipo(equipo.id)}
-                        >
-                          Guardar
-                        </button>
-                      ) : (
-                        <button
-                          className="edit-button"
-                          onClick={() => {
-                            setEditingId(equipo.id);
-                            setNewName(equipo.nombre);
-                          }}
-                        >
-                          Actualizar
-                        </button>
-                      )}
-                      <button
-                        className="delete-button"
-                        onClick={() => handleEliminarEquipo(equipo.id)}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+      </div>
+      <div className="content-area">
+        <div className="navbar">
+          <div className="navbar-content">
+            <NavigationBar onLogout={handleLogout} />
+          </div>
+        </div>
+        <div className="main">
+          <div className="main-content">
+              <div className="calendar-title-th">
+                <span>Lista de equipos</span>
+              </div>
+            <div className="container-detalle">
+              <div className="filter-container-detalle">
+                <h4>
+                  <label htmlFor="filter-input">Buscar:</label>
+                </h4>
+                <input
+                  id="filter-input-detalle"
+                  type="text"
+                  placeholder="Nombre del equipo"
+                  value={filterText}
+                  onChange={handleFilterChange}
+                />
+              </div>
+              <div className="content-section-detalle">
+                {error ? (
+                  <p className="error">{error}</p>
+                ) : filteredEquipos.length === 0 ? (
+                  <p>No hay equipos que coincidan con el filtro.</p>
+                ) : (
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Opciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredEquipos.map((equipo) => (
+                        <tr key={equipo.id}>
+                          <td>{equipo.id}</td>
+                          <td>
+                            {editingId === equipo.id ? (
+                              <input
+                                type="text"
+                                value={newName}
+                                onChange={(e) => setNewName(e.target.value)}
+                                className="edit-input"
+                              />
+                            ) : (
+                              equipo.nombre
+                            )}
+                          </td>
+                          <td className="buttons">
+                            {editingId === equipo.id ? (
+                              <button
+                                className="update-button"
+                                onClick={() =>
+                                  handleActualizarEquipo(equipo.id)
+                                }
+                              >
+                                Guardar
+                              </button>
+                            ) : (
+                              <button
+                                className="edit-button"
+                                onClick={() => {
+                                  setEditingId(equipo.id);
+                                  setNewName(equipo.nombre);
+                                }}
+                              >
+                                Editar
+                              </button>
+                            )}
+                            <button
+                              className="delete-button"
+                              onClick={() => handleEliminarEquipo(equipo.id)}
+                            >
+                              Eliminar
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
