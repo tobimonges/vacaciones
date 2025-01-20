@@ -1,6 +1,7 @@
 package bootcamp.vacaciones.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -19,7 +20,7 @@ public class SolicitudModel {
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties({"solicitudes"}) // Ignora la relación inversa para evitar ciclos
     private UsuarioModel usuario;
 
     @ManyToMany
@@ -59,7 +60,7 @@ public class SolicitudModel {
 
 
     public SolicitudModel(Long id, UsuarioModel usuario, LocalDate fechaInicio, LocalDate fechaFin, Boolean estado, Integer numeroAprobaciones, Integer cantidadDias,
-                          String comentario, Boolean rechazado, UsuarioModel lider) {
+                          String comentario, Boolean rechazado) {
         this.id = id;
         this.usuario = usuario;
         this.fechaInicio = fechaInicio;
