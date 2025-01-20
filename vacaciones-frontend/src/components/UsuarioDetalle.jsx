@@ -187,7 +187,7 @@ function UsuarioDetalle() {
                                     <td>{usuario.correo}</td>
                                     <td>
                                         <button
-                                            className="btn"
+                                            className="boton-inicio"
                                             onClick={() => handleEditClick(usuario.id)}
                                         >
                                             Editar

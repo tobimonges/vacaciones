@@ -84,6 +84,18 @@ h1, h2, h3, label {
     transition: all 0.3s ease-in-out;
 }
 
+.boton-inicio {
+    background-color: #fdca40;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    width: 6rem;
+    height: 2.5rem;
+    color: #2c2c2c;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
 .boton:hover {
     background-color: #fcbc0e;
     box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
