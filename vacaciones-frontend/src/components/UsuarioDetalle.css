@@ -20,13 +20,8 @@
     background-color: rgba(255, 255, 255, 0.1); /* Slightly more transparent */
     margin: 0 auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 80vh;
+    position: static;
     height: 100%;
-    overflow-y: auto;
 }
 
 .container-usuario-detalle::-webkit-scrollbar {
@@ -144,14 +139,16 @@ h1, h2, h3, label {
     box-shadow: 0 0 5px rgba(253, 202, 64, 0.7);
 }
 
-.detalle-form {
+.detalle-form2 {
     width: 100%;
     max-width: 100rem;
-    margin: 0 auto;
+    margin: 2% auto;
     padding: 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8%;
+    color: white;
+    box-sizing: ;
 }
 
 .formCreate {
@@ -187,10 +184,8 @@ h1, h2, h3, label {
 
 .inputGroupCreate2 {
     display: flex;
-    align-items: center;
     width: 100%;
     margin-bottom: 6%;
-    position: left;
     margin-top: 0%; /* Añadido para dar espacio entre los elementos */
 }
 
@@ -200,6 +195,7 @@ h1, h2, h3, label {
 
 .datePickerGroup {
   width: 100%;
+  padding : 1rem;
 }
 
 .MuiSvgIcon-root {
@@ -211,7 +207,7 @@ h3 .icon {
 }
 
 @media (max-width: 480px) {
-    .detalle-form {
+    .detalle-form2 {
         grid-template-columns: 1fr;
         display: flex;
         padding: 10px;

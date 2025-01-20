@@ -61,10 +61,10 @@ function UsuarioDetalle() {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                     axios.get("http://localhost:8080/api/equipos", {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { Authorization:`Bearer ${token}`},
                     }),
                     axios.get("http://localhost:8080/api/cargos", {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { Authorization:`Bearer ${token}`},
                     }),
                 ]);
 
@@ -96,15 +96,13 @@ function UsuarioDetalle() {
                         rol: usuario.rol?.id || "",
                         equipo: usuario.equipo?.id || "",
                         cargo: usuario.cargo?.id || "",
-                        fechaNacimiento: usuario.fecha_nacimiento || "",
-                        fechaIngreso: usuario.fecha_ingreso || "",
                     });
                 } catch (err) {
                     setError("Error al cargar los datos del usuario.");
                     console.error(err);
                 }
             };
-    
+
             fetchUsuario();
         }
     }, [selectedUserId]);
@@ -143,9 +141,9 @@ function UsuarioDetalle() {
             };
 
             await axios.put(
-                `http://localhost:8080/vacaciones/modificar/${selectedUserId}`,
+                "http://localhost:8080/vacaciones/modificar/${selectedUserId}",
                 updatedData,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { Authorization:`Bearer ${token}`} }
             );
 
             setMessage("Usuario actualizado con éxito.");
@@ -161,10 +159,25 @@ function UsuarioDetalle() {
 
     return (
         <div className="container">
+             { /* 📚 **Área de contenido** */}
+             <Preloader duration={650} />
 
-                <Preloader duration={650} />
+      <div className="content-area">
+
+
+        { /* 📚 **Barra de navegación** */}
+        <div className="navbar">
+          <div className="navbar-content">
+            <NavigationBar onLogout={handleLogout} />
+          </div>
+
+        </div>
+
+
+        { /* 📚 **Contenido principal** */}
+        <div className="main">
+          <div className="main-content">
             <div className="container-usuario-detalle">
-                <NavigationBar onLogout={handleLogout} /> 
                 <h2>Gestión de Usuarios</h2>
                 {error && <p className="err">{error}</p>}
                 {message && <p className="succ">{message}</p>}
@@ -192,7 +205,7 @@ function UsuarioDetalle() {
                                         <td>{usuario.correo}</td>
                                         <td>
                                             <button
-                                                className="btn"
+                                                className="boton"
                                                 onClick={() => handleEditClick(usuario.id)}
                                             >
                                                 Editar
@@ -205,7 +218,7 @@ function UsuarioDetalle() {
                         )}
                     </>
                 ) : (
-                    <form onSubmit={handleSubmit} className="detalle-form">
+                    <form onSubmit={handleSubmit} className="detalle-form2">
                 
 
                     {[
@@ -248,8 +261,9 @@ function UsuarioDetalle() {
                             { name: "equipo", label: "Equipo Asignado", options: equipos },
                             { name: "cargo", label: "Cargo Asignado", options: cargos },
                         ].map(({ name, label, options }) => (
-                            <div key={name} className="inputGroupCreate2">
+                            <div key={name}>
                                 <label htmlFor={name}>{label}</label>
+                                <div className="iconWrap">
                                 <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
                                 <select
                                     id={name}
@@ -265,6 +279,7 @@ function UsuarioDetalle() {
                                         </option>
                                     ))}
                                 </select>
+                            </div>    
                             </div>
                         ))}
 
@@ -275,10 +290,9 @@ function UsuarioDetalle() {
                     ].map(({ name, type, label, icon }) => (
                         <div key={name}>
                             <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
-                            <div className="inputGroupCreate datePickerGroup">
+                            <label htmlFor={name}>{label}</label>
                             <div className="iconWrap">
                             <img src={icon} className="icon" />
-                            <label htmlFor={name}>{label}</label>
 
                                 <DatePicker
                                     selected={formData[name]}
@@ -289,36 +303,11 @@ function UsuarioDetalle() {
                                 />
 
                                 </div>
-                                </div>
                                 </LocalizationProvider>
                             </div>
                         ))}
 
-                    {[
-                        { name: "rol", label: "Rol Asignado", options: roles },
-                        { name: "equipo", label: "Equipo Asignado", options: equipos },
-                        { name: "cargo", label: "Cargo Asignado", options: cargos },
-                    ].map(({ name, label, options }) => (
-                        <div key={name} className="inputGroupCreate">
-                            <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
-                            <label htmlFor={name}>{label}</label>
-                            <select
-                                id={name}
-                                name={name}
-                                value={formData[name]}
-                                className="inputCreate"
-                                onChange={handleInputChange}
-                                required
-                            >
-                                <option value="">Seleccione {label.toLowerCase()}</option>
-                                {options.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.nombre || option.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    ))}
+                    
                     <h3>‎ </h3>
                     <button type="submit" className="boton">
                         Guardar Cambios
@@ -333,7 +322,12 @@ function UsuarioDetalle() {
                 </form>
             )}
         </div>
+          </div>
+          </div>
+          </div>
+          </div>
+
+
     );
 }
-
 export default UsuarioDetalle;
