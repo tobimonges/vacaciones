@@ -4,6 +4,7 @@ package bootcamp.vacaciones.controllers;
 import bootcamp.vacaciones.exceptions.UsuarioNoEncontradoException;
 import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
+import bootcamp.vacaciones.payload.UsuarioRequest;
 import bootcamp.vacaciones.repositories.RolRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.security.JwtUtils;
@@ -107,9 +108,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/crea/usuarios")
-    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioModel usuario) {
+    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioRequest usuarioRequest) {
         try {
-            UsuarioModel nuevoUsuario = usuarioService.guardarUsuario(usuario);
+            UsuarioModel nuevoUsuario = usuarioService.guardarUsuario(usuarioRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
@@ -127,16 +128,25 @@ public class UsuarioController {
     }
 
     @PutMapping("/modificar/{idUsuario}")
-    public ResponseEntity<?> modificarUsuario(@PathVariable Long idUsuario, @RequestBody UsuarioModel usuarioData) {
+    public ResponseEntity<?> actualizarUsuario(
+            @PathVariable Long idUsuario,
+            @RequestBody UsuarioRequest usuarioRecibido ) {
         try {
-            UsuarioModel usuarioActualizado = usuarioService.actualizarUsuario(idUsuario, usuarioData);
-            return ResponseEntity.ok(usuarioActualizado);
+            UsuarioModel usuarioActualizado = usuarioService.actualizarUsuario(idUsuario, usuarioRecibido);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Usuario actualizado con éxito.",
+                    "usuario", usuarioActualizado
+            ));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar el usuario.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Ocurrió un error al actualizar el usuario.",
+                    "detalle", e.getMessage()
+            ));
         }
     }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<UsuarioModel> eliminarUsuario(@PathVariable Long id) {

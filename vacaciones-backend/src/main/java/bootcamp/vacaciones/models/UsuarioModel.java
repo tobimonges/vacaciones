@@ -51,7 +51,7 @@ public class UsuarioModel {
     private boolean estado;
 
     @ManyToOne
-    @JoinColumn(name = "id_rol", nullable = false)
+    @JoinColumn(name = "id_rol", nullable = true)
     private RolModel rol;
 
     @ManyToOne
