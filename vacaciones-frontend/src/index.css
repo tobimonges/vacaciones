@@ -43,8 +43,8 @@ button,
 select,
 button span {
   font-family: var(--font-family-secondary) !important;
-  font-weight: 400 !important;
-  color: #333 !important;
+  font-weight: 400;
+  color: #333;
 }
 
 button span {

@@ -367,6 +367,7 @@ const HomeTh = () => {
 
         { /* 📚 **Área de contenido** */}
         <div className="content-area">
+        <Preloader duration={650} />
 
           { /* 📚 **Barra superior** */}
           <div className="navbar">
@@ -384,8 +385,6 @@ const HomeTh = () => {
                 <span>Solicitudes</span>
               </div>
 
-              {/*<LogoutButton />*/}
-              <Preloader duration={650} />
               <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
 
                 {/* 🛠️ Checkbox con filtros*/}
