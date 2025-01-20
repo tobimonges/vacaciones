@@ -230,16 +230,8 @@ const Home = () => {
               <span>Cerrar sesión</span>
             </button>
           </div>
-          <div className="sidebar-buttons">
-            <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
-          </div>
 
-          <div className="sidebar-logout">
-            <button className="logout-button" onClick={handleLogout}>
-              <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
+
 
         </div>
       </div>
@@ -254,9 +246,7 @@ const Home = () => {
           <div className="navbar-content">
             <NavigationBar onLogout={handleLogout} />
           </div>
-          <div className="navbar-content">
-            <NavigationBar onLogout={handleLogout} />
-          </div>
+
         </div>
 
 
