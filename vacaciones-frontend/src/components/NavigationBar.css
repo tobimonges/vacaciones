@@ -40,11 +40,10 @@
   margin: 0 auto;
   /* Centra horizontalmente */
   padding: 0 15px;
-  /* ESPACIADO INTERNO */
-  background-color: #007bff3a;
+  /* ESPACIADO INTERNO 
+  background-color: #007bff3a;*/
   /*backdrop-filter: blur(10px);*/
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -142,6 +141,11 @@
 
 .nav-logo img:hover {
   transform: scale(1.08);
+}
+.saludo {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 /* Responsividad */
