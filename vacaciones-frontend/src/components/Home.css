@@ -100,7 +100,12 @@
 .calendar-error-message {
     flex: 1 1 100%;
     /* El mensaje de error ocupará el 100% del ancho del contenedor */
-    color: red;
+    font-weight: bold;
+    width: 23%;
+    border-radius: 5px;
+    margin-left: 39%;
+    color: white;
+    background-color: red;
     text-align: center;
 }
 
@@ -329,3 +334,4 @@
         gap: 8px;
     }
 }
+
