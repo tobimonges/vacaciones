@@ -123,18 +123,35 @@ const HomeTh = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const solicitudesEvents = solicitudesResponse.data.map((solicitud) => ({
-          title: `${solicitud.usuario.nombre} ${solicitud.usuario.apellido}`,
-          start: new Date(`${solicitud.fechaInicio}T00:00:00`),
-          end: new Date(`${solicitud.fechaFin}T23:59:59`),
-          allDay: true,
-          type: solicitud.rechazado
-            ? "rechazado"
-            : solicitud.estado
-              ? "aprobado"
-              : "pendiente",
-          equipo: solicitud.usuario.equipo.nombre,
-        }));
+        const solicitudesEvents = solicitudesResponse.data.map((solicitud) => {
+          // Extraer usuario de solicitud
+          const usuario = solicitud.usuario;
+
+          // Verificar si usuario existe, y si no, usar un valor por defecto
+          const nombre = usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Nombre no disponible';
+
+          // Verificar si equipo existe dentro de usuario, y si no, usar un valor por defecto
+          const equipo = usuario && usuario.equipo ? usuario.equipo.nombre : 'Equipo no disponible';
+
+          // Crear objetos de fecha de forma segura
+          const fechaInicio = solicitud.fechaInicio ? new Date(`${solicitud.fechaInicio}T00:00:00`) : null;
+          const fechaFin = solicitud.fechaFin ? new Date(`${solicitud.fechaFin}T23:59:59`) : null;
+
+          // Retornar el evento con los datos correctamente manejados
+          return {
+            title: nombre,  // Nombre del usuario
+            start: fechaInicio,  // Fecha de inicio
+            end: fechaFin,  // Fecha de fin
+            allDay: true,  // Evento todo el día
+            type: solicitud.rechazado
+                ? "rechazado"
+                : solicitud.estado
+                    ? "aprobado"
+                    : "pendiente",  // Tipo basado en estado y rechazado
+            equipo: equipo,  // Nombre del equipo
+          };
+        });
+
 
         // Feriados
         const feriadosResponse = await axios.get(
