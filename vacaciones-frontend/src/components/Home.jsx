@@ -263,16 +263,27 @@ const Home = () => {
         { /* 📚 **Contenido principal** */}
         <div className="main">
           <div className="main-content">
-              <div className="calendar-title">
-                <p className="calendar-text">
-                  Fecha de ingreso: {joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}
-                </p>
-                <p className="calendar-text">
-                  Total de días de vacaciones disponibles: {vacationDays !== undefined ? vacationDays : "Cargando..."}
-                </p>
-                {error && <p className="calendar-error-message">{error}</p>}
+            <div className="calendar-title">
+
+              <div className="calendar-key">
+                <span>Fecha de ingreso:</span>
+              </div>
+              <div className="calendar-value">
+                <span>{joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}</span>
+              </div>
+              <div className="calendar-divisor">
 
               </div>
+
+              <div className="calendar-key">
+                <span>Vacaciones disponibles:</span>
+              </div>
+              <div className="calendar-value">
+                <span>{vacationDays !== undefined ? vacationDays : "Cargando..."}</span>
+              </div>
+              {error && <p className="calendar-error-message">{error}</p>}
+
+            </div>
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               <div className="calendar-big-container">
                 <Calendar
