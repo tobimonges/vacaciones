@@ -300,54 +300,54 @@ const HomeTh = () => {
                     </button>
                 ) : null}
 
-                {/* 🛠️ Botones visibles solo para "TH" */}
-                {userRole === "TH" && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/crearusuario`)}
-                    >
-                      <span>Registrar Funcionario</span>
-                    </button>
-                )}
-                {userRole === "TH" && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/UsuarioDetalle`)}
-                    >
-                      <span>Usuario Detalle</span>
-                    </button>
-                )}
-                {userRole === "TH" && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/CrearEquipo`)}
-                    >
-                      <span>Crear Equipo</span>
-                    </button>
-                )}
-                {userRole === "TH" && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/CrearCargo`)}
-                    >
-                      <span>Crear Cargo</span>
-                    </button>
-                )}
-                <div className="calendar-filters-Th sidebar-button">
-                  <select
-                      // className="calendar-select-Th"
-                      className="inputCreate"
-                      value={equipoSeleccionado}
-                      onChange={(e) => setEquipoSeleccionado(e.target.value)}
-                  >
-                    <option value="">Todos los equipos</option>
-                    {equipos.map((equipo) => (
-                        <option key={equipo.nombre} value={equipo.nombre}>
-                          {equipo.nombre}
-                        </option>
-                    ))}
-                  </select>
-                </div>
+              {/* 🛠️ Botones visibles solo para "TH" */}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/crearusuario`)}
+                >
+                  <span>Registrar Funcionario</span>
+                </button>
+              )}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/UsuarioDetalle`)}
+                >
+                  <span>Usuario Detalle</span>
+                </button>
+              )}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/CrearEquipo`)}
+                >
+                  <span>Crear Equipo</span>
+                </button>
+              )}
+              {userRole === "TH" && (
+                <button
+                  className="sidebar-button"
+                  onClick={() => navigate(`/CrearCargo`)}
+                >
+                  <span>Crear Cargo</span>
+                </button>
+              )}
+              <div className="sidebar-buttons">
+                <select
+                  // className="calendar-select-Th"
+                  className="sidebar-button sidebar-button-homeTH"
+                  value={equipoSeleccionado}
+                  onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                >
+                  <option value="">Todos los equipos</option>
+                  {equipos.map((equipo) => (
+                    <option key={equipo.nombre} value={equipo.nombre}>
+                      {equipo.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
 
               </div>
