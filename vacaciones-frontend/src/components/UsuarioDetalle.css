@@ -168,19 +168,20 @@ h1, h2, h3, label {
   background-color: rgba(87, 145, 238, 0.25);
   font-size: 16px;
   transition: all 0.3s ease;
+  display: flex;
   
 }
 
 .iconWrap {
     display: flex;
-    align-items: center;
+    align-items: left;
     width: 100%;
 }
 
 .icon {
   width: 25px;
   height: 25px;
-  margin-right: 10px;
+  margin-right: 3%;
 }
 
 
@@ -188,13 +189,18 @@ h1, h2, h3, label {
     display: flex;
     align-items: center;
     width: 100%;
-    margin-bottom: 10px; /* Reducido de 20px a 10px */
+    margin-bottom: 6%;
     position: relative;
-    margin-top: 0px; /* Añadido para dar espacio entre los elementos */
+    margin-top: 0%; /* Añadido para dar espacio entre los elementos */
+}
+
+.labelCreateDetalle {
+    margin-left: 0%;
 }
 
 .datePickerGroup {
   width: 100%;
+  position: relative;
 }
 
 .MuiSvgIcon-root {

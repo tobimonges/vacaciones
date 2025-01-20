@@ -209,7 +209,6 @@ function UsuarioDetalle() {
                         { name: "nroCedula", type: "number", placeholder: "Nro de Cedula",label: "CI", icon: "/tarjeta-de-identificacion (1).svg" },
                         { name: "correo", type: "text", placeholder: "Correo",label: "Correo", icon: "/sobre.svg" },
                         { name: "telefono", type: "text", placeholder: "Telefono",label: "Telefono", icon: "/circulo-de-telefono.svg" },
-                        { name: "estado", type: "boolean", label: "Estado", icon: "/circulo-de-usuario (2).svg" },
                     ].map(({ name, type, label, icon }) => (
                         <div key={name}>
                             <label htmlFor={name}>{label}</label>
@@ -228,6 +227,43 @@ function UsuarioDetalle() {
                         </div>
                     ))}
 
+                    
+
+                        {[
+                            {
+                                name: "estado",
+                                type: "boolean",
+                                label: "Estado Funcionario",
+                                options: [
+                                    { id: true, nombre: "Contratado" },
+                                    { id: false, nombre: "Ex-Funcionario" },
+                                ],
+                            },
+                            { name: "rol", label: "Rol de Funcionario", options: roles },
+                            { name: "equipo", label: "Equipo Asignado", options: equipos },
+                            { name: "cargo", label: "Cargo Asignado", options: cargos },
+                        ].map(({ name, label, options }) => (
+                            <div key={name} className="inputGroupCreate">
+                                <label htmlFor={name}>{label}</label>
+                                <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
+                                <select
+                                    id={name}
+                                    name={name}
+                                    value={formData[name]}
+                                    className="inputCreate"
+                                    onChange={handleInputChange}
+                                    required
+                                >
+                                    {options.map((option) => (
+                                        <option key={option.id} value={option.id}>
+                                            {option.nombre || option.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        ))}
+
+
                     {[
                         { name: "fechaIngreso", type: "date", label: "Fecha de Ingreso", icon: "/dias-del-calendario.svg"},
                         { name: "fechaNacimiento", type: "date", label: "Fecha de Nacimiento", icon: "/dias-del-calendario.svg"},
@@ -236,8 +272,8 @@ function UsuarioDetalle() {
                             <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
                             <div className="inputGroupCreate datePickerGroup">
                             <div className="iconWrap">
-                            <img src={icon} className="icon" />
                             <label htmlFor={name}>{label}</label>
+                            <img src={icon} className="icon" />
 
                                 <DatePicker
                                     selected={formData[name]}
@@ -253,32 +289,9 @@ function UsuarioDetalle() {
                         </div>
                     ))}
 
-                    {[
-                        { name: "rol", label: "Rol Asignado", options: roles },
-                        { name: "equipo", label: "Equipo Asignado", options: equipos },
-                        { name: "cargo", label: "Cargo Asignado", options: cargos },
-                    ].map(({ name, label, options }) => (
-                        <div key={name} className="inputGroupCreate">
-                            <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
-                            <label htmlFor={name}>{label}</label>
-                            <select
-                                id={name}
-                                name={name}
-                                value={formData[name]}
-                                className="inputCreate"
-                                onChange={handleInputChange}
-                                required
-                            >
-                                <option value="">Seleccione {label.toLowerCase()}</option>
-                                {options.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.nombre || option.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    ))}
                     <h3>‎ </h3>
+
+
                     <button type="submit" className="boton">
                         Guardar Cambios
                     </button>
