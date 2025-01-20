@@ -96,7 +96,7 @@ function RestablecerContraseña() {
   } */
 
   return (
-    <div className="containerRestablecerContraseña">
+    <div className="container containerRestablecerContraseña">
       <Preloader duration={650} />
 
       {mensaje && (
