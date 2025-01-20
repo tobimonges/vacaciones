@@ -13,14 +13,14 @@ function ForgotPassword({ onBackToLogin }) {
   const [isExiting, setIsExiting] = useState(false);
   const navigate = useNavigate();
 
-  
+
 
   useEffect(() => {
     // Activa la animación cuando se monta el componente
     const timeout = setTimeout(() => {
       setIsAnimating(true);
     }, 655); // 600 milisegundos = 0.6 segundos
-  
+
     // Limpia el timeout si el componente se desmonta antes de que se ejecute
     return () => clearTimeout(timeout);
   }, []);
@@ -46,7 +46,7 @@ function ForgotPassword({ onBackToLogin }) {
       if (response.ok) {
         setMensaje("Correo de recuperación enviado!");
       } else if (response.status === 404) {
-        const data = await response.json(); 
+        const data = await response.json();
         setMensajeError(data.message || "El correo no se encuentra registrado.");
       } else if (response.status === 429) {
         setMensajeError("Has excedido el límite de solicitudes. Intenta más tarde.");
@@ -60,7 +60,7 @@ function ForgotPassword({ onBackToLogin }) {
     }
     clearMessageAfterDelay(); //para borrar los mensajes
   };
-  const clearMessageAfterDelay = () => {  
+  const clearMessageAfterDelay = () => {
     setTimeout(() => {
       setMensaje("");
       setMensajeError("");
@@ -76,7 +76,7 @@ function ForgotPassword({ onBackToLogin }) {
   };
 
   return (
-    <div className="loginFPContainer">
+    <div className="container loginFPContainer">
       <Preloader duration={650} />
       {mensaje && (
         <div className="mensajeContainer">
@@ -84,27 +84,26 @@ function ForgotPassword({ onBackToLogin }) {
         </div>
       )}
       {mensajeError && (
-    <div className="SetMensajeError">
-      <p>{mensajeError}</p>
-    </div>
-  )}
+        <div className="SetMensajeError">
+          <p>{mensajeError}</p>
+        </div>
+      )}
       <div
-        className={`loginFPBox ${isAnimating ? "forgotPasswordBox" : ""} ${
-          isExiting ? "forgotPasswordExiting" : ""
-        }`}
+        className={`loginFPBox ${isAnimating ? "forgotPasswordBox" : ""} ${isExiting ? "forgotPasswordExiting" : ""
+          }`}
         onAnimationEnd={handleAnimationEnd}
       >
         <div className="backButtonWrapper">
-        <button className="backToLoginButton" onClick={handleBackToLogin}>
-        <img src=".\angulo-pequeno-izquierdo.svg" alt="Volver" />
-        </button>
+          <button className="backToLoginButton" onClick={handleBackToLogin}>
+            <img src=".\angulo-pequeno-izquierdo.svg" alt="Volver" />
+          </button>
         </div>
         <Logo />
         <h2 className="headerFP">Recuperar Contraseña</h2>
         <div className="boxTextWrapper">
           <p className="boxText">Ingrese su correo para continuar</p>
         </div>
-        <form onSubmit={handleForgotPassword}>
+        <form className="formClass" onSubmit={handleForgotPassword}>
           <div className="inputFPGroup">
             <div className="iconFPWrap">
               <input
@@ -118,10 +117,10 @@ function ForgotPassword({ onBackToLogin }) {
             </div>
           </div>
           <button type="submit" className="buttonFPC">
-          Enviar
+            Enviar
           </button>
           <div className="forgotPassword">
-            
+
           </div>
         </form>
       </div>

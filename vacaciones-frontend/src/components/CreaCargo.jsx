@@ -66,7 +66,7 @@ function CreaCargo() {
   };
 
   return (
-    <div className="containerLogin2">
+    <div className="container containerLogin2">
       <Preloader duration={650} />
       <div
         className={`createBox2 ${isAnimating ? "LoginSlide" : ""} ${
