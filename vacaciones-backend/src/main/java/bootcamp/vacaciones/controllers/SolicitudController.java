@@ -84,8 +84,9 @@ public class SolicitudController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la solicitud.");
         }
     }
+
     @PutMapping("/solicitudes/{id}")
-    public ResponseEntity<SolicitudModel> actualizarSolicitud(
+    public ResponseEntity<Object> actualizarSolicitud(
             @PathVariable Long id,
             @RequestBody SolicitudRequest solicitudRequest) {
         try {
@@ -93,7 +94,17 @@ public class SolicitudController {
             SolicitudModel solicitudActualizada = solicitudService.actualizarSolicitudConDTO(id, solicitudRequest);
             return ResponseEntity.ok(solicitudActualizada);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+            // Manejar excepciones de argumentos inválidos
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", "Solicitud inválida",
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            // Manejar excepciones generales
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error interno del servidor",
+                    "message", e.getMessage()
+            ));
         }
     }
 
