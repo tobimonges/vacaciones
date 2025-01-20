@@ -249,6 +249,19 @@ font-size: 1.2rem;
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+*::-webkit-scrollbar:window-inactive {
+  display: none;
+  }
+*::-webkit-scrollbar {
+  width: 8px;
+  background-color: var(--button-bg);
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb  {
+  background-color: #09C;
+  border-radius: 6px;
+}
 
 .main::-webkit-scrollbar:window-inactive {
   display: none;
