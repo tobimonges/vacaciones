@@ -188,9 +188,9 @@ const EquipoDetalle = () => {
         </div>
         <div className="main">
           <div className="main-content">
-              <div className="calendar-title-th">
-                <span>Lista de equipos</span>
-              </div>
+            <div className="calendar-title-th">
+              <span>Lista de equipos</span>
+            </div>
             <div className="container-detalle">
               <div className="filter-container-detalle">
                 <h4>
@@ -236,31 +236,46 @@ const EquipoDetalle = () => {
                           </td>
                           <td className="buttons">
                             {editingId === equipo.id ? (
-                              <button
-                                className="update-button"
-                                onClick={() =>
-                                  handleActualizarEquipo(equipo.id)
-                                }
-                              >
-                                Guardar
-                              </button>
+                              <>
+                                <button
+                                  className="update-button"
+                                  onClick={() =>
+                                    handleActualizarEquipo(equipo.id)
+                                  }
+                                >
+                                  Guardar
+                                </button>
+                                <button
+                                  className="cancel-button"
+                                  onClick={() => {
+                                    setEditingId(null); // Salir del modo edición
+                                    setNewName(""); // Opcional: Limpiar el estado del nuevo nombre
+                                  }}
+                                >
+                                  Cancelar
+                                </button>
+                              </>
                             ) : (
-                              <button
-                                className="edit-button"
-                                onClick={() => {
-                                  setEditingId(equipo.id);
-                                  setNewName(equipo.nombre);
-                                }}
-                              >
-                                Editar
-                              </button>
+                              <>
+                                <button
+                                  className="edit-button"
+                                  onClick={() => {
+                                    setEditingId(equipo.id); // Entrar en modo edición
+                                    setNewName(equipo.nombre); // Cargar nombre existente
+                                  }}
+                                >
+                                  Editar
+                                </button>
+                                <button
+                                  className="delete-button"
+                                  onClick={() =>
+                                    handleEliminarEquipo(equipo.id)
+                                  }
+                                >
+                                  Eliminar
+                                </button>
+                              </>
                             )}
-                            <button
-                              className="delete-button"
-                              onClick={() => handleEliminarEquipo(equipo.id)}
-                            >
-                              Eliminar
-                            </button>
                           </td>
                         </tr>
                       ))}
