@@ -359,33 +359,46 @@ const AdminDashboard = () => {
                           <>
                             {getEstadoSolicitud(solicitud) ===
                             "Falta aprobación del Líder" ? (
-                              // Mostrar botones de Aprobar y Rechazar
-                              <>
-                                <button
-                                  onClick={() =>
-                                    handleApproveConfirm(solicitud.id)
-                                  } // Configura el modal para aprobación
-                                  className="btn-approve"
-                                >
-                                  <span>Aprobar</span>
-                                </button>
-                                // Botón para rechazar
-                                <button
-                                  onClick={() =>
-                                    handleRejectConfirm(solicitud.id)
-                                  } // Configura el modal para rechazo
-                                  className="btn-reject"
-                                >
-                                  <span>Rechazar</span>
-                                </button>
-                              </>
+                              solicitud.lideres.some(
+                                (lider) => lider.id === userId
+                              ) ? (
+                                // Mostrar botones de Aprobar y Rechazar si el usuario logueado es el líder asignado
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      handleApproveConfirm(solicitud.id)
+                                    }
+                                    className="btn-approve"
+                                  >
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleRejectConfirm(solicitud.id)
+                                    }
+                                    className="btn-reject"
+                                  >
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              ) : (
+                                // Mostrar botones deshabilitados si el usuario logueado no es el líder asignado
+                                <>
+                                  <button disabled>
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button disabled>
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              )
                             ) : getEstadoSolicitud(solicitud) === "Aprobado" ? (
-                              // Mostrar botón de Añadir Comentario
+                              // Mostrar botón de Añadir Comentario para OPERACIONES si el estado es "Aprobado"
                               <button onClick={() => openModal(solicitud.id)}>
                                 <span>Añadir comentario</span>
                               </button>
                             ) : (
-                              // Mostrar botones deshabilitados
+                              // Mostrar botones deshabilitados para otros estados
                               <>
                                 <button disabled>
                                   <span>Aprobar</span>
@@ -411,8 +424,9 @@ const AdminDashboard = () => {
                             <>
                               {getEstadoSolicitud(solicitud) ===
                                 "Pendiente a TH" ||
-                              getEstadoSolicitud(solicitud) === "Rechazado" ? (
-                                // Botones deshabilitados si el estado es "Pendiente a TH" o "Rechazado"
+                              getEstadoSolicitud(solicitud) === "Rechazado" ||
+                              getEstadoSolicitud(solicitud) === "Aprobado" ? (
+                                // Botones deshabilitados si el estado es "Pendiente a TH", "Rechazado" o "Aprobado"
                                 <>
                                   <button disabled>
                                     <span>Aprobar</span>
@@ -428,12 +442,11 @@ const AdminDashboard = () => {
                                   <button
                                     onClick={() =>
                                       handleApproveConfirm(solicitud.id)
-                                    } // Configura el modal para aprobación
+                                    }
                                     className="btn-approve"
                                   >
                                     <span>Aprobar</span>
                                   </button>
-                                  // Botón para rechazar
                                   <button
                                     onClick={() =>
                                       handleRejectConfirm(solicitud.id)
@@ -457,33 +470,48 @@ const AdminDashboard = () => {
                             </>
                           ) : userRole === "TH" ? (
                             <>
-                              <button
-                                onClick={() =>
-                                  handleApproveConfirm(solicitud.id)
-                                } // Configura el modal para aprobación
-                                disabled={
-                                  solicitud.numeroAprobaciones === 0 ||
-                                  solicitud.estado
-                                } // Condición de habilitación
-                                className="btn-approve"
-                              >
-                                <span>Aprobar</span>
-                              </button>
-
-                              <button
-                                onClick={() =>
-                                  handleRejectConfirm(solicitud.id)
-                                } // Configura el modal para rechazo
-                                disabled={
-                                  solicitud.numeroAprobaciones === 0 &&
-                                  !solicitud.estado
-                                } // Condición de habilitación
-                                className="btn-reject"
-                              >
-                                <span>Rechazar</span>
-                              </button>
+                              {getEstadoSolicitud(solicitud) === "Aprobado" ? (
+                                // Deshabilitar botones si el estado es "Aprobado"
+                                <>
+                                  <button disabled>
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button disabled>
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              ) : (
+                                // Mostrar botones Aprobar y Rechazar para otros estados
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      handleApproveConfirm(solicitud.id)
+                                    }
+                                    disabled={
+                                      solicitud.numeroAprobaciones === 0 ||
+                                      solicitud.estado
+                                    }
+                                    className="btn-approve"
+                                  >
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleRejectConfirm(solicitud.id)
+                                    }
+                                    disabled={
+                                      solicitud.numeroAprobaciones === 0 &&
+                                      !solicitud.estado
+                                    }
+                                    className="btn-reject"
+                                  >
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              )}
                             </>
                           ) : (
+                            // Fallback (botones deshabilitados)
                             <>
                               <button disabled>
                                 <span>Aprobar</span>
@@ -494,6 +522,7 @@ const AdminDashboard = () => {
                             </>
                           )
                         ) : (
+                          // Botones deshabilitados si la solicitud está rechazada
                           <>
                             <button disabled>
                               <span>Aprobar</span>
