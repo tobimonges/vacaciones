@@ -59,9 +59,7 @@ const CalendarLegend = () => (
 // 🎨 **Componente de botones del calendario**
 const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
   <div className="sidebar-buttons">
-    <button className="sidebar-button" onClick={() => navigate("/Home")}>
-      <span className="sidebar-text-focus">Home</span>
-    </button>
+
     <button className="sidebar-button" onClick={() => navigate("/NuevaSolicitud")}>
       <span>Solicitar</span>
     </button>
