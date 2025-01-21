@@ -7,6 +7,11 @@
     padding: 0;
 }
 
+.container-detalle2 {
+    height: 100%;
+    width: 100%;
+}
+
 .container-usuario-detalle {
     display: flex;
     flex-direction: column;
@@ -17,16 +22,11 @@
     border-radius: 8px;
     max-width: 90rem;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.1); /* Slightly more transparent */
+    height: 150rem;
+    background-color: rgba(255, 255, 255, 0.1);
     margin: 0 auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 80vh;
-    height: 100%;
-    overflow-y: auto;
+    position: static;
 }
 
 .container-usuario-detalle::-webkit-scrollbar {
@@ -34,7 +34,7 @@
 }
 
 h1, h2, h3, label {
-    color: white; /* Ensuring all titles and labels are white */
+    color: white; 
 }
 .container-usuario-detalle h3 {
     color: white;
@@ -83,6 +83,7 @@ h1, h2, h3, label {
     color: #2c2c2c;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    
 }
 
 .boton-inicio {
@@ -125,7 +126,7 @@ h1, h2, h3, label {
     font-size: 1rem;
     background-color: white;
     color: #333;
-    appearance: none; /* Quitar la apariencia por defecto en algunos navegadores */
+    appearance: none;
 }
 
 .inputGroupp select {
@@ -144,25 +145,27 @@ h1, h2, h3, label {
     box-shadow: 0 0 5px rgba(253, 202, 64, 0.7);
 }
 
-.detalle-form {
+.detalle-form2 {
     width: 100%;
     max-width: 100rem;
-    margin: 0 auto;
+    margin: 2% auto;
     padding: 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8%;
+    color: white;
+    
 }
 
 .formCreate {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Añadido para centrar los elementos dentro del formulario */
+    align-items: center;
   }
 
 .inputCreate {
   width: 90%;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   color: #ffffff;
@@ -176,26 +179,30 @@ h1, h2, h3, label {
     display: flex;
     align-items: center;
     width: 100%;
+    box-sizing: content-box;
 }
 
 .icon {
   width: 25px;
   height: 25px;
-  margin-right: 10px;
+  margin-right: 3%;
 }
 
 
-.inputGroupCreate {
+.inputGroupCreate2 {
     display: flex;
-    align-items: center;
     width: 100%;
-    margin-bottom: 10px; /* Reducido de 20px a 10px */
-    position: relative;
-    margin-top: 0px; /* Añadido para dar espacio entre los elementos */
+    margin-bottom: 10%;
+    margin-top: 10%;
+}
+
+.labelCreateDetalle {
+    margin-left: 0%;
 }
 
 .datePickerGroup {
   width: 100%;
+  padding-top: 6%;
 }
 
 .MuiSvgIcon-root {
@@ -206,8 +213,16 @@ h3 .icon {
   margin-right: 10px;
 }
 
+.content-area2 {
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+
 @media (max-width: 480px) {
-    .detalle-form {
+    .detalle-form2 {
         grid-template-columns: 1fr;
         display: flex;
         padding: 10px;
