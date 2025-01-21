@@ -38,6 +38,8 @@ const HomeTh = () => {
   const navigate = useNavigate(); // Navegación entre rutas
   const [equipos, setEquipos] = useState([]);
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
+  const [pendingCount, setPendingCount] = useState(0);
+
   // 🔄 Manejo de clic en "more"
   const handleShowMore = (eventsOnDay, date) => {
     setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
@@ -49,8 +51,37 @@ const HomeTh = () => {
     const userRole = getUserRole(); // Lógica para obtener el rol del usuario
     return allowedRoles.includes(userRole);
   };
+  // ContadorPendiente
 
 
+  //Funcion para contar solicitudes pendientes
+  useEffect(() => {
+    const fetchPendingRequests = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+            "http://localhost:8080/vacaciones/solicitudes",
+            {
+              headers: { Authorization: `Bearer ${token}` }, // Autenticación con token
+            }
+        );
+
+        const requests = response.data;
+
+        // Filtrar solicitudes pendientes (numeroAprobaciones === 0)
+        const pendingRequests = requests.filter(
+            (request) => request.numeroAprobaciones === 0
+        );
+
+        // Actualizar el estado con el número de solicitudes pendientes
+        setPendingCount(pendingRequests.length);
+      } catch (error) {
+        console.error("Error al obtener las solicitudes pendientes:", error);
+      }
+    };
+
+    fetchPendingRequests();
+  }, []);
 
 
   // 📥 **Obtener Datos del Usuario**
@@ -300,6 +331,8 @@ const HomeTh = () => {
                         onClick={() => navigate(`/AdminDashboard`)}
                     >
                       <span>Listar Solicitudes</span>
+
+                      {pendingCount}
                     </button>
                 ) : null}
 
