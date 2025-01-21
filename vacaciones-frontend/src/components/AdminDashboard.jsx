@@ -376,25 +376,58 @@ const AdminDashboard = () => {
                             )}
                           </>
                         ) : !solicitud.rechazado ? (
-                          userRole === "LIDER" ? (
+                          userRole === "DIRECTORIO" ? (
+                            // Si el usuario es DIRECTORIO, todos los botones están deshabilitados
                             <>
-                              <button
-                                onClick={() => handleApprove(solicitud.id)}
-                                disabled={
-                                  solicitud.numeroAprobaciones === 1 ||
-                                  solicitud.usuario.id === userId
-                                }
-                              >
+                              <button disabled>
                                 <span>Aprobar</span>
                               </button>
-                              <button
-                                onClick={() =>
-                                  handleRejectConfirm(solicitud.id)
-                                }
-                                disabled={solicitud.usuario.id === userId}
-                              >
+                              <button disabled>
                                 <span>Rechazar</span>
                               </button>
+                            </>
+                          ) : userRole === "LIDER" ? (
+                            <>
+                              {getEstadoSolicitud(solicitud) ===
+                                "Pendiente a TH" ||
+                              getEstadoSolicitud(solicitud) === "Rechazado" ? (
+                                // Botones deshabilitados si el estado es "Pendiente a TH" o "Rechazado"
+                                <>
+                                  <button disabled>
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button disabled>
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              ) : getEstadoSolicitud(solicitud) ===
+                                "Pendiente" ? (
+                                // Mostrar botones Aprobar y Rechazar si el estado está en "Pendiente"
+                                <>
+                                  <button
+                                    onClick={() => handleApprove(solicitud.id)}
+                                  >
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleRejectConfirm(solicitud.id)
+                                    }
+                                  >
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              ) : (
+                                // Fallback (botones deshabilitados)
+                                <>
+                                  <button disabled>
+                                    <span>Aprobar</span>
+                                  </button>
+                                  <button disabled>
+                                    <span>Rechazar</span>
+                                  </button>
+                                </>
+                              )}
                             </>
                           ) : userRole === "TH" ? (
                             <>

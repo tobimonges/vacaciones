@@ -10,7 +10,6 @@ import "./NuevaSolicitud.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
-
 import Preloader from "./Preloader";
 
 const today = dayjs();
@@ -73,18 +72,17 @@ export default function NuevaSolicitud() {
         setMensaje("");
         setTipoMensaje("");
       }, 3000);
-  
+
       return () => clearTimeout(timer); // Limpiar el temporizador en caso de que el componente se desmonte
     }
   }, [mensaje]);
 
-  
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-       //   setError("No se encontró un token. Inicia sesión nuevamente.");
+          //   setError("No se encontró un token. Inicia sesión nuevamente.");
           setMensaje("No se encontró un token. Inicia sesión nuevamente.");
           setTipoMensaje("Error");
           return;
@@ -115,7 +113,7 @@ export default function NuevaSolicitud() {
         setReservedDates(dates);
       } catch (err) {
         console.error("Error al obtener fechas reservadas:", err);
-       // setError("No se pudo obtener la información de las solicitudes.");
+        // setError("No se pudo obtener la información de las solicitudes.");
         setMensaje("No se pudo obtener la información de las solicitudes.");
         setTipoMensaje("Error");
       }
@@ -129,7 +127,7 @@ export default function NuevaSolicitud() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-      //    setError("No se encontró un token. Inicia sesión nuevamente.");
+          //    setError("No se encontró un token. Inicia sesión nuevamente.");
           setMensaje("No se encontró un token. Inicia sesión nuevamente.");
           setTipoMensaje("Error");
           return;
@@ -143,7 +141,7 @@ export default function NuevaSolicitud() {
         setDiasVacacionesDisponibles(response.data);
       } catch (err) {
         console.error("Error al obtener días de vacaciones disponibles:", err);
-     //   setError("No se pudo obtener la información de días de vacaciones.");
+        //   setError("No se pudo obtener la información de días de vacaciones.");
         setMensaje("No se pudo obtener la información de días de vacaciones.");
         setTipoMensaje("Error");
       }
@@ -164,6 +162,11 @@ export default function NuevaSolicitud() {
         );
 
         const usuarios = response.data;
+
+        if (userRole === "DIRECTORIO") {
+          setLideres(null); // Configurar lideres como null
+          return; // Finalizar la función
+        }
 
         // Validar usuarios según el rol del usuario logueado
         let usuariosFiltrados = [];
@@ -201,11 +204,6 @@ export default function NuevaSolicitud() {
             );
             break;
 
-          case "DIRECTORIO":
-            throw new Error(
-              "El rol DIRECTORIO no selecciona un líder. Por favor, revisa tu configuración."
-            );
-
           default:
             throw new Error(
               "Rol no soportado para la creación de solicitudes. Contacta al administrador."
@@ -220,7 +218,7 @@ export default function NuevaSolicitud() {
         setLideres(usuariosFiltrados);
       } catch (err) {
         console.error("Error al obtener usuarios:", err);
-       // setError("No se pudo obtener la información de los usuarios.");
+        // setError("No se pudo obtener la información de los usuarios.");
         setMensaje("No se pudo obtener la información de los usuarios.");
         setTipoMensaje("Error");
       }
@@ -237,7 +235,7 @@ export default function NuevaSolicitud() {
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-    //  setWarning("No puedes seleccionar más días de los disponibles.");
+      //  setWarning("No puedes seleccionar más días de los disponibles.");
       setMensaje("No puedes seleccionar más días de los disponibles.");
       setTipoMensaje("Warning");
     } else {
@@ -260,7 +258,7 @@ export default function NuevaSolicitud() {
     e.preventDefault();
 
     if (!startDate || !endDate || !selectedLideres) {
-     // setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      // setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
       setMensaje("Por favor, selecciona ambas fechas y por lo menos un lider.");
       setTipoMensaje("Error");
       return;
@@ -302,7 +300,7 @@ export default function NuevaSolicitud() {
         );
       }
 
-   //   alert("Carga de solicitud exitosa");
+      //   alert("Carga de solicitud exitosa");
       setMensaje("Carga de solicitud exitosa");
       setTipoMensaje("Success");
       setTimeout(() => {
@@ -312,7 +310,7 @@ export default function NuevaSolicitud() {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
-    //    setError("Error al crear la solicitud.");
+        //    setError("Error al crear la solicitud.");
         setMensaje("Error al crear la solicitud.");
         setTipoMensaje("Error");
       }
@@ -327,10 +325,10 @@ export default function NuevaSolicitud() {
           <Logo />
           <h2>Nueva Solicitud</h2>
           {mensaje && (
-  <div className={`MensajePopuppNS ${tipoMensaje}`}>
-    <p>{mensaje}</p>
-  </div>
-)}
+            <div className={`MensajePopuppNS ${tipoMensaje}`}>
+              <p>{mensaje}</p>
+            </div>
+          )}
 
           <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
             <div className="info-card">
@@ -385,51 +383,53 @@ export default function NuevaSolicitud() {
                 disabled={!startDate}
               />
             </div>
-            {selectedLideres.map((selectedLider, index) => (
-              <div
-                className={`mb-3-lideres ${
-                  index !== selectedLideres.length - 1 ||
-                  selectedLideres.length === 3
-                    ? "flex-column"
-                    : ""
-                }`}
-                key={index}
-              >
-                <select
-                  value={selectedLider || ""}
-                  onChange={(e) => handleLiderChange(e.target.value, index)}
-                  className="select-usuarios"
+            {userRole !== "DIRECTORIO" &&
+              selectedLideres.map((selectedLider, index) => (
+                <div
+                  className={`mb-3-lideres ${
+                    index !== selectedLideres.length - 1 ||
+                    selectedLideres.length === 3
+                      ? "flex-column"
+                      : ""
+                  }`}
+                  key={index}
                 >
-                  <option value="" disabled>
-                    Selecciona un líder
-                  </option>
-                  {lideres
-                    .filter(
-                      (lider) =>
-                        !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
-                        selectedLider === lider.id // Mantener el líder previamente seleccionado
-                    )
-                    .map((lider) => (
-                      <option key={lider.id} value={lider.id}>
-                        {lider.nombre} {lider.apellido}
-                      </option>
-                    ))}
-                </select>
-                {index === selectedLideres.length - 1 &&
-                  selectedLideres.length < 3 && (
-                    <div 
-                    className="imagenBotonMas"
-                    onClick={handleAddLiderSelector}>
-                      <img
-                        src="./public/agregar.svg"
-                        alt="Añadir líder"
-                        title="Añadir líder"
-                        className="imagenBotonMas-img"
-                      />
-                    </div>
-                  )}
-              </div>
-            ))}
+                  <select
+                    value={selectedLider || ""}
+                    onChange={(e) => handleLiderChange(e.target.value, index)}
+                    className="select-usuarios"
+                  >
+                    <option value="" disabled>
+                      Selecciona un líder
+                    </option>
+                    {lideres
+                      .filter(
+                        (lider) =>
+                          !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                          selectedLider === lider.id // Mantener el líder previamente seleccionado
+                      )
+                      .map((lider) => (
+                        <option key={lider.id} value={lider.id}>
+                          {lider.nombre} {lider.apellido}
+                        </option>
+                      ))}
+                  </select>
+                  {index === selectedLideres.length - 1 &&
+                    selectedLideres.length < 3 && (
+                      <div
+                        className="imagenBotonMas"
+                        onClick={handleAddLiderSelector}
+                      >
+                        <img
+                          src="./public/agregar.svg"
+                          alt="Añadir líder"
+                          title="Añadir líder"
+                          className="imagenBotonMas-img"
+                        />
+                      </div>
+                    )}
+                </div>
+              ))}
 
             {userRole === "FUNCIONARIO_TERCERIZADO" && (
               <div className="mb-3">
