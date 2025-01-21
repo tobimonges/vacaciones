@@ -15,9 +15,12 @@ import Preloader from "./Preloader";
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
-  format: (date, formatStr, options) => format(date, formatStr, { ...options, locale: esLocale }),
-  parse: (str, formatStr) => parse(str, formatStr, new Date(), { locale: esLocale }),
-  startOfWeek: () => startOfWeek(new Date(), { locale: esLocale }),
+  format: (date, formatStr, options) =>
+    format(date, formatStr, { ...options, locale: esLocale }),
+  parse: (str, formatStr) =>
+    parse(str, formatStr, new Date(), { locale: esLocale }),
+  startOfWeek: () =>
+    startOfWeek(new Date(), { locale: esLocale, weekStartsOn: 0 }),
   getDay,
   locales,
 });
@@ -38,9 +41,11 @@ const EVENT_COLORS = {
 };
 
 const MESSAGES = {
-  SESSION_EXPIRED: "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
+  SESSION_EXPIRED:
+    "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
   USER_DATA_ERROR: "No se pudieron cargar los datos del usuario.",
-  VACATION_REQUESTS_ERROR: "No se pudieron cargar las solicitudes de vacaciones.",
+  VACATION_REQUESTS_ERROR:
+    "No se pudieron cargar las solicitudes de vacaciones.",
 };
 
 // 🎨 **Componente de leyenda del calendario**
@@ -48,7 +53,16 @@ const CalendarLegend = () => (
   <div className="calendar-legend">
     {Object.entries(EVENT_COLORS).map(([type, color]) => (
       <p key={type}>
-        <span style={{ backgroundColor: color, color: "#000000", padding: "8px", borderRadius: "6px", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)", cursor: "pointer" }}>
+        <span
+          style={{
+            backgroundColor: color,
+            color: "#000000",
+            padding: "8px",
+            borderRadius: "6px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+            cursor: "pointer",
+          }}
+        >
           {type.charAt(0).toUpperCase() + type.slice(1)}
         </span>
       </p>
@@ -62,10 +76,16 @@ const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
     <button className="sidebar-button" onClick={() => navigate("/Home")}>
       <span className="sidebar-text-focus">Home</span>
     </button>
-    <button className="sidebar-button" onClick={() => navigate("/NuevaSolicitud")}>
+    <button
+      className="sidebar-button"
+      onClick={() => navigate("/NuevaSolicitud")}
+    >
       <span>Solicitar</span>
     </button>
-    <button className="sidebar-button" onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}>
+    <button
+      className="sidebar-button"
+      onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
+    >
       <span>Ver Solicitudes</span>
     </button>
     {isUserAllowed() && (
@@ -73,7 +93,6 @@ const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
         <span>Gestion de Solicitudes</span>
       </button>
     )}
-
   </div>
 );
 
@@ -109,13 +128,21 @@ const Home = () => {
         const token = localStorage.getItem("token");
 
         // Solicitar días de vacaciones disponibles dinámicamente
-        const vacationDaysResponse = await axios.get(`http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const vacationDaysResponse = await axios.get(
+          `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setVacationDays(vacationDaysResponse.data || 0);
 
         // Realizamos las solicitudes para obtener otros datos
-        const [userDataResponse, vacationRequestsResponse, holidaysResponse, birthdaysResponse] = await Promise.all([
+        const [
+          userDataResponse,
+          vacationRequestsResponse,
+          holidaysResponse,
+          birthdaysResponse,
+        ] = await Promise.all([
           axios.get(`http://localhost:8080/vacaciones/buscarid/${usuarioId}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -125,9 +152,12 @@ const Home = () => {
           axios.get("http://localhost:8080/vacaciones/feriados", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get(`http://localhost:8080/vacaciones/cumpleanos/${usuarioId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          axios.get(
+            `http://localhost:8080/vacaciones/cumpleanos/${usuarioId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          ),
         ]);
 
         const { nombre, fechaIngreso } = userDataResponse.data;
@@ -135,27 +165,38 @@ const Home = () => {
         setJoinDate(fechaIngreso);
 
         // Procesar eventos
-        const eventsArray = vacationRequestsResponse.data.map((solicitud) => {
-          if (solicitud.fechaInicio && solicitud.fechaFin) {
-            const startDate = new Date(solicitud.fechaInicio).toISOString().split("T")[0];
-            const endDate = new Date(solicitud.fechaFin).toISOString().split("T")[0];
+        const eventsArray = vacationRequestsResponse.data
+          .map((solicitud) => {
+            if (solicitud.fechaInicio && solicitud.fechaFin) {
+              try {
+                const startDate = new Date(solicitud.fechaInicio);
+                const endDate = new Date(solicitud.fechaFin);
 
-            const type = solicitud.rechazado
-              ? EVENT_TYPES.RECHAZADO
-              : solicitud.estado
-                ? EVENT_TYPES.APROBADO
-                : EVENT_TYPES.PENDIENTE;
+                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                  throw new Error("Fecha inválida");
+                }
 
-            return {
-              title: "Vacaciones",
-              start: new Date(`${startDate}T00:00:00`),
-              end: new Date(`${endDate}T23:59:59`),
-              allDay: true,
-              type,
-            };
-          }
-          return null;
-        }).filter(Boolean);
+                const type = solicitud.rechazado
+                  ? EVENT_TYPES.RECHAZADO
+                  : solicitud.estado
+                  ? EVENT_TYPES.APROBADO
+                  : EVENT_TYPES.PENDIENTE;
+
+                return {
+                  title: "Vacaciones",
+                  start: startDate,
+                  end: endDate,
+                  allDay: true,
+                  type,
+                };
+              } catch (e) {
+                console.warn("Error al procesar evento:", solicitud, e);
+                return null;
+              }
+            }
+            return null;
+          })
+          .filter(Boolean);
 
         holidaysResponse.data.forEach((feriado) => {
           eventsArray.push({
@@ -183,12 +224,13 @@ const Home = () => {
   };
 
   const dayPropGetter = (date) => {
-    const day = date.getDay();
-    if (day === 0 || day === 6) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+    const isPastDate = date < today;
+
+    if (isPastDate) {
       return {
-        style: {
-          backgroundColor: "#e5e5e5",
-        },
+        className: "past-date",
       };
     }
     return {};
@@ -204,15 +246,15 @@ const Home = () => {
     };
   };
 
-  return (
 
-    // 🖼️ **Estructura de la página** 
+
+  return (
+    // 🖼️ **Estructura de la página**
     <div className="container home-container">
       <Preloader duration={650} />
-      { /* 📚 **Barra lateral** */}
+      {/* 📚 **Barra lateral** */}
       <div className="sidebar">
         <div className="sidebar-content">
-
           {/* 🖼️ Logo de la barra lateral */}
           <div className="sidebar-logo">
             <Link to="/home">
@@ -221,58 +263,59 @@ const Home = () => {
           </div>
 
           <div className="sidebar-buttons">
-            <CalendarButtons navigate={navigate} isUserAllowed={isUserAllowed} />
+            <CalendarButtons
+              navigate={navigate}
+              isUserAllowed={isUserAllowed}
+            />
           </div>
 
           <div className="sidebar-logout">
             <button className="logout-button" onClick={handleLogout}>
-              <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
+              <img
+                src=".\salida.svg"
+                alt="Cerrar sesión"
+                className="button-icon"
+              />
               <span>Cerrar sesión</span>
             </button>
           </div>
-
-
-
         </div>
       </div>
 
-
-      { /* 📚 **Área de contenido** */}
+      {/* 📚 **Área de contenido** */}
       <div className="content-area">
-
-
-        { /* 📚 **Barra de navegación** */}
+        {/* 📚 **Barra de navegación** */}
         <div className="navbar">
           <div className="navbar-content">
             <NavigationBar onLogout={handleLogout} />
           </div>
-
         </div>
 
-
-        { /* 📚 **Contenido principal** */}
+        {/* 📚 **Contenido principal** */}
         <div className="main">
           <div className="main-content">
             <div className="calendar-title">
-
               <div className="calendar-key">
                 <span>Fecha de ingreso:</span>
               </div>
               <div className="calendar-value">
-                <span>{joinDate ? new Date(joinDate).toLocaleDateString("es-ES") : "Cargando..."}</span>
+                <span>
+                  {joinDate
+                    ? new Date(joinDate).toLocaleDateString("es-ES")
+                    : "Cargando..."}
+                </span>
               </div>
-              <div className="calendar-divisor">
-
-              </div>
+              <div className="calendar-divisor"></div>
 
               <div className="calendar-key">
                 <span>Vacaciones disponibles:</span>
               </div>
               <div className="calendar-value">
-                <span>{vacationDays !== undefined ? vacationDays : "Cargando..."}</span>
+                <span>
+                  {vacationDays !== undefined ? vacationDays : "Cargando..."}
+                </span>
               </div>
               {error && <p className="calendar-error-message">{error}</p>}
-
             </div>
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               <div className="calendar-big-container">
@@ -297,11 +340,9 @@ const Home = () => {
                 />
               </div>
               <CalendarLegend />
-
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

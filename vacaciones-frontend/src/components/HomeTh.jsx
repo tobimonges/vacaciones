@@ -18,7 +18,7 @@ const locales = { es: esLocale };
 const localizer = dateFnsLocalizer({
   format: (date, formatStr, options) => format(date, formatStr, { ...options, locale: esLocale }),
   parse: (str, formatStr) => parse(str, formatStr, new Date(), { locale: esLocale }),
-  startOfWeek: () => startOfWeek(new Date(), { locale: esLocale }),
+  startOfWeek: () => startOfWeek(new Date(), { locale: esLocale, weekStartsOn: 0 }),
   getDay,
   locales,
 });
@@ -231,13 +231,13 @@ const HomeTh = () => {
   };
   // 🎨 **Personalizar colores de días**
   const dayPropGetter = (date) => {
-    const day = date.getDay();
-    if (day === 0 || day === 6) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+    const isPastDate = date < today;
+
+    if (isPastDate) {
       return {
-        style: {
-          backgroundColor: "#e5e5e5", // Color personalizado para sábados y domingos
-          color: "#2b2d30",
-        },
+        className: "past-date",
       };
     }
     return {};
