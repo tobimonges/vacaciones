@@ -158,11 +158,11 @@ function UsuarioDetalle() {
     };
 
     return (
-        <div className="container">
+        <div className="container-detalle2">
              { /* 📚 **Área de contenido** */}
              <Preloader duration={650} />
 
-      <div className="content-area">
+      <div className="content-area2">
 
 
         { /* 📚 **Barra de navegación** */}
@@ -293,7 +293,7 @@ function UsuarioDetalle() {
                             <label htmlFor={name}>{label}</label>
                             <div className="iconWrap">
                             <img src={icon} className="icon" />
-
+                                <div className="datePickerGroup">
                                 <DatePicker
                                     selected={formData[name]}
                                     onChange={(date) => handleDateChange(name, date)}
@@ -301,7 +301,7 @@ function UsuarioDetalle() {
                                     className="inputCreate"
                                     required
                                 />
-
+                                </div>
                                 </div>
                                 </LocalizationProvider>
                             </div>
