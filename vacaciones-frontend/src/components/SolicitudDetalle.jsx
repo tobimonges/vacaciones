@@ -4,7 +4,7 @@ import axios from "axios";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { getUsuarioId } from "./authUtils";
+import { getUsuarioId, getUserRole } from "./authUtils";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "./Solicitud.css";
@@ -23,11 +23,13 @@ function countValidDays(start, end, reservedDates, disabledDates) {
   let currentDate = start.clone();
 
   while (currentDate.isSame(end, "day") || currentDate.isBefore(end, "day")) {
+    console.log("Analizando fecha:", currentDate.format("YYYY-MM-DD"));
     if (
       !isWeekend(currentDate) &&
       !reservedDates.some((reserved) => currentDate.isSame(reserved, "day")) &&
       !disabledDates.some((disabled) => currentDate.isSame(disabled, "day"))
     ) {
+      console.log("Día válido:", currentDate.format("YYYY-MM-DD"));
       count++;
     }
     currentDate = currentDate.add(1, "day");
@@ -48,9 +50,25 @@ export default function SolicitudDetalle() {
   const [lideres, setLideres] = useState([]);
   const [reservedDates, setReservedDates] = useState([]);
   const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] = useState(null);
+  const [selectedLideres, setSelectedLideres] = useState([null]); // Líder seleccionado
+  const userRole = getUserRole();
+  
+
 
   const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")]; 
 
+
+  const handleAddLiderSelector = () => {
+    if (selectedLideres.length < 3) {
+      setSelectedLideres([...selectedLideres, null]);
+    }
+  };
+
+  const handleLiderChange = (value, index) => {
+    const newSelectedLideres = [...selectedLideres];
+    newSelectedLideres[index] = parseInt(value, 10);
+    setSelectedLideres(newSelectedLideres);
+  };
 
   useEffect(() => {
     const fetchSolicitudes = async () => {
@@ -76,6 +94,7 @@ export default function SolicitudDetalle() {
         } else {
           setError("No se pudieron obtener las solicitudes.");
         }
+        console.log("Respuesta de solicitudes:", response.data);
       } catch (error) {
         console.error("Error obteniendo las solicitudes:", error);
         setError("Error al conectar con el servidor.");
@@ -105,6 +124,83 @@ export default function SolicitudDetalle() {
 
     fetchLideres();
   }, []);
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/listarusuarios",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const usuarios = response.data;
+
+        // Validar usuarios según el rol del usuario logueado
+        let usuariosFiltrados = [];
+
+        switch (userRole) {
+          case "FUNCIONARIO_FABRICA":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["LIDER", "OPERACIONES", "DIRECTORIO"].includes(
+                usuario.rol.nombre
+              )
+            );
+            break;
+
+          case "FUNCIONARIO_TERCERIZADO":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "TH":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "OPERACIONES":
+            usuariosFiltrados = usuarios.filter(
+              (usuario) => usuario.rol.nombre === "DIRECTORIO"
+            );
+            break;
+
+          case "LIDER":
+            usuariosFiltrados = usuarios.filter((usuario) =>
+              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
+            );
+            break;
+
+          case "DIRECTORIO":
+            throw new Error(
+              "El rol DIRECTORIO no selecciona un líder. Por favor, revisa tu configuración."
+            );
+
+          default:
+            throw new Error(
+              "Rol no soportado para la creación de solicitudes. Contacta al administrador."
+            );
+        }
+
+        // Excluir al usuario logueado de la lista
+        usuariosFiltrados = usuariosFiltrados.filter(
+          (usuario) => usuario.id !== usuarioId
+        );
+
+        setLideres(usuariosFiltrados);
+      } catch (err) {
+        console.error("Error al obtener usuarios:", err);
+       // setError("No se pudo obtener la información de los usuarios.");
+        setMensaje("No se pudo obtener la información de los usuarios.");
+        setTipoMensaje("Error");
+      }
+    };
+
+    fetchUsuarios();
+  }, [userRole, usuarioId]);
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -181,6 +277,8 @@ export default function SolicitudDetalle() {
         disabledDates
       );
 
+      console.log("Cantidad de días calculados:", cantidadDias);
+
       if (cantidadDias > diasVacacionesDisponibles) {
         alert("No tienes suficientes días de vacaciones disponibles.");
         return;
@@ -201,7 +299,7 @@ export default function SolicitudDetalle() {
           },
         }
       );
-
+      
       const response = await axios.get(
         `http://localhost:8080/vacaciones/usuario/${id}`,
         {
@@ -210,6 +308,7 @@ export default function SolicitudDetalle() {
           },
         }
       );
+      console.log("Respuesta del servidor después de actualización:", response.data);
 
       if (response.status === 200) {
         setSolicitudes(response.data);
@@ -299,16 +398,17 @@ export default function SolicitudDetalle() {
           <Logo />
           <h4>Solicitudes del Usuario</h4>
           {/* Lista desplegable para filtro */}
-          <select
-            className="select-filtro"
-            value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
-          >
-            <option value="Todas"> Todas </option>
-            <option value="Confirmada">Confirmadas</option>
-            <option value="Pendiente">Pendientes</option>
-          </select>
-
+          {editando === null && (
+            <select
+              className="select-filtro"
+              value={filtro}
+              onChange={(e) => setFiltro(e.target.value)}
+            >
+              <option value="Todas"> Todas </option>
+              <option value="Confirmada">Confirmadas</option>
+              <option value="Pendiente">Pendientes</option>
+            </select>
+          )}
           <ul>
             {solicitudesFiltradas.map((solicitud, index) => (
               <li key={solicitud.id}>
@@ -338,7 +438,51 @@ export default function SolicitudDetalle() {
                         renderInput={(params) => <input {...params} />}
                       />
                     </div>
-                    <br />
+                    {selectedLideres.map((selectedLider, index) => (
+                      <div
+                        className={`mb-3-lideresDetalle ${
+                          index !== selectedLideres.length - 1 ||
+                          selectedLideres.length === 3
+                            ? "flex-column"
+                            : ""
+                        }`}
+                        key={index}
+                      >
+                        <select
+                          value={selectedLider || ""}
+                          onChange={(e) => handleLiderChange(e.target.value, index)}
+                          className="select-usuariosDetalle"
+                        >
+                          <option value="" disabled>
+                            Selecciona un líder
+                          </option>
+                          {lideres
+                            .filter(
+                              (lider) =>
+                                !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                                selectedLider === lider.id // Mantener el líder previamente seleccionado
+                            )
+                            .map((lider) => (
+                              <option key={lider.id} value={lider.id}>
+                                {lider.nombre} {lider.apellido}
+                              </option>
+                            ))}
+                        </select>
+                        {index === selectedLideres.length - 1 &&
+                          selectedLideres.length < 3 && (
+                            <div 
+                              className="imagenBotonMasDetalle"
+                              onClick={handleAddLiderSelector}>
+                              <img
+                                src="/agregar.svg"
+                                alt="Añadir líder"
+                                title="Añadir líder"
+                                className="imagenBotonMasDetalle-img"
+                              />
+                            </div>
+                          )}
+                      </div>
+                    ))}
                     <div className="buttons">
                       <button onClick={() => handleGuardar(solicitud.id)}>
                         <span>Guardar</span>
@@ -371,14 +515,14 @@ export default function SolicitudDetalle() {
                           {solicitud.estado ? "Confirmada" : "Pendiente"}
                         </p>
                         <p>
-                          <strong>Líder:</strong>{" "}
-                            {lideres
-                              .filter((lider) => lider.id === solicitud.lider.id) // Filtra el líder asignado
-                              .map((lider) => (
-                                <span key={lider.id}>
-                                  {lider.nombre} {lider.apellido}
-                                </span>
-                            ))}
+                          <strong>Líderes:</strong>{" "}
+                            {solicitud.lideres && solicitud.lideres.length > 0
+                              ? solicitud.lideres.map((lider) => {
+                                  const [primerNombre] = lider.nombre.split(" ", 1);
+                                  const [primerApellido] = lider.apellido.split(" ", 1);
+                                  return `${primerNombre} ${primerApellido}`;
+                                }).join(", ")
+                              : "Sin líderes asignados"}
                         </p> 
                         <p>
                           <strong>Comentario:</strong> {solicitud.comentario || "Sin comentario"}
