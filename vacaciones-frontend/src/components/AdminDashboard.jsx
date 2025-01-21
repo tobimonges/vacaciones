@@ -127,7 +127,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/vacaciones/${id}/rechazar-lider-th?usuarioId=${userId}`,
+        `http://localhost:8080/vacaciones/${id}/rechazar?usuarioId=${userId}`,
         null,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/vacaciones/${selectedSolicitudId}/rechazar-operador?usuarioId=${userId}`,
+        `http://localhost:8080/vacaciones/${selectedSolicitudId}/rechazar?usuarioId=${userId}`,
         { comentario: comentarioFinal },
         {
           headers: { Authorization: `Bearer ${token}` },
