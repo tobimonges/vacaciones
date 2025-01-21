@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import HomeTh from "./components/HomeTh";
 import NuevaSolicitud from "./components/NuevaSolicitud";
+import SolicitudAuxiliar from "./components/SolicitudAuxiliar";
 import SolicitudDetalle from "./components/SolicitudDetalle";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminDashboard from "./components/AdminDashboard";
@@ -14,7 +15,6 @@ import CreaCargo from "./components/CreaCargo";
 import EquipoDetalle from "./components/EquipoDetalle";
 import CargoDetalle from "./components/CargoDetalle";
 import UsuarioDetalle from "./components/UsuarioDetalle";
-
 
 function App() {
   return (
@@ -40,6 +40,17 @@ function App() {
               allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
             >
               <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/SolicitudAuxiliar"
+          element={
+            <PrivateRoute
+              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
+            >
+              <SolicitudAuxiliar />
             </PrivateRoute>
           }
         />
