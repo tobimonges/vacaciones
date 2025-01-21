@@ -347,17 +347,6 @@
     /* Indica interactividad */
 }
 
-/* Para pantallas pequeñas */
-@media (max-width: 768px) {
-    .calendar-select-Th {
-        font-size: 0.9rem;
-        /* Reduce ligeramente el texto */
-        padding: 6px;
-        /* Ajusta el espacio interno */
-        max-width: 100%;
-        /* Permite ocupar todo el espacio disponible */
-    }
-}
 
 
 .close-modal-btn:hover {
@@ -387,34 +376,6 @@
     margin: 1px !important;
 }
 
-/* 🎯 Reglas responsivas */
-@media (max-width: 768px) {
-    .modal-contentTh {
-        width: 90%;
-        max-width: 100%;
-    }
-
-    .close-modal-btn {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
-
-    .calendar-title {
-        font-size: 18px;
-    }
-
-    .calendar-text {
-        font-size: 12px;
-    }
-
-    .calendar-card {
-        padding: 15px;
-    }
-
-    .calendar-legend {
-        gap: 8px;
-    }
-}
 .sidebar-button-homeTH{
     background-color:  rgba(87, 145, 238, 0.25);;
 }
