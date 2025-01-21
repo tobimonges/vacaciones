@@ -398,11 +398,27 @@ public class SolicitudService implements ISolicitudService {
             } else if (solicitud.getNumeroAprobaciones() == 1) {
                 logger.info("Paso 2: La solicitud con ID: {} requiere la aprobación de un TH.", solicitudId);
 
-                validarRolTh(usuarioQueAprueba);
-                solicitud.setNumeroAprobaciones(2);
-                solicitud.setEstado(true);
-                solicitud.setRechazado(false);
-                actualizarDiasVacaciones(solicitud);
+                UsuarioModel usuario = solicitud.getUsuario();
+
+                int diasDisponibles = usuario.getDiasVacaciones();
+                int cantidadDias = solicitud.getCantidadDias();
+
+                if (diasDisponibles == 0) {
+                    usuario.setDiasVacaciones(usuario.getDiasVacaciones() - cantidadDias);
+                    validarRolTh(usuarioQueAprueba);
+                    solicitud.setNumeroAprobaciones(2);
+                    solicitud.setEstado(true);
+                    solicitud.setRechazado(false);
+                } else if (diasDisponibles > 0) {
+                    validarRolTh(usuarioQueAprueba);
+                    solicitud.setNumeroAprobaciones(2);
+                    solicitud.setEstado(true);
+                    solicitud.setRechazado(false);
+                    actualizarDiasVacaciones(solicitud);
+                } else {
+                    throw new IllegalArgumentException("No es posible aprobar una solicitud anticipada una vez ya aprobada una anteriormente");
+                }
+
 
                 notificarUsuario(
                         solicitud.getUsuario().getCorreo(),
@@ -438,6 +454,7 @@ public class SolicitudService implements ISolicitudService {
         }
     }
 
+
     private void actualizarDiasVacaciones(SolicitudModel solicitud) {
         UsuarioModel usuario = solicitud.getUsuario();
         int diasRestantesSolicitados = solicitud.getCantidadDias();
@@ -467,10 +484,6 @@ public class SolicitudService implements ISolicitudService {
                 logger.info("Días descontados de vacaciones totales: {}. Nuevos días totales restantes: {}",
                         diasRestantesSolicitados, usuario.getDiasVacaciones());
                 diasRestantesSolicitados = 0;
-            } else {
-                logger.error("No hay suficientes días de vacaciones totales para completar la operación. Días requeridos: {}, disponibles: {}",
-                        diasRestantesSolicitados, usuario.getDiasVacaciones());
-                throw new IllegalArgumentException("No hay suficientes días de vacaciones disponibles.");
             }
         }
 
@@ -639,6 +652,74 @@ public class SolicitudService implements ISolicitudService {
 
         return diasHabiles;
     }
+
+
+    public SolicitudModel crearSolicitudAuxiliar(Long usuarioId, Long solicitanteId, SolicitudRequest solicitudRequest) {
+        // Verificar el usuario que realiza la solicitud auxiliar
+        UsuarioModel solicitante = usuarioRepository.findById(solicitanteId)
+                .orElseThrow(() -> new RuntimeException("Usuario solicitante no encontrado"));
+
+        String rolSolicitante = solicitante.getRol().getNombre();
+        if (!"DIRECTORIO".equals(rolSolicitante) && !"OPERACIONES".equals(rolSolicitante) && !"LIDER".equals(rolSolicitante)) {
+            throw new RuntimeException("Solo usuarios con rol DIRECTORIO, OPERACIONES o LIDER pueden crear solicitudes auxiliares.");
+        }
+
+        // Verificar el usuario para quien se crea la solicitud
+        UsuarioModel usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario objetivo no encontrado"));
+
+        String rolUsuario = usuario.getRol().getNombre();
+        if (!"FUNCIONARIO_FABRICA".equals(rolUsuario) && !"FUNCIONARIO_TERCERIZADO".equals(rolUsuario)) {
+            throw new RuntimeException("Solo se pueden crear solicitudes auxiliares para FUNCIONARIO_FABRICA o FUNCIONARIO_TERCERIZADO.");
+        }
+
+        // Calcular días hábiles basados en las fechas proporcionadas
+        int cantidadDias = calcularDiasHabiles(solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin(), usuario.getId());
+
+        // Verificar conflictos con solicitudes existentes
+        List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
+                usuarioId, solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin()
+        );
+        if (!solicitudesConflicto.isEmpty()) {
+            throw new RuntimeException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
+        }
+
+        int diasDisponibles = usuario.getDiasVacaciones();
+
+        if (diasDisponibles > 0) {
+            if (diasDisponibles < cantidadDias) {
+                throw new RuntimeException("No tienes suficientes días de vacaciones disponibles para esta solicitud.");
+            }
+            logger.info("Vacaciones normales solicitadas.");
+        }
+        else if (diasDisponibles == 0) {
+            logger.info("Vacaciones anticipadas solicitadas.");
+        }
+        else {
+            throw new RuntimeException("Estado no válido para los días de vacaciones disponibles.");
+        }
+
+
+        usuarioRepository.save(usuario);
+
+        // Crear la nueva solicitud
+        SolicitudModel nuevaSolicitud = new SolicitudModel();
+        nuevaSolicitud.setUsuario(usuario); // Usuario para quien se crea la solicitud
+        nuevaSolicitud.setLideres(Set.of(solicitante)); // El solicitante es el "líder" asignado
+        nuevaSolicitud.setFechaInicio(solicitudRequest.getFechaInicio());
+        nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
+        nuevaSolicitud.setCantidadDias(cantidadDias);
+        nuevaSolicitud.setEstado(false); // Pendiente de aprobación
+        nuevaSolicitud.setNumeroAprobaciones(1); // Ya aprobada por el solicitante
+        nuevaSolicitud.setRechazado(false);
+        nuevaSolicitud.setComentario(solicitudRequest.getComentario());
+
+        return solicitudRepository.save(nuevaSolicitud);
+    }
+
+
+
+
 }
 
 
