@@ -228,6 +228,10 @@ button.reject:hover {
   position: relative;
 }
 
+.modal-content h4,
+p {
+  margin-bottom: 25px;
+}
 /* Estilo para el textarea dentro del modal */
 .modal-content textarea {
   width: 90%;
