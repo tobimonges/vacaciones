@@ -158,6 +158,7 @@ function UsuarioDetalle() {
     };
 
     return (
+        <div className="container">
         <div className="container-detalle2">
              { /* 📚 **Área de contenido** */}
              <Preloader duration={650} />
@@ -326,6 +327,8 @@ function UsuarioDetalle() {
           </div>
           </div>
           </div>
+          </div>
+
 
 
     );
