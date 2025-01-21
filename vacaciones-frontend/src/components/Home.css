@@ -3,7 +3,7 @@
     --primary-bg: rgba(87, 145, 238, 0.25);
     --primary-color: #ffffff;
     --secondary-bg: #fffffff1;
-    --highlight-bg: #d8e5ef;
+    --highlight-bg: #a3b9ca;
     --button-bg: #fbc940;
     --button-hover-bg: #dfb755;
     --modal-bg: #39659f;
@@ -315,6 +315,14 @@
     margin-top: 10px;
 }
 
+.past-date {
+    background-color: #e6e6e6;
+    color: #dfb755;
+}
+.weekend {
+    background-color: #dadada;
+}
+
 
 /*Selector de Equipos*/
 /*.calendar-select-Th {*/
@@ -357,8 +365,26 @@
 }
 
 /* Estilo del día actual */
-.rbc-day-bg.rbc-today {
-    background-color: var(--highlight-bg) !important;
+
+.rbc-day-bg.rbc-today:hover {
+    background-color: var(--button-bg) !important;
+}
+.rbc-now button:hover {
+    background-color: #eaf6ff !important;
+}
+.rbc-now button {
+    padding: 3.1px;
+    background-color: var(--button-bg);
+    color: #333 !important;
+    border-radius: 50%;
+}
+.rbc-button-link {
+    margin: 0 !important;
+}
+
+.rbc-date-cell {
+    padding: 0px !important;
+    margin: 1px !important;
 }
 
 /* 🎯 Reglas responsivas */
