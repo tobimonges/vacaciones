@@ -126,9 +126,19 @@ const AdminDashboard = () => {
     const userId = getUsuarioId();
 
     try {
+      const { data: usuario } = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Si el comentario está vacío, asignar "Rechazado por <nombre del usuario>"
+      const comentarioFinal = comentario.trim()
+        ? comentario.trim()
+        : `Rechazado por ${usuario.nombre}`;
       await axios.put(
         `http://localhost:8080/vacaciones/${id}/rechazar?usuarioId=${userId}`,
-        null,
+        { comentario: comentarioFinal },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -168,12 +178,10 @@ const AdminDashboard = () => {
       },
     });
 
-    console.log(usuario); // Verifica que los datos están correctamente en usuario
-
     // Si el comentario está vacío, asignar "Rechazado por <nombre del usuario>"
     const comentarioFinal = comentario.trim()
       ? comentario.trim()
-      : `Rechazado por ${usuario.nombre} de Operaciones`;
+      : `Rechazado por ${usuario.nombre}`;
 
     try {
       await axios.put(
@@ -247,31 +255,23 @@ const AdminDashboard = () => {
   };
 
   const getEstadoSolicitud = (solicitud) => {
-    if (userRole === "OPERACIONES") {
-      if (!solicitud.estado && solicitud.rechazado) {
-        return "Rechazado"; // Estado específico para OPERACIONES
-      } else if (solicitud.numeroAprobaciones === 0) {
-        return "Falta aprobación del Líder"; // Estado inicial visible para OPERACIONES
-      } else if (solicitud.numeroAprobaciones === 1) {
-        return "Pendiente a TH"; // Aprobado por líder, pendiente a TH
-      } else if (solicitud.estado) {
-        return "Aprobado"; // Aprobado completamente
-      } else {
-        return "Pendiente"; // Otros casos visibles para OPERACIONES
-      }
-    }
-
-    // Lógica general para otros roles
+    // Común a todos los roles, dependiendo del estado de la solicitud
     if (!solicitud.estado && solicitud.rechazado) {
       return "Rechazado"; // Si la solicitud fue rechazada
-    } else if (solicitud.numeroAprobaciones === 0 && userRole === "TH") {
-      return "Falta aprobación del Líder"; // Si no ha sido aprobada por el líder y el usuario es TH
+    }
+
+    // Lógica de estados basados en el número de aprobaciones
+    if (solicitud.numeroAprobaciones === 0) {
+      return "Falta aprobación del Líder"; // Si la solicitud no ha sido aprobada por el líder
+    } else if (solicitud.numeroAprobaciones === 1 && userRole === "TH") {
+      return "Pendiente a GTH"; // Si la solicitud está pendiente de aprobación de GTH
     } else if (solicitud.numeroAprobaciones === 1) {
-      return "Pendiente a TH"; // Si hay una aprobación, pendiente a TH
-    } else if (solicitud.estado) {
-      return "Aprobado"; // Si la solicitud está aprobada completamente
-    } else {
-      return "Pendiente"; // Cualquier otro caso
+      return "Pendiente a TH"; // Si está pendiente de aprobación de TH
+    }
+
+    // Si la solicitud está completamente aprobada
+    if (solicitud.estado) {
+      return "Aprobado"; // Aprobación completa
     }
   };
 
@@ -411,15 +411,57 @@ const AdminDashboard = () => {
                           </>
                         ) : !solicitud.rechazado ? (
                           userRole === "DIRECTORIO" ? (
-                            // Si el usuario es DIRECTORIO, todos los botones están deshabilitados
-                            <>
-                              <button disabled>
-                                <span>Aprobar</span>
-                              </button>
-                              <button disabled>
-                                <span>Rechazar</span>
-                              </button>
-                            </>
+                            solicitud.lideres.some(
+                              (lider) => lider.id === userId
+                            ) ? (
+                              <>
+                                {getEstadoSolicitud(solicitud) === "Aprobado" ||
+                                getEstadoSolicitud(solicitud) ===
+                                  "Pendiente a TH" ||
+                                getEstadoSolicitud(solicitud) ===
+                                  "Rechazado" ? (
+                                  // Si el estado es "Aprobado", "Pendiente a TH" o "Rechazado", los botones están deshabilitados
+                                  <>
+                                    <button disabled>
+                                      <span>Aprobar</span>
+                                    </button>
+                                    <button disabled>
+                                      <span>Rechazar</span>
+                                    </button>
+                                  </>
+                                ) : (
+                                  // Si no es uno de los estados mencionados, los botones están habilitados
+                                  <>
+                                    <button
+                                      onClick={() =>
+                                        handleApproveConfirm(solicitud.id)
+                                      }
+                                      className="btn-approve"
+                                    >
+                                      <span>Aprobar</span>
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleRejectConfirm(solicitud.id)
+                                      }
+                                      className="btn-reject"
+                                    >
+                                      <span>Rechazar</span>
+                                    </button>
+                                  </>
+                                )}
+                              </>
+                            ) : (
+                              // Si el usuario no es líder, los botones están deshabilitados
+                              <>
+                                <button disabled>
+                                  <span>Aprobar</span>
+                                </button>
+                                <button disabled>
+                                  <span>Rechazar</span>
+                                </button>
+                              </>
+                            )
                           ) : userRole === "LIDER" ? (
                             <>
                               {getEstadoSolicitud(solicitud) ===
