@@ -70,7 +70,7 @@ const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
     </button>
     {isUserAllowed() && (
       <button className="sidebar-button" onClick={() => navigate(`/HomeTh`)}>
-        <span>Home Talento Humano</span>
+        <span>Gestion de Solicitudes</span>
       </button>
     )}
 

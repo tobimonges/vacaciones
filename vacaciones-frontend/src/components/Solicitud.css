@@ -213,3 +213,75 @@ button:hover {
 .select-filtro:focus {
   outline: none; /* Eliminar el contorno negro */
 }
+
+.mb-3-lideresDetalle {
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos estén en columna */
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: center; /* Centra los elementos verticalmente */
+  margin-bottom: 16px; /* Espaciado entre los campos */
+}
+
+.mb-3-lideresDetalle.flex-column {
+  flex-direction: column; /* Cambia la dirección a columna */
+  align-items: center; /* Centra los elementos en columna */
+}
+
+.mb-3-lideresDetalle img {
+  width: 80px; /* Ancho de la imagen */
+  height: 80px; /* Altura de la imagen */
+  cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
+  transition: transform 0.2s ease; /* Suaviza la animación */
+}
+
+.mb-3-lideresDetalle img:hover {
+  transform: scale(1.1); /* Amplía ligeramente la imagen al pasar el mouse */
+}
+
+.select-usuariosDetalle {
+  width: 100%; /* Ocupa el ancho completo */
+  max-width: 244px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
+  margin-bottom: 3px; /* Espaciado inferior */
+  text-align: center; /* Centrar el texto */
+  padding: 8px; /* Espaciado interno */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 16px; /* Tamaño del texto */
+  border: 1px solid #ccc; /* Borde gris */
+  border-radius: 4px; /* Bordes redondeados */
+  background-color: rgba(255, 0, 0, 0); /* Fondo blanco */
+  color: #ffffff; /* Texto en color oscuro */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+}
+
+.select-usuariosDetalle option {
+  background-color: rgba(255, 255, 255, 0); /* Fondo blanco */
+  color: #333; /* Texto oscuro */
+  padding: 8px; /* Espaciado interno */
+}
+
+.select-usuariosDetalle option:hover {
+  background-color: #f1f1f100; /* Cambia el fondo al pasar el mouse */
+}
+
+.imagenBotonMasDetalle {
+  display: flex;
+  width: 30px; /* Ajusta según el tamaño que desees */
+  height: 30px;
+  cursor: pointer;
+  margin-left: 16px;
+  border-radius: 50%; /* Opcional: para hacerlo circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+
+.imagenBotonMasDetalle-img {
+  margin-top: -78px;
+  margin-left: 275px;
+  max-width: 70%; /* Ajusta el tamaño de la imagen */
+  max-height: 70%;
+  object-fit: contain; /* Para que la imagen conserve proporciones */
+}
