@@ -43,27 +43,12 @@ export default function NuevaSolicitud() {
   const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] =
     useState(null);
   const [reservedDates, setReservedDates] = useState([]);
-  const [lideres, setLideres] = useState([]); // Lista de líderes
-  const [selectedLideres, setSelectedLideres] = useState([null]); // Líder seleccionado
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const userRole = getUserRole();
-  const [file, setFile] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
-
-  const handleAddLiderSelector = () => {
-    if (selectedLideres.length < 3) {
-      setSelectedLideres([...selectedLideres, null]);
-    }
-  };
-
-  const handleLiderChange = (value, index) => {
-    const newSelectedLideres = [...selectedLideres];
-    newSelectedLideres[index] = parseInt(value, 10);
-    setSelectedLideres(newSelectedLideres);
-  };
 
   useEffect(() => {
     if (mensaje) {
@@ -151,83 +136,6 @@ export default function NuevaSolicitud() {
   }, [usuarioId]);
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/vacaciones/listarusuarios",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const usuarios = response.data;
-
-        if (userRole === "DIRECTORIO") {
-          setLideres(null); // Configurar lideres como null
-          return; // Finalizar la función
-        }
-
-        // Validar usuarios según el rol del usuario logueado
-        let usuariosFiltrados = [];
-
-        switch (userRole) {
-          case "FUNCIONARIO_FABRICA":
-            usuariosFiltrados = usuarios.filter((usuario) =>
-              ["LIDER", "OPERACIONES", "DIRECTORIO"].includes(
-                usuario.rol.nombre
-              )
-            );
-            break;
-
-          case "FUNCIONARIO_TERCERIZADO":
-            usuariosFiltrados = usuarios.filter((usuario) =>
-              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
-            );
-            break;
-
-          case "TH":
-            usuariosFiltrados = usuarios.filter((usuario) =>
-              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
-            );
-            break;
-
-          case "OPERACIONES":
-            usuariosFiltrados = usuarios.filter(
-              (usuario) => usuario.rol.nombre === "DIRECTORIO"
-            );
-            break;
-
-          case "LIDER":
-            usuariosFiltrados = usuarios.filter((usuario) =>
-              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
-            );
-            break;
-
-          default:
-            throw new Error(
-              "Rol no soportado para la creación de solicitudes. Contacta al administrador."
-            );
-        }
-
-        // Excluir al usuario logueado de la lista
-        usuariosFiltrados = usuariosFiltrados.filter(
-          (usuario) => usuario.id !== usuarioId
-        );
-
-        setLideres(usuariosFiltrados);
-      } catch (err) {
-        console.error("Error al obtener usuarios:", err);
-        // setError("No se pudo obtener la información de los usuarios.");
-        setMensaje("No se pudo obtener la información de los usuarios.");
-        setTipoMensaje("Error");
-      }
-    };
-
-    fetchUsuarios();
-  }, [userRole, usuarioId]);
-
-  useEffect(() => {
     const days = countValidDays(startDate, endDate, reservedDates);
     setValidDays(days);
 
@@ -242,17 +150,6 @@ export default function NuevaSolicitud() {
       setWarning("");
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]); // Guardar el archivo seleccionado
-
-    const fileNameSpan = document.getElementById("file-name");
-    if (e.target.files.length > 0) {
-      fileNameSpan.textContent = "Archivo adjuntado";
-    } else {
-      fileNameSpan.textContent = "Seleccionar adjunto"; // Texto predeterminado si no hay archivo
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -274,31 +171,11 @@ export default function NuevaSolicitud() {
     try {
       const token = localStorage.getItem("token");
       const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
-      const solicitudResponse = await axios.post(url, solicitud, {
+      await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      const solicitudId = solicitudResponse.data.id; // Obtener ID de la solicitud creada
-
-      // Subir archivo si existe
-      if (file) {
-        const formData = new FormData();
-        formData.append("archivo", file);
-        formData.append("idSolicitud", solicitudId);
-
-        await axios.post(
-          "http://localhost:8080/vacaciones/documentos/subir",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      }
 
       //   alert("Carga de solicitud exitosa");
       setMensaje("Carga de solicitud exitosa");
@@ -332,7 +209,7 @@ export default function NuevaSolicitud() {
 
           <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
             <div className="info-card">
-              <p className="info-number">{diasVacacionesDisponibles}</p>
+              <p className="info-number">{diasVacacionesDisponibles ?? 0}</p>
               <h3>Días Disponibles</h3>
             </div>
             <div className="info-card">
@@ -383,79 +260,6 @@ export default function NuevaSolicitud() {
                 disabled={!startDate}
               />
             </div>
-            {userRole !== "DIRECTORIO" &&
-              selectedLideres.map((selectedLider, index) => (
-                <div
-                  className={`mb-3-lideres ${
-                    index !== selectedLideres.length - 1 ||
-                    selectedLideres.length === 3
-                      ? "flex-column"
-                      : ""
-                  }`}
-                  key={index}
-                >
-                  <select
-                    value={selectedLider || ""}
-                    onChange={(e) => handleLiderChange(e.target.value, index)}
-                    className="select-usuarios"
-                  >
-                    <option value="" disabled>
-                      Selecciona un líder
-                    </option>
-                    {lideres
-                      .filter(
-                        (lider) =>
-                          !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
-                          selectedLider === lider.id // Mantener el líder previamente seleccionado
-                      )
-                      .map((lider) => (
-                        <option key={lider.id} value={lider.id}>
-                          {lider.nombre} {lider.apellido}
-                        </option>
-                      ))}
-                  </select>
-                  {index === selectedLideres.length - 1 &&
-                    selectedLideres.length < 3 && (
-                      <div
-                        className="imagenBotonMas"
-                        onClick={handleAddLiderSelector}
-                      >
-                        <img
-                          src="./public/agregar.svg"
-                          alt="Añadir líder"
-                          title="Añadir líder"
-                          className="imagenBotonMas-img"
-                        />
-                      </div>
-                    )}
-                </div>
-              ))}
-
-            {userRole === "FUNCIONARIO_TERCERIZADO" && (
-              <div className="mb-3">
-                <p htmlFor="file">Adjuntar aprobación de vacación:</p>
-                <div className="file-upload-container">
-                  <label htmlFor="file" className="file-upload-label">
-                    <img
-                      src="./public/clip-vertical.svg"
-                      alt="Subir archivo"
-                      className="file-upload-image"
-                    />
-
-                    <input
-                      type="file"
-                      id="file"
-                      className="inputFile"
-                      onChange={handleFileChange}
-                      accept=".pdf,.doc,.docx,.jpg,.png"
-                    />
-                    <span id="file-name" className="file-name">
-                      Seleccionar adjunto
-                    </span>
-                  </label>
-                </div>
-              </div>
-            )}
 
             <div className="buttons">
               <button className="btn" onClick={() => navigate("/Home")}>
