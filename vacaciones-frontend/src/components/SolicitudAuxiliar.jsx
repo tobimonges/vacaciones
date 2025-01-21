@@ -7,6 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
+import "./SolicitudAuxiliar.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
@@ -151,12 +152,14 @@ export default function NuevaSolicitud() {
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
 
+  const handleUsers = (e) => {};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!startDate || !endDate || !selectedLideres) {
+    if (!startDate || !endDate) {
       // setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
-      setMensaje("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      setMensaje("Por favor, selecciona ambas fechas");
       setTipoMensaje("Error");
       return;
     }
@@ -220,6 +223,10 @@ export default function NuevaSolicitud() {
           {warning && <p className="warning">{warning}</p>}
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
+            <div className="mb-3-auxiliar">
+              <p>Seleccionar usuario:</p>
+              <div className="userSelector-container"></div>
+            </div>
             <div className="mb-3">
               <DatePicker
                 label="Fecha de inicio"
@@ -268,9 +275,7 @@ export default function NuevaSolicitud() {
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={
-                  validDays > diasVacacionesDisponibles || !selectedLideres
-                }
+                disabled={validDays > diasVacacionesDisponibles}
               >
                 <span>Crear Solicitud</span>
               </button>

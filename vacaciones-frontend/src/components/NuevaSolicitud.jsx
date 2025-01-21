@@ -204,6 +204,12 @@ export default function NuevaSolicitud() {
             );
             break;
 
+          case "GTH":
+            usuariosFiltrados = usuarios.filter(
+              (usuario) => usuario.rol.nombre === "DIRECTORIO"
+            );
+            break;
+
           default:
             throw new Error(
               "Rol no soportado para la creación de solicitudes. Contacta al administrador."
