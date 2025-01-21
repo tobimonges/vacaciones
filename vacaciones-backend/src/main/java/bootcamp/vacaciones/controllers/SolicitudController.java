@@ -201,5 +201,22 @@ public class SolicitudController {
         }
     }
 
+    @PutMapping("/solicitudes/auxiliar")
+    public ResponseEntity<?> crearSolicitudAuxiliar(
+            @RequestParam Long usuarioId, // ID del usuario para el cual se crea la solicitud
+            @RequestParam Long solicitanteId, // ID del usuario que realiza la solicitud auxiliar
+            @RequestBody SolicitudRequest solicitudRequest) {
+        try {
+            // Llamar al servicio que maneja la lógica auxiliar
+            SolicitudModel nuevaSolicitud = solicitudService.crearSolicitudAuxiliar(usuarioId, solicitanteId, solicitudRequest);
+            return ResponseEntity.ok(nuevaSolicitud);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al procesar la solicitud auxiliar."));
+        }
+    }
+
+
 
 }
