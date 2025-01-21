@@ -510,7 +510,7 @@ const AdminDashboard = () => {
                                 </>
                               )}
                             </>
-                          ) : userRole === "TH" ? (
+                          ) : userRole === "TH" || userRole === "GTH" ? (
                             <>
                               {getEstadoSolicitud(solicitud) === "Aprobado" ? (
                                 // Deshabilitar botones si el estado es "Aprobado"
