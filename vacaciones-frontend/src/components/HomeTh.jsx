@@ -324,6 +324,15 @@ const HomeTh = () => {
                         onClick={() => navigate(`/AdminDashboard`)}
                     >
                       <span>Bandeja de Solicitudes</span>
+
+                      {pendingCount}
+                      <img
+                          src="/icono-notificaciones.svg"
+                          alt="Añadir líder"
+                          title="Añadir líder"
+                          className="notificacion"
+                      />
+
                     </button>
                 ) : userRole !== "LIDER" ? (
                     <button
@@ -333,6 +342,13 @@ const HomeTh = () => {
                       <span>Listar Solicitudes</span>
 
                       {pendingCount}
+                      <img
+                          src="/icono-notificaciones.svg"
+                          alt="Añadir líder"
+                          title="Añadir líder"
+                          className="notificacion"
+                      />
+
                     </button>
                 ) : null}
 
