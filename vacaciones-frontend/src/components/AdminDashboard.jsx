@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [comentario, setComentario] = useState("");
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
   const [filterText, setFilterText] = useState("");
+  const [actionType, setActionType] = useState("");
   const userId = getUsuarioId();
   const userRole = getUserRole(); // Obtener el rol del usuario logueado
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ const AdminDashboard = () => {
           solicitud.id === id ? response.data : solicitud
         )
       );
-
+      setShowConfirmModal(false);
       navigate(0); // Recargar la página actual
     } catch (err) {
       console.error("Error al aprobar solicitud:", err.response.data);
@@ -106,6 +107,13 @@ const AdminDashboard = () => {
 
   const handleRejectConfirm = (id) => {
     setSelectedSolicitudId(id);
+    setActionType("reject"); // Establecer acción como rechazo
+    setShowConfirmModal(true); // Mostrar modal de confirmación
+  };
+
+  const handleApproveConfirm = (id) => {
+    setSelectedSolicitudId(id);
+    setActionType("approve"); // Establecer acción como aprobación
     setShowConfirmModal(true); // Mostrar modal de confirmación
   };
 
@@ -230,6 +238,14 @@ const AdminDashboard = () => {
     setFilteredSolicitudes(filtered);
   };
 
+  const handleAction = () => {
+    if (actionType === "approve") {
+      handleApprove(selectedSolicitudId);
+    } else if (actionType === "reject") {
+      handleReject(selectedSolicitudId);
+    }
+  };
+
   const getEstadoSolicitud = (solicitud) => {
     if (userRole === "OPERACIONES") {
       if (!solicitud.estado && solicitud.rechazado) {
@@ -346,14 +362,19 @@ const AdminDashboard = () => {
                               // Mostrar botones de Aprobar y Rechazar
                               <>
                                 <button
-                                  onClick={() => handleApprove(solicitud.id)}
+                                  onClick={() =>
+                                    handleApproveConfirm(solicitud.id)
+                                  } // Configura el modal para aprobación
+                                  className="btn-approve"
                                 >
                                   <span>Aprobar</span>
                                 </button>
+                                // Botón para rechazar
                                 <button
                                   onClick={() =>
                                     handleRejectConfirm(solicitud.id)
-                                  }
+                                  } // Configura el modal para rechazo
+                                  className="btn-reject"
                                 >
                                   <span>Rechazar</span>
                                 </button>
@@ -405,14 +426,19 @@ const AdminDashboard = () => {
                                 // Mostrar botones Aprobar y Rechazar si el estado está en "Pendiente"
                                 <>
                                   <button
-                                    onClick={() => handleApprove(solicitud.id)}
+                                    onClick={() =>
+                                      handleApproveConfirm(solicitud.id)
+                                    } // Configura el modal para aprobación
+                                    className="btn-approve"
                                   >
                                     <span>Aprobar</span>
                                   </button>
+                                  // Botón para rechazar
                                   <button
                                     onClick={() =>
                                       handleRejectConfirm(solicitud.id)
                                     }
+                                    className="btn-reject"
                                   >
                                     <span>Rechazar</span>
                                   </button>
@@ -432,22 +458,27 @@ const AdminDashboard = () => {
                           ) : userRole === "TH" ? (
                             <>
                               <button
-                                onClick={() => handleApprove(solicitud.id)}
+                                onClick={() =>
+                                  handleApproveConfirm(solicitud.id)
+                                } // Configura el modal para aprobación
                                 disabled={
                                   solicitud.numeroAprobaciones === 0 ||
                                   solicitud.estado
-                                }
+                                } // Condición de habilitación
+                                className="btn-approve"
                               >
                                 <span>Aprobar</span>
                               </button>
+
                               <button
                                 onClick={() =>
                                   handleRejectConfirm(solicitud.id)
-                                }
+                                } // Configura el modal para rechazo
                                 disabled={
                                   solicitud.numeroAprobaciones === 0 &&
                                   !solicitud.estado
-                                }
+                                } // Condición de habilitación
+                                className="btn-reject"
                               >
                                 <span>Rechazar</span>
                               </button>
@@ -500,20 +531,27 @@ const AdminDashboard = () => {
       {showConfirmModal && (
         <div className="modal">
           <div className="modal-content">
-            <h4>Confirmar Rechazo</h4>
-            <p>¿Estás seguro que quieres rechazar esta solicitud?</p>
+            <h4>
+              {actionType === "approve"
+                ? "Confirmar Aprobación"
+                : "Confirmar Rechazo"}
+            </h4>
+            <p>
+              {actionType === "approve"
+                ? "¿Estás seguro que quieres aprobar esta solicitud?"
+                : "¿Estás seguro que quieres rechazar esta solicitud?"}
+            </p>
             <div className="modal-buttons">
               <button
-                onClick={() =>
-                  userRole === "OPERACIONES"
-                    ? handleAddComentario()
-                    : handleReject()
-                }
+                onClick={handleAction} // Llama a la acción seleccionada (aprobar o rechazar)
                 className="btn-confirm"
               >
                 Sí
               </button>
-              <button onClick={closeConfirmModal} className="btn-cancel">
+              <button
+                onClick={closeConfirmModal} // Cierra el modal sin realizar ninguna acción
+                className="btn-cancel"
+              >
                 No
               </button>
             </div>
