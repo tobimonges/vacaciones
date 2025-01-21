@@ -284,6 +284,9 @@ const HomeTh = () => {
 
             <div className="sidebar-buttons">
               <div className="sidebar-buttons">
+                <button className="sidebar-button" onClick={() => navigate("/Home")}>
+                  <span className="sidebar-text-focus">Home</span>
+                </button>
                 {userRole === "LIDER" ? (
                     <button
                         className="sidebar-button"
@@ -314,25 +317,41 @@ const HomeTh = () => {
                   className="sidebar-button"
                   onClick={() => navigate(`/UsuarioDetalle`)}
                 >
-                  <span>Usuario Detalle</span>
+                  <span>Editar Datos de Funcionario</span>
                 </button>
               )}
               {userRole === "TH" && (
                 <button
                   className="sidebar-button"
-                  onClick={() => navigate(`/CrearEquipo`)}
+                  onClick={() => navigate(`/CreaEquipo`)}
                 >
                   <span>Crear Equipo</span>
                 </button>
               )}
+                {userRole === "TH" && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/EquipoDetalle`)}
+                    >
+                      <span>Editar Equipo</span>
+                    </button>
+                )}
               {userRole === "TH" && (
                 <button
                   className="sidebar-button"
-                  onClick={() => navigate(`/CrearCargo`)}
+                  onClick={() => navigate(`/CreaCargo`)}
                 >
                   <span>Crear Cargo</span>
                 </button>
               )}
+                {userRole === "TH" && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/CreaCargo`)}
+                    >
+                      <span>Editar Cargo</span>
+                    </button>
+                )}
               <div className="sidebar-buttons">
                 <select
                   // className="calendar-select-Th"
