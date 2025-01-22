@@ -3,18 +3,40 @@ package bootcamp.vacaciones.payload;
 import bootcamp.vacaciones.models.CargoModel;
 import bootcamp.vacaciones.models.EquipoModel;
 import bootcamp.vacaciones.models.RolModel;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public class UsuarioRequest {
 
     private Long id;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
     private String nombre;
+
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 50, message = "El apellido no puede tener más de 50 caracteres")
     private String apellido;
+
+    @NotNull(message = "La cédula es obligatoria")
     private int nroCedula;
+
+    @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "El correo debe tener un formato válido")
     private String correo;
+
+    @NotNull(message = "La fecha es obligatoria")
     private LocalDate fechaNacimiento;
+
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Pattern(
+            regexp = "^[0-9]{9,15}$",
+            message = "El teléfono debe contener entre 9 y 15 dígitos"
+            )
     private String telefono;
+
+    @NotNull(message = "La fecha es obligatoria")
     private LocalDate fechaIngreso;
     private String contrasena;
     private boolean estado;
