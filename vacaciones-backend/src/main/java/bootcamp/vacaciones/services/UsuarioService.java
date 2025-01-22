@@ -90,6 +90,7 @@ public class UsuarioService implements IUsuarioService{
         usuario.setRol(usuarioRequest.getRol());
         usuario.setCargo(usuarioRequest.getCargo());
         usuario.setEquipo(usuarioRequest.getEquipo());
+        usuario.setRequiereCambioContrasena(true);
 
 
 

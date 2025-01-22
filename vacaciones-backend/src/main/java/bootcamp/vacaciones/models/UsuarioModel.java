@@ -21,6 +21,8 @@ public class UsuarioModel {
     private String nombre;
     private String apellido;
 
+    @Column(name="requiere_cambio_contrasena", nullable=true)
+    private boolean requiereCambioContrasena;
 
     @OneToMany(mappedBy = "usuario")
     @JsonIgnoreProperties({"usuario"}) // Ignora la relación inversa para evitar ciclos
@@ -233,6 +235,14 @@ public class UsuarioModel {
 
     public void setSolicitudesComoLider(Set<SolicitudModel> solicitudesComoLider) {
         this.solicitudesComoLider = solicitudesComoLider;
+    }
+
+    public boolean isRequiereCambioContrasena() {
+        return requiereCambioContrasena;
+    }
+
+    public void setRequiereCambioContrasena(boolean requiereCambioContrasena) {
+        this.requiereCambioContrasena = requiereCambioContrasena;
     }
 
 
