@@ -14,6 +14,7 @@ const SidebarButtons = () => {
   const isHome = location.pathname === "/Home";
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [equipos, setEquipos] = useState([]);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     const fetchEquipos = async () => {
@@ -25,13 +26,11 @@ const SidebarButtons = () => {
         setEquipos(response.data);
       } catch (err) {
         console.error("Error al obtener equipos:", err);
-        setError("No se pudieron cargar los equipos.");
       }
     };
 
     fetchEquipos();
   }, []);
-
 
   //Funcion para contar solicitudes pendientes
   useEffect(() => {
@@ -68,7 +67,7 @@ const SidebarButtons = () => {
     };
 
     fetchPendingRequests();
-  }, [localStorage.getItem("userId")]); // Agregar el userId como dependencia
+  }, []);
 
   /**
    * Verifica si el usuario tiene un rol permitido.
@@ -115,14 +114,15 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {["LIDER", "OPERACIONES", "DIRECTORIO"].includes(userRole) && isHomeTH && (
+      {["LIDER", "OPERACIONES", "DIRECTORIO"].includes(userRole) &&
+        isHomeTH && (
           <button
-              className="sidebar-button"
-              onClick={() => navigate("/SolicitudAuxiliar")}
+            className="sidebar-button"
+            onClick={() => navigate("/SolicitudAuxiliar")}
           >
             <span>Solicitud Auxiliar</span>
           </button>
-      )}
+        )}
 
       {userRole === "LIDER" && isHomeTH ? (
         <button
@@ -130,26 +130,29 @@ const SidebarButtons = () => {
           onClick={() => navigate(`/AdminDashboard`)}
         >
           <span>Bandeja de Solicitudes</span>
-
-          <img
-            src="/icono-notificaciones.svg"
-            alt="Solicitudes"
-            title="Solicitudes"
-            className="notificacion"
-          />
+          {pendingCount !== 0 && (
+            <img
+              src="/icono-notificaciones.svg"
+              alt="Solicitudes"
+              title="Solicitudes"
+              className="notificacion"
+            />
+          )}
         </button>
-      ) : userRole !== "LIDER" && isUserAllowed && isHomeTH ? (
+      ) : userRole !== "LIDER" && isUserAllowed() && isHomeTH ? (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/AdminDashboard`)}
         >
           <span>Listar Solicitudes</span>
-          <img
-            src="/icono-notificaciones.svg"
-            alt="Solicitudes"
-            title="Solicitudes"
-            className="notificacion"
-          />
+          {pendingCount !== 0 && (
+            <img
+              src="/icono-notificaciones.svg"
+              alt="Solicitudes"
+              title="Solicitudes"
+              className="notificacion"
+            />
+          )}
         </button>
       ) : null}
 
