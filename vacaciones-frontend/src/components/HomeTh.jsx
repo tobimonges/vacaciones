@@ -12,7 +12,7 @@ import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import Sidebar from "./Sidebar";
 
-// 🌍 Localización de fechas
+//Localización de fechas
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
@@ -26,7 +26,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// 🏠 **Componente Principal**
+// Componente Principal
 const HomeTh = () => {
   // 🧠 Estados
   const [showBirthdays, setShowBirthdays] = useState(true);
@@ -42,7 +42,7 @@ const HomeTh = () => {
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [pendingCount, setPendingCount] = useState(0);
 
-  // 🔄 Manejo de clic en "more"
+  //Manejo de clic en "more"
   const handleShowMore = (eventsOnDay, date) => {
     setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
     setModalOpen(true); // Abre el modal
@@ -239,7 +239,7 @@ const HomeTh = () => {
     return {};
   };
 
-  // 🎨 **Personalizar colores de eventos**
+  //Personalizar colores de eventos
   const eventStyleGetter = (event) => {
     switch (event.type) {
       case "aprobado":
@@ -293,7 +293,8 @@ const HomeTh = () => {
     return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
   });
 
-  // 🎨 **Renderizado del Componente**
+
+  //Renderizado del Componente
   return (
     <div className="container homeTH-container">
       {/* 📚 **Barra lateral** */}
@@ -301,8 +302,8 @@ const HomeTh = () => {
         <Sidebar />
       </div>
 
-      {/* 📚 **Área de contenido** */}
-      <div className="content-area">
+        { /* **Área de contenido** */}
+        <div className="content-area">
         <Preloader duration={650} />
 
         {/* 📚 **Barra superior** */}
