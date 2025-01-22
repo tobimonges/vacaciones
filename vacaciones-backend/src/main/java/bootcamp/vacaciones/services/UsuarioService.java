@@ -151,7 +151,7 @@ public class UsuarioService implements IUsuarioService{
         usuarioRepository.delete(usuario);
     }
 
-    @Scheduled(cron = "0 08 14 * * ?")
+    @Scheduled(cron = "0 00 00 * * ?")
     public void actualizarAntiguedadYVacaciones() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
 
@@ -167,7 +167,7 @@ public class UsuarioService implements IUsuarioService{
             if (cumpleAniversario(months, days)) {
                 int nuevosDiasVacaciones = calcularDiasVacaciones(years);
                 if (usuarioActualizado.getDiasVacaciones()>0){
-                    usuarioActualizado.setDiasVacacionesRestante(usuarioActualizado.getDiasVacaciones());
+                    usuarioActualizado.setDiasVacacionesRestante(usuarioActualizado.getDiasVacaciones()+usuarioActualizado.getDiasVacacionesRestante());
                 }
                 usuarioActualizado.setDiasVacaciones(nuevosDiasVacaciones );
             }
