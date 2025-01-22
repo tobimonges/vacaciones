@@ -47,44 +47,6 @@ const HomeTh = () => {
     setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
     setModalOpen(true); // Abre el modal
   };
-  // Verificar si el usuario tiene el rol adecuado
-
-  //Funcion para contar solicitudes pendientes
-  useEffect(() => {
-    const fetchPendingRequests = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const userId = localStorage.getItem("userId"); // Obtener el ID desde localStorage
-
-        if (!userId) {
-          console.error("El ID del usuario no está disponible.");
-          return;
-        }
-
-        const response = await axios.get(
-          "http://localhost:8080/vacaciones/solicitudes",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const requests = response.data;
-
-        // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
-        const pendingRequests = requests.filter(
-          (request) =>
-            request.numeroAprobaciones === 0 &&
-            request.usuario.id !== parseInt(userId)
-        );
-
-        setPendingCount(pendingRequests.length);
-      } catch (error) {
-        console.error("Error al obtener las solicitudes pendientes:", error);
-      }
-    };
-
-    fetchPendingRequests();
-  }, [localStorage.getItem("userId")]); // Agregar el userId como dependencia
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {

@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
 import Logo from "./Logo";
 import Preloader from "./Preloader";
+import Logogiratorio from "./logogiratorio";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showError, setShowError] = useState(false);
+  const [showLoginBox, setShowLoginBox] = useState(true);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const timeout = setTimeout(() => {
@@ -99,7 +101,7 @@ function Login() {
   }
   return (
     <div className="container containerLogin">
-      <Preloader duration={650} />
+      <Logogiratorio duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
           }`}
