@@ -41,7 +41,10 @@ function Login() {
           password: password,
         }
       );
-
+      if(respuesta.data.requiere_cambio_contrasena){
+        navigate("/reset-password");
+        return;
+      }
       const token = respuesta.data;
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
