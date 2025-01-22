@@ -423,11 +423,10 @@
 .notificacion {
     width: 20px; /* Ajusta el tamaño de la imagen */
     height: 20px;
-    margin-left: 10px; /* Espaciado entre el texto y la imagen */
-    filter: invert(31%) sepia(100%) saturate(500%) hue-rotate(210deg)
-    brightness(100%) contrast(100%); /* Cambia el color a azul */
+    filter: invert(23%) sepia(91%) saturate(7458%) hue-rotate(0deg) brightness(96%) contrast(104%); /* Cambia el color a rojo */
     object-fit: contain; /* Asegura que mantenga su proporción original */
 }
+
 
 .pending-count {
     position: absolute;

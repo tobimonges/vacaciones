@@ -59,21 +59,27 @@ const HomeTh = () => {
     const fetchPendingRequests = async () => {
       try {
         const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId"); // Obtener el ID desde localStorage
+
+        if (!userId) {
+          console.error("El ID del usuario no está disponible.");
+          return;
+        }
+
         const response = await axios.get(
             "http://localhost:8080/vacaciones/solicitudes",
             {
-              headers: { Authorization: `Bearer ${token}` }, // Autenticación con token
+              headers: { Authorization: `Bearer ${token}` },
             }
         );
 
         const requests = response.data;
 
-        // Filtrar solicitudes pendientes (numeroAprobaciones === 0)
+        // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
         const pendingRequests = requests.filter(
-            (request) => request.numeroAprobaciones === 0
+            (request) => request.numeroAprobaciones === 0 && request.usuario.id !== parseInt(userId)
         );
 
-        // Actualizar el estado con el número de solicitudes pendientes
         setPendingCount(pendingRequests.length);
       } catch (error) {
         console.error("Error al obtener las solicitudes pendientes:", error);
@@ -81,21 +87,22 @@ const HomeTh = () => {
     };
 
     fetchPendingRequests();
-  }, []);
+  }, [localStorage.getItem("userId")]); // Agregar el userId como dependencia
+
+
 
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
-      const usuarioId = getUsuarioId();
-      // Verificar autenticación
+      const usuarioId = getUsuarioId(); // Obtener el ID del usuario logueado
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
         return;
       }
-      try {
 
+      try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
             `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
@@ -106,6 +113,9 @@ const HomeTh = () => {
 
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
         setUserNameTh(nombre);
+
+        // Guardar el ID del usuario en localStorage
+        localStorage.setItem("userId", usuarioId);
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -114,6 +124,7 @@ const HomeTh = () => {
 
     fetchUserData();
   }, [navigate]);
+
 
   // 📥 Obtener equipos
   useEffect(() => {
@@ -325,7 +336,6 @@ const HomeTh = () => {
                     >
                       <span>Bandeja de Solicitudes</span>
 
-                      {pendingCount}
                       <img
                           src="/icono-notificaciones.svg"
                           alt="Añadir líder"
@@ -340,8 +350,6 @@ const HomeTh = () => {
                         onClick={() => navigate(`/AdminDashboard`)}
                     >
                       <span>Listar Solicitudes</span>
-
-                      {pendingCount}
                       <img
                           src="/icono-notificaciones.svg"
                           alt="Añadir líder"
@@ -478,7 +486,18 @@ const HomeTh = () => {
                       Mostrar feriados
                     </label>
                   </div>
+
+                  <div className="custom-checkbox">
+                  <span>
+                    Solicitudes Pendientes: {pendingCount}
+                  </span>
+
+
+                  </div>
                 </div>
+
+
+
                 {/* 🚨 Mensajes de Error */}
                 {error && <p className="calendar-error-message">{error}</p>}
                 <div className="calendar-big-container">
