@@ -6,6 +6,8 @@ import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.security.JwtUtils;
 import bootcamp.vacaciones.security.JwtBlacklist;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,6 +29,9 @@ public class LoginController {
     private final JwtUtils jwtUtils;
     private final UsuarioRepository usuarioRepository;
     private final JwtBlacklist jwtBlacklist;
+
+    @Value("${app.reset-password-url}")
+    private String baseUrl;
 
     @Autowired
     public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UsuarioRepository usuarioRepository, JwtBlacklist jwtBlacklist) {
@@ -69,6 +76,12 @@ public class LoginController {
 
             // Generar el token JWT
             String jwt = jwtUtils.generateJwtToken(usuario.getCorreo(), usuario.getId(), usuario.getRol().getNombre());
+
+            if (usuario.isRequiereCambioContrasena()) {
+                String resetLink = String.format("%s?token=%s", baseUrl, jwt);
+                String responseJson = String.format("{ \"message\": \"Redirigir a cambio de contraseña\", \"redirect\": \"%s\" }", resetLink);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseJson);
+            }
 
             return ResponseEntity.ok(jwt);
         } catch (Exception e) {

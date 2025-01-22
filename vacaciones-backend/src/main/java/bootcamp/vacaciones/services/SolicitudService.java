@@ -93,20 +93,17 @@ public class SolicitudService implements ISolicitudService {
 
         Set<UsuarioModel> lideres = recuperarYValidarLideres(solicitudRequest.getLiderIds(), idUsuario, nombreRol);
 
-        // Cálculo de días hábiles basado en las fechas proporcionadas
         int cantidadDias = calcularDiasHabiles(
                 solicitudRequest.getFechaInicio(),
                 solicitudRequest.getFechaFin(),
                 usuario.getId()
         );
 
-        // Validar si los días calculados son mayores a los disponibles
         int diasDisponibles = usuario.getDiasVacaciones();
         if (cantidadDias > diasDisponibles) {
             throw new IllegalArgumentException("No tienes suficientes días de vacaciones disponibles.");
         }
 
-        // Verificar si hay conflictos de fechas con otras solicitudes
         List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
                 idUsuario, solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin()
         );
@@ -114,26 +111,23 @@ public class SolicitudService implements ISolicitudService {
             throw new IllegalArgumentException("Ya existe una solicitud en conflicto con las fechas proporcionadas.");
         }
 
-        // Crear la nueva solicitud
         SolicitudModel nuevaSolicitud = new SolicitudModel();
         nuevaSolicitud.setUsuario(usuario);
         nuevaSolicitud.setLideres(lideres);
         nuevaSolicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
-        nuevaSolicitud.setCantidadDias(cantidadDias); // Usar días calculados
+        nuevaSolicitud.setCantidadDias(cantidadDias);
         nuevaSolicitud.setEstado(false);
         nuevaSolicitud.setNumeroAprobaciones(0);
         nuevaSolicitud.setRechazado(false);
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
 
-        // Validaciones especiales para DIRECTORIO
         if ("DIRECTORIO".equals(nombreRol)) {
             nuevaSolicitud.setNumeroAprobaciones(2);
             nuevaSolicitud.setEstado(true);
             actualizarDiasVacaciones(nuevaSolicitud);
         }
 
-        // Notificar según el rol
         notificarPorRol(nombreRol, lideres, usuario, nuevaSolicitud);
 
         return solicitudRepository.save(nuevaSolicitud);
@@ -154,7 +148,6 @@ public class SolicitudService implements ISolicitudService {
             for (Long liderId : liderIds) {
                 logger.info("Validando líder con ID: {}", liderId);
 
-                // Verificar si el líder existe en la base de datos
                 UsuarioModel lider = usuarioRepository.findById(liderId)
                         .orElseThrow(() -> {
                             logger.error("Líder no encontrado: ID {}", liderId);
@@ -163,18 +156,15 @@ public class SolicitudService implements ISolicitudService {
 
                 logger.info("Líder encontrado: {} - {}", lider.getId(), lider.getNombre());
 
-                // Validar que el usuario no se seleccione a sí mismo como líder
                 if (lider.getId().equals(idUsuario)) {
                     logger.error("El usuario con ID {} no puede seleccionarse como líder.", idUsuario);
                     throw new IllegalArgumentException("El usuario no puede seleccionarse a sí mismo como líder.");
                 }
 
-                // Validar que el líder cumple con los requisitos del rol
                 logger.debug("Validando líder contra rol: {}", nombreRol);
                 validarLiderPorRol(nombreRol, lider);
                 logger.info("Líder con ID {} validado correctamente.", lider.getId());
 
-                // Agregar el líder al conjunto
                 lideres.add(lider);
             }
         } else {
@@ -320,10 +310,9 @@ public class SolicitudService implements ISolicitudService {
             }
         } else {
             logger.info("El usuario con rol DIRECTORIO no requiere líderes para la solicitud.");
-            solicitud.setLideres(Collections.emptySet()); // Asignar un conjunto vacío en caso de DIRECTORIO
+            solicitud.setLideres(Collections.emptySet());
         }
 
-        // Validar las fechas
         if (solicitudRequest.getFechaInicio().isAfter(solicitudRequest.getFechaFin())) {
             logger.error("La fecha de inicio no puede ser posterior a la fecha de fin.");
             throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin.");
@@ -337,7 +326,6 @@ public class SolicitudService implements ISolicitudService {
 
         logger.info("Días hábiles calculados: {}", diasHabiles);
 
-        // Actualizar los datos de la solicitud
         solicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         solicitud.setFechaFin(solicitudRequest.getFechaFin());
         solicitud.setCantidadDias(diasHabiles);
@@ -464,7 +452,6 @@ public class SolicitudService implements ISolicitudService {
         logger.info("Días de vacaciones totales del usuario antes de la operación: {}", usuario.getDiasVacaciones());
         logger.info("Días solicitados en la solicitud con ID {}: {}", solicitud.getId(), diasRestantesSolicitados);
 
-        // Descontar días de vacaciones restantes
         if (usuario.getDiasVacacionesRestante() >= diasRestantesSolicitados) {
             usuario.setDiasVacacionesRestante(usuario.getDiasVacacionesRestante() - diasRestantesSolicitados);
             logger.info("Días descontados de vacaciones restantes: {}. Nuevos días restantes: {}",
@@ -477,7 +464,6 @@ public class SolicitudService implements ISolicitudService {
             usuario.setDiasVacacionesRestante(0);
         }
 
-        // Descontar días de vacaciones totales si quedan días por descontar
         if (diasRestantesSolicitados > 0) {
             if (usuario.getDiasVacaciones() >= diasRestantesSolicitados) {
                 usuario.setDiasVacaciones(usuario.getDiasVacaciones() - diasRestantesSolicitados);
@@ -487,7 +473,6 @@ public class SolicitudService implements ISolicitudService {
             }
         }
 
-        // Guardar cambios en el usuario
         usuarioRepository.save(usuario);
         logger.info("Días de vacaciones actualizados para el usuario con ID: {}. Vacaciones totales: {}, Vacaciones restantes: {}",
                 usuario.getId(), usuario.getDiasVacaciones(), usuario.getDiasVacacionesRestante());
@@ -515,42 +500,35 @@ public class SolicitudService implements ISolicitudService {
 
 
     public SolicitudModel rechazarSolicitud(Long solicitudId, Long usuarioId, String comentario) {
-        // Obtener solicitud y usuario
         SolicitudModel solicitud = solicitudRepository.findById(solicitudId)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         UsuarioModel usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Si la solicitud ya está rechazada, no se puede volver a rechazar
         if (Boolean.TRUE.equals(solicitud.getRechazado())) {
             throw new RuntimeException("La solicitud ya está rechazada. No puedes rechazarla nuevamente.");
         }
 
-        // Si el usuario que creó la solicitud es DIRECTORIO, nadie puede rechazarla
         if ("DIRECTORIO".equals(solicitud.getUsuario().getRol().getNombre())) {
             throw new RuntimeException("Las solicitudes creadas por DIRECTORIO no pueden ser rechazadas.");
         }
 
-        // Validar según el estado actual de la solicitud y el rol del usuario que rechaza
         String rolUsuario = usuario.getRol().getNombre();
 
         if (solicitud.getNumeroAprobaciones() == 0) {
-            // Caso: Rechazo por líderes
             if (!esLiderDeSolicitud(solicitud, usuario)) {
                 throw new RuntimeException("Solo un líder asignado puede rechazar esta solicitud.");
             }
             actualizarDiasVacacionesRechazado(solicitud);
             procesarRechazoSinComentario(solicitud, "Solicitud rechazada por un líder asignado.");
         } else if (solicitud.getNumeroAprobaciones() == 1) {
-            // Caso: Rechazo por TH o GTH
             if (!"TH".equals(rolUsuario) && !"GTH".equals(rolUsuario)) {
                 throw new RuntimeException("Solo un usuario con rol TH o GTH puede rechazar esta solicitud en esta etapa.");
             }
             actualizarDiasVacacionesRechazado(solicitud);
             procesarRechazoSinComentario(solicitud, "Solicitud rechazada por Talento Humano (TH) o GTH.");
         } else if (Boolean.TRUE.equals(solicitud.getEstado()) && solicitud.getNumeroAprobaciones() == 2) {
-            // Caso: Rechazo por OPERACIONES
             if (!"OPERACIONES".equals(rolUsuario)) {
                 throw new RuntimeException("Solo un usuario con rol OPERACIONES puede rechazar una solicitud aprobada.");
             }
@@ -563,7 +541,6 @@ public class SolicitudService implements ISolicitudService {
             throw new RuntimeException("No tienes permiso para rechazar esta solicitud.");
         }
 
-        // Guardar y devolver la solicitud actualizada
         return solicitudRepository.save(solicitud);
     }
 
@@ -623,7 +600,6 @@ public class SolicitudService implements ISolicitudService {
             throw new IllegalArgumentException("La fecha de inicio debe ser anterior o igual a la fecha de fin.");
         }
 
-        // Obtener feriados y cumpleaños
         List<Map<String, String>> feriados = CalendarioUtil.obtenerFeriados();
         List<Map<String, String>> cumpleanos = CalendarioUtil.obtenerCumpleanos(usuarioRepository.findAll());
         Set<LocalDate> fechasEspeciales = feriados.stream()
@@ -655,7 +631,6 @@ public class SolicitudService implements ISolicitudService {
 
 
     public SolicitudModel crearSolicitudAuxiliar(Long usuarioId, Long solicitanteId, SolicitudRequest solicitudRequest) {
-        // Verificar el usuario que realiza la solicitud auxiliar
         UsuarioModel solicitante = usuarioRepository.findById(solicitanteId)
                 .orElseThrow(() -> new RuntimeException("Usuario solicitante no encontrado"));
 
@@ -664,7 +639,6 @@ public class SolicitudService implements ISolicitudService {
             throw new RuntimeException("Solo usuarios con rol DIRECTORIO, OPERACIONES o LIDER pueden crear solicitudes auxiliares.");
         }
 
-        // Verificar el usuario para quien se crea la solicitud
         UsuarioModel usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario objetivo no encontrado"));
 
@@ -673,10 +647,8 @@ public class SolicitudService implements ISolicitudService {
             throw new RuntimeException("Solo se pueden crear solicitudes auxiliares para FUNCIONARIO_FABRICA o FUNCIONARIO_TERCERIZADO.");
         }
 
-        // Calcular días hábiles basados en las fechas proporcionadas
         int cantidadDias = calcularDiasHabiles(solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin(), usuario.getId());
 
-        // Verificar conflictos con solicitudes existentes
         List<SolicitudModel> solicitudesConflicto = solicitudRepository.findConflictingSolicitudes(
                 usuarioId, solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin()
         );
@@ -702,17 +674,22 @@ public class SolicitudService implements ISolicitudService {
 
         usuarioRepository.save(usuario);
 
-        // Crear la nueva solicitud
         SolicitudModel nuevaSolicitud = new SolicitudModel();
-        nuevaSolicitud.setUsuario(usuario); // Usuario para quien se crea la solicitud
-        nuevaSolicitud.setLideres(Set.of(solicitante)); // El solicitante es el "líder" asignado
+        nuevaSolicitud.setUsuario(usuario);
+        nuevaSolicitud.setLideres(Set.of(solicitante));
         nuevaSolicitud.setFechaInicio(solicitudRequest.getFechaInicio());
         nuevaSolicitud.setFechaFin(solicitudRequest.getFechaFin());
         nuevaSolicitud.setCantidadDias(cantidadDias);
-        nuevaSolicitud.setEstado(false); // Pendiente de aprobación
-        nuevaSolicitud.setNumeroAprobaciones(1); // Ya aprobada por el solicitante
+        nuevaSolicitud.setEstado(false);
+        nuevaSolicitud.setNumeroAprobaciones(1);
         nuevaSolicitud.setRechazado(false);
         nuevaSolicitud.setComentario(solicitudRequest.getComentario());
+
+        notificarTH(
+                "Solicitud Pendiente de Aprobación (TH)",
+                "La solicitud del usuario " + nuevaSolicitud.getUsuario().getNombre() +
+                        " está pendiente de aprobación por parte de TH."
+        );
 
         return solicitudRepository.save(nuevaSolicitud);
     }
