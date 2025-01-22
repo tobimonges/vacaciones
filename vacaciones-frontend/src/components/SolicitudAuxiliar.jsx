@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import "./SolicitudAuxiliar.css";
+import "./AdminDashboard.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
@@ -37,7 +38,6 @@ function countValidDays(start, end, reservedDates = []) {
 }
 
 export default function NuevaSolicitud() {
-  const usuarioId = getUsuarioId();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [validDays, setValidDays] = useState(0);
@@ -48,6 +48,11 @@ export default function NuevaSolicitud() {
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [Usuarios, setUsuarios] = useState([]);
+  const [filteredUsuarios, setFilteredUsuarios] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const usuarioId = selectedUserId;
+  const [filterText, setFilterText] = useState("");
   const userRole = getUserRole();
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
@@ -63,6 +68,28 @@ export default function NuevaSolicitud() {
       return () => clearTimeout(timer); // Limpiar el temporizador en caso de que el componente se desmonte
     }
   }, [mensaje]);
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/listarusuarios",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setUsuarios(response.data);
+        setFilteredUsuarios(response.data);
+      } catch (err) {
+        console.error("Error al obtener solicitudes:", err.message || err);
+        setError("No se pudieron cargar las solicitudes.");
+      }
+    };
+
+    fetchUsuarios();
+  }, []);
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -164,6 +191,30 @@ export default function NuevaSolicitud() {
 
   const handleUsers = () => {
     openModal(); // Abrir el modal al seleccionar usuario
+  };
+
+  const handleUserSelection = (id) => {
+    setSelectedUserId(id); // Actualiza el estado con el ID del usuario seleccionado
+    closeModal(); // Cierra el modal al seleccionar un usuario
+    console.log("Usuario seleccionado con ID:", id); // Para depuración
+  };
+
+  const handleFilterChange = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setFilterText(searchText);
+
+    const filtered = Usuarios.filter((usuario) => {
+      const nroCedula = usuario.nroCedula.toString();
+      const fullName = `${usuario.nombre} ${usuario.apellido}`.toLowerCase();
+      const equipo = `${usuario.equipo.nombre}`.toLowerCase();
+      return (
+        nroCedula.includes(searchText) ||
+        fullName.includes(searchText) ||
+        equipo.includes(searchText)
+      );
+    });
+
+    setFilteredUsuarios(filtered);
   };
 
   const handleSubmit = async (e) => {
@@ -309,14 +360,62 @@ export default function NuevaSolicitud() {
       {showModal && (
         <div className="modalAuxiliar">
           <div className="modalAuxiliar-content">
-            <h4>Selección de Usuario</h4>
-            <p>¿Está seguro de realizar esta selección?</p>
+            <div className="header-title-container">
+              <div className="space"></div>
+              <h4>Seleccion de Usuarios</h4>
+              <div className="filter-container">
+                <label htmlFor="filter-input" className="filter-label">
+                  Buscar:
+                </label>
+                <input
+                  id="filter-input"
+                  type="text"
+                  placeholder="Ingrese un campo"
+                  value={filterText}
+                  onChange={handleFilterChange}
+                  className="inputCreate"
+                />
+              </div>
+            </div>
+            <div className="content-section">
+              {error ? (
+                <p className="error">{error}</p>
+              ) : Usuarios.length === 0 ? (
+                <p>No hay usuarios que coincidan con el filtro.</p>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Cédula</th>
+                      <th>Usuario</th>
+                      <th>Equipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsuarios.map((usuario) => (
+                      <tr
+                        key={usuario.nroCedula}
+                        onClick={() => handleUserSelection(usuario.id)} // Asume que "id" es la propiedad con el identificador único
+                        style={{ cursor: "pointer" }} // Cambia el cursor para indicar que es clickeable
+                      >
+                        <td>
+                          {new Intl.NumberFormat("es-ES").format(
+                            usuario.nroCedula
+                          )}
+                        </td>
+                        <td>{usuario.nombre + " " + usuario.apellido}</td>
+                        <td>{usuario.equipo.nombre}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <br />
+            <br />
             <div className="modalAuxiliar-buttons">
-              <button onClick={closeModal} className="btn-confirm">
-                Sí
-              </button>
               <button onClick={closeModal} className="btn-cancel">
-                No
+                <span>Volver a Home</span>
               </button>
             </div>
           </div>
