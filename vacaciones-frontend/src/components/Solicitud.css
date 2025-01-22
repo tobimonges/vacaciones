@@ -31,7 +31,6 @@ h4 {
   text-align: center;
 }
 
-
 .titulo-solicitud {
   text-align: center;
   font-size: 1.2rem;
@@ -111,14 +110,12 @@ button:hover {
 }
 
 button:disabled {
-  background-color: #c0a354;
   color: #464646;
   cursor: not-allowed;
   opacity: 0.7;
   transition: none;
   margin-right: 10px;
 }
-
 
 .volver-home {
   margin-top: 1rem;
@@ -171,20 +168,16 @@ button:disabled {
   color: white !important; /* Sin transición al color celeste */
 }
 
-
 .datepicker-container input {
   color: white;
   width: 100%;
   max-width: 250px;
 }
 
-
-
 /* Apunta al ícono dentro del DatePicker */
 .datepicker-container .MuiSvgIcon-root {
   color: white; /* Cambia el color del ícono */
 }
-
 
 /* Estilos para la lista desplegable de filtro */
 .select-filtro {
@@ -200,15 +193,15 @@ button:disabled {
   padding: 0.4rem 1rem;
   cursor: pointer;
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.07), 0 4px 4px rgba(0, 0, 0, 0.07),
-  0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
-  0 32px 32px rgba(0, 0, 0, 0.07);  
+    0 8px 8px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07),
+    0 32px 32px rgba(0, 0, 0, 0.07);
   transition: all 0.3s ease;
   margin: 0 0.5rem;
 }
 
 /* Estilo del menú desplegable */
 .select-filtro option {
-  background-color:  rgba(32, 85, 170, 0.8);
+  background-color: rgba(32, 85, 170, 0.8);
   color: #ffffff;
   font-size: 16px;
   padding: 0.4rem;
@@ -284,9 +277,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  
 }
-
 
 .imagenBotonMasDetalle-img {
   margin-top: -78px;
@@ -339,7 +330,6 @@ button:disabled {
     transform: translateX(-50%) translateY(-20px);
   }
 }
-
 
 /* Color para mensajes de éxito */
 .MensajePopuppNS.Success {
