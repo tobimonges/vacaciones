@@ -220,11 +220,3 @@ h3 .icon {
 }
 
 
-
-@media (max-width: 480px) {
-    .detalle-form2 {
-        grid-template-columns: 1fr;
-        display: flex;
-        padding: 10px;
-    }
-}

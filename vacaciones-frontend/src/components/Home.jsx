@@ -1,28 +1,29 @@
 // 📚 Importaciones
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay } from "date-fns";
-import esLocale from "date-fns/locale/es";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Link, useNavigate } from "react-router-dom";
-import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils";
-import "./Home.css";
-import NavigationBar from "./NavigationBar";
-import Preloader from "./Preloader";
+import React, { useState, useEffect } from "react"; // Importa React y hooks de estado y efecto
+import axios from "axios"; // Importa axios para hacer solicitudes HTTP
+import { Calendar, dateFnsLocalizer } from "react-big-calendar"; // Importa componentes de calendario
+import { format, parse, startOfWeek, getDay } from "date-fns"; // Importa funciones de manejo de fechas
+import esLocale from "date-fns/locale/es"; // Importa localización en español para fechas
+import "react-big-calendar/lib/css/react-big-calendar.css"; // Importa estilos CSS para el calendario
+import { Link, useNavigate } from "react-router-dom"; // Importa componentes de navegación de React Router
+import { getUsuarioId, isTokenValid, getUserRole } from "./authUtils"; // Importa utilidades de autenticación
+import "./Home.css"; // Importa estilos CSS específicos para el componente Home
+import NavigationBar from "./NavigationBar"; // Importa componente de barra de navegación
+import Preloader from "./Preloader"; // Importa componente de preloader
+import Sidebar from "./Sidebar"; // Importa componente de barra lateral
 
 // 🌍 Localización de fechas
-const locales = { es: esLocale };
+const locales = { es: esLocale }; // Define la localización en español
 
 const localizer = dateFnsLocalizer({
   format: (date, formatStr, options) =>
-    format(date, formatStr, { ...options, locale: esLocale }),
+    format(date, formatStr, { ...options, locale: esLocale }), // Formatea la fecha en español
   parse: (str, formatStr) =>
-    parse(str, formatStr, new Date(), { locale: esLocale }),
+    parse(str, formatStr, new Date(), { locale: esLocale }), // Parsea la fecha en español
   startOfWeek: () =>
-    startOfWeek(new Date(), { locale: esLocale, weekStartsOn: 0 }),
-  getDay,
-  locales,
+    startOfWeek(new Date(), { locale: esLocale, weekStartsOn: 0 }), // Define el inicio de la semana en español
+  getDay, // Obtiene el día de la semana
+  locales, // Asigna las localizaciones
 });
 
 // 🎨 **Constantes de estilo y mensajes**
@@ -31,14 +32,14 @@ const EVENT_TYPES = {
   RECHAZADO: "rechazado",
   PENDIENTE: "pendiente",
   FERIADO: "feriado",
-};
+}; // Define tipos de eventos
 
 const EVENT_COLORS = {
   [EVENT_TYPES.APROBADO]: "#a0e2b3",
   [EVENT_TYPES.RECHAZADO]: "#ff7c70",
   [EVENT_TYPES.PENDIENTE]: "#fefda6",
   [EVENT_TYPES.FERIADO]: "#c0a4c9",
-};
+}; // Define colores para cada tipo de evento
 
 const MESSAGES = {
   SESSION_EXPIRED:
@@ -46,7 +47,7 @@ const MESSAGES = {
   USER_DATA_ERROR: "No se pudieron cargar los datos del usuario.",
   VACATION_REQUESTS_ERROR:
     "No se pudieron cargar las solicitudes de vacaciones.",
-};
+}; // Define mensajes de error
 
 // 🎨 **Componente de leyenda del calendario**
 const CalendarLegend = () => (
@@ -68,50 +69,18 @@ const CalendarLegend = () => (
       </p>
     ))}
   </div>
-);
+); // Componente que muestra la leyenda del calendario con los colores de los eventos
 
-// 🎨 **Componente de botones del calendario**
-const CalendarButtons = ({ navigate, isUserAllowed, onLogout }) => (
-  <div className="sidebar-buttons">
-    <button className="sidebar-button" onClick={() => navigate("/Home")}>
-      <span className="sidebar-text-focus">Home</span>
-    </button>
-    <button
-      className="sidebar-button"
-      onClick={() => navigate("/NuevaSolicitud")}
-    >
-      <span>Solicitar</span>
-    </button>
-    <button
-      className="sidebar-button"
-      onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
-    >
-      <span>Ver Solicitudes</span>
-    </button>
-    {isUserAllowed() && (
-      <button className="sidebar-button" onClick={() => navigate(`/HomeTh`)}>
-        <span>Gestion de Solicitudes</span>
-      </button>
-    )}
-  </div>
-);
 
 // 🏠 **Componente Principal**
 const Home = () => {
   // 🧠 Estados
-  const [userName, setUserName] = useState(""); // Nombre del usuario
-  const [joinDate, setJoinDate] = useState(""); // Fecha de ingreso del usuario
-  const [vacationDays, setVacationDays] = useState(0); // Días de vacaciones disponibles
-  const [events, setEvents] = useState([]); // Lista de eventos para el calendario
-  const [error, setError] = useState(""); // Mensajes de error
-  const navigate = useNavigate(); // Navegación entre rutas
-
-  // 📥 **Verificar roles permitidos**
-  const isUserAllowed = () => {
-    const allowedRoles = ["TH", "LIDER", "DIRECTORIO", "OPERACIONES"];
-    const userRole = getUserRole(); // Lógica para obtener el rol del usuario
-    return allowedRoles.includes(userRole);
-  };
+  const [userName, setUserName] = useState(""); // Estado para el nombre del usuario
+  const [joinDate, setJoinDate] = useState(""); // Estado para la fecha de ingreso del usuario
+  const [vacationDays, setVacationDays] = useState(0); // Estado para los días de vacaciones disponibles
+  const [events, setEvents] = useState([]); // Estado para la lista de eventos del calendario
+  const [error, setError] = useState(""); // Estado para los mensajes de error
+  const navigate = useNavigate(); // Hook para la navegación entre rutas
 
   // 📥 **Obtener Datos del Usuario y Solicitudes de Vacaciones**
   useEffect(() => {
@@ -216,12 +185,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
+  }, [navigate]); // Hook de efecto para obtener datos del usuario y solicitudes de vacaciones
 
   const dayPropGetter = (date) => {
     const today = new Date();
@@ -234,7 +198,7 @@ const Home = () => {
       };
     }
     return {};
-  };
+  }; // Función para obtener propiedades de los días del calendario
 
   const eventStyleGetter = (event) => {
     return {
@@ -244,9 +208,7 @@ const Home = () => {
         borderRadius: "4px",
       },
     };
-  };
-
-
+  }; // Función para obtener estilos de los eventos del calendario
 
   return (
     // 🖼️ **Estructura de la página**
@@ -254,32 +216,7 @@ const Home = () => {
       <Preloader duration={650} />
       {/* 📚 **Barra lateral** */}
       <div className="sidebar">
-        <div className="sidebar-content">
-          {/* 🖼️ Logo de la barra lateral */}
-          <div className="sidebar-logo">
-            <Link to="/home">
-              <img src=".\logo-white.svg" alt="Logo" className="logo" />
-            </Link>
-          </div>
-
-          <div className="sidebar-buttons">
-            <CalendarButtons
-              navigate={navigate}
-              isUserAllowed={isUserAllowed}
-            />
-          </div>
-
-          <div className="sidebar-logout">
-            <button className="logout-button" onClick={handleLogout}>
-              <img
-                src=".\salida.svg"
-                alt="Cerrar sesión"
-                className="button-icon"
-              />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        </div>
+        <Sidebar/>
       </div>
 
       {/* 📚 **Área de contenido** */}
@@ -287,7 +224,7 @@ const Home = () => {
         {/* 📚 **Barra de navegación** */}
         <div className="navbar">
           <div className="navbar-content">
-            <NavigationBar onLogout={handleLogout} />
+            <NavigationBar/>
           </div>
         </div>
 
@@ -348,4 +285,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home; // Exporta el componente Home
