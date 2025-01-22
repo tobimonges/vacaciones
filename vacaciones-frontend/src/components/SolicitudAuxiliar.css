@@ -44,3 +44,68 @@
   font-size: 14px;
   color: #333;
 }
+
+/* Estilo para el modal (ventana emergente) */
+.modalAuxiliar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(87, 145, 238, 0.25); /* Fondo oscuro translúcido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Asegura que se coloque sobre otros elementos */
+  backdrop-filter: blur(8px); /* Efecto de desenfoque */
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Contenido del modal */
+.modalAuxiliar-content {
+  background: rgb(60, 96, 255);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+}
+
+.modalAuxiliar-content h4,
+p {
+  margin-bottom: 25px;
+}
+/* Estilo para el textarea dentro del modal */
+.modalAuxiliar-content textarea {
+  width: 90%;
+  height: 150px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: none;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/* Botones dentro del modal */
+.modalAuxiliar-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modalAuxiliar-buttons button {
+  background-color: #fdca40;
+  color: #2c2c2c;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalAuxiliar-buttons button:hover {
+  background-color: #fcbc0e;
+}
