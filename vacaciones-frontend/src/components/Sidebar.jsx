@@ -77,14 +77,13 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {/* Botón Solicitud Auxiliar (solo para usuarios 'TH' en la página HomeTH) */}
-      {isUserAllowed() && isHomeTH && (
-        <button
-          className="sidebar-button"
-          onClick={() => navigate("/SolicitudAuxiliar")}
-        >
-          <span>Solicitud Auxiliar</span>
-        </button>
+      {["LIDER", "OPERACIONES", "DIRECTORIO"].includes(userRole) && isHomeTH && (
+          <button
+              className="sidebar-button"
+              onClick={() => navigate("/SolicitudAuxiliar")}
+          >
+            <span>Solicitud Auxiliar</span>
+          </button>
       )}
 
       {userRole === "LIDER" && isHomeTH ? (
