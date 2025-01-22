@@ -23,13 +23,11 @@ function countValidDays(start, end, reservedDates, disabledDates) {
   let currentDate = start.clone();
 
   while (currentDate.isSame(end, "day") || currentDate.isBefore(end, "day")) {
-    console.log("Analizando fecha:", currentDate.format("YYYY-MM-DD"));
     if (
       !isWeekend(currentDate) &&
       !reservedDates.some((reserved) => currentDate.isSame(reserved, "day")) &&
       !disabledDates.some((disabled) => currentDate.isSame(disabled, "day"))
     ) {
-      console.log("Día válido:", currentDate.format("YYYY-MM-DD"));
       count++;
     }
     currentDate = currentDate.add(1, "day");
@@ -112,7 +110,6 @@ export default function SolicitudDetalle() {
         } else {
           mostrarNotificacion("No se pudieron obtener las solicitudes.", "Error");
         }
-        console.log("Respuesta de solicitudes:", response.data);
       } catch (error) {
         console.error("Error obteniendo las solicitudes:", error);
         mostrarNotificacion("Error al conectar con el servidor.", "Error");
@@ -132,7 +129,6 @@ export default function SolicitudDetalle() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Líderes:", response.data);
         setLideres(response.data);
       } catch (err) {
         console.error("Error al obtener líderes:", err);
@@ -299,8 +295,6 @@ export default function SolicitudDetalle() {
         disabledDates
       );
 
-      console.log("Cantidad de días calculados:", cantidadDias);
-
       if (cantidadDias > diasVacacionesDisponibles) {
         mostrarNotificacion("No tienes suficientes días de vacaciones disponibles.", "Error");
         return;
@@ -331,7 +325,6 @@ export default function SolicitudDetalle() {
           },
         }
       );
-      console.log("Respuesta del servidor después de actualización:", response.data);
 
       if (response.status === 200) {
         setSolicitudes(response.data);
@@ -341,7 +334,7 @@ export default function SolicitudDetalle() {
       mostrarNotificacion("Solicitud actualizada correctamente.", "Success");
     } catch (error) {
       console.error("Error al actualizar la solicitud:", error);
-      mostrarNotificacion("No se pudo actualizar la solicitud. Completa todos los campos", "Error");
+      mostrarNotificacion("No se pudo actualizar la solicitud. Rellena todos los campos", "Error");
     }
   };
 
