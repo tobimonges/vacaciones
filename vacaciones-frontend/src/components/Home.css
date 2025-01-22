@@ -429,3 +429,44 @@
     color: white;
     background: white;
 }
+.sidebar-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+}
+
+.sidebar-button span {
+    margin-right: auto;
+}
+
+.notificacion {
+    width: 20px; /* Ajusta el tamaño de la imagen */
+    height: 20px;
+    filter: invert(23%) sepia(91%) saturate(7458%) hue-rotate(0deg) brightness(96%) contrast(104%); /* Cambia el color a rojo */
+    object-fit: contain; /* Asegura que mantenga su proporción original */
+}
+
+
+.pending-count {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    /*color: white;*/
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
