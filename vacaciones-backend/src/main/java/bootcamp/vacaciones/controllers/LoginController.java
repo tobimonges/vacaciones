@@ -30,7 +30,7 @@ public class LoginController {
     private final UsuarioRepository usuarioRepository;
     private final JwtBlacklist jwtBlacklist;
 
-    @Value("${app.reset-password-url}")
+    @Value("${app.reset-password-requires-change-url}")
     private String baseUrl;
 
     @Autowired

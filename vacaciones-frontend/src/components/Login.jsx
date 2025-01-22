@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import axios from "axios";
 import Logo from "./Logo";
 import Preloader from "./Preloader";
+import Logogiratorio from "./logogiratorio";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showError, setShowError] = useState(false);
+  const [showLoginBox, setShowLoginBox] = useState(true);
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const timeout = setTimeout(() => {
@@ -41,7 +43,6 @@ function Login() {
           password: password,
         }
       );
-
       const token = respuesta.data;
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
@@ -50,6 +51,14 @@ function Login() {
         navigate("/Home");
       }, 200);
     } catch (error) {
+      console.log(error.response);
+      if(error.response.data.message === "Redirigir a cambio de contraseña") {
+        setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
+        setTimeout(() => {
+          navigate(error.response.data.redirect);
+        }, 2500);
+        return;
+      }
       console.error("Error al iniciar sesión", error);
       setPassword("");
       setError(true);
@@ -92,7 +101,7 @@ function Login() {
   }
   return (
     <div className="container containerLogin">
-      <Preloader duration={650} />
+      <Logogiratorio duration={650} />
       <div
         className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
           }`}

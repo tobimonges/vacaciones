@@ -201,7 +201,7 @@ public class SolicitudController {
         }
     }
 
-    @PutMapping("/solicitudes/auxiliar")
+    @PostMapping("/solicitudes/auxiliar")
     public ResponseEntity<?> crearSolicitudAuxiliar(
             @RequestParam Long usuarioId, // ID del usuario para el cual se crea la solicitud
             @RequestParam Long solicitanteId, // ID del usuario que realiza la solicitud auxiliar

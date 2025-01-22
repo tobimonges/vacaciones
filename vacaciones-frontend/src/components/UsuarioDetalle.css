@@ -219,4 +219,12 @@ h3 .icon {
     flex-wrap: wrap;
 }
 
-
+.boton-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2%;
+    height: 100%;
+    grid-column: 1 / -1;
+    padding-top: 5%;
+}

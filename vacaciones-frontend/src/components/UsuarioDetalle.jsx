@@ -4,6 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import axios from "axios";
+import dayjs from "dayjs";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import "./UsuarioDetalle.css";
@@ -346,21 +347,30 @@ function UsuarioDetalle() {
                             <img src={icon} className="icon" />
                             <div className="datePickerGroup">
                               <DatePicker
-                                selected={formData[name]}
+                                value={
+                                  formData[name] ? dayjs(formData[name]) : null
+                                } // Asegúrate de usar dayjs para valores válidos
                                 onChange={(date) =>
-                                  handleDateChange(name, date)
+                                  handleDateChange(
+                                    name,
+                                    date ? date.format("YYYY-MM-DD") : ""
+                                  )
                                 }
-                                dateFormat="yyyy-MM-dd"
-                                className="inputCreate"
-                                required
+                                slotProps={{
+                                  textField: {
+                                    variant: "outlined",
+                                    fullWidth: true,
+                                    className: "inputCreate",
+                                    required: true,
+                                  },
+                                }}
                               />
                             </div>
                           </div>
                         </LocalizationProvider>
                       </div>
                     ))}
-
-                    <h3>‎ </h3>
+                    <div className="boton-container">
                     <button type="submit" className="boton">
                       Guardar Cambios
                     </button>
@@ -371,6 +381,7 @@ function UsuarioDetalle() {
                     >
                       Cancelar
                     </button>
+                    </div>
                   </form>
                 )}
               </div>
