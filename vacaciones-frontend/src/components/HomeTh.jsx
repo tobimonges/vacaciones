@@ -10,22 +10,24 @@ import { getUserRole, getUsuarioId, isTokenValid } from "./authUtils";
 import "./Home.css";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
-import { Link } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 // 🌍 Localización de fechas
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
-  format: (date, formatStr, options) => format(date, formatStr, { ...options, locale: esLocale }),
-  parse: (str, formatStr) => parse(str, formatStr, new Date(), { locale: esLocale }),
-  startOfWeek: () => startOfWeek(new Date(), { locale: esLocale, weekStartsOn: 0 }),
+  format: (date, formatStr, options) =>
+    format(date, formatStr, { ...options, locale: esLocale }),
+  parse: (str, formatStr) =>
+    parse(str, formatStr, new Date(), { locale: esLocale }),
+  startOfWeek: () =>
+    startOfWeek(new Date(), { locale: esLocale, weekStartsOn: 0 }),
   getDay,
   locales,
 });
 
 // 🏠 **Componente Principal**
 const HomeTh = () => {
-
   // 🧠 Estados
   const [showBirthdays, setShowBirthdays] = useState(true);
   const [showHolidays, setShowHolidays] = useState(true);
@@ -46,13 +48,6 @@ const HomeTh = () => {
     setModalOpen(true); // Abre el modal
   };
   // Verificar si el usuario tiene el rol adecuado
-  const isUserAllowed = () => {
-    const allowedRoles = ["TH", "LIDER", "OPERACIONES", "DIRECTORIO"];
-    const userRole = getUserRole(); // Lógica para obtener el rol del usuario
-    return allowedRoles.includes(userRole);
-  };
-  // ContadorPendiente
-
 
   //Funcion para contar solicitudes pendientes
   useEffect(() => {
@@ -67,17 +62,19 @@ const HomeTh = () => {
         }
 
         const response = await axios.get(
-            "http://localhost:8080/vacaciones/solicitudes",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+          "http://localhost:8080/vacaciones/solicitudes",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const requests = response.data;
 
         // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
         const pendingRequests = requests.filter(
-            (request) => request.numeroAprobaciones === 0 && request.usuario.id !== parseInt(userId)
+          (request) =>
+            request.numeroAprobaciones === 0 &&
+            request.usuario.id !== parseInt(userId)
         );
 
         setPendingCount(pendingRequests.length);
@@ -88,9 +85,6 @@ const HomeTh = () => {
 
     fetchPendingRequests();
   }, [localStorage.getItem("userId")]); // Agregar el userId como dependencia
-
-
-
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
@@ -105,10 +99,10 @@ const HomeTh = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const { nombre, fechaIngreso, diasVacaciones } = response.data;
@@ -125,24 +119,6 @@ const HomeTh = () => {
     fetchUserData();
   }, [navigate]);
 
-
-  // 📥 Obtener equipos
-  useEffect(() => {
-    const fetchEquipos = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/equipos", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setEquipos(response.data);
-      } catch (err) {
-        console.error("Error al obtener equipos:", err);
-        setError("No se pudieron cargar los equipos.");
-      }
-    };
-
-    fetchEquipos();
-  }, []);
 
   // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
@@ -161,8 +137,8 @@ const HomeTh = () => {
 
         // Solicitudes de vacaciones
         const solicitudesResponse = await axios.get(
-            "http://localhost:8080/vacaciones/solicitudes",
-            { headers: { Authorization: `Bearer ${token}` } }
+          "http://localhost:8080/vacaciones/solicitudes",
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const solicitudesEvents = solicitudesResponse.data.map((solicitud) => {
@@ -170,35 +146,43 @@ const HomeTh = () => {
           const usuario = solicitud.usuario;
 
           // Verificar si usuario existe, y si no, usar un valor por defecto
-          const nombre = usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Nombre no disponible';
+          const nombre = usuario
+            ? `${usuario.nombre} ${usuario.apellido}`
+            : "Nombre no disponible";
 
           // Verificar si equipo existe dentro de usuario, y si no, usar un valor por defecto
-          const equipo = usuario && usuario.equipo ? usuario.equipo.nombre : 'Equipo no disponible';
+          const equipo =
+            usuario && usuario.equipo
+              ? usuario.equipo.nombre
+              : "Equipo no disponible";
 
           // Crear objetos de fecha de forma segura
-          const fechaInicio = solicitud.fechaInicio ? new Date(`${solicitud.fechaInicio}T00:00:00`) : null;
-          const fechaFin = solicitud.fechaFin ? new Date(`${solicitud.fechaFin}T23:59:59`) : null;
+          const fechaInicio = solicitud.fechaInicio
+            ? new Date(`${solicitud.fechaInicio}T00:00:00`)
+            : null;
+          const fechaFin = solicitud.fechaFin
+            ? new Date(`${solicitud.fechaFin}T23:59:59`)
+            : null;
 
           // Retornar el evento con los datos correctamente manejados
           return {
-            title: nombre,  // Nombre del usuario
-            start: fechaInicio,  // Fecha de inicio
-            end: fechaFin,  // Fecha de fin
-            allDay: true,  // Evento todo el día
+            title: nombre, // Nombre del usuario
+            start: fechaInicio, // Fecha de inicio
+            end: fechaFin, // Fecha de fin
+            allDay: true, // Evento todo el día
             type: solicitud.rechazado
-                ? "rechazado"
-                : solicitud.estado
-                    ? "aprobado"
-                    : "pendiente",  // Tipo basado en estado y rechazado
-            equipo: equipo,  // Nombre del equipo
+              ? "rechazado"
+              : solicitud.estado
+              ? "aprobado"
+              : "pendiente", // Tipo basado en estado y rechazado
+            equipo: equipo, // Nombre del equipo
           };
         });
 
-
         // Feriados
         const feriadosResponse = await axios.get(
-            "http://localhost:8080/vacaciones/feriados",
-            { headers: { Authorization: `Bearer ${token}` } }
+          "http://localhost:8080/vacaciones/feriados",
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const feriadosEvents = feriadosResponse.data.map((feriado) => ({
@@ -211,8 +195,8 @@ const HomeTh = () => {
 
         // Cumpleaños
         const cumpleanosResponse = await axios.get(
-            "http://localhost:8080/vacaciones/obtenercumpleanos",
-            { headers: { Authorization: `Bearer ${token}` } }
+          "http://localhost:8080/vacaciones/obtenercumpleanos",
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         const cumpleanosEvents = cumpleanosResponse.data.map((cumpleanos) => ({
           title: cumpleanos.descripcion,
@@ -223,7 +207,11 @@ const HomeTh = () => {
         }));
 
         // Combinar todos los eventos
-        setEvents([...solicitudesEvents, ...feriadosEvents, ...cumpleanosEvents]);
+        setEvents([
+          ...solicitudesEvents,
+          ...feriadosEvents,
+          ...cumpleanosEvents,
+        ]);
       } catch (error) {
         console.error("Error al obtener datos:", error);
         setError("No se pudieron cargar los datos.");
@@ -233,9 +221,6 @@ const HomeTh = () => {
     fetchVacationData();
   }, [navigate]);
 
-
-
-
   const handleLogout = () => {
     localStorage.removeItem("token"); // Eliminar el token de autenticación
     navigate("/"); // Redirigir a la página de inicio de sesión
@@ -243,7 +228,7 @@ const HomeTh = () => {
   // 🎨 **Personalizar colores de días**
   const dayPropGetter = (date) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); 
+    today.setHours(0, 0, 0, 0);
     const isPastDate = date < today;
 
     if (isPastDate) {
@@ -294,11 +279,11 @@ const HomeTh = () => {
     }
   };
   const filterEventsByTeam = events.filter((event) => {
-
     // Filtrar por equipo
     const isEquipoMatch = equipoSeleccionado
-        ? event.equipo && event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
-        : true; // Si no hay equipo seleccionado, no se filtra por equipo
+      ? event.equipo &&
+        event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
+      : true; // Si no hay equipo seleccionado, no se filtra por equipo
 
     // Filtrar por tipo de evento (cumpleaños y feriados)
     const isBirthdayVisible = event.type !== "cumpleanos" || showBirthdays;
@@ -308,354 +293,209 @@ const HomeTh = () => {
     return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
   });
 
-
   // 🎨 **Renderizado del Componente**
   return (
-      <div className="container homeTH-container">
+    <div className="container homeTH-container">
+      {/* 📚 **Barra lateral** */}
+      <div className="sidebar">
+        <Sidebar />
+      </div>
 
-        { /* 📚 **Barra lateral** */}
-        <div className="sidebar">
-          <div className="sidebar-content">
+      {/* 📚 **Área de contenido** */}
+      <div className="content-area">
+        <Preloader duration={650} />
 
-            {/* 🖼️ Logo de la barra lateral */}
-            <div className="sidebar-logo">
-              <Link to="/home">
-                <img src=".\logo-white.svg" alt="Logo" className="logo" />
-              </Link>
-            </div>
-
-            <div className="sidebar-buttons">
-              <div className="sidebar-buttons">
-                <button className="sidebar-button" onClick={() => navigate("/Home")}>
-                  <span className="sidebar-text-focus">Home</span>
-                </button>
-                {(userRole === "TH" || userRole === "LIDER" || userRole === "OPERACIONES" || userRole === "DIRECTORIO") && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/SolicitudAuxiliar`)}
-                    >
-                      <span>Solicitud Auxiliar</span>
-                    </button>
-                )}
-
-                {userRole === "LIDER" ? (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/AdminDashboard`)}
-                    >
-                      <span>Bandeja de Solicitudes</span>
-
-                      <img
-                          src="/icono-notificaciones.svg"
-                          alt="Añadir líder"
-                          title="Añadir líder"
-                          className="notificacion"
-                      />
-
-                    </button>
-                ) : userRole !== "LIDER" ? (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/AdminDashboard`)}
-                    >
-                      <span>Listar Solicitudes</span>
-                      <img
-                          src="/icono-notificaciones.svg"
-                          alt="Añadir líder"
-                          title="Añadir líder"
-                          className="notificacion"
-                      />
-
-                    </button>
-                ) : null}
-
-              {/* 🛠️ Botones visibles solo para "TH" */}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/crearusuario`)}
-                >
-                  <span>Registrar Funcionario</span>
-                </button>
-              )}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/UsuarioDetalle`)}
-                >
-                  <span>Editar Datos de Funcionario</span>
-                </button>
-              )}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/CreaEquipo`)}
-                >
-                  <span>Crear Equipo</span>
-                </button>
-              )}
-                {userRole === "TH" && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/EquipoDetalle`)}
-                    >
-                      <span>Editar Equipo</span>
-                    </button>
-                )}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/CreaCargo`)}
-                >
-                  <span>Crear Cargo</span>
-                </button>
-              )}
-                {userRole === "TH" && (
-                    <button
-                        className="sidebar-button"
-                        onClick={() => navigate(`/CreaCargo`)}
-                    >
-                      <span>Editar Cargo</span>
-                    </button>
-                )}
-              <div className="sidebar-buttons">
-                <select
-                  // className="calendar-select-Th"
-                  className="sidebar-button sidebar-button-homeTH"
-                  value={equipoSeleccionado}
-                  onChange={(e) => setEquipoSeleccionado(e.target.value)}
-                >
-                  <option value="">Todos los equipos</option>
-                  {equipos.map((equipo) => (
-                    <option key={equipo.nombre} value={equipo.nombre}>
-                      {equipo.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-
-              </div>
-            </div>
-
-            <div className="sidebar-logout">
-              <button className="logout-button" onClick={handleLogout}>
-                <img src=".\salida.svg" alt="Cerrar sesión" className="button-icon" />
-                <span>Cerrar sesión</span>
-              </button>
-            </div>
-
+        {/* 📚 **Barra superior** */}
+        <div className="navbar">
+          <div className="navbar-content">
+            <NavigationBar onLogout={handleLogout} />
           </div>
         </div>
 
-
-
-        { /* 📚 **Área de contenido** */}
-        <div className="content-area">
-        <Preloader duration={650} />
-
-          { /* 📚 **Barra superior** */}
-          <div className="navbar">
-            <div className="navbar-content">
-              <NavigationBar onLogout={handleLogout} />
+        {/* 📚 **Contenido principal** */}
+        <div className="main">
+          <div className="main-content">
+            <div className="calendar-title-th">
+              <span>Solicitudes</span>
             </div>
-          </div>
 
-          { /* 📚 **Contenido principal** */}
-          <div className="main">
-            <div className="main-content">
+            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+              {/* 🛠️ Checkbox con filtros*/}
+              <div className="checkbox-container">
+                <div className="custom-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showBirthdays}
+                      onChange={(e) => setShowBirthdays(e.target.checked)}
+                    />
+                    Mostrar cumpleaños
+                  </label>
+                </div>
 
+                <div className="custom-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showHolidays}
+                      onChange={(e) => setShowHolidays(e.target.checked)}
+                    />
+                    Mostrar feriados
+                  </label>
+                </div>
 
-              <div className="calendar-title-th">
-                <span>Solicitudes</span>
+                <div className="custom-checkbox">
+                  <span>Solicitudes Pendientes: {pendingCount}</span>
+                </div>
               </div>
 
-              <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+              {/* 🚨 Mensajes de Error */}
+              {error && <p className="calendar-error-message">{error}</p>}
+              <div className="calendar-big-container">
+                <Calendar
+                  localizer={localizer}
+                  events={filterEventsByTeam}
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: 500, margin: "20px 0" }}
+                  messages={{
+                    today: "Hoy",
+                    previous: "Anterior",
+                    next: "Siguiente",
+                    month: "Mes",
+                    week: "Semana",
+                    day: "Día",
+                    agenda: "Agenda",
+                  }}
+                  views={{ month: true }} // Mantener solo la vista de mes
+                  eventPropGetter={eventStyleGetter}
+                  dayPropGetter={dayPropGetter}
+                  popup // Desactivar el comportamiento predeterminado del popup
+                  showMultiDayTimes={true}
+                  onShowMore={(eventsOnDay, date) => {
+                    // Prevenir cambio de vista
+                    handleShowMore(eventsOnDay, date);
+                  }}
+                  dayLayoutAlgorithm="no-overlap"
+                />
+              </div>
 
-                {/* 🛠️ Checkbox con filtros*/}
-                <div className="checkbox-container">
-                  <div className="custom-checkbox">
-                    <label>
-                      <input
-                          type="checkbox"
-                          checked={showBirthdays}
-                          onChange={(e) => setShowBirthdays(e.target.checked)}
-                      />
-                      Mostrar cumpleaños
-                    </label>
-                  </div>
-
-                  <div className="custom-checkbox">
-                    <label>
-                      <input
-                          type="checkbox"
-                          checked={showHolidays}
-                          onChange={(e) => setShowHolidays(e.target.checked)}
-                      />
-                      Mostrar feriados
-                    </label>
-                  </div>
-
-                  <div className="custom-checkbox">
-                  <span>
-                    Solicitudes Pendientes: {pendingCount}
+              {/* 🖍️ Leyenda de Colores */}
+              <div className="calendar-legend">
+                <p>
+                  <span
+                    style={{
+                      backgroundColor: "#a0e2b3",
+                      color: "#000000",
+                      padding: "8px",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    Aprobado
                   </span>
+                </p>
+                <p>
+                  <span
+                    style={{
+                      backgroundColor: "#ff7c70",
+                      color: "#000000",
+                      padding: "8px",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    Rechazado
+                  </span>
+                </p>
+                <p>
+                  <span
+                    style={{
+                      backgroundColor: "#fefda6",
+                      color: "#000000",
+                      padding: "8px",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    Pendiente
+                  </span>
+                </p>
+                <p>
+                  <span
+                    style={{
+                      backgroundColor: "#c0a4c9",
+                      color: "#000000",
+                      padding: "8px",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    Feriado
+                  </span>
+                </p>
+              </div>
 
-
+              {/* 🔲 Modal para Solicitudes del Día */}
+              {modalOpen && (
+                <div className="modal-overlay">
+                  <div className="modal-contentTh">
+                    <h4>Solicitudes en esta fecha:</h4> <br />
+                    {modalEvents.length > 0 ? (
+                      <div className="modal-events-list">
+                        <ul>
+                          {modalEvents.map((event, index) => (
+                            <li key={index}>
+                              <strong>{event.title}</strong> <br /> <br />
+                              <span
+                                style={{
+                                  color: "#000000",
+                                  backgroundColor:
+                                    event.type === "aprobado"
+                                      ? "#a0e2b3" // Verde pastel para aprobado
+                                      : event.type === "rechazado"
+                                      ? "#ff7c70" // Rojo pastel para rechazado
+                                      : event.type === "pendiente"
+                                      ? "#fefda6" // Amarillo pastel para pendiente
+                                      : event.type === "feriado"
+                                      ? "#c0a4c9" // Morado pastel para feriado
+                                      : "", // Si no es ninguno de los tipos, no aplica color
+                                  padding: "4px 8px",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                {event.type === "aprobado"
+                                  ? "Aprobado"
+                                  : event.type === "rechazado"
+                                  ? "Rechazado"
+                                  : event.type === "pendiente"
+                                  ? "Pendiente"
+                                  : event.type === "feriado"
+                                  ? "Feriado"
+                                  : ""}
+                              </span>
+                              <br /> <br />
+                              <span>
+                                Desde: {event.start.toLocaleDateString()} hasta:{" "}
+                                {event.end.toLocaleDateString()}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p>No hay solicitudes para esta fecha.</p>
+                    )}
+                    <button
+                      className="close-modal-btn"
+                      onClick={() => setModalOpen(false)}
+                    >
+                      <span>Cerrar</span>
+                    </button>
                   </div>
                 </div>
-
-
-
-                {/* 🚨 Mensajes de Error */}
-                {error && <p className="calendar-error-message">{error}</p>}
-                <div className="calendar-big-container">
-                  <Calendar
-                      localizer={localizer}
-                      events={filterEventsByTeam}
-                      startAccessor="start"
-                      endAccessor="end"
-                      style={{ height: 500, margin: "20px 0" }}
-                      messages={{
-                        today: "Hoy",
-                        previous: "Anterior",
-                        next: "Siguiente",
-                        month: "Mes",
-                        week: "Semana",
-                        day: "Día",
-                        agenda: "Agenda",
-                      }}
-                      views={{ month: true }} // Mantener solo la vista de mes
-                      eventPropGetter={eventStyleGetter}
-                      dayPropGetter={dayPropGetter}
-                      popup // Desactivar el comportamiento predeterminado del popup
-                      showMultiDayTimes={true}
-                      onShowMore={(eventsOnDay, date) => {
-                        // Prevenir cambio de vista
-                        handleShowMore(eventsOnDay, date);
-                      }}
-                      dayLayoutAlgorithm="no-overlap"
-                  />
-                </div>
-
-                {/* 🖍️ Leyenda de Colores */}
-                <div className="calendar-legend">
-                  <p>
-                    <span
-                        style={{
-                          backgroundColor: "#a0e2b3",
-                          color: "#000000",
-                          padding: "8px",
-                          borderRadius: "6px",
-                        }}
-                    >
-                      Aprobado
-                    </span>
-                  </p>
-                  <p>
-                    <span
-                        style={{
-                          backgroundColor: "#ff7c70",
-                          color: "#000000",
-                          padding: "8px",
-                          borderRadius: "6px",
-                        }}
-                    >
-                      Rechazado
-                    </span>
-                  </p>
-                  <p>
-                    <span
-                        style={{
-                          backgroundColor: "#fefda6",
-                          color: "#000000",
-                          padding: "8px",
-                          borderRadius: "6px",
-                        }}
-                    >
-                      Pendiente
-                    </span>
-                  </p>
-                  <p>
-                    <span
-                        style={{
-                          backgroundColor: "#c0a4c9",
-                          color: "#000000",
-                          padding: "8px",
-                          borderRadius: "6px",
-                        }}
-                    >
-                      Feriado
-                    </span>
-                  </p>
-                </div>
-
-                {/* 🔲 Modal para Solicitudes del Día */}
-                {modalOpen && (
-                    <div className="modal-overlay">
-                      <div className="modal-contentTh">
-                        <h4>Solicitudes en esta fecha:</h4> <br />
-                        {modalEvents.length > 0 ? (
-                            <div className="modal-events-list">
-                              <ul>
-                                {modalEvents.map((event, index) => (
-                                    <li key={index}>
-                                      <strong>{event.title}</strong>  <br /> <br />
-                                      <span
-                                          style={{
-                                            color: "#000000",
-                                            backgroundColor:
-                                                event.type === "aprobado"
-                                                    ? "#a0e2b3"  // Verde pastel para aprobado
-                                                    : event.type === "rechazado"
-                                                        ? "#ff7c70"  // Rojo pastel para rechazado
-                                                        : event.type === "pendiente"
-                                                            ? "#fefda6"  // Amarillo pastel para pendiente
-                                                            : event.type === "feriado"
-                                                                ? "#c0a4c9"  // Morado pastel para feriado
-                                                                : "", // Si no es ninguno de los tipos, no aplica color
-                                            padding: "4px 8px",
-                                            borderRadius: "4px",
-                                          }}>
-                                  {event.type === "aprobado"
-                                      ? "Aprobado"
-                                      : event.type === "rechazado"
-                                          ? "Rechazado"
-                                          : event.type === "pendiente"
-                                              ? "Pendiente"
-                                              : event.type === "feriado"
-                                                  ? "Feriado"
-                                                  : ""}
-                                </span>
-                                      <br /> <br />
-                                      <span>
-                                  Desde: {event.start.toLocaleDateString()} hasta:{" "}
-                                        {event.end.toLocaleDateString()}
-                                </span>
-                                    </li>
-                                ))}
-                              </ul>
-                            </div>
-                        ) : (
-                            <p>No hay solicitudes para esta fecha.</p>
-                        )}
-                        <button
-                            className="close-modal-btn"
-                            onClick={() => setModalOpen(false)}
-                        >
-                          <span>Cerrar</span>
-                        </button>
-                      </div>
-                    </div>
-                )}
-              </div>
+              )}
             </div>
-
           </div>
         </div>
       </div>
-
-
+    </div>
   );
 };
 
