@@ -91,79 +91,79 @@ export default function NuevaSolicitud() {
     fetchUsuarios();
   }, []);
 
+  // Efecto para obtener las fechas reservadas y días disponibles al seleccionar un usuario
   useEffect(() => {
-    const fetchReservedDates = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          //   setError("No se encontró un token. Inicia sesión nuevamente.");
-          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
-          setTipoMensaje("Error");
-          return;
-        }
-
-        const url = `http://localhost:8080/vacaciones/usuario/${usuarioId}`;
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const dates = response.data.flatMap((solicitud) => {
-          const start = dayjs(solicitud.fechaInicio);
-          const end = dayjs(solicitud.fechaFin);
-          const range = [];
-          let currentDate = start.clone();
-          while (
-            currentDate.isSame(end, "day") ||
-            currentDate.isBefore(end, "day")
-          ) {
-            range.push(currentDate.clone());
-            currentDate = currentDate.add(1, "day");
+    if (selectedUserId) {
+      const fetchReservedDates = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+            setTipoMensaje("Error");
+            return;
           }
-          return range;
-        });
 
-        setReservedDates(dates);
-      } catch (err) {
-        console.error("Error al obtener fechas reservadas:", err);
-        // setError("No se pudo obtener la información de las solicitudes.");
-        setMensaje("No se pudo obtener la información de las solicitudes.");
-        setTipoMensaje("Error");
-      }
-    };
+          const url = `http://localhost:8080/vacaciones/usuario/${selectedUserId}`;
+          const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-    fetchReservedDates();
-  }, [usuarioId]);
+          const dates = response.data.flatMap((solicitud) => {
+            const start = dayjs(solicitud.fechaInicio);
+            const end = dayjs(solicitud.fechaFin);
+            const range = [];
+            let currentDate = start.clone();
+            while (
+              currentDate.isSame(end, "day") ||
+              currentDate.isBefore(end, "day")
+            ) {
+              range.push(currentDate.clone());
+              currentDate = currentDate.add(1, "day");
+            }
+            return range;
+          });
 
-  useEffect(() => {
-    const fetchDiasDisponibles = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          //    setError("No se encontró un token. Inicia sesión nuevamente.");
-          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+          setReservedDates(dates);
+        } catch (err) {
+          console.error("Error al obtener fechas reservadas:", err);
+          setMensaje("No se pudo obtener la información de las solicitudes.");
           setTipoMensaje("Error");
-          return;
         }
+      };
 
-        const url = `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`;
-        const response = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const fetchDiasDisponibles = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+            setTipoMensaje("Error");
+            return;
+          }
 
-        setDiasVacacionesDisponibles(response.data);
-      } catch (err) {
-        console.error("Error al obtener días de vacaciones disponibles:", err);
-        //   setError("No se pudo obtener la información de días de vacaciones.");
-        setMensaje("No se pudo obtener la información de días de vacaciones.");
-        setTipoMensaje("Error");
-      }
-    };
+          const url = `http://localhost:8080/vacaciones/diasdisponiblesid/${selectedUserId}`;
+          const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-    fetchDiasDisponibles();
-  }, [usuarioId]);
+          setDiasVacacionesDisponibles(response.data);
+        } catch (err) {
+          console.error(
+            "Error al obtener días de vacaciones disponibles:",
+            err
+          );
+          setMensaje(
+            "No se pudo obtener la información de días de vacaciones."
+          );
+          setTipoMensaje("Error");
+        }
+      };
 
+      fetchReservedDates();
+      fetchDiasDisponibles();
+    }
+  }, [selectedUserId]);
+
+  // Efecto para calcular los días válidos
   useEffect(() => {
     const days = countValidDays(startDate, endDate, reservedDates);
     setValidDays(days);
@@ -172,13 +172,19 @@ export default function NuevaSolicitud() {
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-      //  setWarning("No puedes seleccionar más días de los disponibles.");
       setMensaje("No puedes seleccionar más días de los disponibles.");
       setTipoMensaje("Warning");
     } else {
       setWarning("");
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
+
+  // Manejo de la selección del usuario
+  const handleUserSelection = (id) => {
+    setSelectedUserId(id); // Actualiza el estado con el ID del usuario seleccionado
+    closeModal(); // Cierra el modal al seleccionar un usuario
+    console.log("Usuario seleccionado con ID:", id); // Depuración
+  };
 
   const openModal = () => {
     setShowModal(true);
@@ -191,12 +197,6 @@ export default function NuevaSolicitud() {
 
   const handleUsers = () => {
     openModal(); // Abrir el modal al seleccionar usuario
-  };
-
-  const handleUserSelection = (id) => {
-    setSelectedUserId(id); // Actualiza el estado con el ID del usuario seleccionado
-    closeModal(); // Cierra el modal al seleccionar un usuario
-    console.log("Usuario seleccionado con ID:", id); // Para depuración
   };
 
   const handleFilterChange = (e) => {
