@@ -12,6 +12,7 @@ const SidebarButtons = () => {
   const location = useLocation();
   const isHomeTH = location.pathname === "/HomeTH";
   const isHome = location.pathname === "/Home";
+  const isEquipoDetalle = location.pathname === "/EquipoDetalle";
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [equipos, setEquipos] = useState([]);
   const [pendingCount, setPendingCount] = useState(0);
@@ -81,14 +82,14 @@ const SidebarButtons = () => {
   return (
     <div className="sidebar-buttons">
       {/* Botón Home */}
-      {!isHome && (
+      {isHomeTH && (
         <button className="sidebar-button" onClick={() => navigate("/Home")}>
           <span className="sidebar-text-focus">Home</span>
         </button>
       )}
 
       {/* Botón para Solicitar */}
-      {!isHomeTH && (
+      {isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate("/NuevaSolicitud")}
@@ -98,7 +99,7 @@ const SidebarButtons = () => {
       )}
 
       {/* Botón para Ver Solicitudes */}
-      {!isHomeTH && (
+      {isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/SolicitudDetalle/${getUsuarioId()}`)}
@@ -115,7 +116,7 @@ const SidebarButtons = () => {
       )}
 
       {["LIDER", "OPERACIONES", "DIRECTORIO"].includes(userRole) &&
-        isHomeTH && (
+       !isHome && (
           <button
             className="sidebar-button"
             onClick={() => navigate("/SolicitudAuxiliar")}
@@ -124,7 +125,7 @@ const SidebarButtons = () => {
           </button>
         )}
 
-      {userRole === "LIDER" && isHomeTH ? (
+      {userRole === "LIDER" && !isHome ? (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/AdminDashboard`)}
@@ -139,7 +140,7 @@ const SidebarButtons = () => {
             />
           )}
         </button>
-      ) : userRole !== "LIDER" && isUserAllowed() && isHomeTH ? (
+      ) : userRole !== "LIDER" && isUserAllowed() && !isHome ? (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/AdminDashboard`)}
@@ -156,7 +157,7 @@ const SidebarButtons = () => {
         </button>
       ) : null}
 
-      {userRole === "TH" && isHomeTH && (
+      {userRole === "TH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/crearusuario`)}
@@ -165,7 +166,7 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {userRole === "TH" && isHomeTH && (
+      {userRole === "TH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/UsuarioDetalle`)}
@@ -173,7 +174,7 @@ const SidebarButtons = () => {
           <span>Editar Datos de Funcionario</span>
         </button>
       )}
-      {userRole === "TH" && isHomeTH && (
+      {userRole === "TH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaEquipo`)}
@@ -181,7 +182,7 @@ const SidebarButtons = () => {
           <span>Crear Equipo</span>
         </button>
       )}
-      {userRole === "TH" && isHomeTH && (
+      {userRole === "TH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/EquipoDetalle`)}
@@ -189,7 +190,7 @@ const SidebarButtons = () => {
           <span>Editar Equipo</span>
         </button>
       )}
-      {userRole === "TH" && isHomeTH && (
+      {userRole === "TH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaCargo`)}
@@ -197,7 +198,7 @@ const SidebarButtons = () => {
           <span>Crear Cargo</span>
         </button>
       )}
-      {userRole === "TH" && isHomeTH && (
+      {userRole === "TH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaCargo`)}
@@ -206,7 +207,7 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {isUserAllowed() && isHomeTH && (
+      {isUserAllowed() && !isHome && (
         <select
           className="sidebar-button sidebar-button-homeTH"
           value={equipoSeleccionado}
