@@ -295,3 +295,130 @@ button:disabled {
   max-height: 70%;
   object-fit: contain; /* Para que la imagen conserve proporciones */
 }
+
+.mensaje-popup {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: green; /* o el color según el tipo */
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 9999; /* Asegúrate de que sea visible encima de otros elementos */
+}
+
+/* Estilos de los mensajes */
+.MensajePopuppNS {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  font-weight: bold;
+  transform: translateX(-50%);
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
+  animation: fadeInOut 5s ease-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
+
+/* Color para mensajes de éxito */
+.MensajePopuppNS.Success {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Color para mensajes de error */
+.MensajePopuppNS.Error {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Color para mensajes de advertencia */
+.MensajePopuppNS.Warning {
+  background-color: #ff9800;
+  color: black;
+}
+
+/* Estilo base para el popup */
+.MensajePopuppNS {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 1000;
+  font-weight: bold;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  opacity: 0;
+  animation: popupAnimation 0.5s forwards;
+}
+
+/* Animación para mostrar el popup */
+@keyframes popupAnimation {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Estilos para los diferentes tipos de mensaje */
+.MensajePopuppNS.Success {
+  background-color: #4caf50; /* Verde */
+  color: white;
+}
+
+.MensajePopuppNS.Error {
+  background-color: #f44336; /* Rojo */
+  color: white;
+}
+
+.MensajePopuppNS.Warning {
+  background-color: #ff9800; /* Naranja */
+  color: white;
+}
+
+/* Opcional: Puedes agregar un efecto de desaparición */
+.MensajePopuppNS.Exito,
+.MensajePopuppNS.Error,
+.MensajePopuppNS.Warning {
+  animation: fadeOut 3s forwards;
+}
+
+/* Animación para desaparecer el popup después de cierto tiempo */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+}

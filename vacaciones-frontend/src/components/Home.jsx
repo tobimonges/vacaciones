@@ -1,4 +1,3 @@
-// 📚 Importaciones
 import React, { useState, useEffect } from "react"; // Importa React y hooks de estado y efecto
 import axios from "axios"; // Importa axios para hacer solicitudes HTTP
 import { Calendar, dateFnsLocalizer } from "react-big-calendar"; // Importa componentes de calendario
@@ -12,7 +11,7 @@ import NavigationBar from "./NavigationBar"; // Importa componente de barra de n
 import Preloader from "./Preloader"; // Importa componente de preloader
 import Sidebar from "./Sidebar"; // Importa componente de barra lateral
 
-// 🌍 Localización de fechas
+// Localización de fechas
 const locales = { es: esLocale }; // Define la localización en español
 
 const localizer = dateFnsLocalizer({
@@ -26,7 +25,7 @@ const localizer = dateFnsLocalizer({
   locales, // Asigna las localizaciones
 });
 
-// 🎨 **Constantes de estilo y mensajes**
+// Constantes de estilo y mensajes
 const EVENT_TYPES = {
   APROBADO: "aprobado",
   RECHAZADO: "rechazado",
@@ -49,7 +48,7 @@ const MESSAGES = {
     "No se pudieron cargar las solicitudes de vacaciones.",
 }; // Define mensajes de error
 
-// 🎨 **Componente de leyenda del calendario**
+// Componente de leyenda del calendario
 const CalendarLegend = () => (
   <div className="calendar-legend">
     {Object.entries(EVENT_COLORS).map(([type, color]) => (
@@ -72,9 +71,9 @@ const CalendarLegend = () => (
 ); // Componente que muestra la leyenda del calendario con los colores de los eventos
 
 
-// 🏠 **Componente Principal**
+// Componente Principal
 const Home = () => {
-  // 🧠 Estados
+  // Estados
   const [userName, setUserName] = useState(""); // Estado para el nombre del usuario
   const [joinDate, setJoinDate] = useState(""); // Estado para la fecha de ingreso del usuario
   const [vacationDays, setVacationDays] = useState(0); // Estado para los días de vacaciones disponibles
@@ -82,7 +81,7 @@ const Home = () => {
   const [error, setError] = useState(""); // Estado para los mensajes de error
   const navigate = useNavigate(); // Hook para la navegación entre rutas
 
-  // 📥 **Obtener Datos del Usuario y Solicitudes de Vacaciones**
+  // Obtener Datos del Usuario y Solicitudes de Vacaciones
   useEffect(() => {
     const fetchData = async () => {
       const usuarioId = getUsuarioId();
@@ -211,24 +210,24 @@ const Home = () => {
   }; // Función para obtener estilos de los eventos del calendario
 
   return (
-    // 🖼️ **Estructura de la página**
+    // Estructura de la página
     <div className="container home-container">
       <Preloader duration={650} />
-      {/* 📚 **Barra lateral** */}
+      {/* **Barra lateral** */}
       <div className="sidebar">
         <Sidebar/>
       </div>
 
-      {/* 📚 **Área de contenido** */}
+      {/* **Área de contenido** */}
       <div className="content-area">
-        {/* 📚 **Barra de navegación** */}
+        {/* **Barra de navegación** */}
         <div className="navbar">
           <div className="navbar-content">
             <NavigationBar/>
           </div>
         </div>
 
-        {/* 📚 **Contenido principal** */}
+        {/* **Contenido principal** */}
         <div className="main">
           <div className="main-content">
             <div className="calendar-title">
@@ -270,6 +269,8 @@ const Home = () => {
                     week: "Semana",
                     day: "Día",
                     agenda: "Agenda",
+                    showMore: (count) => `+${count} más`, // Traducción de "More"
+
                   }}
                   views={{ month: true }}
                   eventPropGetter={eventStyleGetter}

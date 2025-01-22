@@ -23,18 +23,27 @@ function countValidDays(start, end, reservedDates, disabledDates) {
   let currentDate = start.clone();
 
   while (currentDate.isSame(end, "day") || currentDate.isBefore(end, "day")) {
-    console.log("Analizando fecha:", currentDate.format("YYYY-MM-DD"));
     if (
       !isWeekend(currentDate) &&
       !reservedDates.some((reserved) => currentDate.isSame(reserved, "day")) &&
       !disabledDates.some((disabled) => currentDate.isSame(disabled, "day"))
     ) {
-      console.log("Día válido:", currentDate.format("YYYY-MM-DD"));
       count++;
     }
     currentDate = currentDate.add(1, "day");
   }
   return count;
+}
+
+// Componente de notificación
+function Notificacion({ mensaje, tipo, onClose }) {
+  if (!mensaje) return null;
+
+  return (
+    <div className={`MensajePopuppNS ${tipo}`} onAnimationEnd={onClose}>
+      {mensaje}
+    </div>
+  );
 }
 
 export default function SolicitudDetalle() {
@@ -52,10 +61,17 @@ export default function SolicitudDetalle() {
   const [diasVacacionesDisponibles, setDiasVacacionesDisponibles] = useState(null);
   const [selectedLideres, setSelectedLideres] = useState([null]); // Líder seleccionado
   const userRole = getUserRole();
-  
+  const [mensaje, setMensaje] = useState(""); // Mensaje de notificación
+  const [tipoMensaje, setTipoMensaje] = useState(""); // Tipo de notificación
 
 
   const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")]; 
+
+  const mostrarNotificacion = (mensaje, tipo) => {
+    setMensaje(mensaje);
+    setTipoMensaje(tipo);
+    setTimeout(() => setMensaje(""), 5000);
+  };
 
 
   const handleAddLiderSelector = () => {
@@ -75,7 +91,7 @@ export default function SolicitudDetalle() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setError("No estás autenticado. Por favor, inicia sesión.");
+          mostrarNotificacion("No estás autenticado. Por favor, inicia sesión.", "Error");
           navigate("/");
           return;
         }
@@ -92,12 +108,11 @@ export default function SolicitudDetalle() {
         if (response.status === 200) {
           setSolicitudes(response.data); // Guardar las solicitudes obtenidas
         } else {
-          setError("No se pudieron obtener las solicitudes.");
+          mostrarNotificacion("No se pudieron obtener las solicitudes.", "Error");
         }
-        console.log("Respuesta de solicitudes:", response.data);
       } catch (error) {
         console.error("Error obteniendo las solicitudes:", error);
-        setError("Error al conectar con el servidor.");
+        mostrarNotificacion("Error al conectar con el servidor.", "Error");
       }
     };
 
@@ -114,11 +129,10 @@ export default function SolicitudDetalle() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Líderes:", response.data);
         setLideres(response.data);
       } catch (err) {
         console.error("Error al obtener líderes:", err);
-        setError("No se pudo obtener la información de los líderes.");
+        mostrarNotificacion("No se pudo obtener la información de los líderes.", "Error");
       }
     };
 
@@ -270,7 +284,7 @@ export default function SolicitudDetalle() {
     try {
       const token = localStorage.getItem("token");
       if (!nuevaFechaInicio || !nuevaFechaFin) {
-        alert("Por favor, selecciona ambas fechas.");
+        mostrarNotificacion("Por favor, selecciona ambas fechas.", "Error");
         return;
       }
 
@@ -281,10 +295,8 @@ export default function SolicitudDetalle() {
         disabledDates
       );
 
-      console.log("Cantidad de días calculados:", cantidadDias);
-
       if (cantidadDias > diasVacacionesDisponibles) {
-        alert("No tienes suficientes días de vacaciones disponibles.");
+        mostrarNotificacion("No tienes suficientes días de vacaciones disponibles.", "Error");
         return;
       }
 
@@ -313,17 +325,16 @@ export default function SolicitudDetalle() {
           },
         }
       );
-      console.log("Respuesta del servidor después de actualización:", response.data);
 
       if (response.status === 200) {
         setSolicitudes(response.data);
       }
 
       setEditando(null);
-      alert("Solicitud actualizada correctamente.");
+      mostrarNotificacion("Solicitud actualizada correctamente.", "Success");
     } catch (error) {
       console.error("Error al actualizar la solicitud:", error);
-      alert("No se pudo actualizar la solicitud.");
+      mostrarNotificacion("No se pudo actualizar la solicitud. Rellena todos los campos", "Error");
     }
   };
 
@@ -349,10 +360,10 @@ export default function SolicitudDetalle() {
       setSolicitudes((prev) =>
         prev.filter((solicitud) => solicitud.id !== solicitudId)
       );
-      alert("Solicitud eliminada correctamente.");
+      mostrarNotificacion("Solicitud eliminada correctamente.", "Success");
     } catch (error) {
       console.error("Error eliminando la solicitud:", error);
-      alert("No se pudo eliminar la solicitud.");
+      mostrarNotificacion("No se pudo eliminar la solicitud.", "Error");
     }
   };
 
@@ -372,7 +383,7 @@ export default function SolicitudDetalle() {
   if (solicitudes.length === 0) {
     return (
       <div className="container">
-<Preloader duration={650} />
+        <Preloader duration={650} />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Preloader duration={650} />
           <div className="container-solicitudes">
@@ -392,6 +403,7 @@ export default function SolicitudDetalle() {
 
   return (
     <div className="container">
+      <Notificacion mensaje={mensaje} tipo={tipoMensaje} />
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" >
         <Preloader duration={650} />
         <div className="container-solicitudes">
@@ -536,7 +548,7 @@ export default function SolicitudDetalle() {
                         onClick={() => handleEditar(solicitud)}
                         disabled={
                           solicitud.numAprobaciones > 0 && solicitud.estado ||
-                          solicitud.estado === true
+                          solicitud.estado == true
                         }
                       >
                         <span>Editar</span>

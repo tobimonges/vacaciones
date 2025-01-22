@@ -520,13 +520,11 @@ public class SolicitudService implements ISolicitudService {
             if (!esLiderDeSolicitud(solicitud, usuario)) {
                 throw new RuntimeException("Solo un líder asignado puede rechazar esta solicitud.");
             }
-            actualizarDiasVacacionesRechazado(solicitud);
             procesarRechazoSinComentario(solicitud, "Solicitud rechazada por un líder asignado.");
         } else if (solicitud.getNumeroAprobaciones() == 1) {
             if (!"TH".equals(rolUsuario) && !"GTH".equals(rolUsuario)) {
                 throw new RuntimeException("Solo un usuario con rol TH o GTH puede rechazar esta solicitud en esta etapa.");
             }
-            actualizarDiasVacacionesRechazado(solicitud);
             procesarRechazoSinComentario(solicitud, "Solicitud rechazada por Talento Humano (TH) o GTH.");
         } else if (Boolean.TRUE.equals(solicitud.getEstado()) && solicitud.getNumeroAprobaciones() == 2) {
             if (!"OPERACIONES".equals(rolUsuario)) {

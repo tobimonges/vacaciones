@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useNavigate } from "react-router-dom";
 import "./NuevaSolicitud.css";
 import "./SolicitudAuxiliar.css";
+import "./AdminDashboard.css";
 import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
@@ -37,7 +38,6 @@ function countValidDays(start, end, reservedDates = []) {
 }
 
 export default function NuevaSolicitud() {
-  const usuarioId = getUsuarioId();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [validDays, setValidDays] = useState(0);
@@ -48,7 +48,16 @@ export default function NuevaSolicitud() {
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [Usuarios, setUsuarios] = useState([]);
+  const [selectedUserName, setSelectedUserName] = useState(
+    "Seleccione un usuario"
+  );
+  const [filteredUsuarios, setFilteredUsuarios] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const usuarioId = selectedUserId;
+  const [filterText, setFilterText] = useState("");
   const userRole = getUserRole();
+  const userLiderId = getUsuarioId();
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
 
@@ -65,78 +74,106 @@ export default function NuevaSolicitud() {
   }, [mensaje]);
 
   useEffect(() => {
-    const fetchReservedDates = async () => {
+    const fetchUsuarios = async () => {
+      const token = localStorage.getItem("token");
+
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          //   setError("No se encontró un token. Inicia sesión nuevamente.");
-          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
-          setTipoMensaje("Error");
-          return;
-        }
-
-        const url = `http://localhost:8080/vacaciones/usuario/${usuarioId}`;
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const dates = response.data.flatMap((solicitud) => {
-          const start = dayjs(solicitud.fechaInicio);
-          const end = dayjs(solicitud.fechaFin);
-          const range = [];
-          let currentDate = start.clone();
-          while (
-            currentDate.isSame(end, "day") ||
-            currentDate.isBefore(end, "day")
-          ) {
-            range.push(currentDate.clone());
-            currentDate = currentDate.add(1, "day");
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/listarusuarios",
+          {
+            headers: { Authorization: `Bearer ${token}` },
           }
-          return range;
-        });
+        );
 
-        setReservedDates(dates);
+        console.log("Usuarios:", response.data); // Depuración
+        const funcionarios = response.data.filter((usuario) =>
+          usuario.rol.nombre.includes("FUNCIONARIO_FABRICA")
+        );
+
+        setUsuarios(funcionarios);
+        setFilteredUsuarios(funcionarios);
       } catch (err) {
-        console.error("Error al obtener fechas reservadas:", err);
-        // setError("No se pudo obtener la información de las solicitudes.");
-        setMensaje("No se pudo obtener la información de las solicitudes.");
-        setTipoMensaje("Error");
+        console.error("Error al obtener solicitudes:", err.message || err);
+        setError("No se pudieron cargar las solicitudes.");
       }
     };
 
-    fetchReservedDates();
-  }, [usuarioId]);
+    fetchUsuarios();
+  }, []);
 
+  // Efecto para obtener las fechas reservadas y días disponibles al seleccionar un usuario
   useEffect(() => {
-    const fetchDiasDisponibles = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          //    setError("No se encontró un token. Inicia sesión nuevamente.");
-          setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+    if (selectedUserId) {
+      const fetchReservedDates = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+            setTipoMensaje("Error");
+            return;
+          }
+
+          const url = `http://localhost:8080/vacaciones/usuario/${selectedUserId}`;
+          const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const dates = response.data.flatMap((solicitud) => {
+            const start = dayjs(solicitud.fechaInicio);
+            const end = dayjs(solicitud.fechaFin);
+            const range = [];
+            let currentDate = start.clone();
+            while (
+              currentDate.isSame(end, "day") ||
+              currentDate.isBefore(end, "day")
+            ) {
+              range.push(currentDate.clone());
+              currentDate = currentDate.add(1, "day");
+            }
+            return range;
+          });
+
+          setReservedDates(dates);
+        } catch (err) {
+          console.error("Error al obtener fechas reservadas:", err);
+          setMensaje("No se pudo obtener la información de las solicitudes.");
           setTipoMensaje("Error");
-          return;
         }
+      };
 
-        const url = `http://localhost:8080/vacaciones/diasdisponiblesid/${usuarioId}`;
-        const response = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const fetchDiasDisponibles = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            setMensaje("No se encontró un token. Inicia sesión nuevamente.");
+            setTipoMensaje("Error");
+            return;
+          }
 
-        setDiasVacacionesDisponibles(response.data);
-      } catch (err) {
-        console.error("Error al obtener días de vacaciones disponibles:", err);
-        //   setError("No se pudo obtener la información de días de vacaciones.");
-        setMensaje("No se pudo obtener la información de días de vacaciones.");
-        setTipoMensaje("Error");
-      }
-    };
+          const url = `http://localhost:8080/vacaciones/diasdisponiblesid/${selectedUserId}`;
+          const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
-    fetchDiasDisponibles();
-  }, [usuarioId]);
+          setDiasVacacionesDisponibles(response.data);
+        } catch (err) {
+          console.error(
+            "Error al obtener días de vacaciones disponibles:",
+            err
+          );
+          setMensaje(
+            "No se pudo obtener la información de días de vacaciones."
+          );
+          setTipoMensaje("Error");
+        }
+      };
 
+      fetchReservedDates();
+      fetchDiasDisponibles();
+    }
+  }, [selectedUserId]);
+
+  // Efecto para calcular los días válidos
   useEffect(() => {
     const days = countValidDays(startDate, endDate, reservedDates);
     setValidDays(days);
@@ -145,13 +182,20 @@ export default function NuevaSolicitud() {
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-      //  setWarning("No puedes seleccionar más días de los disponibles.");
       setMensaje("No puedes seleccionar más días de los disponibles.");
       setTipoMensaje("Warning");
     } else {
       setWarning("");
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
+
+  // Manejo de la selección del usuario
+  const handleUserSelection = (id, name) => {
+    setSelectedUserId(id); // Actualiza el ID del usuario seleccionado
+    setSelectedUserName(name); // Actualiza el nombre del usuario seleccionado
+    closeModal(); // Cierra el modal al seleccionar un usuario
+    console.log("Usuario seleccionado con ID:", id, "y nombre:", name); // Depuración
+  };
 
   const openModal = () => {
     setShowModal(true);
@@ -164,6 +208,24 @@ export default function NuevaSolicitud() {
 
   const handleUsers = () => {
     openModal(); // Abrir el modal al seleccionar usuario
+  };
+
+  const handleFilterChange = (e) => {
+    const searchText = e.target.value.toLowerCase();
+    setFilterText(searchText);
+
+    const filtered = Usuarios.filter((usuario) => {
+      const nroCedula = usuario.nroCedula.toString();
+      const fullName = `${usuario.nombre} ${usuario.apellido}`.toLowerCase();
+      const equipo = `${usuario.equipo.nombre}`.toLowerCase();
+      return (
+        nroCedula.includes(searchText) ||
+        fullName.includes(searchText) ||
+        equipo.includes(searchText)
+      );
+    });
+
+    setFilteredUsuarios(filtered);
   };
 
   const handleSubmit = async (e) => {
@@ -179,20 +241,17 @@ export default function NuevaSolicitud() {
     const solicitud = {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
-      liderIds: selectedLideres.filter((lider) => lider !== null), // Filtrar valores nulos
-      cantidadDias: validDays,
     };
 
     try {
       const token = localStorage.getItem("token");
-      const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
+      const url = `http://localhost:8080/vacaciones/solicitudes/auxiliar?usuarioId=${usuarioId}&solicitanteId=${userLiderId}`; // Incluye usuarioId y solicitanteId como parámetros
       await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      //   alert("Carga de solicitud exitosa");
       setMensaje("Carga de solicitud exitosa");
       setTipoMensaje("Success");
       setTimeout(() => {
@@ -202,7 +261,6 @@ export default function NuevaSolicitud() {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
-        //    setError("Error al crear la solicitud.");
         setMensaje("Error al crear la solicitud.");
         setTipoMensaje("Error");
       }
@@ -244,7 +302,7 @@ export default function NuevaSolicitud() {
                     alt="Usuario"
                     className="user-image"
                   />
-                  <span className="user-name">Seleccione un usuario</span>
+                  <span className="user-name">{selectedUserName}</span>
                 </div>
               </div>
             </div>
@@ -291,15 +349,15 @@ export default function NuevaSolicitud() {
             </div>
 
             <div className="buttons">
-              <button className="btn" onClick={() => navigate("/Home")}>
-                <span>Volver a Home</span>
-              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
                 disabled={validDays > diasVacacionesDisponibles}
               >
                 <span>Crear Solicitud</span>
+              </button>
+              <button className="btn" onClick={() => navigate("/Home")}>
+                <span>Volver a Home</span>
               </button>
             </div>
           </form>
@@ -309,14 +367,67 @@ export default function NuevaSolicitud() {
       {showModal && (
         <div className="modalAuxiliar">
           <div className="modalAuxiliar-content">
-            <h4>Selección de Usuario</h4>
-            <p>¿Está seguro de realizar esta selección?</p>
+            <div className="header-title-container">
+              <div className="space"></div>
+              <h4>Seleccion de Usuarios</h4>
+              <div className="filter-container">
+                <label htmlFor="filter-input" className="filter-label">
+                  Buscar:
+                </label>
+                <input
+                  id="filter-input"
+                  type="text"
+                  placeholder="Ingrese un campo"
+                  value={filterText}
+                  onChange={handleFilterChange}
+                  className="inputCreate"
+                />
+              </div>
+            </div>
+            <div className="content-section">
+              {error ? (
+                <p className="error">{error}</p>
+              ) : Usuarios.length === 0 ? (
+                <p>No hay usuarios que coincidan con el filtro.</p>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Cédula</th>
+                      <th>Usuario</th>
+                      <th>Equipo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsuarios.map((usuario) => (
+                      <tr
+                        key={usuario.nroCedula}
+                        onClick={() =>
+                          handleUserSelection(
+                            usuario.id,
+                            `${usuario.nombre} ${usuario.apellido}`
+                          )
+                        } // Asume que "id" es la propiedad con el identificador único
+                        style={{ cursor: "pointer" }} // Cambia el cursor para indicar que es clickeable
+                      >
+                        <td>
+                          {new Intl.NumberFormat("es-ES").format(
+                            usuario.nroCedula
+                          )}
+                        </td>
+                        <td>{usuario.nombre + " " + usuario.apellido}</td>
+                        <td>{usuario.equipo.nombre}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <br />
+            <br />
             <div className="modalAuxiliar-buttons">
-              <button onClick={closeModal} className="btn-confirm">
-                Sí
-              </button>
               <button onClick={closeModal} className="btn-cancel">
-                No
+                <span>Volver a Home</span>
               </button>
             </div>
           </div>
