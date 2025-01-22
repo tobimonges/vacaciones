@@ -11,6 +11,7 @@ const SidebarButtons = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isHomeTH = location.pathname === "/HomeTH";
+  const isHome = location.pathname === "/Home";
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [equipos, setEquipos] = useState([]);
 
@@ -43,9 +44,11 @@ const SidebarButtons = () => {
   return (
     <div className="sidebar-buttons">
       {/* Botón Home */}
-      <button className="sidebar-button" onClick={() => navigate("/Home")}>
-        <span className="sidebar-text-focus">Home</span>
-      </button>
+      {!isHome && (
+        <button className="sidebar-button" onClick={() => navigate("/Home")}>
+          <span className="sidebar-text-focus">Home</span>
+        </button>
+      )}
 
       {/* Botón para Solicitar */}
       {!isHomeTH && (
