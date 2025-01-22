@@ -237,7 +237,9 @@ public class UsuarioController {
 
             // Encriptar y actualizar la contraseña
             usuario.setContrasena(passwordEncoder.encode(newPassword));
+            usuario.setRequiereCambioContrasena(false);
             usuarioRepository.save(usuario);
+
 
             // Invalida el token después del uso
             jwtBlacklist.addToBlacklist(token);
