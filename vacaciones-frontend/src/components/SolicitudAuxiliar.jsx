@@ -49,11 +49,15 @@ export default function NuevaSolicitud() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [Usuarios, setUsuarios] = useState([]);
+  const [selectedUserName, setSelectedUserName] = useState(
+    "Seleccione un usuario"
+  );
   const [filteredUsuarios, setFilteredUsuarios] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const usuarioId = selectedUserId;
   const [filterText, setFilterText] = useState("");
   const userRole = getUserRole();
+  const userLiderId = getUsuarioId();
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
 
@@ -180,10 +184,11 @@ export default function NuevaSolicitud() {
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
 
   // Manejo de la selección del usuario
-  const handleUserSelection = (id) => {
-    setSelectedUserId(id); // Actualiza el estado con el ID del usuario seleccionado
+  const handleUserSelection = (id, name) => {
+    setSelectedUserId(id); // Actualiza el ID del usuario seleccionado
+    setSelectedUserName(name); // Actualiza el nombre del usuario seleccionado
     closeModal(); // Cierra el modal al seleccionar un usuario
-    console.log("Usuario seleccionado con ID:", id); // Depuración
+    console.log("Usuario seleccionado con ID:", id, "y nombre:", name); // Depuración
   };
 
   const openModal = () => {
@@ -230,20 +235,17 @@ export default function NuevaSolicitud() {
     const solicitud = {
       fechaInicio: startDate.format("YYYY-MM-DD"),
       fechaFin: endDate.format("YYYY-MM-DD"),
-      liderIds: selectedLideres.filter((lider) => lider !== null), // Filtrar valores nulos
-      cantidadDias: validDays,
     };
 
     try {
       const token = localStorage.getItem("token");
-      const url = `http://localhost:8080/vacaciones/solicitudes/dto/${usuarioId}`;
+      const url = `http://localhost:8080/vacaciones/solicitudes/auxiliar?usuarioId=${usuarioId}&solicitanteId=${userLiderId}`; // Incluye usuarioId y solicitanteId como parámetros
       await axios.post(url, solicitud, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      //   alert("Carga de solicitud exitosa");
       setMensaje("Carga de solicitud exitosa");
       setTipoMensaje("Success");
       setTimeout(() => {
@@ -253,7 +255,6 @@ export default function NuevaSolicitud() {
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
-        //    setError("Error al crear la solicitud.");
         setMensaje("Error al crear la solicitud.");
         setTipoMensaje("Error");
       }
@@ -295,7 +296,7 @@ export default function NuevaSolicitud() {
                     alt="Usuario"
                     className="user-image"
                   />
-                  <span className="user-name">Seleccione un usuario</span>
+                  <span className="user-name">{selectedUserName}</span>
                 </div>
               </div>
             </div>
@@ -395,7 +396,12 @@ export default function NuevaSolicitud() {
                     {filteredUsuarios.map((usuario) => (
                       <tr
                         key={usuario.nroCedula}
-                        onClick={() => handleUserSelection(usuario.id)} // Asume que "id" es la propiedad con el identificador único
+                        onClick={() =>
+                          handleUserSelection(
+                            usuario.id,
+                            `${usuario.nombre} ${usuario.apellido}`
+                          )
+                        } // Asume que "id" es la propiedad con el identificador único
                         style={{ cursor: "pointer" }} // Cambia el cursor para indicar que es clickeable
                       >
                         <td>
