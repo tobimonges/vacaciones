@@ -63,8 +63,8 @@
 .entradatextoRC {
   position: relative;
   top: -10px;
-  margin-bottom: px;
-  width: 300px;
+  margin-right: -10px;
+  width: 280px;
   height: 40px;
   flex: 1;
   padding: 9px;
@@ -83,8 +83,7 @@
 .botoncitoRC {
   position: absolute;
   bottom: 20px;
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  width: 50%;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;  width: 50%;
   padding: 10px;
   background-color: #fdca40;
   color: black;
@@ -94,7 +93,7 @@
   z-index: 10;
   font-size: 16px;
   margin-top: 95px;
-  margin-left: 75px;
+  margin-left: 80px;
   display: block;
   transition: all 0.4s ease;
 }
