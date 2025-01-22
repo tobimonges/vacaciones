@@ -1,0 +1,89 @@
+/* Contenedor del preloader con fondo semitransparente */
+#logogiratorio {
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+   /* background-color: rgba(255, 255, 255, 0.99); */
+   background-color: transparent;
+    /* Fondo translúcido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    /* Opacidad inicial */
+    transition: opacity 0.7s ease;
+    /* Transición suave de opacidad */
+}
+
+/* Estado inicial: el logo crece desde un tamaño menor */
+#logogiratorio.fade-in .logo-rotando {
+    transform: scale(0) rotate(0deg);
+    /* Comienza desde tamaño 0 */
+    animation: scale-up 1.5s linear infinite, scale-up 0.7s ease forwards;
+    filter: brightness(0) invert(1); /* Convierte a blanco */
+}
+
+/* Estado final: desvanecer y alejar el logo */
+#logogiratorio.fade-out {
+    opacity: 0;
+    /* Desvanecimiento al desaparecer */
+    transition: opacity 0.4s ease, transform 0.4s ease; /*jkhljhjhjklhhhjkhjlhjlhjjhlkjkjhkjhk*/
+    /* Transición suave */
+    filter: brightness(0) invert(1); /* Convierte a blanco */
+}
+
+.logo-rotando {
+    width: 200px;
+    /* Ajusta el tamaño inicial */
+    height: 200px;
+    animation: spin 1.5s linear infinite;
+    /* Rotación constante */
+    transition: transform 0.7s ease;
+    /* Transición de escala */
+
+}
+
+#logogiratorio.fade-out .logo-rotando {
+    transform: scale(0.5) rotate(360deg);
+    /* Logo alejándose mientras sigue rotando */
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes scale-up {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+/* Efecto de entrada del contenido */
+.mainlogogiratorio {
+    opacity: 0;
+    /* Inicialmente invisible */
+    transform: translateY(30px);
+    /* Desplazamiento inicial */
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    /* Transición suave */
+}
+
+.mainlogogiratorio.show-content {
+    opacity: 1;
+    transform: translateY(0);
+    /* A posición normal */
+}
