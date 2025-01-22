@@ -1,4 +1,3 @@
-// 📚 Importaciones
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
@@ -12,7 +11,7 @@ import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import { Link } from "react-router-dom";
 
-// 🌍 Localización de fechas
+//Localización de fechas
 const locales = { es: esLocale };
 
 const localizer = dateFnsLocalizer({
@@ -23,7 +22,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// 🏠 **Componente Principal**
+// Componente Principal
 const HomeTh = () => {
 
   // 🧠 Estados
@@ -40,7 +39,7 @@ const HomeTh = () => {
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [pendingCount, setPendingCount] = useState(0);
 
-  // 🔄 Manejo de clic en "more"
+  //Manejo de clic en "more"
   const handleShowMore = (eventsOnDay, date) => {
     setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
     setModalOpen(true); // Abre el modal
@@ -126,7 +125,7 @@ const HomeTh = () => {
   }, [navigate]);
 
 
-  // 📥 Obtener equipos
+  //Obtener equipos
   useEffect(() => {
     const fetchEquipos = async () => {
       try {
@@ -144,7 +143,7 @@ const HomeTh = () => {
     fetchEquipos();
   }, []);
 
-  // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
+  //Obtener Solicitudes de Vacaciones y Feriados
   useEffect(() => {
     const fetchVacationData = async () => {
       const usuarioId = getUsuarioId();
@@ -240,7 +239,7 @@ const HomeTh = () => {
     localStorage.removeItem("token"); // Eliminar el token de autenticación
     navigate("/"); // Redirigir a la página de inicio de sesión
   };
-  // 🎨 **Personalizar colores de días**
+  //Personalizar colores de días
   const dayPropGetter = (date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
@@ -254,7 +253,7 @@ const HomeTh = () => {
     return {};
   };
 
-  // 🎨 **Personalizar colores de eventos**
+  //Personalizar colores de eventos
   const eventStyleGetter = (event) => {
     switch (event.type) {
       case "aprobado":
@@ -309,7 +308,7 @@ const HomeTh = () => {
   });
 
 
-  // 🎨 **Renderizado del Componente**
+  //Renderizado del Componente
   return (
       <div className="container homeTH-container">
 
@@ -450,7 +449,7 @@ const HomeTh = () => {
 
 
 
-        { /* 📚 **Área de contenido** */}
+        { /* **Área de contenido** */}
         <div className="content-area">
         <Preloader duration={650} />
 
@@ -461,7 +460,7 @@ const HomeTh = () => {
             </div>
           </div>
 
-          { /* 📚 **Contenido principal** */}
+          { /* **Contenido principal** */}
           <div className="main">
             <div className="main-content">
 
@@ -472,7 +471,7 @@ const HomeTh = () => {
 
               <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
 
-                {/* 🛠️ Checkbox con filtros*/}
+                {/*  Checkbox con filtros*/}
                 <div className="checkbox-container">
                   <div className="custom-checkbox">
                     <label>
@@ -507,7 +506,7 @@ const HomeTh = () => {
 
 
 
-                {/* 🚨 Mensajes de Error */}
+                {/* Mensajes de Error */}
                 {error && <p className="calendar-error-message">{error}</p>}
                 <div className="calendar-big-container">
                   <Calendar
@@ -524,6 +523,8 @@ const HomeTh = () => {
                         week: "Semana",
                         day: "Día",
                         agenda: "Agenda",
+                        showMore: (count) => `+${count} más`, // Traducción de "More"
+
                       }}
                       views={{ month: true }} // Mantener solo la vista de mes
                       eventPropGetter={eventStyleGetter}
@@ -538,7 +539,7 @@ const HomeTh = () => {
                   />
                 </div>
 
-                {/* 🖍️ Leyenda de Colores */}
+                {/*  Leyenda de Colores */}
                 <div className="calendar-legend">
                   <p>
                     <span
@@ -590,7 +591,7 @@ const HomeTh = () => {
                   </p>
                 </div>
 
-                {/* 🔲 Modal para Solicitudes del Día */}
+                {/* Modal para Solicitudes del Día */}
                 {modalOpen && (
                     <div className="modal-overlay">
                       <div className="modal-contentTh">
