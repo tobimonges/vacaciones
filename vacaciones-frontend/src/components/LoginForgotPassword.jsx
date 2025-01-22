@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Login.css"; //para reutilizar algunos estilos
 import "./LoginForgotPassword.css";
 import { useNavigate } from "react-router-dom";
-// import Preloader from "./Preloader";
-import Logogiratorio from "./logogiratorio";
+import Preloader from "./Preloader";
 import Logo from "./Logo";
 
 function ForgotPassword({ onBackToLogin }) {
@@ -19,13 +18,13 @@ function ForgotPassword({ onBackToLogin }) {
 
   useEffect(() => {
     // Activa la animación cuando se monta el componente
-    const Logogiratoriotimeout = setTimeout(() => {
+    const preloadertimeout = setTimeout(() => {
       setShowContent(true);
       setIsAnimating(true);
-    }, 800); // 600 milisegundos = 0.6 segundos
+    }, 809); // 600 milisegundos = 0.6 segundos
 
     // Limpia el timeout si el componente se desmonta antes de que se ejecute
-    return () => clearTimeout(Logogiratoriotimeout);
+    return () => clearTimeout(preloadertimeout);
   }, []);
 
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -80,7 +79,7 @@ function ForgotPassword({ onBackToLogin }) {
 
   return (
     <div className="container loginFPContainer">
-       {!showContent && <Logogiratorio duration={650}/>}
+       {!showContent && <Preloader duration={650}/>}
        {showContent && (
         <>
       {mensaje && (
