@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Login.css"; //para reutilizar algunos estilos
 import "./LoginForgotPassword.css";
 import { useNavigate } from "react-router-dom";
-import Preloader from "./Preloader";
+// import Preloader from "./Preloader";
+import Logogiratorio from "./logogiratorio";
 import Logo from "./Logo";
 
 function ForgotPassword({ onBackToLogin }) {
@@ -79,7 +80,7 @@ function ForgotPassword({ onBackToLogin }) {
 
   return (
     <div className="container loginFPContainer">
-       {!showContent && <Preloader duration={650}/>}
+       {!showContent && <Logogiratorio duration={650}/>}
        {showContent && (
         <>
       {mensaje && (
