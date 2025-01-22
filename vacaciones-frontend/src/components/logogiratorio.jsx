@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./logogiratorio.css";
 import logo from "../../public/roshkaicon.ico"; // Ajusta la ruta según tu estructura
 
-const Logogiratorio = ({ duration = 2000, onEnd }) => {
+const Preloader = ({ duration = 2000, onEnd }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isFading, setIsFading] = useState(false);
 
@@ -31,7 +31,7 @@ const Logogiratorio = ({ duration = 2000, onEnd }) => {
   );
 };
 
-export default Logogiratorio;
+export default logogiratorio;
 
 
 
