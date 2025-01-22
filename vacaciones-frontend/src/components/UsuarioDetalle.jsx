@@ -371,7 +371,6 @@ function UsuarioDetalle() {
                       </div>
                     ))}
 
-                    <h3>‎ </h3>
                     <button type="submit" className="boton">
                       Guardar Cambios
                     </button>
