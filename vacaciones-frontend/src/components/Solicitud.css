@@ -110,6 +110,16 @@ button:hover {
   transform: translateY(-2px);
 }
 
+button:disabled {
+  background-color: #c0a354;
+  color: #464646;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transition: none;
+  margin-right: 10px;
+}
+
+
 .volver-home {
   margin-top: 1rem;
   align-self: center;
