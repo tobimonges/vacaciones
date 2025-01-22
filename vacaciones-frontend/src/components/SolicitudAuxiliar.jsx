@@ -47,6 +47,7 @@ export default function NuevaSolicitud() {
   const [error, setError] = useState("");
   const [warning, setWarning] = useState("");
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
   const userRole = getUserRole();
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
@@ -152,7 +153,18 @@ export default function NuevaSolicitud() {
     }
   }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
 
-  const handleUsers = (e) => {};
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  // Función para cerrar el modal
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handleUsers = () => {
+    openModal(); // Abrir el modal al seleccionar usuario
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -293,6 +305,23 @@ export default function NuevaSolicitud() {
           </form>
         </div>
       </div>
+
+      {showModal && (
+        <div className="modalAuxiliar">
+          <div className="modalAuxiliar-content">
+            <h4>Selección de Usuario</h4>
+            <p>¿Está seguro de realizar esta selección?</p>
+            <div className="modalAuxiliar-buttons">
+              <button onClick={closeModal} className="btn-confirm">
+                Sí
+              </button>
+              <button onClick={closeModal} className="btn-cancel">
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </LocalizationProvider>
   );
 }
