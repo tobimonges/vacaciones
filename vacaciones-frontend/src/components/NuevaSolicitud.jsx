@@ -464,9 +464,6 @@ export default function NuevaSolicitud() {
             )}
 
             <div className="buttons">
-              <button className="btn" onClick={() => navigate("/Home")}>
-                <span>Volver a Home</span>
-              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
@@ -475,6 +472,9 @@ export default function NuevaSolicitud() {
                 }
               >
                 <span>Crear Solicitud</span>
+              </button>
+              <button className="btn" onClick={() => navigate("/Home")}>
+                <span>Volver a Home</span>
               </button>
             </div>
           </form>

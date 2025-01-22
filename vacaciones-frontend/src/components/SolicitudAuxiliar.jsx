@@ -349,15 +349,15 @@ export default function NuevaSolicitud() {
             </div>
 
             <div className="buttons">
-              <button className="btn" onClick={() => navigate("/Home")}>
-                <span>Volver a Home</span>
-              </button>
               <button
                 type="submit"
                 className="btn btn-primary"
                 disabled={validDays > diasVacacionesDisponibles}
               >
                 <span>Crear Solicitud</span>
+              </button>
+              <button className="btn" onClick={() => navigate("/Home")}>
+                <span>Volver a Home</span>
               </button>
             </div>
           </form>
