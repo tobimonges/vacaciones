@@ -68,14 +68,14 @@ const SidebarButtons = () => {
       )}
 
       {/* Botón para Gestión de Solicitudes (usuarios con rol permitido) */}
-      {isUserAllowed() && (
+      {isUserAllowed() && !isHomeTH && (
         <button className="sidebar-button" onClick={() => navigate("/HomeTH")}>
           <span>Gestión de Solicitudes</span>
         </button>
       )}
 
       {/* Botón Solicitud Auxiliar (solo para usuarios 'TH' en la página HomeTH) */}
-      {userRole === "TH" && isHomeTH && (
+      {isUserAllowed() && isHomeTH && (
         <button
           className="sidebar-button"
           onClick={() => navigate("/SolicitudAuxiliar")}
@@ -163,7 +163,7 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {userRole === "TH" && isHomeTH && (
+      {isUserAllowed() && isHomeTH && (
         <select
           className="sidebar-button sidebar-button-homeTH"
           value={equipoSeleccionado}
