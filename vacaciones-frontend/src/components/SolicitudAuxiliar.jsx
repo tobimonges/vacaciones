@@ -203,7 +203,7 @@ export default function NuevaSolicitud() {
       <div className="nueva-solicitud-container">
         <div className="DatePicker">
           <Logo />
-          <h2>Nueva Solicitud</h2>
+          <h2>Solicitud Auxiliar</h2>
           {mensaje && (
             <div className={`MensajePopuppNS ${tipoMensaje}`}>
               <p>{mensaje}</p>
@@ -225,8 +225,18 @@ export default function NuevaSolicitud() {
           <form onSubmit={handleSubmit}>
             <div className="mb-3-auxiliar">
               <p>Seleccionar usuario:</p>
-              <div className="userSelector-container"></div>
+              <div className="userSelector-container">
+                <div className="user-item" onClick={handleUsers}>
+                  <img
+                    src="./public/avatar.svg"
+                    alt="Usuario"
+                    className="user-image"
+                  />
+                  <span className="user-name">Seleccione un usuario</span>
+                </div>
+              </div>
             </div>
+
             <div className="mb-3">
               <DatePicker
                 label="Fecha de inicio"
