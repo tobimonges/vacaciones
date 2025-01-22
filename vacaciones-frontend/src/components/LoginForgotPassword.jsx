@@ -11,18 +11,20 @@ function ForgotPassword({ onBackToLogin }) {
   const [mensajeError, setMensajeError] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [showContent , setShowContent] = useState(false);
   const navigate = useNavigate();
 
 
 
   useEffect(() => {
     // Activa la animación cuando se monta el componente
-    const timeout = setTimeout(() => {
+    const preloadertimeout = setTimeout(() => {
+      setShowContent(true);
       setIsAnimating(true);
-    }, 655); // 600 milisegundos = 0.6 segundos
+    }, 809); // 600 milisegundos = 0.6 segundos
 
     // Limpia el timeout si el componente se desmonta antes de que se ejecute
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(preloadertimeout);
   }, []);
 
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -77,7 +79,9 @@ function ForgotPassword({ onBackToLogin }) {
 
   return (
     <div className="container loginFPContainer">
-      <Preloader duration={650} />
+       {!showContent && <Preloader duration={650}/>}
+       {showContent && (
+        <>
       {mensaje && (
         <div className="mensajeContainer">
           <p className="mensaje">{mensaje}</p>
@@ -124,6 +128,8 @@ function ForgotPassword({ onBackToLogin }) {
           </div>
         </form>
       </div>
+      </>
+       )}
     </div>
   );
 }
