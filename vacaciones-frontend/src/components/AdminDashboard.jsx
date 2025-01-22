@@ -478,7 +478,8 @@ const AdminDashboard = () => {
                                   </button>
                                 </>
                               ) : getEstadoSolicitud(solicitud) ===
-                                "Pendiente" ? (
+                                "Pendiente" || getEstadoSolicitud(solicitud) ===
+                              "Falta aprobación del Líder" ? (
                                 // Mostrar botones Aprobar y Rechazar si el estado está en "Pendiente"
                                 <>
                                   <button
