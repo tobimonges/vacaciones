@@ -329,6 +329,15 @@ const HomeTh = () => {
                 <button className="sidebar-button" onClick={() => navigate("/Home")}>
                   <span className="sidebar-text-focus">Home</span>
                 </button>
+                {(userRole === "TH" || userRole === "LIDER" || userRole === "OPERACIONES" || userRole === "DIRECTORIO") && (
+                    <button
+                        className="sidebar-button"
+                        onClick={() => navigate(`/SolicitudAuxiliar`)}
+                    >
+                      <span>Solicitud Auxiliar</span>
+                    </button>
+                )}
+
                 {userRole === "LIDER" ? (
                     <button
                         className="sidebar-button"
@@ -591,7 +600,7 @@ const HomeTh = () => {
                               <ul>
                                 {modalEvents.map((event, index) => (
                                     <li key={index}>
-                                      <strong>{event.title}</strong> - {event.type} <br />
+                                      <strong>{event.title}</strong>  <br /> <br />
                                       <span
                                           style={{
                                             color: "#000000",
@@ -618,7 +627,7 @@ const HomeTh = () => {
                                                   ? "Feriado"
                                                   : ""}
                                 </span>
-                                      <br />
+                                      <br /> <br />
                                       <span>
                                   Desde: {event.start.toLocaleDateString()} hasta:{" "}
                                         {event.end.toLocaleDateString()}
