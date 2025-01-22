@@ -141,7 +141,7 @@ function UsuarioDetalle() {
       };
 
       await axios.put(
-        "http://localhost:8080/vacaciones/modificar/${selectedUserId}",
+        `http://localhost:8080/vacaciones/modificar/${selectedUserId}`,
         updatedData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
