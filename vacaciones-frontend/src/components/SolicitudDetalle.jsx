@@ -138,6 +138,11 @@ export default function SolicitudDetalle() {
 
         const usuarios = response.data;
 
+        if (userRole === "DIRECTORIO") {
+          setLideres(null); // Configurar lideres como null
+          return; // Finalizar la función
+        }
+
         // Validar usuarios según el rol del usuario logueado
         let usuariosFiltrados = [];
 
@@ -173,11 +178,6 @@ export default function SolicitudDetalle() {
               ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
             );
             break;
-
-          case "DIRECTORIO":
-            throw new Error(
-              "El rol DIRECTORIO no selecciona un líder. Por favor, revisa tu configuración."
-            );
 
           default:
             throw new Error(
@@ -257,6 +257,10 @@ export default function SolicitudDetalle() {
   };
 
   const handleEditar = (solicitud) => {
+    if (solicitud.numeroaprobaciones > 0 && solicitud.estado) {
+      alert("Esta solicitud no se puede editar porque ya tiene aprobaciones y está confirmada.");
+      return;
+    }
     setEditando(solicitud.id);
     setNuevaFechaInicio(dayjs(solicitud.fechaInicio));
     setNuevaFechaFin(dayjs(solicitud.fechaFin));
@@ -287,6 +291,7 @@ export default function SolicitudDetalle() {
       const actualizarSolicitud = {
         fechaInicio: nuevaFechaInicio.format("YYYY-MM-DD"),
         fechaFin: nuevaFechaFin.format("YYYY-MM-DD"),
+        liderIds: selectedLideres.filter((lider) => lider !== null),
         cantidadDias: cantidadDias
       };
       console.log(actualizarSolicitud);
@@ -329,11 +334,6 @@ export default function SolicitudDetalle() {
   };
 
   const handleEliminar = async (solicitudId) => {
-    const confirm = window.confirm(
-      "¿Estás seguro de que deseas eliminar esta solicitud?"
-    );
-    if (!confirm) return;
-
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
@@ -405,8 +405,8 @@ export default function SolicitudDetalle() {
               onChange={(e) => setFiltro(e.target.value)}
             >
               <option value="Todas"> Todas </option>
-              <option value="Confirmada">Confirmadas</option>
               <option value="Pendiente">Pendientes</option>
+              <option value="Confirmada">Confirmadas</option>
             </select>
           )}
           <ul>
@@ -438,51 +438,53 @@ export default function SolicitudDetalle() {
                         renderInput={(params) => <input {...params} />}
                       />
                     </div>
-                    {selectedLideres.map((selectedLider, index) => (
-                      <div
-                        className={`mb-3-lideresDetalle ${
-                          index !== selectedLideres.length - 1 ||
-                          selectedLideres.length === 3
-                            ? "flex-column"
-                            : ""
-                        }`}
-                        key={index}
-                      >
-                        <select
-                          value={selectedLider || ""}
-                          onChange={(e) => handleLiderChange(e.target.value, index)}
-                          className="select-usuariosDetalle"
+                    {userRole !== "DIRECTORIO" &&
+                      selectedLideres.map((selectedLider, index) => (
+                        <div
+                          className={`mb-3-lideresDetalle ${
+                            index !== selectedLideres.length - 1 ||
+                            selectedLideres.length === 3
+                              ? "flex-column"
+                              : ""
+                          }`}
+                          key={index}
                         >
-                          <option value="" disabled>
-                            Selecciona un líder
-                          </option>
-                          {lideres
-                            .filter(
-                              (lider) =>
-                                !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
-                                selectedLider === lider.id // Mantener el líder previamente seleccionado
-                            )
-                            .map((lider) => (
-                              <option key={lider.id} value={lider.id}>
-                                {lider.nombre} {lider.apellido}
-                              </option>
-                            ))}
-                        </select>
-                        {index === selectedLideres.length - 1 &&
-                          selectedLideres.length < 3 && (
-                            <div 
-                              className="imagenBotonMasDetalle"
-                              onClick={handleAddLiderSelector}>
-                              <img
-                                src="/agregar.svg"
-                                alt="Añadir líder"
-                                title="Añadir líder"
-                                className="imagenBotonMasDetalle-img"
-                              />
-                            </div>
-                          )}
-                      </div>
-                    ))}
+                          <select
+                            value={selectedLider || ""}
+                            onChange={(e) => handleLiderChange(e.target.value, index)}
+                            className="select-usuariosDetalle"
+                          >
+                            <option value="" disabled>
+                              Selecciona un líder
+                            </option>
+                            {lideres
+                              .filter(
+                                (lider) =>
+                                  !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                                  selectedLider === lider.id // Mantener el líder previamente seleccionado
+                              )
+                              .map((lider) => (
+                                <option key={lider.id} value={lider.id}>
+                                  {lider.nombre} {lider.apellido}
+                                </option>
+                              ))}
+                          </select>
+                          {index === selectedLideres.length - 1 &&
+                            selectedLideres.length < 3 && (
+                              <div 
+                                className="imagenBotonMasDetalle"
+                                onClick={handleAddLiderSelector}>
+                                <img
+                                  src="/agregar.svg"
+                                  alt="Añadir líder"
+                                  title="Añadir líder"
+                                  className="imagenBotonMasDetalle-img"
+                                />
+                              </div>
+                            )}
+                        </div>
+                      ))}
+                    
                     <div className="buttons">
                       <button onClick={() => handleGuardar(solicitud.id)}>
                         <span>Guardar</span>
@@ -512,7 +514,7 @@ export default function SolicitudDetalle() {
                       <div className="columna">
                         <p>
                           <strong>Estado:</strong>{" "}
-                          {solicitud.estado ? "Confirmada" : "Pendiente"}
+                          {solicitud.estado ? "Confirmada" : "Pendiente" }
                         </p>
                         <p>
                           <strong>Líderes:</strong>{" "}
@@ -530,12 +532,20 @@ export default function SolicitudDetalle() {
                       </div>
                     </div>
                     <div className="buttons">
-                      <button onClick={() => handleEditar(solicitud)}>
+                      <button 
+                        onClick={() => handleEditar(solicitud)}
+                        disabled={
+                          solicitud.numAprobaciones > 0 && solicitud.estado ||
+                          solicitud.estado === true
+                        }
+                      >
                         <span>Editar</span>
                         </button>
+
                       <button
                         className="delete"
                         onClick={() => handleEliminar(solicitud.id)}
+                        disabled={solicitud.estado !== false}
                       >
                         <span>Eliminar</span>
                       </button>
