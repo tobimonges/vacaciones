@@ -126,36 +126,14 @@ const AdminDashboard = () => {
     const userId = getUsuarioId();
 
     try {
-      const { data: usuario } = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // Si el comentario está vacío, asignar "Rechazado por <nombre del usuario>"
-      const comentarioFinal = comentario.trim()
-        ? comentario.trim()
-        : `Rechazado por ${usuario.nombre}`;
       await axios.put(
-        `http://localhost:8080/vacaciones/${id}/rechazar?usuarioId=${userId}`,
-        { comentario: comentarioFinal },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          `http://localhost:8080/vacaciones/${id}/rechazar?usuarioId=${userId}`, // URL con parámetros
+          {}, // Body vacío ya que no estás enviando datos en el cuerpo
+          {
+            headers: { Authorization: `Bearer ${token}` }, // Headers correctamente colocados
+          }
       );
       alert("Solicitud rechazada con éxito.");
-      setSolicitudes((prev) =>
-        prev.map((solicitud) =>
-          solicitud.id === id
-            ? {
-                ...solicitud,
-                estado: false,
-                rechazado: true,
-                numeroAprobaciones: 0,
-              }
-            : solicitud
-        )
-      );
       setShowConfirmModal(false);
       navigate(0); // Recargar la página actual
     } catch (err) {
