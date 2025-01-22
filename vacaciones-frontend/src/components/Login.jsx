@@ -41,10 +41,6 @@ function Login() {
           password: password,
         }
       );
-      if(respuesta.data.requiere_cambio_contrasena){
-        navigate("/reset-password");
-        return;
-      }
       const token = respuesta.data;
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
@@ -53,6 +49,14 @@ function Login() {
         navigate("/Home");
       }, 200);
     } catch (error) {
+      console.log(error.response);
+      if(error.response.data.message === "Redirigir a cambio de contraseña") {
+        setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
+        setTimeout(() => {
+          navigate(error.response.data.redirect);
+        }, 2500);
+        return;
+      }
       console.error("Error al iniciar sesión", error);
       setPassword("");
       setError(true);
