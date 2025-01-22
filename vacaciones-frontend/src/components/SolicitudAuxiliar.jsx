@@ -84,8 +84,14 @@ export default function NuevaSolicitud() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setUsuarios(response.data);
-        setFilteredUsuarios(response.data);
+
+        console.log("Usuarios:", response.data); // Depuración
+        const funcionarios = response.data.filter((usuario) =>
+          usuario.rol.nombre.includes("FUNCIONARIO_FABRICA")
+        );
+
+        setUsuarios(funcionarios);
+        setFilteredUsuarios(funcionarios);
       } catch (err) {
         console.error("Error al obtener solicitudes:", err.message || err);
         setError("No se pudieron cargar las solicitudes.");
