@@ -163,7 +163,7 @@ function CrearUsuario() {
       >
         <NavigationBar onLogout={handleLogout} />
         <h2 className="headerCreate">Crear Usuario</h2>
-        <form className="formCreate" onSubmit={handleSubmit}>
+        <form className="formCreateP" onSubmit={handleSubmit}>
           {/* Columna izquierda */}
           <div className="formColumn">
             {[
