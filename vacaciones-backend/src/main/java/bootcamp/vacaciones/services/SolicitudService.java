@@ -99,7 +99,7 @@ public class SolicitudService implements ISolicitudService {
                 usuario.getId()
         );
 
-        int diasDisponibles = usuario.getDiasVacaciones();
+        int diasDisponibles = usuario.getDiasVacaciones() + usuario.getDiasVacacionesRestante();
         if (cantidadDias > diasDisponibles) {
             throw new IllegalArgumentException("No tienes suficientes días de vacaciones disponibles.");
         }
@@ -388,7 +388,7 @@ public class SolicitudService implements ISolicitudService {
 
                 UsuarioModel usuario = solicitud.getUsuario();
 
-                int diasDisponibles = usuario.getDiasVacaciones();
+                int diasDisponibles = usuario.getDiasVacaciones()+usuario.getDiasVacacionesRestante();
                 int cantidadDias = solicitud.getCantidadDias();
 
                 if (diasDisponibles == 0) {
