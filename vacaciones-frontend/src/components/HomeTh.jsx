@@ -60,19 +60,19 @@ const HomeTh = () => {
         }
 
         const response = await axios.get(
-            "http://localhost:8080/vacaciones/solicitudes",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+          "http://localhost:8080/vacaciones/solicitudes",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const requests = response.data;
 
         // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
         const pendingRequests = requests.filter(
-            (request) =>
-                request.numeroAprobaciones === 0 && // Solicitudes pendientes
-                request.lideres.some((lider) => lider.id === parseInt(userId)) // Usuario como líder
+          (request) =>
+            request.numeroAprobaciones === 0 && // Solicitudes pendientes
+            request.lideres.some((lider) => lider.id === parseInt(userId)) // Usuario como líder
         );
 
         setPendingCount(pendingRequests.length);
@@ -133,7 +133,6 @@ const HomeTh = () => {
 
     fetchUserData();
   }, [navigate]);
-
 
   // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
@@ -306,7 +305,6 @@ const HomeTh = () => {
     return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
   });
 
-
   //Renderizado del Componente
   return (
     <div className="container homeTH-container">
@@ -315,8 +313,8 @@ const HomeTh = () => {
         <Sidebar />
       </div>
 
-        { /* **Área de contenido** */}
-        <div className="content-area">
+      {/* **Área de contenido** */}
+      <div className="content-area">
         <Preloader duration={650} />
 
         {/* 📚 **Barra superior** */}
@@ -335,6 +333,7 @@ const HomeTh = () => {
 
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               {/* 🛠️ Checkbox con filtros*/}
+                
               <div className="checkbox-container">
                 <div className="custom-checkbox">
                   <label>
@@ -358,21 +357,11 @@ const HomeTh = () => {
                   </label>
                 </div>
 
-                <div className="custom-checkbox">
-                  <span>Solicitudes Pendientes: {pendingCount}</span>
+                <div className="pendientes-container">
+                  <span>Solicitudes Pendientes</span>
+                  <span>{pendingCount}</span>
                 </div>
-                <select
-                    className="sidebar-button sidebar-button-homeTH"
-                    value={equipoSeleccionado}
-                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
-                >
-                  <option value="">Todos los equipos</option>
-                  {equipos.map((equipo) => (
-                      <option key={equipo.nombre} value={equipo.nombre}>
-                        {equipo.nombre}
-                      </option>
-                  ))}
-                </select>
+
               </div>
 
               {/* 🚨 Mensajes de Error */}
@@ -405,6 +394,22 @@ const HomeTh = () => {
                   dayLayoutAlgorithm="no-overlap"
                 />
               </div>
+
+              <div className="select-container">
+                  <select
+                    id="equipo-select"
+                    className="sidebar-button calendar-button-th"
+                    value={equipoSeleccionado}
+                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                  >
+                    <option value="">Todos los equipos</option>
+                    {equipos.map((equipo) => (
+                      <option key={equipo.nombre} value={equipo.nombre}>
+                        {equipo.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
               {/* 🖍️ Leyenda de Colores */}
               <div className="calendar-legend">

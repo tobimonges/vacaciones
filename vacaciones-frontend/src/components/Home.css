@@ -181,6 +181,7 @@
     justify-content: space-around;
     gap: 10px;
     padding-bottom: 5px;
+    flex-direction: column;
 }
 
 .custom-checkbox {
@@ -189,6 +190,36 @@
     font-size: 14px;
     color: #fff;
 }
+
+.select-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 5px 20px 10px 10px;
+    width: 80%;
+    background-color:rgba(0, 104, 202, 0.71);
+    border-radius: 12px;
+    /*sombreado*/
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+  }
+  .calendar-button-th {
+    background-color:rgba(255, 255, 255, 0) !important;
+    color: #333;
+}
+
+  
+  .pendientes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0 auto;
+    padding: 5px 20px 10px 20px;
+    border-radius: 8px;
+    color: #333;
+    background-color: var(--secondary-bg);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
 
 .custom-checkbox input[type="checkbox"] {
     appearance: none;
