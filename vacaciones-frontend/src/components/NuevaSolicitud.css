@@ -173,11 +173,6 @@
   justify-content: flex-end;
 }
 
-.mb-3-lideres.flex-column {
-  flex-direction: column; /* Cambia la dirección a columna */
-  justify-content: flex-start; /* Alinea elementos al inicio vertical */
-}
-
 .mb-3-lideres img {
   width: 80px; /* Ancho de la imagen */
   height: 80px; /* Altura de la imagen */

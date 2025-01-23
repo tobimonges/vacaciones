@@ -59,6 +59,12 @@ export default function NuevaSolicitud() {
     }
   };
 
+  const handleDeleteSelector = (index) => {
+    setSelectedLideres((prevSelectedLideres) =>
+      prevSelectedLideres.filter((_, i) => i !== index)
+    );
+  };
+
   const handleLiderChange = (value, index) => {
     const newSelectedLideres = [...selectedLideres];
     newSelectedLideres[index] = parseInt(value, 10);
@@ -397,15 +403,7 @@ export default function NuevaSolicitud() {
             </div>
             {userRole !== "DIRECTORIO" &&
               selectedLideres.map((selectedLider, index) => (
-                <div
-                  className={`mb-3-lideres ${
-                    index !== selectedLideres.length - 1 ||
-                    selectedLideres.length === 3
-                      ? "flex-column"
-                      : ""
-                  }`}
-                  key={index}
-                >
+                <div className={`mb-3-lideres`} key={index}>
                   <select
                     value={selectedLider || ""}
                     onChange={(e) => handleLiderChange(e.target.value, index)}
@@ -426,20 +424,37 @@ export default function NuevaSolicitud() {
                         </option>
                       ))}
                   </select>
-                  {index === selectedLideres.length - 1 &&
-                    selectedLideres.length < 3 && (
-                      <div
-                        className="imagenBotonMas"
-                        onClick={handleAddLiderSelector}
-                      >
-                        <img
-                          src="./public/agregar.svg"
-                          alt="Añadir líder"
-                          title="Añadir líder"
-                          className="imagenBotonMas-img"
-                        />
-                      </div>
-                    )}
+                  <div
+                    className="imagenBotonMas"
+                    onClick={
+                      index === selectedLideres.length - 1 &&
+                      selectedLideres.length < 3
+                        ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
+                        : () => handleDeleteSelector(index) // Elimina si no es el último
+                    }
+                  >
+                    <img
+                      src={
+                        index === selectedLideres.length - 1 &&
+                        selectedLideres.length < 3
+                          ? "./public/agregar.svg" // Ícono para agregar en el último selector
+                          : "./public/circulo-negativo.svg" // Ícono para eliminar en otros selectores
+                      }
+                      alt={
+                        index === selectedLideres.length - 1 &&
+                        selectedLideres.length < 3
+                          ? "Añadir líder"
+                          : "Eliminar líder"
+                      }
+                      title={
+                        index === selectedLideres.length - 1 &&
+                        selectedLideres.length < 3
+                          ? "Añadir líder"
+                          : "Eliminar líder"
+                      }
+                      className="imagenBotonMas-img"
+                    />
+                  </div>
                 </div>
               ))}
 
