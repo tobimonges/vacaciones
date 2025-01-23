@@ -186,7 +186,7 @@ const SidebarButtons = () => {
       {(userRole === "TH"||userRole === "GTH") && !isHome && (
         <button
           className="sidebar-button"
-          onClick={() => navigate(`/CreaCargo`)}
+          onClick={() => navigate(`/CargoDetalle`)}
         >
           <span>Editar Cargo</span>
         </button>
