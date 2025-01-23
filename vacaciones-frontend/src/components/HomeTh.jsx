@@ -104,7 +104,7 @@ const HomeTh = () => {
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
-      const usuarioId = getUsuarioId(); // Obtener el ID del usuario logueado
+      const usuarioId = getUsuarioId();
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -114,17 +114,19 @@ const HomeTh = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const { nombre, fechaIngreso, diasVacaciones } = response.data;
+        const { nombre } = response.data;
         setUserNameTh(nombre);
 
-        // Guardar el ID del usuario en localStorage
-        localStorage.setItem("userId", usuarioId);
+        // Marcar la página como recargada
+        const shouldReload = localStorage.getItem("shouldReload");
+        if (shouldReload) {
+          localStorage.removeItem("shouldReload");
+          navigate(0); // Recargar la página una vez
+        }
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -133,6 +135,7 @@ const HomeTh = () => {
 
     fetchUserData();
   }, [navigate]);
+
 
   // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
@@ -236,9 +239,11 @@ const HomeTh = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Eliminar el token de autenticación
-    navigate("/"); // Redirigir a la página de inicio de sesión
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    navigate("/"); // Redirige a la página de inicio de sesión
   };
+
   // 🎨 **Personalizar colores de días**
   const dayPropGetter = (date) => {
     const today = new Date();
