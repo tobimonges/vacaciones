@@ -213,6 +213,10 @@
     font-weight: 700;
     font-size: 1.5rem;
   }
+  .pending-count-number {
+    color: var(--button-bg);
+    font-weight: 700;
+  }
 
 .custom-checkbox input[type="checkbox"] {
     appearance: none;
