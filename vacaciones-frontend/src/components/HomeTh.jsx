@@ -392,6 +392,7 @@ const HomeTh = () => {
                     week: "Semana",
                     day: "Día",
                     agenda: "Agenda",
+                    showMore: (count) => `+${count} más`, // Traducción para "More"
                   }}
                   views={{ month: true }} // Mantener solo la vista de mes
                   eventPropGetter={eventStyleGetter}
@@ -402,6 +403,7 @@ const HomeTh = () => {
                     // Prevenir cambio de vista
                     handleShowMore(eventsOnDay, date);
                   }}
+
                   dayLayoutAlgorithm="no-overlap"
                 />
               </div>
