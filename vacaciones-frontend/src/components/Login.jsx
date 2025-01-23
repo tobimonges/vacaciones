@@ -50,18 +50,27 @@ function Login() {
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
+      const loginBox = document.querySelector(".loginBox");
+      loginBox.classList.add("LoginAnim");
       setTimeout(() => {
         navigate("/Home");
-      }, 200);
+      }, 500);
 
     } catch (error) {
       console.log(error.response);
       if(error.response.data.message === "Redirigir a cambio de contraseña") {
         setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
+        setShowError(true);
+        setTimeout(() => {
+          setShowError(false);
+          // setIsAnimating(true);
+          const loginBox = document.querySelector(".loginBox");
+          loginBox.classList.add("LoginAnim");
+        }, 800);
         setIsAnimating(true); //agregado de animacion para ir a reset-password
         setTimeout(() => {
           navigate(error.response.data.redirect);
-        }, 2500);
+        }, 1000);
         return;
       }
       console.error("Error al iniciar sesión", error);
