@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RestablecerContraseña.css";
 import Logo from "./Logo";
 import { useLocation } from "react-router-dom";
-
+import "./Login.css"
 import Preloader from "./Preloader";
+import Logogiratorio from "./logogiratorio";
 
 function RestablecerContraseña() {
   const navigate = useNavigate();
@@ -12,9 +13,22 @@ function RestablecerContraseña() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [mensaje, setMensaje] = useState(""); // Mensaje a mostrar
   const [error, setError] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [showRestablecerBox, setShowRestablecerBox] = useState(false);
   const location = useLocation();
   const token = new URLSearchParams(location.search).get("token");
 
+  useEffect(() =>{
+    const timeout = setTimeout(() =>{
+      setIsAnimating(false);
+      setTimeout(()=> {
+        setShowRestablecerBox(true);
+      }, 200);
+    }, 650);
+
+    return () => clearTimeout(timeout);
+  }, []);
+  
   const handleRestablecer = async (e) => {
     e.preventDefault();
 
@@ -24,7 +38,7 @@ function RestablecerContraseña() {
       setTimeout(() => {
         setMensaje("");
         setError(false);
-      }, 2000); 
+      }, 1900); 
       return;
     }
 
@@ -97,15 +111,15 @@ function RestablecerContraseña() {
 
   return (
     <div className="container containerRestablecerContraseña">
-      <Preloader duration={650} />
+      <Logogiratorio duration={650} />
 
       {mensaje && (
     <div className={`mensajePopupp ${error ? "error" : "success"}`}>
       {mensaje}
     </div>
   )}
-      <div className={`restablecerBox ${error ? "error" : ""}`}>
-
+    {showRestablecerBox && (
+      <div className={`restablecerBox cajaLogin ${error ? "error" : ""}`}>
         <Logo />
         <h2 className="headerrRC">Restablecer Contraseña</h2>
         <form onSubmit={handleRestablecer} method="post">
@@ -145,10 +159,7 @@ function RestablecerContraseña() {
               </div>
             </div>
 
-            {error && (
-              <p className="error-message">Las Contraseñas no coinciden</p>
-            )}
-
+            
             <button type="submit" className="botoncitoRC">
               <span>Restablecer</span>
             </button>
@@ -158,6 +169,7 @@ function RestablecerContraseña() {
           <a href="/" className="linkRC"></a>
         </div>
       </div>
+    )}
     </div>
   );
 }
