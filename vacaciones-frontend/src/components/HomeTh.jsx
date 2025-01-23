@@ -60,19 +60,19 @@ const HomeTh = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:8080/vacaciones/solicitudes",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            "http://localhost:8080/vacaciones/solicitudes",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
         );
 
         const requests = response.data;
 
         // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
         const pendingRequests = requests.filter(
-          (request) =>
-            request.numeroAprobaciones === 0 &&
-            request.usuario.id !== parseInt(userId)
+            (request) =>
+                request.numeroAprobaciones === 0 && // Solicitudes pendientes
+                request.lideres.some((lider) => lider.id === parseInt(userId)) // Usuario como líder
         );
 
         setPendingCount(pendingRequests.length);
@@ -83,6 +83,7 @@ const HomeTh = () => {
 
     fetchPendingRequests();
   }, []);
+
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
