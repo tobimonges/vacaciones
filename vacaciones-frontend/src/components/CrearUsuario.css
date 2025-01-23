@@ -10,11 +10,13 @@
 }
 
 .createBox {
+  position: fixed; /* Hace que el elemento sea relativo a la ventana */
+  margin-top: 6%;
+  z-index: 1000; /* Asegura que esté sobre otros elementos */
   border: none;
   width: 100%;
   max-width: 800px;
   padding: 20px;
-  margin-top: 20px; /* Añadido para dar espacio a la barra de navegación */
   border-radius: 10px;
   background: rgba(87, 145, 238, 0.25);
   transition: all 0.3s ease;
@@ -34,10 +36,6 @@
 .inputGroupCreate {
   display: flex;
   align-items: center;
-  width: 100%;
-  margin-bottom: 10px; /* Reducido de 20px a 10px */
-  position: relative;
-  margin-top: 0px; /* Añadido para dar espacio entre los elementos */
 }
 
 .icon {
@@ -52,50 +50,62 @@
   width: 100%;
 }
 
-.inputCreate {
+.inputCreateP {
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
   color: #ffffff;
   background-color: rgba(87, 145, 238, 0.25);
   font-size: 16px;
   transition: all 0.3s ease;
-  
 }
 
-.inputCreate::placeholder {
+.inputCreateP::placeholder {
   color: rgba(255, 255, 255, 0.479);
 }
 
-.inputCreate:hover {
+.inputCreateP:hover {
   border-color: #666;
   background-color: rgba(255, 255, 255, 0.527);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .datePickerGroup {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.inputCreate option[value=""][disabled] {
+.inputCreateP option[value=""][disabled] {
   color: rgba(255, 255, 255, 0.479);
 }
 
-.inputCreate option {
+.inputCreateP option {
   background-color: rgba(32, 85, 170, 0.8);
   color: #ffffff;
 }
-.formCreate {
+.formCreateP {
   display: flex;
-  flex-direction: column;
-  align-items: center; /* Añadido para centrar los elementos dentro del formulario */
-  gap: 1.4rem; /* Añadido para dar espacio entre los elementos */
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column; /* Coloca los elementos en vertical dentro de cada columna */
+  flex: 1 1 48%; /* Cada columna ocupa aproximadamente el 50% del espacio */
+  gap: 20px; /* Espaciado entre elementos dentro de la columna */
+  margin-right: 11px;
 }
 
 .buttonCreate {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  width: 50%;
+  width: 30%;
+  margin-left: 250px;
   padding: 10px;
   background-color: #fdca40;
   color: black;
@@ -103,7 +113,7 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 20px;
+  margin-top: 40px;
   margin-bottom: 20px;
   transition: all 0.4s ease;
   align-self: center; /* Añadido para centrar el botón */

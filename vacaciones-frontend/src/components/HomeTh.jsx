@@ -60,19 +60,19 @@ const HomeTh = () => {
         }
 
         const response = await axios.get(
-            "http://localhost:8080/vacaciones/solicitudes",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+          "http://localhost:8080/vacaciones/solicitudes",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
 
         const requests = response.data;
 
         // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
         const pendingRequests = requests.filter(
-            (request) =>
-                request.numeroAprobaciones === 0 && // Solicitudes pendientes
-                request.lideres.some((lider) => lider.id === parseInt(userId)) // Usuario como líder
+          (request) =>
+            request.numeroAprobaciones === 0 && // Solicitudes pendientes
+            request.lideres.some((lider) => lider.id === parseInt(userId)) // Usuario como líder
         );
 
         setPendingCount(pendingRequests.length);
@@ -84,11 +84,27 @@ const HomeTh = () => {
     fetchPendingRequests();
   }, []);
 
+  //Funcion Para obtener equipos
+  useEffect(() => {
+    const fetchEquipos = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/equipos", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEquipos(response.data);
+      } catch (err) {
+        console.error("Error al obtener equipos:", err);
+      }
+    };
+
+    fetchEquipos();
+  }, []);
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
-      const usuarioId = getUsuarioId(); // Obtener el ID del usuario logueado
+      const usuarioId = getUsuarioId();
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -99,16 +115,18 @@ const HomeTh = () => {
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const { nombre, fechaIngreso, diasVacaciones } = response.data;
+        const { nombre } = response.data;
         setUserNameTh(nombre);
 
-        // Guardar el ID del usuario en localStorage
-        localStorage.setItem("userId", usuarioId);
+        // Marcar la página como recargada
+        const shouldReload = localStorage.getItem("shouldReload");
+        if (shouldReload) {
+          localStorage.removeItem("shouldReload");
+          navigate(0); // Recargar la página una vez
+        }
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -117,7 +135,6 @@ const HomeTh = () => {
 
     fetchUserData();
   }, [navigate]);
-
 
   // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
@@ -221,9 +238,11 @@ const HomeTh = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Eliminar el token de autenticación
-    navigate("/"); // Redirigir a la página de inicio de sesión
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    navigate("/"); // Redirige a la página de inicio de sesión
   };
+
   // 🎨 **Personalizar colores de días**
   const dayPropGetter = (date) => {
     const today = new Date();
@@ -283,15 +302,12 @@ const HomeTh = () => {
       ? event.equipo &&
         event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
       : true; // Si no hay equipo seleccionado, no se filtra por equipo
-
     // Filtrar por tipo de evento (cumpleaños y feriados)
     const isBirthdayVisible = event.type !== "cumpleanos" || showBirthdays;
     const isHolidayVisible = event.type !== "feriado" || showHolidays;
-
     // Retornar el evento solo si pasa ambos filtros
     return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
   });
-
 
   //Renderizado del Componente
   return (
@@ -301,8 +317,8 @@ const HomeTh = () => {
         <Sidebar />
       </div>
 
-        { /* **Área de contenido** */}
-        <div className="content-area">
+      {/* **Área de contenido** */}
+      <div className="content-area">
         <Preloader duration={650} />
 
         {/* 📚 **Barra superior** */}
@@ -316,36 +332,61 @@ const HomeTh = () => {
         <div className="main">
           <div className="main-content">
             <div className="calendar-title-th">
-              <span>Solicitudes</span>
+              {pendingCount === 0 ? (
+                <span>No tienes solicitudes pendientes.</span>
+              ) : (
+                <span>
+                  {`Tienes `}
+                  <span className="pending-count-number">{pendingCount}</span>
+                  {pendingCount === 1
+                    ? ` solicitud pendiente!`
+                    : ` solicitudes pendientes!`}
+                </span>
+              )}
             </div>
 
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               {/* 🛠️ Checkbox con filtros*/}
-              <div className="checkbox-container">
-                <div className="custom-checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={showBirthdays}
-                      onChange={(e) => setShowBirthdays(e.target.checked)}
-                    />
-                    Mostrar cumpleaños
-                  </label>
-                </div>
 
-                <div className="custom-checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={showHolidays}
-                      onChange={(e) => setShowHolidays(e.target.checked)}
-                    />
-                    Mostrar feriados
-                  </label>
+              <div className="calendar-title">
+                <div className="calendar-key">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showBirthdays}
+                        onChange={(e) => setShowBirthdays(e.target.checked)}
+                      />
+                      Mostrar cumpleaños
+                    </label>
+                  </div>
                 </div>
-
-                <div className="custom-checkbox">
-                  <span>Solicitudes Pendientes: {pendingCount}</span>
+                <div className="calendar-key">
+                  <select
+                    id="equipo-select"
+                    className="button-homeTH-2"
+                    value={equipoSeleccionado}
+                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                  >
+                    <option value="">Todos los equipos</option>
+                    {equipos.map((equipo) => (
+                      <option key={equipo.nombre} value={equipo.nombre}>
+                        {equipo.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="calendar-key">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showHolidays}
+                        onChange={(e) => setShowHolidays(e.target.checked)}
+                      />
+                      Mostrar feriados
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -366,6 +407,7 @@ const HomeTh = () => {
                     week: "Semana",
                     day: "Día",
                     agenda: "Agenda",
+                    showMore: (count) => `+${count} más`, // Traducción para "More"
                   }}
                   views={{ month: true }} // Mantener solo la vista de mes
                   eventPropGetter={eventStyleGetter}
