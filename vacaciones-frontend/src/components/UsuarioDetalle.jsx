@@ -30,6 +30,7 @@ function UsuarioDetalle() {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
   const navigate = useNavigate();
 
   // Obtener lista de usuarios
@@ -108,6 +109,17 @@ function UsuarioDetalle() {
     }
   }, [selectedUserId]);
 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+        setPopupType("");
+      }, popupType === "success" ? 1300 : 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message, popupType]);
+
   const handleEditClick = (id) => {
     setSelectedUserId(id);
     setMessage("");
@@ -147,13 +159,28 @@ function UsuarioDetalle() {
       );
 
       setMessage("Usuario actualizado con éxito.");
+      setPopupType("success");
       setTimeout(() => {
         setSelectedUserId(null);
         navigate("/Home");
       }, 1500);
     } catch (err) {
-      setError("Error al actualizar los datos del usuario.");
-      console.error(err);
+      if (err.response.data.hasOwnProperty("nombre")) {
+        setMessage(err.response.data.nombre);
+      } else if (err.response.data.hasOwnProperty("apellido")) {
+        setMessage(err.response.data.apellido);
+      } else if (err.response.data.hasOwnProperty("fechaIngreso")) {
+        setMessage(err.response.data.fechaIngreso);
+      } else if (err.response.data.hasOwnProperty("fechaNacimiento")) {
+        setMessage(err.response.data.fechaNacimiento);
+      } else if (err.response.data.hasOwnProperty("correo")) {
+        setMessage(err.response.data.correo);
+      } else if (err.response.data.hasOwnProperty("telefono")) {
+        setMessage(err.response.data.telefono);
+      } else {
+        setMessage("Error al actualizar los datos del usuario.");
+      }
+      setPopupType("error");
     }
   };
 
@@ -178,7 +205,11 @@ function UsuarioDetalle() {
               <h2>Gestión de Usuarios</h2>
               <br></br>
               {error && <p className="err">{error}</p>}
-              {message && <p className="succ">{message}</p>}
+              {message && (
+                  <div className={popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"} style={{ opacity: 1 }}>
+                    {message}
+                  </div>
+              )}
               {!selectedUserId ? (
                 <>
                   {usuarios.length === 0 ? (
