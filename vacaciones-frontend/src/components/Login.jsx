@@ -57,7 +57,6 @@ function Login() {
       }, 500);
 
     } catch (error) {
-      console.log(error.response);
       if(error.response.data.message === "Redirigir a cambio de contraseña") {
         setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
         setShowError(true);
@@ -73,7 +72,6 @@ function Login() {
         }, 1000);
         return;
       }
-      console.error("Error al iniciar sesión", error);
       setPassword("");
       setError(true);
       setShowError(true);
@@ -95,12 +93,6 @@ function Login() {
         setErrorMessage("Error de red. Por favor, verifica tu conexión.");
       }
     }
-
-    /*   const handleLogout = () => {
-      localStorage.removeItem("isAuthenticated"); // Eliminar la sesión
-      alert("Has cerrado sesión");
-      navigate("/", { replace: true }); // Redirige al login
-    }; */
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
