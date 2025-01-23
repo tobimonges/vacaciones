@@ -200,6 +200,14 @@ h1, h2, h3, label {
     margin-left: 0%;
 }
 
+.label-detalle{
+  top: -10%;
+  left: 5%;
+  z-index: 10;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .datePickerGroup {
   width: 100%;
   padding-top: 6%;

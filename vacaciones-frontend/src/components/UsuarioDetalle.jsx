@@ -174,8 +174,8 @@ function UsuarioDetalle() {
           {/* 📚 **Contenido principal** */}
           <div className="main">
             <div className="main-content">
-              <div className="container-usuario-detalle">
                 <h2>Gestión de Usuarios</h2>
+                <br></br>
                 {error && <p className="err">{error}</p>}
                 {message && <p className="succ">{message}</p>}
                 {!selectedUserId ? (
@@ -183,7 +183,8 @@ function UsuarioDetalle() {
                     {usuarios.length === 0 ? (
                       <p>No se encontraron usuarios.</p>
                     ) : (
-                      <table className="table">
+                    <div className="content-section">
+                      <table className="admin-table">
                         <thead>
                           <tr>
                             <th>Nro Cedula</th>
@@ -212,6 +213,7 @@ function UsuarioDetalle() {
                           ))}
                         </tbody>
                       </table>
+                    </div>
                     )}
                   </>
                 ) : (
@@ -254,7 +256,7 @@ function UsuarioDetalle() {
                       },
                     ].map(({ name, type, label, icon }) => (
                       <div key={name}>
-                        <label htmlFor={name}>{label}</label>
+                        <label htmlFor={name} >{label}</label>
                         <div className="iconWrap">
                           <img src={icon} className="icon" />
                           <input
@@ -296,8 +298,8 @@ function UsuarioDetalle() {
                         options: cargos,
                       },
                     ].map(({ name, label, options }) => (
-                      <div key={name}>
-                        <label htmlFor={name}>{label}</label>
+                      <div>
+                        <label htmlFor={name} className="label-detalle">{label}</label>
                         <div className="iconWrap">
                           <img
                             src="/mapa-del-sitio (1).svg"
@@ -389,7 +391,6 @@ function UsuarioDetalle() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 export default UsuarioDetalle;
