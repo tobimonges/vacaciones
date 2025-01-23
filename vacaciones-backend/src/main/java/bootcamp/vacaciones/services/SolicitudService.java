@@ -213,7 +213,7 @@ public class SolicitudService implements ISolicitudService {
                 "<p>El usuario " + usuario.getNombre() + " " + usuario.getApellido() +
                         " ha creado una solicitud de vacaciones para las fechas " +
                         solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>" +
-                        "<a href='" +url+ "'>Verificar Solicitud</a>"
+                        "<a href='" + baseUrl + "/AdminDashboard'>Verificar Solicitud</a>"
         );
     }
 
@@ -385,8 +385,10 @@ public class SolicitudService implements ISolicitudService {
 
                 notificarTH(
                         "Solicitud Pendiente de Aprobación (TH)",
-                        "La solicitud del usuario " + solicitud.getUsuario().getNombre() +
-                                " está pendiente de aprobación por parte de TH."
+                        "<p>La solicitud del usuario " + solicitud.getUsuario().getNombre() +
+                                " está pendiente de aprobación por parte de TH.</p>" +
+                                "<p>Por favor, revisa la solicitud en el siguiente enlace:</p>" +
+                                "<a href='" + baseUrl + "/AdminDashboard'>Verificar Solicitud</a>"
                 );
             } else if (solicitud.getNumeroAprobaciones() == 1) {
                 logger.info("Paso 2: La solicitud con ID: {} requiere la aprobación de un TH.", solicitudId);
