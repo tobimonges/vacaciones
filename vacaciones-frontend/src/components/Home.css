@@ -431,3 +431,32 @@
     justify-content: center;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
+/*animaciones para componentes navbar y sidebar*/
+.cajaLoginNavBar {
+    animation: cajaLoginNavBarAnim 0.7s ease forwards; /* Duración de 0.7s */
+  }
+  
+  @keyframes cajaLoginNavBarAnim {
+    0% {
+        transform: scale(0);
+      }
+    
+      100% {
+        transform: scale(1);
+      }
+  }
+  
+  .cajaLoginSidebar {
+    animation: cajaLoginSidebarAnim 1s ease forwards; /* Duración de 1s */
+  }
+  
+  @keyframes cajaLoginSidebarAnim {
+    0% {
+        transform: scale(0);
+      }
+    
+      100% {
+        transform: scale(1);
+      }
+  }
