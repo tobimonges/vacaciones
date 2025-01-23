@@ -14,9 +14,8 @@ import Preloader from "./Preloader";
 
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
-const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")];
 
-function countValidDays(start, end, reservedDates = []) {
+function countValidDays(start, end, reservedDates = [], disabledDates = []) {
   if (!start || !end) return 0;
   if (end.isBefore(start, "day")) return 0;
 
@@ -52,6 +51,7 @@ export default function NuevaSolicitud() {
   const [file, setFile] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
+  const [disabledDates, setDisabledDates] = useState([]);
 
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
@@ -240,20 +240,56 @@ export default function NuevaSolicitud() {
   }, [userRole, usuarioId]);
 
   useEffect(() => {
-    const days = countValidDays(startDate, endDate, reservedDates);
+    // Fetch disabled dates (feriados) from API
+    const fetchDisabledDates = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/feriados",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Mapear fechas a objetos `dayjs`
+        const feriados = response.data.map((feriado) => dayjs(feriado.fecha));
+
+        setDisabledDates(feriados);
+      } catch (error) {
+        console.error("Error al obtener los feriados:", error);
+        setMensaje("No se pudieron cargar los feriados.");
+        setTipoMensaje("Error");
+      }
+    };
+
+    fetchDisabledDates();
+  }, []);
+
+  useEffect(() => {
+    const days = countValidDays(
+      startDate,
+      endDate,
+      reservedDates,
+      disabledDates
+    );
     setValidDays(days);
 
     if (
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-      //  setWarning("No puedes seleccionar más días de los disponibles.");
       setMensaje("No puedes seleccionar más días de los disponibles.");
       setTipoMensaje("Warning");
     } else {
-      setWarning("");
+      setMensaje("");
     }
-  }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
+  }, [
+    startDate,
+    endDate,
+    diasVacacionesDisponibles,
+    reservedDates,
+    disabledDates,
+  ]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]); // Guardar el archivo seleccionado
