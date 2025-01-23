@@ -13,10 +13,12 @@ public class UsuarioRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
+    @Pattern(regexp = "^[^0-9]*$", message = "El apellido no puede contener números")
     private String nombre;
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "El apellido no puede tener más de 50 caracteres")
+    @Pattern(regexp = "^[^0-9]*$", message = "El apellido no puede contener números")
     private String apellido;
 
     @NotNull(message = "La cédula es obligatoria")
@@ -27,6 +29,7 @@ public class UsuarioRequest {
     private String correo;
 
     @NotNull(message = "La fecha es obligatoria")
+    @PastOrPresent(message = "La fecha de nacimiento no debe ser superior a la fecha de hoy")
     private LocalDate fechaNacimiento;
 
     @NotBlank(message = "El teléfono es obligatorio")
@@ -40,8 +43,11 @@ public class UsuarioRequest {
     private LocalDate fechaIngreso;
     private String contrasena;
     private boolean estado;
+    @NotNull(message = "Seleccione un rol")
     private RolModel rol;
+    @NotNull(message = "Seleccione un equipo")
     private EquipoModel equipo;
+    @NotNull(message = "Seleccione un cargo")
     private CargoModel cargo;
 
     // Getters y Setters
