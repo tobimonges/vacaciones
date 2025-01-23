@@ -82,7 +82,6 @@ const HomeTh = () => {
     };
 
     fetchPendingRequests();
-
   }, []);
 
   //Funcion Para obtener equipos
@@ -126,7 +125,6 @@ const HomeTh = () => {
 
         // Guardar el ID del usuario en localStorage
         localStorage.setItem("userId", usuarioId);
-
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -330,14 +328,16 @@ const HomeTh = () => {
         <div className="main">
           <div className="main-content">
             <div className="calendar-title-th">
-              {/* condiciones para mostrar un titulo u otro */}
-
               {pendingCount === 0 ? (
                 <span>No tienes solicitudes pendientes.</span>
-              ) : pendingCount === 1 ? (
-                <span>Tienes 1 solicitud pendiente!</span>
               ) : (
-                <span>Tienes {pendingCount} solicitudes pendientes!</span>
+                <span>
+                  {`Tienes `}
+                  <span className="pending-count-number">{pendingCount}</span>
+                  {pendingCount === 1
+                    ? ` solicitud pendiente!`
+                    : ` solicitudes pendientes!`}
+                </span>
               )}
             </div>
 
@@ -413,7 +413,6 @@ const HomeTh = () => {
                     // Prevenir cambio de vista
                     handleShowMore(eventsOnDay, date);
                   }}
-
                   dayLayoutAlgorithm="no-overlap"
                 />
               </div>
