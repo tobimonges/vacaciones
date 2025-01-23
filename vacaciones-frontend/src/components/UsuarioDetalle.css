@@ -166,8 +166,7 @@ h1, h2, h3, label {
 .inputCreate {
   width: 100%;
   height:180%;
-  padding: 10px;
-  padding-top: 6%;
+  padding-top: 5%;
   border: 1px solid #ccc;
   border-radius: 5px;
   color: #ffffff;
@@ -178,7 +177,7 @@ h1, h2, h3, label {
 }
 
 .inputCreate2 {
-    padding-top: 5%;
+    padding-top: 6%;
 }
 
 .iconWrap {
