@@ -140,7 +140,7 @@ const SidebarButtons = () => {
           </button>
       ) : null}
 
-      {userRole === "TH"||"GTH" && !isHome && (
+      {(userRole === "TH"||userRole === "GTH") && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/crearusuario`)}
@@ -149,7 +149,7 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {userRole === "TH" || "GTH" && !isHome && (
+      {(userRole === "TH"||userRole === "GTH")  && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/UsuarioDetalle`)}
@@ -157,7 +157,7 @@ const SidebarButtons = () => {
           <span>Editar Datos de Funcionario</span>
         </button>
       )}
-      {userRole === "TH" || "GTH" && !isHome && (
+      {(userRole === "TH"||userRole === "GTH")  && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaEquipo`)}
@@ -165,7 +165,7 @@ const SidebarButtons = () => {
           <span>Crear Equipo</span>
         </button>
       )}
-      {userRole === "TH" || "GTH" && !isHome && (
+      {(userRole === "TH"||userRole === "GTH")  && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/EquipoDetalle`)}
@@ -173,7 +173,7 @@ const SidebarButtons = () => {
           <span>Editar Equipo</span>
         </button>
       )}
-      {userRole === "TH" || "GTH" && !isHome && (
+      {(userRole === "TH"||userRole === "GTH")  && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaCargo`)}
@@ -181,7 +181,7 @@ const SidebarButtons = () => {
           <span>Crear Cargo</span>
         </button>
       )}
-      {userRole === "TH" || "GTH"&& !isHome && (
+      {(userRole === "TH"||userRole === "GTH") && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaCargo`)}
