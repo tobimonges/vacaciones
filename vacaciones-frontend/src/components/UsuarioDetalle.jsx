@@ -256,7 +256,7 @@ function UsuarioDetalle() {
                       },
                     ].map(({ name, type, label, icon }) => (
                       <div key={name}>
-                        <label htmlFor={name} >{label}</label>
+                        <label htmlFor={name} className="label-detalle">{label}</label>
                         <div className="iconWrap">
                           <img src={icon} className="icon" />
                           <input
@@ -344,7 +344,7 @@ function UsuarioDetalle() {
                           dateAdapter={AdapterDayjs}
                           adapterLocale="es"
                         >
-                          <label htmlFor={name}>{label}</label>
+                          <label htmlFor={name} className="label-detalle2">{label}</label>
                           <div className="iconWrap">
                             <img src={icon} className="icon" />
                             <div className="datePickerGroup">
