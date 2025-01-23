@@ -135,16 +135,16 @@
   width: 100%;
 }
 
-.link {
+.linkLogin {
   
   font-size: 13px;
   color: white;
   text-decoration: none;
-  margin-top: 30px;
+  margin-top: 35px;
   transition: all 0.3s ease;
 }
 
-.link:hover {
+.linkLogin:hover {
   color: #fdca40;
 }
 
@@ -185,7 +185,7 @@ h3 .icon {
 }
 
 .datosIncorrectos {
-  animation: shake 0.5s ease ;
+  animation: shake 0.5s ease;
 }
 
 .cajaLogin {
@@ -193,9 +193,11 @@ h3 .icon {
 }
 
 .LoginAnim {
-  animation: LoginAnim 0.2s ease 0s 1 normal forwards;
+  animation: LoginAnim 0.5s ease forwards;
 }
-
+.loginBox.datosIncorrectos {
+  animation: shake 0.2s ease-in-out;
+}
 @keyframes shake {
   0%, 100% {
     transform: translateX(0);
