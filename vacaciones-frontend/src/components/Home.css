@@ -42,6 +42,7 @@
     padding: 15px 20px;
     margin: 8px auto 18px auto; /* Centra el título horizontalmente */
 }
+
 .calendar-title-th {
     width: 93%;
     padding: 20px;
@@ -189,15 +190,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 20px;
-    background-color: #f5f5f5;
-    gap: 10px;
+    background-color:#007bff00;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 18px; /*cambie este para la funete de Todos los equipos*/
+    font-size: 1.2rem; /*cambie este para la funete de Todos los equipos*/
+    font-weight: 500;
     position: relative;
-
+    color: var(--primary-color);
 }
 
 .custom-checkbox {
@@ -206,6 +206,15 @@
 
     font-size: 14px;
     color: #fff;
+}
+.custom-checkbox label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    font-weight: 500;
 }
 
 .select-container {
@@ -426,7 +435,7 @@
     background-color:  rgba(87, 145, 238, 0.25);;
 }
 
-.sidebar-button-homeTH option{
+.button-homeTH-2 option{
     background-color:  rgba(87, 145, 238, 0.25);
     background: #39659f;
     color: white;
