@@ -349,11 +349,11 @@ const HomeTh = () => {
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               {/* 🛠️ Checkbox con filtros*/}
 
-              <div className="opciones pendientes-container">
-                <div className="select-container">
+              <div className="calendar-title">
+                <div className="calendar-key">
                   <select
                     id="equipo-select"
-                    className="sidebar-button sidebar-button-homeTH"
+                    className="button-homeTH-2"
                     value={equipoSeleccionado}
                     onChange={(e) => setEquipoSeleccionado(e.target.value)}
                   >
@@ -365,7 +365,8 @@ const HomeTh = () => {
                     ))}
                   </select>
                 </div>
-                <div className="checkbox-container">
+                
+                <div className="calendar-key">
                   <div className="custom-checkbox">
                     <label>
                       <input

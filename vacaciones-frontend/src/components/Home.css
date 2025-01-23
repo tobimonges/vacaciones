@@ -178,15 +178,31 @@
 
 .checkbox-container {
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
+    align-items: center;
+    flex: 1;
     gap: 10px;
     padding-bottom: 5px;
-    flex-direction: column;
+}
+.button-homeTH-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px; /*cambie este para la funete de Todos los equipos*/
+    position: relative;
+
 }
 
 .custom-checkbox {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+
     font-size: 14px;
     color: #fff;
 }
@@ -194,16 +210,17 @@
 .select-container {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
-    padding: 5px 0px 10px 20px;
-    width: 80%;
     background-color: var(--secondary-bg);
     border-radius: 8px;
+    /* alinear verticalmente */
+    
   }
   
   .pendientes-container {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    flex: 1;
     gap: 5px;
     margin: 0 auto;
     padding: 5px 20px 10px 20px;
