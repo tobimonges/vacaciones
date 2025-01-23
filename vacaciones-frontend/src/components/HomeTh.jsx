@@ -114,8 +114,8 @@ const HomeTh = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+          `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const { nombre } = response.data;
@@ -135,7 +135,6 @@ const HomeTh = () => {
 
     fetchUserData();
   }, [navigate]);
-
 
   // 📥 **Obtener Solicitudes de Vacaciones y Feriados**
   useEffect(() => {
@@ -351,6 +350,18 @@ const HomeTh = () => {
 
               <div className="calendar-title">
                 <div className="calendar-key">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showBirthdays}
+                        onChange={(e) => setShowBirthdays(e.target.checked)}
+                      />
+                      Mostrar cumpleaños
+                    </label>
+                  </div>
+                </div>
+                <div className="calendar-key">
                   <select
                     id="equipo-select"
                     className="button-homeTH-2"
@@ -365,19 +376,7 @@ const HomeTh = () => {
                     ))}
                   </select>
                 </div>
-                
                 <div className="calendar-key">
-                  <div className="custom-checkbox">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={showBirthdays}
-                        onChange={(e) => setShowBirthdays(e.target.checked)}
-                      />
-                      Mostrar cumpleaños
-                    </label>
-                  </div>
-
                   <div className="custom-checkbox">
                     <label>
                       <input
