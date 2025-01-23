@@ -60,10 +60,13 @@ function CrearUsuario() {
 
   useEffect(() => {
     if (message) {
-      const timer = setTimeout(() => {
-        setMessage("");
-        setPopupType("");
-      }, popupType === "success" ? 1300 : 3000);
+      const timer = setTimeout(
+        () => {
+          setMessage("");
+          setPopupType("");
+        },
+        popupType === "success" ? 1300 : 3000
+      );
 
       return () => clearTimeout(timer);
     }
@@ -121,7 +124,6 @@ function CrearUsuario() {
       equipo: { id: equipo },
     };
 
-
     try {
       const token = localStorage.getItem("token");
       const url = "http://localhost:8080/vacaciones/crea/usuarios";
@@ -149,91 +151,152 @@ function CrearUsuario() {
       }
       setPopupType("error");
     }
-
   };
 
   return (
     <div className="container containerCreate">
       <Preloader duration={650} />
-      <div className={`createBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""}`}>
+      <div
+        className={`createBox ${isAnimating ? "LoginAnim" : ""} ${
+          error ? "datosIncorrectos" : ""
+        }`}
+      >
         <NavigationBar onLogout={handleLogout} />
         <h2 className="headerCreate">Crear Usuario</h2>
-        <form className="formCreate" onSubmit={handleSubmit}>
-          {[
-            { name: "nombre", type: "text", placeholder: "Nombre", icon: "/circulo-de-usuario (2).svg" },
-            { name: "apellido", type: "text", placeholder: "Apellido", icon: "/circulo-de-usuario (2).svg" },
-            { name: "nroCedula", type: "number", placeholder: "Nro de Cedula", icon: "/tarjeta-de-identificacion (1).svg" },
-            { name: "correo", type: "text", placeholder: "Correo", icon: "/sobre.svg" },
-            { name: "telefono", type: "text", placeholder: "Telefono", icon: "/circulo-de-telefono.svg" },
-          ].map(({ name, type, placeholder, icon }) => (
-            <div className="inputGroupCreate" key={name}>
-              <div className="iconWrap">
-                <img src={icon} alt={placeholder} className="icon" />
-                <input
-                  type={type}
-                  name={name}
-                  placeholder={placeholder}
-                  className="inputCreate"
-                  value={formData[name]}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          ))}
-
-          {[
-            { name: "fechaNacimiento", label: "Seleccionar fecha de nacimiento", icon: "/dias-del-calendario.svg" },
-            { name: "fechaIngreso", label: "Seleccionar fecha de ingreso", icon: "/dias-del-calendario.svg" },
-          ].map(({ name, label, icon }) => (
-            <LocalizationProvider key={name} dateAdapter={AdapterDayjs} adapterLocale="es">
-              <div className="inputGroupCreate datePickerGroup">
+        <form className="formCreateP" onSubmit={handleSubmit}>
+          {/* Columna izquierda */}
+          <div className="formColumn">
+            {[
+              {
+                name: "nombre",
+                type: "text",
+                placeholder: "Nombre",
+                icon: "/circulo-de-usuario (2).svg",
+              },
+              {
+                name: "apellido",
+                type: "text",
+                placeholder: "Apellido",
+                icon: "/circulo-de-usuario (2).svg",
+              },
+              {
+                name: "nroCedula",
+                type: "number",
+                placeholder: "Nro de Cedula",
+                icon: "/tarjeta-de-identificacion (1).svg",
+              },
+              {
+                name: "correo",
+                type: "text",
+                placeholder: "Correo",
+                icon: "/sobre.svg",
+              },
+              {
+                name: "telefono",
+                type: "text",
+                placeholder: "Telefono",
+                icon: "/circulo-de-telefono.svg",
+              },
+            ].map(({ name, type, placeholder, icon }) => (
+              <div className="inputGroupCreate" key={name}>
                 <div className="iconWrap">
-                  <img src={icon} alt={label} className="icon" />
-                  <DatePicker
-                    label={label}
-                    selected={formData[name]}
-                    onChange={(date) => handleDateChange(name, date)}
-                    dateFormat="yyyy-MM-dd"
-                    className="inputCreate"
-                    placeholderText={label}
+                  <img src={icon} alt={placeholder} className="icon" />
+                  <input
+                    type={type}
+                    name={name}
+                    placeholder={placeholder}
+                    className="inputCreateP"
+                    value={formData[name]}
+                    onChange={handleChange}
                     required
                   />
                 </div>
               </div>
-            </LocalizationProvider>
-          ))}
+            ))}
+          </div>
 
-          {[
-            { name: "rol", label: "Rol asignado", options: roles },
-            { name: "cargo", label: "Cargo asignado", options: cargos },
-            { name: "equipo", label: "Equipo asignado", options: equipos },
-          ].map(({ name, label, options }) => (
-            <div className="inputGroupCreate" key={name}>
-              <div className="iconWrap">
-                <img src="/mapa-del-sitio (1).svg" alt={label} className="icon" />
-                <select
-                  name={name}
-                  className="inputCreate"
-                  value={formData[name]}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>{label}</option>
-                  {options.map((option) => (
-                    <option key={option.id} value={option.id}>{option.nombre || option.name}</option>
-                  ))}
-                </select>
+          {/* Columna derecha */}
+          <div className="formColumn">
+            {[
+              {
+                name: "fechaNacimiento",
+                label: "Seleccionar fecha de nacimiento",
+                icon: "/dias-del-calendario.svg",
+              },
+              {
+                name: "fechaIngreso",
+                label: "Seleccionar fecha de ingreso",
+                icon: "/dias-del-calendario.svg",
+              },
+            ].map(({ name, label, icon }) => (
+              <LocalizationProvider
+                key={name}
+                dateAdapter={AdapterDayjs}
+                adapterLocale="es"
+              >
+                <div className="inputGroupCreate datePickerGroupCreate">
+                  <div className="iconWrap">
+                    <img src={icon} alt={label} className="icon" />
+                    <DatePicker
+                      label={label}
+                      selected={formData[name]}
+                      onChange={(date) => handleDateChange(name, date)}
+                      dateFormat="yyyy-MM-dd"
+                      className="inputCreateP"
+                      placeholderText={label}
+                      required
+                    />
+                  </div>
+                </div>
+              </LocalizationProvider>
+            ))}
+
+            {[
+              { name: "rol", label: "Rol asignado", options: roles },
+              { name: "cargo", label: "Cargo asignado", options: cargos },
+              { name: "equipo", label: "Equipo asignado", options: equipos },
+            ].map(({ name, label, options }) => (
+              <div className="inputGroupCreate" key={name}>
+                <div className="iconWrap">
+                  <img
+                    src="/mapa-del-sitio (1).svg"
+                    alt={label}
+                    className="icon"
+                  />
+                  <select
+                    name={name}
+                    className="inputCreateP"
+                    value={formData[name]}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="" disabled>
+                      {label}
+                    </option>
+                    {options.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.nombre || option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
+          {/* Botón de Enviar */}
           <button type="submit" className="buttonCreate">
             <span>Crear</span>
           </button>
         </form>
+
         {message && (
-          <div className={popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"} style={{ opacity: 1 }}>
+          <div
+            className={
+              popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"
+            }
+            style={{ opacity: 1 }}
+          >
             {message}
           </div>
         )}
@@ -242,4 +305,4 @@ function CrearUsuario() {
   );
 }
 
-export default CrearUsuario;  
+export default CrearUsuario;

@@ -139,7 +139,7 @@ public class UsuarioController {
     @PutMapping("/modificar/{idUsuario}")
     public ResponseEntity<?> actualizarUsuario(
             @PathVariable Long idUsuario,
-            @RequestBody UsuarioRequest usuarioRecibido ) {
+            @RequestBody @Valid UsuarioRequest usuarioRecibido ) {
         try {
             UsuarioModel usuarioActualizado = usuarioService.actualizarUsuario(idUsuario, usuarioRecibido);
             return ResponseEntity.ok(Map.of(

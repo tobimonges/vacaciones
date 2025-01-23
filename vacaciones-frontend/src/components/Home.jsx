@@ -10,6 +10,8 @@ import "./Home.css"; // Importa estilos CSS específicos para el componente Home
 import NavigationBar from "./NavigationBar"; // Importa componente de barra de navegación
 import Preloader from "./Preloader"; // Importa componente de preloader
 import Sidebar from "./Sidebar"; // Importa componente de barra lateral
+import "./Login.css"
+import Logogiratorio from "./logogiratorio"
 
 // Localización de fechas
 const locales = { es: esLocale }; // Define la localización en español
@@ -79,6 +81,10 @@ const Home = () => {
   const [vacationDays, setVacationDays] = useState(0); // Estado para los días de vacaciones disponibles
   const [events, setEvents] = useState([]); // Estado para la lista de eventos del calendario
   const [error, setError] = useState(""); // Estado para los mensajes de error
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [showMainContent, setShowMainContent] = useState(false);
+  const [showNavBar, setShowNavBar] = useState(false); // Estado para controlar la visibilidad de la barra de navegación
+  const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate(); // Hook para la navegación entre rutas
 
   // Obtener Datos del Usuario y Solicitudes de Vacaciones
@@ -209,27 +215,49 @@ const Home = () => {
     };
   }; // Función para obtener estilos de los eventos del calendario
 
+
+  useEffect(() => {
+     const timeout = setTimeout(() => {
+      setIsAnimating(false);
+      setTimeout(() => {
+        setShowSidebar(true);
+      }, 300); // Retraso para mostrar la barra lateral
+      setTimeout(() => {
+        setShowNavBar(true);
+      }, 900); // Retraso para mostrar la barra de navegación
+      setTimeout(() => {
+        setShowMainContent(true);
+      }, 100); // Retraso para mostrar la barra lateral
+    }, 650); // Duración de la animación de Logogiratorio
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+
   return (
     // Estructura de la página
     <div className="container home-container">
-      <Preloader duration={650} />
+      {isAnimating ? (
+      <Logogiratorio duration={650} />
+    ) : (
+      showMainContent && (
+        <>
       {/* **Barra lateral** */}
-      <div className="sidebar">
-        <Sidebar/>
+      <div className="sidebar cajaLogin">        <Sidebar/>
       </div>
 
       {/* **Área de contenido** */}
       <div className="content-area">
         {/* **Barra de navegación** */}
-        <div className="navbar">
-          <div className="navbar-content">
+        <div className="navbar cajaLogin">
+        <div className="navbar-content">
             <NavigationBar/>
           </div>
         </div>
 
         {/* **Contenido principal** */}
         <div className="main">
-          <div className="main-content">
+          <div className="main-content cajaLogin">
             <div className="calendar-title">
               <div className="calendar-key">
                 <span>Fecha de ingreso:</span>
@@ -282,6 +310,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+      </>
+      )
+    )}
     </div>
   );
 };

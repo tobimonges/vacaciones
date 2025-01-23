@@ -82,7 +82,6 @@ const HomeTh = () => {
     };
 
     fetchPendingRequests();
-
   }, []);
 
   //Funcion Para obtener equipos
@@ -105,7 +104,7 @@ const HomeTh = () => {
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
     const fetchUserData = async () => {
-      const usuarioId = getUsuarioId(); // Obtener el ID del usuario logueado
+      const usuarioId = getUsuarioId();
       if (!usuarioId || !isTokenValid()) {
         setError("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         navigate("/");
@@ -116,17 +115,18 @@ const HomeTh = () => {
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `http://localhost:8080/vacaciones/buscarid/${usuarioId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const { nombre, fechaIngreso, diasVacaciones } = response.data;
+        const { nombre } = response.data;
         setUserNameTh(nombre);
 
-        // Guardar el ID del usuario en localStorage
-        localStorage.setItem("userId", usuarioId);
-
+        // Marcar la página como recargada
+        const shouldReload = localStorage.getItem("shouldReload");
+        if (shouldReload) {
+          localStorage.removeItem("shouldReload");
+          navigate(0); // Recargar la página una vez
+        }
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -238,9 +238,11 @@ const HomeTh = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Eliminar el token de autenticación
-    navigate("/"); // Redirigir a la página de inicio de sesión
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    navigate("/"); // Redirige a la página de inicio de sesión
   };
+
   // 🎨 **Personalizar colores de días**
   const dayPropGetter = (date) => {
     const today = new Date();
@@ -330,47 +332,62 @@ const HomeTh = () => {
         <div className="main">
           <div className="main-content">
             <div className="calendar-title-th">
-              {/* condiciones para mostrar un titulo u otro */}
-              
-              {pendingCount == 1 ? (
-                <span>Solicitudes</span>
+              {pendingCount === 0 ? (
+                <span>No tienes solicitudes pendientes.</span>
               ) : (
-                <span>Tienes <span className="contador">{pendingCount}</span> solicitud pendiente!</span>
+                <span>
+                  {`Tienes `}
+                  <span className="pending-count-number">{pendingCount}</span>
+                  {pendingCount === 1
+                    ? ` solicitud pendiente!`
+                    : ` solicitudes pendientes!`}
+                </span>
               )}
-              
             </div>
 
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               {/* 🛠️ Checkbox con filtros*/}
-                
-              <div className="checkbox-container">
-                <div className="custom-checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={showBirthdays}
-                      onChange={(e) => setShowBirthdays(e.target.checked)}
-                    />
-                    Mostrar cumpleaños
-                  </label>
-                </div>
 
-                <div className="custom-checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={showHolidays}
-                      onChange={(e) => setShowHolidays(e.target.checked)}
-                    />
-                    Mostrar feriados
-                  </label>
+              <div className="calendar-title">
+                <div className="calendar-key">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showBirthdays}
+                        onChange={(e) => setShowBirthdays(e.target.checked)}
+                      />
+                      Mostrar cumpleaños
+                    </label>
+                  </div>
                 </div>
-
-                <div className="pendientes-container">
-                  
-                  <span></span>
+                <div className="calendar-key">
+                  <select
+                    id="equipo-select"
+                    className="button-homeTH-2"
+                    value={equipoSeleccionado}
+                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                  >
+                    <option value="">Todos los equipos</option>
+                    {equipos.map((equipo) => (
+                      <option key={equipo.nombre} value={equipo.nombre}>
+                        {equipo.nombre}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-
+                <div className="calendar-key">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showHolidays}
+                        onChange={(e) => setShowHolidays(e.target.checked)}
+                      />
+                      Mostrar feriados
+                    </label>
+                  </div>
+                </div>
               </div>
 
               {/* 🚨 Mensajes de Error */}
@@ -401,26 +418,9 @@ const HomeTh = () => {
                     // Prevenir cambio de vista
                     handleShowMore(eventsOnDay, date);
                   }}
-
                   dayLayoutAlgorithm="no-overlap"
                 />
               </div>
-
-              <div className="select-container">
-                  <select
-                    id="equipo-select"
-                    className="sidebar-button sidebar-button-homeTH"
-                    value={equipoSeleccionado}
-                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
-                  >
-                    <option value="">Todos los equipos</option>
-                    {equipos.map((equipo) => (
-                      <option key={equipo.nombre} value={equipo.nombre}>
-                        {equipo.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
               {/* 🖍️ Leyenda de Colores */}
               <div className="calendar-legend">
