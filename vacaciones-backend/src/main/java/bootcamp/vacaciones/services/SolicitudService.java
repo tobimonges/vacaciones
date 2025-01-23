@@ -8,6 +8,7 @@ import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.utils.CalendarioUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.slf4j.LoggerFactory;
 import java.time.DayOfWeek;
@@ -24,6 +25,10 @@ public class SolicitudService implements ISolicitudService {
 
     private final EmailService emailService;
     private final UsuarioService usuarioService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
 
     @Autowired
     public SolicitudService(SolicitudRepository solicitudRepository, UsuarioRepository usuarioRepository, EmailService emailService, UsuarioService usuarioService) {
@@ -99,7 +104,7 @@ public class SolicitudService implements ISolicitudService {
                 usuario.getId()
         );
 
-        int diasDisponibles = usuario.getDiasVacaciones();
+        int diasDisponibles = usuario.getDiasVacaciones() + usuario.getDiasVacacionesRestante();
         if (cantidadDias > diasDisponibles) {
             throw new IllegalArgumentException("No tienes suficientes días de vacaciones disponibles.");
         }
@@ -191,11 +196,9 @@ public class SolicitudService implements ISolicitudService {
                 case "LIDER":
                 case "GTH":
                 case "OPERACIONES":
-
                     logger.info(nombreRol);
                     notificarLider(lider, usuario, solicitud);
                     break;
-
                 default:
                     throw new IllegalArgumentException("Rol no soportado para notificaciones.");
             }
@@ -203,12 +206,14 @@ public class SolicitudService implements ISolicitudService {
     }
 
     private void notificarLider(UsuarioModel lider, UsuarioModel usuario, SolicitudModel solicitud) {
+        String url = baseUrl+"/AdminDashboard";
         emailService.enviarCorreo(
                 lider.getCorreo(),
                 "Nueva Solicitud de Vacaciones (Líder)",
                 "<p>El usuario " + usuario.getNombre() + " " + usuario.getApellido() +
                         " ha creado una solicitud de vacaciones para las fechas " +
-                        solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>"
+                        solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>" +
+                        "<a href='" +url+ "'>Verificar Solicitud</a>"
         );
     }
 
@@ -388,7 +393,7 @@ public class SolicitudService implements ISolicitudService {
 
                 UsuarioModel usuario = solicitud.getUsuario();
 
-                int diasDisponibles = usuario.getDiasVacaciones();
+                int diasDisponibles = usuario.getDiasVacaciones()+usuario.getDiasVacacionesRestante();
                 int cantidadDias = solicitud.getCantidadDias();
 
                 if (diasDisponibles == 0) {
@@ -687,6 +692,7 @@ public class SolicitudService implements ISolicitudService {
                 "Solicitud Pendiente de Aprobación (TH)",
                 "La solicitud del usuario " + nuevaSolicitud.getUsuario().getNombre() +
                         " está pendiente de aprobación por parte de TH."
+
         );
 
         return solicitudRepository.save(nuevaSolicitud);

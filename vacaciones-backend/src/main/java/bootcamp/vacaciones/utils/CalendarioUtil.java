@@ -11,16 +11,29 @@ public class CalendarioUtil {
     public static List<Map<String, String>> obtenerFeriados() {
         return List.of(
                 Map.of("fecha", "2025-01-01", "descripcion", "Año Nuevo"),
-                Map.of("fecha", "2025-03-02", "descripcion", "Día de los Héroes"),
+                Map.of("fecha", "2025-03-03", "descripcion", "Día de los Héroes"),
                 Map.of("fecha", "2025-04-17", "descripcion", "Jueves Santo"),
                 Map.of("fecha", "2025-04-18", "descripcion", "Viernes Santo"),
                 Map.of("fecha", "2025-05-01", "descripcion", "Día del Trabajador"),
                 Map.of("fecha", "2025-05-14", "descripcion", "Día de la Independencia"),
-                Map.of("fecha", "2025-06-12", "descripcion", "Día de la Paz del Chaco"),
+                Map.of("fecha", "2025-05-15", "descripcion", "Día de la Independencia"),
+                Map.of("fecha", "2025-06-16", "descripcion", "Día de la Paz del Chaco"),
                 Map.of("fecha", "2025-08-15", "descripcion", "Fundación de Asunción"),
                 Map.of("fecha", "2025-09-29", "descripcion", "Victoria de Boquerón"),
                 Map.of("fecha", "2025-12-08", "descripcion", "Día de la Virgen de Caacupé"),
-                Map.of("fecha", "2025-12-25", "descripcion", "Navidad")
+                Map.of("fecha", "2025-12-25", "descripcion", "Navidad"),
+                Map.of("fecha", "2026-01-01", "descripcion", "Año Nuevo"),
+                Map.of("fecha", "2026-03-01", "descripcion", "Día de los Héroes"),
+                Map.of("fecha", "2026-04-17", "descripcion", "Jueves Santo"),
+                Map.of("fecha", "2026-04-18", "descripcion", "Viernes Santo"),
+                Map.of("fecha", "2026-05-01", "descripcion", "Día del Trabajador"),
+                Map.of("fecha", "2026-05-14", "descripcion", "Día de la Independencia"),
+                Map.of("fecha", "2026-05-15", "descripcion", "Día de la Independencia"),
+                Map.of("fecha", "2026-06-12", "descripcion", "Día de la Paz del Chaco"),
+                Map.of("fecha", "2026-08-15", "descripcion", "Fundación de Asunción"),
+                Map.of("fecha", "2026-09-29", "descripcion", "Victoria de Boquerón"),
+                Map.of("fecha", "2026-12-08", "descripcion", "Día de la Virgen de Caacupé"),
+                Map.of("fecha", "2026-12-25", "descripcion", "Navidad")
         );
     }
 
