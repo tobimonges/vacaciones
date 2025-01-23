@@ -331,46 +331,58 @@ const HomeTh = () => {
           <div className="main-content">
             <div className="calendar-title-th">
               {/* condiciones para mostrar un titulo u otro */}
-              
-              {pendingCount == 1 ? (
-                <span>Solicitudes</span>
+
+              {pendingCount === 0 ? (
+                <span>No tienes solicitudes pendientes.</span>
+              ) : pendingCount === 1 ? (
+                <span>Tienes 1 solicitud pendiente!</span>
               ) : (
-                <span>Tienes <span className="contador">{pendingCount}</span> solicitud pendiente!</span>
+                <span>Tienes {pendingCount} solicitudes pendientes!</span>
               )}
-              
             </div>
 
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
               {/* 🛠️ Checkbox con filtros*/}
-                
-              <div className="checkbox-container">
-                <div className="custom-checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={showBirthdays}
-                      onChange={(e) => setShowBirthdays(e.target.checked)}
-                    />
-                    Mostrar cumpleaños
-                  </label>
-                </div>
 
-                <div className="custom-checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={showHolidays}
-                      onChange={(e) => setShowHolidays(e.target.checked)}
-                    />
-                    Mostrar feriados
-                  </label>
+              <div className="opciones pendientes-container">
+                <div className="select-container">
+                  <select
+                    id="equipo-select"
+                    className="sidebar-button sidebar-button-homeTH"
+                    value={equipoSeleccionado}
+                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                  >
+                    <option value="">Todos los equipos</option>
+                    {equipos.map((equipo) => (
+                      <option key={equipo.nombre} value={equipo.nombre}>
+                        {equipo.nombre}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+                <div className="checkbox-container">
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showBirthdays}
+                        onChange={(e) => setShowBirthdays(e.target.checked)}
+                      />
+                      Mostrar cumpleaños
+                    </label>
+                  </div>
 
-                <div className="pendientes-container">
-                  
-                  <span></span>
+                  <div className="custom-checkbox">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={showHolidays}
+                        onChange={(e) => setShowHolidays(e.target.checked)}
+                      />
+                      Mostrar feriados
+                    </label>
+                  </div>
                 </div>
-
               </div>
 
               {/* 🚨 Mensajes de Error */}
@@ -405,22 +417,6 @@ const HomeTh = () => {
                   dayLayoutAlgorithm="no-overlap"
                 />
               </div>
-
-              <div className="select-container">
-                  <select
-                    id="equipo-select"
-                    className="sidebar-button sidebar-button-homeTH"
-                    value={equipoSeleccionado}
-                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
-                  >
-                    <option value="">Todos los equipos</option>
-                    {equipos.map((equipo) => (
-                      <option key={equipo.nombre} value={equipo.nombre}>
-                        {equipo.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
               {/* 🖍️ Leyenda de Colores */}
               <div className="calendar-legend">
