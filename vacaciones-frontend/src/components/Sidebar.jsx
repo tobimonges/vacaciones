@@ -39,10 +39,12 @@ const SidebarButtons = () => {
 
         // Filtrar solicitudes pendientes (numeroAprobaciones === 0) excluyendo las del usuario logueado
         const pendingRequests = requests.filter(
-          (request) =>
-            request.numeroAprobaciones === 0 &&
-            request.usuario.id !== parseInt(userId)
+            (request) =>
+                request.numeroAprobaciones === 0 && // Solicitudes pendientes
+                request.usuario.id !== parseInt(userId) && // Excluir solicitudes del usuario actual
+                request.lideres.some((lider) => lider.id === parseInt(userId)) // Verificar si el usuario actual es líder seleccionado
         );
+
 
         setPendingCount(pendingRequests.length);
       } catch (error) {

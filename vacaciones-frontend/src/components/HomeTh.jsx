@@ -82,6 +82,7 @@ const HomeTh = () => {
     };
 
     fetchPendingRequests();
+
   }, []);
 
   //Funcion Para obtener equipos
@@ -125,6 +126,7 @@ const HomeTh = () => {
 
         // Guardar el ID del usuario en localStorage
         localStorage.setItem("userId", usuarioId);
+
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
