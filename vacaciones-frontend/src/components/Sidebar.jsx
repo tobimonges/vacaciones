@@ -125,36 +125,36 @@ const SidebarButtons = () => {
           </button>
         )}
 
-      {userRole === "LIDER" && !isHome ? (
-        <button
-          className="sidebar-button"
-          onClick={() => navigate(`/AdminDashboard`)}
-        >
-          <span>Bandeja de Solicitudes</span>
-          {pendingCount !== 0 && (
-            <img
-              src="/icono-notificaciones.svg"
-              alt="Solicitudes"
-              title="Solicitudes"
-              className="notificacion"
-            />
-          )}
-        </button>
-      ) : userRole !== "LIDER" && isUserAllowed() && !isHome ? (
-        <button
-          className="sidebar-button"
-          onClick={() => navigate(`/AdminDashboard`)}
-        >
-          <span>Listar Solicitudes</span>
-          {pendingCount !== 0 && (
-            <img
-              src="/icono-notificaciones.svg"
-              alt="Solicitudes"
-              title="Solicitudes"
-              className="notificacion"
-            />
-          )}
-        </button>
+      {userRole === "LIDER" && isHomeTH ? (
+          <button
+              className="sidebar-button"
+              onClick={() => navigate(`/AdminDashboard`)}
+          >
+            <span>Bandeja de Solicitudes</span>
+            {pendingCount > 0 && ( // Mostrar la imagen solo si pendingCount es 0 o 1
+                <img
+                    src="/icono-notificaciones.svg"
+                    alt="Solicitudes"
+                    title="Solicitudes"
+                    className="notificacion"
+                />
+            )}
+          </button>
+      ) : userRole !== "LIDER" && isUserAllowed() && isHomeTH ? (
+          <button
+              className="sidebar-button"
+              onClick={() => navigate(`/AdminDashboard`)}
+          >
+            <span>Listar Solicitudes</span>
+            {(pendingCount === 0 || pendingCount === 1) && ( // Mostrar la imagen solo si pendingCount es 0 o 1
+                <img
+                    src="/icono-notificaciones.svg"
+                    alt="Solicitudes"
+                    title="Solicitudes"
+                    className="notificacion"
+                />
+            )}
+          </button>
       ) : null}
 
       {userRole === "TH" && !isHome && (
