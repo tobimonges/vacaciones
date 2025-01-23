@@ -17,15 +17,15 @@ function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showError, setShowError] = useState(false);
-  const [showLoginBox, setShowLoginBox] = useState(true);
+  const [showLoginBox, setShowLoginBox] = useState(false);
+  const [isLoginBoxVisible, setIsLoginBoxVisible] = useState(false); // Nuevo estado para controlar la visibilidad
+
+  
   useEffect(() => {
     // Esto activa la animación inicial cuando se carga la página
     const timeout = setTimeout(() => {
-      const loginBox = document.querySelector(".loginBox");
-      if (loginBox) {
-        loginBox.classList.add("cajaLogin");
-      }
-    }, 655); // 800 milisegundos = 0.8 segundos
+      setIsLoginBoxVisible(true);
+    }, 900); // 900 milisegundos = 0.9 segundos
 
     // Limpiar el timeout si el componente se desmonta antes de que se ejecute
     return () => clearTimeout(timeout);
@@ -35,6 +35,9 @@ function Login() {
     e.preventDefault();
 
     setError(false); // Ocultar el mensaje de error
+    setShowError(false); // Ocultar el popup de error 
+
+
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -47,16 +50,27 @@ function Login() {
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
+      const loginBox = document.querySelector(".loginBox");
+      loginBox.classList.add("LoginAnim");
       setTimeout(() => {
         navigate("/Home");
-      }, 200);
+      }, 500);
+
     } catch (error) {
       console.log(error.response);
       if(error.response.data.message === "Redirigir a cambio de contraseña") {
         setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
+        setShowError(true);
+        setTimeout(() => {
+          setShowError(false);
+          // setIsAnimating(true);
+          const loginBox = document.querySelector(".loginBox");
+          loginBox.classList.add("LoginAnim");
+        }, 800);
+        setIsAnimating(true); //agregado de animacion para ir a reset-password
         setTimeout(() => {
           navigate(error.response.data.redirect);
-        }, 2500);
+        }, 1000);
         return;
       }
       console.error("Error al iniciar sesión", error);
@@ -64,6 +78,7 @@ function Login() {
       setError(true);
       setShowError(true);
       //  setTimeout(() => setError(false), 2100);
+    
       setTimeout(() => setShowError(false), 2000);
 
       if (error.response) {
@@ -101,14 +116,15 @@ function Login() {
   }
   return (
     <div className="container containerLogin">
-      <Logogiratorio duration={650} />
+    <Logogiratorio duration={650} />
+    {isLoginBoxVisible && (
       <div
-        className={`loginBox ${isAnimating ? "LoginAnim" : ""} ${error ? "datosIncorrectos" : ""
-          }`}
-      >
+      className={`loginBox cajaLogin ${
+        error ? "datosIncorrectos" : "" // Aplicar la clase datosIncorrectos solo cuando error sea true
+      }`}>
         <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
-        <form onSubmit={handleLogin} action="login" method="post" className="loginForm">
+        <form onSubmit={handleLogin} className="loginForm">
           <div className="inputGroup">
             <div className="iconWrap">
               <img src="/avatar.svg" alt="Usuario" className="icon" />
@@ -134,35 +150,32 @@ function Login() {
                 required
               />
             </div>
-            <div className="inputGroup">
-
-              <div className="forgotPassword">
-                <a
-                  href="#"
-                  className="link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleForgotPassword();
-                  }}
-                >
-                  Olvidaste tu contraseña?
-                </a>
-              </div>
+            <div className="forgotPassword">
+              <a
+                href="#"
+                className="linkLogin"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleForgotPassword();
+                }}
+              >
+                Olvidaste tu contraseña?
+              </a>
             </div>
           </div>
           <button type="submit" className="buttonLogin">
             <span>Iniciar sesión</span>
           </button>
         </form>
-        <div className="content"></div>
       </div>
-      {showError && (
-        <div className={`errorPopup ${error ? "error" : ""}`}>
-          {errorMessage}
-        </div>
-      )}
-    </div>
-  );
+    )}
+    {showError && (
+      <div className={`errorPopup ${error ? "error" : ""}`}>
+        {errorMessage}
+      </div>
+    )}
+  </div>
+);
 }
 
 export default Login;

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./EquipoDetalle.css";
 import { Link } from "react-router-dom";
 import { getUserRole, getUsuarioId, isTokenValid } from "./authUtils";
+import Sidebar from "./Sidebar";
 
 const EquipoDetalle = () => {
   const [equipos, setEquipos] = useState([]);
@@ -106,79 +107,7 @@ const EquipoDetalle = () => {
   return (
     <div className="container">
       <div className="sidebar">
-        <div className="sidebar-content">
-          {/* 🖼️ Logo de la barra lateral */}
-          <div className="sidebar-logo">
-            <Link to="/home">
-              <img src=".\logo-white.svg" alt="Logo" className="logo" />
-            </Link>
-          </div>
-
-          <div className="sidebar-buttons">
-            <div className="sidebar-buttons">
-              {userRole === "LIDER" ? (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/AdminDashboard`)}
-                >
-                  <span>Bandeja de Solicitudes</span>
-                </button>
-              ) : userRole !== "LIDER" ? (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/AdminDashboard`)}
-                >
-                  <span>Listar Solicitudes</span>
-                </button>
-              ) : null}
-
-              {/* 🛠️ Botones visibles solo para "TH" */}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/crearusuario`)}
-                >
-                  <span>Registrar Funcionario</span>
-                </button>
-              )}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/UsuarioDetalle`)}
-                >
-                  <span>Usuario Detalle</span>
-                </button>
-              )}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/CrearEquipo`)}
-                >
-                  <span>Crear Equipo</span>
-                </button>
-              )}
-              {userRole === "TH" && (
-                <button
-                  className="sidebar-button"
-                  onClick={() => navigate(`/CrearCargo`)}
-                >
-                  <span>Crear Cargo</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="sidebar-logout">
-            <button className="logout-button" onClick={handleLogout}>
-              <img
-                src=".\salida.svg"
-                alt="Cerrar sesión"
-                className="button-icon"
-              />
-              <span>Cerrar sesión</span>
-            </button>
-          </div>
-        </div>
+        <Sidebar />
       </div>
       <div className="content-area">
         <div className="navbar">

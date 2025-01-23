@@ -264,8 +264,15 @@ export default function NuevaSolicitud() {
     e.preventDefault();
 
     if (!startDate || !endDate || !selectedLideres) {
-      // setError("Por favor, selecciona ambas fechas y por lo menos un lider.");
       setMensaje("Por favor, selecciona ambas fechas y por lo menos un lider.");
+      setTipoMensaje("Error");
+      return;
+    }
+
+    if (userRole === "FUNCIONARIO_TERCERIZADO" && !file) {
+      setMensaje(
+        "Es obligatorio adjuntar un archivo para funcionarios tercerizados."
+      );
       setTipoMensaje("Error");
       return;
     }
@@ -287,7 +294,6 @@ export default function NuevaSolicitud() {
       });
 
       const solicitudId = solicitudResponse.data.id; // Obtener ID de la solicitud creada
-
       // Subir archivo si existe
       if (file) {
         const formData = new FormData();

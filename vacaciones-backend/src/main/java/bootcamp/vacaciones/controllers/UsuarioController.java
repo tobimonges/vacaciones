@@ -12,6 +12,7 @@ import bootcamp.vacaciones.services.EmailService;
 import bootcamp.vacaciones.services.IUsuarioService;
 import bootcamp.vacaciones.services.RolService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -108,12 +109,20 @@ public class UsuarioController {
     }
 
     @PostMapping("/crea/usuarios")
-    public ResponseEntity<?> guardarUsuario(@RequestBody UsuarioRequest usuarioRequest) {
+    public ResponseEntity<?> guardarUsuario(@RequestBody @Valid UsuarioRequest usuarioRequest) {
         try {
             UsuarioModel nuevoUsuario = usuarioService.guardarUsuario(usuarioRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                    "message", "Usuario creado exitosamente",
+                    "usuario", nuevoUsuario
+            ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error interno del servidor.",
+                    "detalle", e.getMessage()
+            ));
         }
     }
 

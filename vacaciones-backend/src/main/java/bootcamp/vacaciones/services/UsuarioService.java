@@ -1,12 +1,12 @@
 package bootcamp.vacaciones.services;
 
-import bootcamp.vacaciones.models.RolModel;
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.UsuarioRequest;
 import bootcamp.vacaciones.repositories.RolRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.utils.GeneradorContraseña;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,10 @@ import java.util.Optional;
 public class UsuarioService implements IUsuarioService{
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -96,14 +100,15 @@ public class UsuarioService implements IUsuarioService{
 
         if (usuarioRequest.getContrasena() == null || usuarioRequest.getContrasena().isEmpty()) {
             String passwordAleatoria = GeneradorContraseña.generarContraseñaAleatoria();
-
+            String url= baseUrl+"/";
             emailService.enviarCorreo(
                     usuarioRequest.getCorreo(),
-                    "Modificar Contraseña",
-                    "<p>Bienvenido/a " + usuarioRequest.getNombre() + ",</p>" +
+                    "Sistema de Vacaciones",
+                    "<p>Bienvenido/a " + usuarioRequest.getNombre() + " " + usuarioRequest.getApellido() +  ",</p>" +
                             "<p>Se ha creado una cuenta en el sistema para solicitar vacaciones. Su contraseña temporal es:</p>" +
                             "<h3>" + passwordAleatoria + "</h3>" +
-                            "<p>Por favor cambie su contraseña para acceder al sistema.</p>" +
+                            "<p>Por favor inicie sesion para cambiar la contraseña</p>"+
+                            "<a href='" +url+ "'>Iniciar Sesion</a>"+
                             "<p>Saludos</p>"
             );
 
