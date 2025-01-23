@@ -337,7 +337,7 @@ const HomeTh = () => {
               ) : (
                 <span>
                   {`Tienes `}
-                  <span className="pending-count-number">{pendingCount}</span>
+                  <span className="pending-count-number">{`${pendingCount}`}</span>
                   {pendingCount === 1
                     ? ` solicitud pendiente!`
                     : ` solicitudes pendientes!`}
