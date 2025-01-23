@@ -195,18 +195,11 @@
     display: flex;
     flex-direction: column;
     margin: 0 auto;
-    padding: 5px 20px 10px 10px;
+    padding: 5px 0px 10px 20px;
     width: 80%;
-    background-color:rgba(0, 104, 202, 0.71);
-    border-radius: 12px;
-    /*sombreado*/
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
   }
-  .calendar-button-th {
-    background-color:rgba(255, 255, 255, 0) !important;
-    color: #333;
-}
-
   
   .pendientes-container {
     display: flex;

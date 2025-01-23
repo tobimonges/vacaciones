@@ -328,7 +328,14 @@ const HomeTh = () => {
         <div className="main">
           <div className="main-content">
             <div className="calendar-title-th">
-              <span>Solicitudes</span>
+              {/* condiciones para mostrar un titulo u otro */}
+              
+              {pendingCount == 1 ? (
+                <span>Solicitudes</span>
+              ) : (
+                <span>Tienes <span className="contador">{pendingCount}</span> solicitud pendiente!</span>
+              )}
+              
             </div>
 
             <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
@@ -358,8 +365,8 @@ const HomeTh = () => {
                 </div>
 
                 <div className="pendientes-container">
-                  <span>Solicitudes Pendientes</span>
-                  <span>{pendingCount}</span>
+                  
+                  <span></span>
                 </div>
 
               </div>
@@ -398,7 +405,7 @@ const HomeTh = () => {
               <div className="select-container">
                   <select
                     id="equipo-select"
-                    className="sidebar-button calendar-button-th"
+                    className="sidebar-button sidebar-button-homeTH"
                     value={equipoSeleccionado}
                     onChange={(e) => setEquipoSeleccionado(e.target.value)}
                   >
