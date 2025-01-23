@@ -82,6 +82,7 @@ const HomeTh = () => {
     };
 
     fetchPendingRequests();
+
   }, []);
 
   //Funcion Para obtener equipos
@@ -125,6 +126,7 @@ const HomeTh = () => {
 
         // Guardar el ID del usuario en localStorage
         localStorage.setItem("userId", usuarioId);
+
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
         setError("No se pudieron cargar los datos del usuario.");
@@ -400,6 +402,7 @@ const HomeTh = () => {
                     week: "Semana",
                     day: "Día",
                     agenda: "Agenda",
+                    showMore: (count) => `+${count} más`, // Traducción para "More"
                   }}
                   views={{ month: true }} // Mantener solo la vista de mes
                   eventPropGetter={eventStyleGetter}
@@ -410,6 +413,7 @@ const HomeTh = () => {
                     // Prevenir cambio de vista
                     handleShowMore(eventsOnDay, date);
                   }}
+
                   dayLayoutAlgorithm="no-overlap"
                 />
               </div>
