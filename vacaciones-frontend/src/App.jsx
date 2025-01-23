@@ -37,7 +37,7 @@ function App() {
           path="/AdminDashboard"
           element={
             <PrivateRoute
-              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
+              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO", "GTH"]}
             >
               <AdminDashboard />
             </PrivateRoute>
@@ -48,7 +48,7 @@ function App() {
           path="/SolicitudAuxiliar"
           element={
             <PrivateRoute
-              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
+              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO", "GTH"]}
             >
               <SolicitudAuxiliar />
             </PrivateRoute>
@@ -58,7 +58,7 @@ function App() {
         <Route
           path="/CrearUsuario"
           element={
-            <PrivateRoute allowedRoles={["TH"]}>
+            <PrivateRoute allowedRoles={["TH", "GTH"]}>
               <CrearUsuario />
             </PrivateRoute>
           }
@@ -66,7 +66,7 @@ function App() {
         <Route
           path="/UsuarioDetalle"
           element={
-            <PrivateRoute allowedRoles={["TH"]}>
+            <PrivateRoute allowedRoles={["TH", "GTH"]}>
               <UsuarioDetalle />
             </PrivateRoute>
           }
@@ -74,7 +74,7 @@ function App() {
         <Route
           path="/CreaEquipo"
           element={
-            <PrivateRoute allowedRoles={["TH"]}>
+            <PrivateRoute allowedRoles={["TH", "GTH"]}>
               <CreaEquipo />
             </PrivateRoute>
           }
@@ -82,7 +82,7 @@ function App() {
         <Route
           path="/EquipoDetalle"
           element={
-            <PrivateRoute allowedRoles={["TH"]}>
+            <PrivateRoute allowedRoles={["TH", "GTH"]}>
               <EquipoDetalle />
             </PrivateRoute>
           }
@@ -90,7 +90,7 @@ function App() {
         <Route
           path="/CreaCargo"
           element={
-            <PrivateRoute allowedRoles={["TH"]}>
+            <PrivateRoute allowedRoles={["TH", "GTH"]}>
               <CreaCargo />
             </PrivateRoute>
           }
@@ -98,7 +98,7 @@ function App() {
         <Route
           path="/CargoDetalle"
           element={
-            <PrivateRoute allowedRoles={["TH"]}>
+            <PrivateRoute allowedRoles={["TH", "GTH"]}>
               <CargoDetalle />
             </PrivateRoute>
           }
@@ -107,7 +107,7 @@ function App() {
           path="/HomeTh"
           element={
             <PrivateRoute
-              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO"]}
+              allowedRoles={["TH", "LIDER", "OPERACIONES", "DIRECTORIO", "GTH"]}
             >
               <HomeTh />
             </PrivateRoute>

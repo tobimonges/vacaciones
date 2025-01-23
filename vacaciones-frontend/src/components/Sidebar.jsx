@@ -12,26 +12,9 @@ const SidebarButtons = () => {
   const location = useLocation();
   const isHomeTH = location.pathname === "/HomeTH";
   const isHome = location.pathname === "/Home";
-  const isEquipoDetalle = location.pathname === "/EquipoDetalle";
-  const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
-  const [equipos, setEquipos] = useState([]);
   const [pendingCount, setPendingCount] = useState(0);
 
-  useEffect(() => {
-    const fetchEquipos = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/equipos", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setEquipos(response.data);
-      } catch (err) {
-        console.error("Error al obtener equipos:", err);
-      }
-    };
 
-    fetchEquipos();
-  }, []);
 
   //Funcion para contar solicitudes pendientes
   useEffect(() => {
@@ -75,7 +58,7 @@ const SidebarButtons = () => {
    * @returns {boolean}
    */
   const isUserAllowed = () => {
-    const allowedRoles = ["TH", "LIDER", "DIRECTORIO", "OPERACIONES"];
+    const allowedRoles = ["TH", "LIDER", "DIRECTORIO", "OPERACIONES", "GTH"];
     return allowedRoles.includes(userRole);
   };
 
@@ -146,7 +129,7 @@ const SidebarButtons = () => {
               onClick={() => navigate(`/AdminDashboard`)}
           >
             <span>Listar Solicitudes</span>
-            {(pendingCount === 0 || pendingCount === 1) && ( // Mostrar la imagen solo si pendingCount es 0 o 1
+            {pendingCount > 0 && ( // Mostrar la imagen solo si pendingCount es 0 o 1
                 <img
                     src="/icono-notificaciones.svg"
                     alt="Solicitudes"
@@ -157,7 +140,7 @@ const SidebarButtons = () => {
           </button>
       ) : null}
 
-      {userRole === "TH" && !isHome && (
+      {userRole === "TH"||"GTH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/crearusuario`)}
@@ -166,7 +149,7 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {userRole === "TH" && !isHome && (
+      {userRole === "TH" || "GTH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/UsuarioDetalle`)}
@@ -174,7 +157,7 @@ const SidebarButtons = () => {
           <span>Editar Datos de Funcionario</span>
         </button>
       )}
-      {userRole === "TH" && !isHome && (
+      {userRole === "TH" || "GTH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaEquipo`)}
@@ -182,7 +165,7 @@ const SidebarButtons = () => {
           <span>Crear Equipo</span>
         </button>
       )}
-      {userRole === "TH" && !isHome && (
+      {userRole === "TH" || "GTH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/EquipoDetalle`)}
@@ -190,7 +173,7 @@ const SidebarButtons = () => {
           <span>Editar Equipo</span>
         </button>
       )}
-      {userRole === "TH" && !isHome && (
+      {userRole === "TH" || "GTH" && !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaCargo`)}
@@ -198,7 +181,7 @@ const SidebarButtons = () => {
           <span>Crear Cargo</span>
         </button>
       )}
-      {userRole === "TH" && !isHome && (
+      {userRole === "TH" || "GTH"&& !isHome && (
         <button
           className="sidebar-button"
           onClick={() => navigate(`/CreaCargo`)}
@@ -207,20 +190,6 @@ const SidebarButtons = () => {
         </button>
       )}
 
-      {isUserAllowed() && !isHome && (
-        <select
-          className="sidebar-button sidebar-button-homeTH"
-          value={equipoSeleccionado}
-          onChange={(e) => setEquipoSeleccionado(e.target.value)}
-        >
-          <option value="">Todos los equipos</option>
-          {equipos.map((equipo) => (
-            <option key={equipo.nombre} value={equipo.nombre}>
-              {equipo.nombre}
-            </option>
-          ))}
-        </select>
-      )}
     </div>
   );
 };

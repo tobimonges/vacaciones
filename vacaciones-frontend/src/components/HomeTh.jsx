@@ -84,6 +84,22 @@ const HomeTh = () => {
     fetchPendingRequests();
   }, []);
 
+  //Funcion Para obtener equipos
+  useEffect(() => {
+    const fetchEquipos = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/equipos", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEquipos(response.data);
+      } catch (err) {
+        console.error("Error al obtener equipos:", err);
+      }
+    };
+
+    fetchEquipos();
+  }, []);
 
   // 📥 **Obtener Datos del Usuario**
   useEffect(() => {
@@ -283,11 +299,9 @@ const HomeTh = () => {
       ? event.equipo &&
         event.equipo.toLowerCase() === equipoSeleccionado.toLowerCase()
       : true; // Si no hay equipo seleccionado, no se filtra por equipo
-
     // Filtrar por tipo de evento (cumpleaños y feriados)
     const isBirthdayVisible = event.type !== "cumpleanos" || showBirthdays;
     const isHolidayVisible = event.type !== "feriado" || showHolidays;
-
     // Retornar el evento solo si pasa ambos filtros
     return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
   });
@@ -347,6 +361,18 @@ const HomeTh = () => {
                 <div className="custom-checkbox">
                   <span>Solicitudes Pendientes: {pendingCount}</span>
                 </div>
+                <select
+                    className="sidebar-button sidebar-button-homeTH"
+                    value={equipoSeleccionado}
+                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                >
+                  <option value="">Todos los equipos</option>
+                  {equipos.map((equipo) => (
+                      <option key={equipo.nombre} value={equipo.nombre}>
+                        {equipo.nombre}
+                      </option>
+                  ))}
+                </select>
               </div>
 
               {/* 🚨 Mensajes de Error */}
