@@ -368,13 +368,15 @@ export default function SolicitudDetalle() {
   };
 
   // Filtrar solicitudes según el estado
-  const solicitudesFiltradas = filtro === "Todas" || !filtro
-   ? solicitudes
-   : solicitudes.filter(
-      (solicitud) =>
-        (filtro === "Confirmada" && solicitud.estado === true) ||
-        (filtro === "Pendiente" && solicitud.estado === false)
-    );
+  const solicitudesFiltradas =
+      filtro === "Todas" || !filtro
+          ? solicitudes
+          : solicitudes.filter((solicitud) => {
+            if (filtro === "Aprobado") return solicitud.estado === true;
+            if (filtro === "Pendiente") return solicitud.estado === false && !solicitud.rechazado;
+            if (filtro === "Rechazado") return solicitud.rechazado === true;
+            return false;
+          });
 
   if (error) {
     return <p className="error">{error}</p>;
@@ -411,15 +413,16 @@ export default function SolicitudDetalle() {
           <h4>Solicitudes del Usuario</h4>
           {/* Lista desplegable para filtro */}
           {editando === null && (
-            <select
-              className="select-filtro"
-              value={filtro}
-              onChange={(e) => setFiltro(e.target.value)}
-            >
-              <option value="Todas"> Todas </option>
-              <option value="Pendiente">Pendientes</option>
-              <option value="Confirmada">Confirmadas</option>
-            </select>
+              <select
+                  className="select-filtro"
+                  value={filtro}
+                  onChange={(e) => setFiltro(e.target.value)}
+              >
+                <option value="Todas"> Todas</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="Aprobado">Aprobados</option>
+                <option value="Rechazado">Rechazados</option>
+              </select>
           )}
           <ul>
             {solicitudesFiltradas.map((solicitud, index) => (
@@ -526,7 +529,7 @@ export default function SolicitudDetalle() {
                       <div className="columna">
                         <p>
                           <strong>Estado:</strong>{" "}
-                          {solicitud.estado ? "Confirmada" : "Pendiente" }
+                          {solicitud.rechazado ? "Rechazado" : solicitud.estado ? "Aprobado" : "Pendiente"}
                         </p>
                         <p>
                           <strong>Líderes:</strong>{" "}
@@ -547,8 +550,8 @@ export default function SolicitudDetalle() {
                       <button 
                         onClick={() => handleEditar(solicitud)}
                         disabled={
-                          solicitud.numAprobaciones > 0 && solicitud.estado ||
-                          solicitud.estado == true
+                          solicitud.numAprobaciones > 0 ||
+                          solicitud.estado || solicitud.rechazado
                         }
                       >
                         <span>Editar</span>
@@ -557,7 +560,7 @@ export default function SolicitudDetalle() {
                       <button
                         className="delete"
                         onClick={() => handleEliminar(solicitud.id)}
-                        disabled={solicitud.estado !== false}
+                        disabled={solicitud.estado || solicitud.rechazado}
                       >
                         <span>Eliminar</span>
                       </button>
