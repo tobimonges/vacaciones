@@ -121,6 +121,7 @@ function CrearUsuario() {
       equipo: { id: equipo },
     };
 
+
     try {
       const token = localStorage.getItem("token");
       const url = "http://localhost:8080/vacaciones/crea/usuarios";
@@ -131,8 +132,24 @@ function CrearUsuario() {
       setPopupType("success");
       setTimeout(() => navigate("/Home"), 1300);
     } catch (err) {
-      setError(err.response?.data?.message || "Error al crear el usuario.");
+      if (err.response.data.hasOwnProperty("nombre")) {
+        setMessage(err.response.data.nombre);
+      } else if (err.response.data.hasOwnProperty("apellido")) {
+        setMessage(err.response.data.apellido);
+      } else if (err.response.data.hasOwnProperty("fechaIngreso")) {
+        setMessage(err.response.data.fechaIngreso);
+      } else if (err.response.data.hasOwnProperty("fechaNacimiento")) {
+        setMessage(err.response.data.fechaNacimiento);
+      } else if (err.response.data.hasOwnProperty("correo")) {
+        setMessage(err.response.data.correo);
+      } else if (err.response.data.hasOwnProperty("telefono")) {
+        setMessage(err.response.data.telefono);
+      } else {
+        setMessage("Error al crear el usuario.");
+      }
+      setPopupType("error");
     }
+
   };
 
   return (

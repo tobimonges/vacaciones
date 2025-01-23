@@ -127,18 +127,17 @@ const AdminDashboard = () => {
 
     try {
       await axios.put(
-          `http://localhost:8080/vacaciones/${id}/rechazar?usuarioId=${userId}`, // URL con parámetros
-          {}, // Body vacío ya que no estás enviando datos en el cuerpo
+          `http://localhost:8080/vacaciones/${id}/rechazar?usuarioId=${userId}`,
+          {},
           {
-            headers: { Authorization: `Bearer ${token}` }, // Headers correctamente colocados
+            headers: { Authorization: `Bearer ${token}` },
           }
       );
       alert("Solicitud rechazada con éxito.");
       setShowConfirmModal(false);
       navigate(0); // Recargar la página actual
     } catch (err) {
-      console.error("Error al rechazar solicitud:", err.response.data);
-      alert(`Error: ${err.response.data.message}`);
+      alert(err.response.data.message);
     }
   };
   const handleLogout = () => {
