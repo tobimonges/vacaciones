@@ -440,9 +440,10 @@ public class SolicitudService implements ISolicitudService {
 
 
     private void validarRolTh(UsuarioModel usuarioQueAprueba) {
-        if (!"TH".equals(usuarioQueAprueba.getRol().getNombre())) {
-            logger.error("El usuario con ID: {} no tiene el rol de TH para aprobar esta solicitud.", usuarioQueAprueba.getId());
-            throw new IllegalArgumentException("Solo un usuario con rol TH puede aprobar en esta etapa.");
+        String rolUsuario = usuarioQueAprueba.getRol().getNombre();
+        if (!"TH".equals(rolUsuario) && !"GTH".equals(rolUsuario)) {
+            logger.error("El usuario con ID: {} no tiene los roles necesarios (TH o GTH) para aprobar esta solicitud.", usuarioQueAprueba.getId());
+            throw new IllegalArgumentException("Solo un usuario con rol TH o GTH puede aprobar en esta etapa.");
         }
     }
 
