@@ -30,6 +30,7 @@ function UsuarioDetalle() {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
   const navigate = useNavigate();
 
   // Obtener lista de usuarios
@@ -38,8 +39,8 @@ function UsuarioDetalle() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:8080/vacaciones/listarusuarios",
-          { headers: { Authorization: `Bearer ${token}` } }
+            "http://localhost:8080/vacaciones/listarusuarios",
+            { headers: { Authorization: `Bearer ${token}` } }
         );
         setUsuarios(response.data);
       } catch (err) {
@@ -88,8 +89,8 @@ function UsuarioDetalle() {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            `http://localhost:8080/vacaciones/buscarid/${selectedUserId}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+              `http://localhost:8080/vacaciones/buscarid/${selectedUserId}`,
+              { headers: { Authorization: `Bearer ${token}` } }
           );
           const usuario = response.data;
           setFormData({
@@ -152,9 +153,9 @@ function UsuarioDetalle() {
       };
 
       await axios.put(
-        `http://localhost:8080/vacaciones/modificar/${selectedUserId}`,
-        updatedData,
-        { headers: { Authorization: `Bearer ${token}` } }
+          `http://localhost:8080/vacaciones/modificar/${selectedUserId}`,
+          updatedData,
+          { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setMessage("Usuario actualizado con éxito.");
@@ -184,250 +185,250 @@ function UsuarioDetalle() {
   };
 
   return (
-    <div className="container">
-      <div className="container-detalle2">
-        {/* 📚 **Área de contenido** */}
-        <Preloader duration={650} />
+      <div className="container">
+        <div className="container-detalle2">
+          {/* 📚 **Área de contenido** */}
+          <Preloader duration={650} />
 
-        <div className="content-area2">
-          {/* 📚 **Barra de navegación** */}
-          <div className="navbar">
-            <div className="navbar-content">
-              <NavigationBar onLogout={handleLogout} />
+          <div className="content-area2">
+            {/* 📚 **Barra de navegación** */}
+            <div className="navbar">
+              <div className="navbar-content">
+                <NavigationBar onLogout={handleLogout} />
+              </div>
             </div>
-          </div>
 
-          {/* 📚 **Contenido principal** */}
-          <div className="main">
-            <div className="main-content">
-            <br></br>
-              <h2>Gestión de Usuarios</h2>
-              <br></br>
-              {error && <p className="err">{error}</p>}
-              {message && (
-                  <div className={popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"} style={{ opacity: 1 }}>
-                    {message}
-                  </div>
-              )}
-              {!selectedUserId ? (
-                <>
-                  {usuarios.length === 0 ? (
-                    <p>No se encontraron usuarios.</p>
-                  ) : (
-                    <div className="content-section">
-                      <table className="admin-table">
-                        <thead>
-                          <tr>
-                            <th>Nro Cedula</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Correo</th>
-                            <th>Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {usuarios.map((usuario) => (
-                            <tr key={usuario.id}>
-                              <td>{usuario.nroCedula}</td>
-                              <td>{usuario.nombre}</td>
-                              <td>{usuario.apellido}</td>
-                              <td>{usuario.correo}</td>
-                              <td>
-                                <button
-                                  className="boton"
-                                  onClick={() => handleEditClick(usuario.id)}
-                                >
-                                  Editar
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+            {/* 📚 **Contenido principal** */}
+            <div className="main">
+              <div className="main-content">
+                <br></br>
+                <h2>Gestión de Usuarios</h2>
+                <br></br>
+                {error && <p className="err">{error}</p>}
+                {message && (
+                    <div className={popupType === "error" ? "popupErrorCrearUsuario" : "popupExitoso"} style={{ opacity: 1 }}>
+                      {message}
                     </div>
-                  )}
-                </>
-              ) : (
-                <form onSubmit={handleSubmit} className="detalle-form2">
-                  {[
-                    {
-                      name: "nombre",
-                      type: "text",
-                      placeholder: "Nombre",
-                      label: "Nombre",
-                      icon: "/circulo-de-usuario (2).svg",
-                    },
-                    {
-                      name: "apellido",
-                      type: "text",
-                      placeholder: "Apellido",
-                      label: "Apellido",
-                      icon: "/circulo-de-usuario (2).svg",
-                    },
-                    {
-                      name: "nroCedula",
-                      type: "number",
-                      placeholder: "Nro de Cedula",
-                      label: "CI",
-                      icon: "/tarjeta-de-identificacion (1).svg",
-                    },
-                    {
-                      name: "correo",
-                      type: "text",
-                      placeholder: "Correo",
-                      label: "Correo",
-                      icon: "/sobre.svg",
-                    },
-                    {
-                      name: "telefono",
-                      type: "text",
-                      placeholder: "Telefono",
-                      label: "Telefono",
-                      icon: "/circulo-de-telefono.svg",
-                    },
-                  ].map(({ name, type, label, icon }) => (
-                    <div key={name}>
-                      <label htmlFor={name} className="label-detalle">
-                        {label}
-                      </label>
-                      <div className="iconWrap">
-                        <img src={icon} className="icon" />
-                        <input
-                          type={type}
-                          id={name}
-                          name={name}
-                          value={formData[name]}
-                          className="inputCreate"
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                  ))}
-
-                  {[
-                    {
-                      name: "estado",
-                      type: "boolean",
-                      label: "Estado Funcionario",
-                      options: [
-                        { id: true, nombre: "Contratado" },
-                        { id: false, nombre: "Ex-Funcionario" },
-                      ],
-                    },
-                    {
-                      name: "rol",
-                      label: "Rol de Funcionario",
-                      options: roles,
-                    },
-                    {
-                      name: "equipo",
-                      label: "Equipo Asignado",
-                      options: equipos,
-                    },
-                    {
-                      name: "cargo",
-                      label: "Cargo Asignado",
-                      options: cargos,
-                    },
-                  ].map(({ name, label, options }) => (
-                    <div>
-                      <label htmlFor={name} className="label-detalle">
-                        {label}
-                      </label>
-                      <div className="iconWrap">
-                        <img
-                          src="/mapa-del-sitio (1).svg"
-                          alt={label}
-                          className="icon"
-                        />
-                        <select
-                          id={name}
-                          name={name}
-                          value={formData[name]}
-                          className="inputCreate"
-                          onChange={handleInputChange}
-                          required
-                        >
-                          {options.map((option) => (
-                            <option key={option.id} value={option.id}>
-                              {option.nombre || option.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  ))}
-
-                  {[
-                    {
-                      name: "fechaIngreso",
-                      type: "date",
-                      label: "Fecha de Ingreso",
-                      icon: "/dias-del-calendario.svg",
-                    },
-                    {
-                      name: "fechaNacimiento",
-                      type: "date",
-                      label: "Fecha de Nacimiento",
-                      icon: "/dias-del-calendario.svg",
-                    },
-                  ].map(({ name, type, label, icon }) => (
-                    <div key={name}>
-                      <LocalizationProvider
-                        key={name}
-                        dateAdapter={AdapterDayjs}
-                        adapterLocale="es"
-                      >
-                        <label htmlFor={name} className="label-detalle2">
-                          {label}
-                        </label>
-                        <div className="iconWrap">
-                          <img src={icon} className="icon" />
-                          <div className="datePickerGroup">
-                            <DatePicker
-                              value={
-                                formData[name] ? dayjs(formData[name]) : null
-                              } // Asegúrate de usar dayjs para valores válidos
-                              onChange={(date) =>
-                                handleDateChange(
-                                  name,
-                                  date ? date.format("YYYY-MM-DD") : ""
-                                )
-                              }
-                              slotProps={{
-                                textField: {
-                                  variant: "outlined",
-                                  fullWidth: true,
-                                  className: "inputCreate",
-                                  required: true,
-                                },
-                              }}
-                            />
+                )}
+                {!selectedUserId ? (
+                    <>
+                      {usuarios.length === 0 ? (
+                          <p>No se encontraron usuarios.</p>
+                      ) : (
+                          <div className="content-section">
+                            <table className="admin-table">
+                              <thead>
+                              <tr>
+                                <th>Nro Cedula</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Correo</th>
+                                <th>Acciones</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              {usuarios.map((usuario) => (
+                                  <tr key={usuario.id}>
+                                    <td>{usuario.nroCedula}</td>
+                                    <td>{usuario.nombre}</td>
+                                    <td>{usuario.apellido}</td>
+                                    <td>{usuario.correo}</td>
+                                    <td>
+                                      <button
+                                          className="boton"
+                                          onClick={() => handleEditClick(usuario.id)}
+                                      >
+                                        Editar
+                                      </button>
+                                    </td>
+                                  </tr>
+                              ))}
+                              </tbody>
+                            </table>
                           </div>
-                        </div>
-                      </LocalizationProvider>
-                    </div>
-                  ))}
-                  <div className="boton-container">
-                    <button type="submit" className="boton">
-                      Guardar Cambios
-                    </button>
-                    <button
-                      type="button"
-                      className="boton"
-                      onClick={() => setSelectedUserId(null)}
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </form>
-              )}
+                      )}
+                    </>
+                ) : (
+                    <form onSubmit={handleSubmit} className="detalle-form2">
+                      {[
+                        {
+                          name: "nombre",
+                          type: "text",
+                          placeholder: "Nombre",
+                          label: "Nombre",
+                          icon: "/circulo-de-usuario (2).svg",
+                        },
+                        {
+                          name: "apellido",
+                          type: "text",
+                          placeholder: "Apellido",
+                          label: "Apellido",
+                          icon: "/circulo-de-usuario (2).svg",
+                        },
+                        {
+                          name: "nroCedula",
+                          type: "number",
+                          placeholder: "Nro de Cedula",
+                          label: "CI",
+                          icon: "/tarjeta-de-identificacion (1).svg",
+                        },
+                        {
+                          name: "correo",
+                          type: "text",
+                          placeholder: "Correo",
+                          label: "Correo",
+                          icon: "/sobre.svg",
+                        },
+                        {
+                          name: "telefono",
+                          type: "text",
+                          placeholder: "Telefono",
+                          label: "Telefono",
+                          icon: "/circulo-de-telefono.svg",
+                        },
+                      ].map(({ name, type, label, icon }) => (
+                          <div key={name}>
+                            <label htmlFor={name} className="label-detalle">
+                              {label}
+                            </label>
+                            <div className="iconWrap">
+                              <img src={icon} className="icon" />
+                              <input
+                                  type={type}
+                                  id={name}
+                                  name={name}
+                                  value={formData[name]}
+                                  className="inputCreate"
+                                  onChange={handleInputChange}
+                                  required
+                              />
+                            </div>
+                          </div>
+                      ))}
+
+                      {[
+                        {
+                          name: "estado",
+                          type: "boolean",
+                          label: "Estado Funcionario",
+                          options: [
+                            { id: true, nombre: "Contratado" },
+                            { id: false, nombre: "Ex-Funcionario" },
+                          ],
+                        },
+                        {
+                          name: "rol",
+                          label: "Rol de Funcionario",
+                          options: roles,
+                        },
+                        {
+                          name: "equipo",
+                          label: "Equipo Asignado",
+                          options: equipos,
+                        },
+                        {
+                          name: "cargo",
+                          label: "Cargo Asignado",
+                          options: cargos,
+                        },
+                      ].map(({ name, label, options }) => (
+                          <div>
+                            <label htmlFor={name} className="label-detalle">
+                              {label}
+                            </label>
+                            <div className="iconWrap">
+                              <img
+                                  src="/mapa-del-sitio (1).svg"
+                                  alt={label}
+                                  className="icon"
+                              />
+                              <select
+                                  id={name}
+                                  name={name}
+                                  value={formData[name]}
+                                  className="inputCreate"
+                                  onChange={handleInputChange}
+                                  required
+                              >
+                                {options.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                      {option.nombre || option.name}
+                                    </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                      ))}
+
+                      {[
+                        {
+                          name: "fechaIngreso",
+                          type: "date",
+                          label: "Fecha de Ingreso",
+                          icon: "/dias-del-calendario.svg",
+                        },
+                        {
+                          name: "fechaNacimiento",
+                          type: "date",
+                          label: "Fecha de Nacimiento",
+                          icon: "/dias-del-calendario.svg",
+                        },
+                      ].map(({ name, type, label, icon }) => (
+                          <div key={name}>
+                            <LocalizationProvider
+                                key={name}
+                                dateAdapter={AdapterDayjs}
+                                adapterLocale="es"
+                            >
+                              <label htmlFor={name} className="label-detalle2">
+                                {label}
+                              </label>
+                              <div className="iconWrap">
+                                <img src={icon} className="icon" />
+                                <div className="datePickerGroup">
+                                  <DatePicker
+                                      value={
+                                        formData[name] ? dayjs(formData[name]) : null
+                                      } // Asegúrate de usar dayjs para valores válidos
+                                      onChange={(date) =>
+                                          handleDateChange(
+                                              name,
+                                              date ? date.format("YYYY-MM-DD") : ""
+                                          )
+                                      }
+                                      slotProps={{
+                                        textField: {
+                                          variant: "outlined",
+                                          fullWidth: true,
+                                          className: "inputCreate",
+                                          required: true,
+                                        },
+                                      }}
+                                  />
+                                </div>
+                              </div>
+                            </LocalizationProvider>
+                          </div>
+                      ))}
+                      <div className="boton-container">
+                        <button type="submit" className="boton">
+                          Guardar Cambios
+                        </button>
+                        <button
+                            type="button"
+                            className="boton"
+                            onClick={() => setSelectedUserId(null)}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </form>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
 export default UsuarioDetalle;
