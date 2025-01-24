@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "./Solicitud.css";
 import Logo from "./Logo";
-import Preloader from "./Preloader";
+import Logogiratorio from "./logogiratorio";
 
 function isWeekend(date) {
   return date.day() === 0 || date.day() === 6;
@@ -78,6 +78,12 @@ export default function SolicitudDetalle() {
     if (selectedLideres.length < 3) {
       setSelectedLideres([...selectedLideres, null]);
     }
+  };
+
+  const handleDeleteSelector = (index) => {
+    setSelectedLideres((prevSelectedLideres) =>
+      prevSelectedLideres.filter((_, i) => i !== index)
+    );
   };
 
   const handleLiderChange = (value, index) => {
@@ -385,9 +391,8 @@ export default function SolicitudDetalle() {
   if (solicitudes.length === 0) {
     return (
       <div className="container">
-        <Preloader duration={650} />
+        <Logogiratorio duration={650} />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Preloader duration={650} />
           <div className="container-solicitudes">
           <Logo />
             <h4>Solicitudes del Usuario</h4>
@@ -407,7 +412,7 @@ export default function SolicitudDetalle() {
     <div className="container">
       <Notificacion mensaje={mensaje} tipo={tipoMensaje} />
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" >
-        <Preloader duration={650} />
+        <Logogiratorio duration={650} />
         <div className="container-solicitudes">
           <Logo />
           <h4>Solicitudes del Usuario</h4>
@@ -459,8 +464,6 @@ export default function SolicitudDetalle() {
                           className={`mb-3-lideresDetalle ${
                             index !== selectedLideres.length - 1 ||
                             selectedLideres.length === 3
-                              ? "flex-column"
-                              : ""
                           }`}
                           key={index}
                         >
@@ -484,22 +487,39 @@ export default function SolicitudDetalle() {
                                 </option>
                               ))}
                           </select>
-                          {index === selectedLideres.length - 1 &&
-                            selectedLideres.length < 3 && (
-                              <div 
-                                className="imagenBotonMasDetalle"
-                                onClick={handleAddLiderSelector}>
+                              <div
+                                className="imagenBotonMas"
+                                onClick={
+                                  index === selectedLideres.length - 1 &&
+                                  selectedLideres.length < 3
+                                    ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
+                                    : () => handleDeleteSelector(index) // Elimina si no es el último
+                                }
+                              >
                                 <img
-                                  src="/agregar.svg"
-                                  alt="Añadir líder"
-                                  title="Añadir líder"
-                                  className="imagenBotonMasDetalle-img"
+                                  src={
+                                    index === selectedLideres.length - 1 &&
+                                    selectedLideres.length < 3
+                                      ? "/agregar.svg" // Ícono para agregar en el último selector
+                                      : "/circulo-negativo.svg" // Ícono para eliminar en otros selectores
+                                  }
+                                  alt={
+                                    index === selectedLideres.length - 1 &&
+                                    selectedLideres.length < 3
+                                      ? "Añadir líder"
+                                      : "Eliminar líder"
+                                  }
+                                  title={
+                                    index === selectedLideres.length - 1 &&
+                                    selectedLideres.length < 3
+                                      ? "Añadir líder"
+                                      : "Eliminar líder"
+                                  }
+                                    className="imagenBotonMasDetalle-img"
                                 />
-                              </div>
-                            )}
-                        </div>
+                             </div>
+                          </div>
                       ))}
-                    
                     <div className="buttons">
                       <button onClick={() => handleGuardar(solicitud.id)}>
                         <span>Guardar</span>

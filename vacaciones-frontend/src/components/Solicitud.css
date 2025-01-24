@@ -244,7 +244,7 @@ button:disabled {
 .select-usuariosDetalle {
   width: 100%; /* Ocupa el ancho completo */
   max-width: 244px; /* Ajusta el tamaño máximo para coincidir con el DatePicker */
-  margin-bottom: 3px; /* Espaciado inferior */
+  margin-bottom: -20px; /* Espaciado inferior */
   text-align: center; /* Centrar el texto */
   padding: 8px; /* Espaciado interno */
   padding-top: 10px;
@@ -280,8 +280,8 @@ button:disabled {
 }
 
 .imagenBotonMasDetalle-img {
-  margin-top: -78px;
-  margin-left: 275px;
+  margin-top: -31px;
+  margin-left: 240px;
   max-width: 70%; /* Ajusta el tamaño de la imagen */
   max-height: 70%;
   object-fit: contain; /* Para que la imagen conserve proporciones */
