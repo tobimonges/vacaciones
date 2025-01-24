@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 import { getUsuarioId, isTokenValid } from "./authUtils";
 
 const Navbar = () => {
@@ -47,6 +48,7 @@ const NavigationBar = ({ logo, onLogout }) => {
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,12 +96,21 @@ const NavigationBar = ({ logo, onLogout }) => {
   }, []);
   const isHomeRoute = location.pathname === "/Home" || location.pathname === "/HomeTH";
   const isUsuarioD = location.pathname === "/UsuarioDetalle";
+
+  const handleBackButtonClick = () => {
+    if (location.pathname === "/NuevaSolicitud" || location.pathname === "/SolicitudDetalle" || location.pathname === "/Home") {
+      navigate("/Home");
+    } else {
+      navigate("/HomeTH");
+    }
+  };
+
   return (
     <div className="nav-container">
       <nav className="navigation-bar">
         <div className="nav-button-container left">
-          <button className="nav-button back-button" onClick={() => navigate(-1)}>
-            <img src=".\angulo-izquierdo.svg" alt="Atrás" className="button-icon" />
+          <button className="nav-button back-button" onClick={handleBackButtonClick}>
+            <img src="./hogarr.svg" alt="Home" className="button-icon" />
           </button>
         </div>
 
