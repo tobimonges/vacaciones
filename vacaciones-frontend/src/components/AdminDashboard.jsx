@@ -32,6 +32,7 @@ const AdminDashboard = () => {
           }
         );
 
+        console.error(response.data)
         // Validar que la respuesta sea válida
         if (!response || !response.data) {
           throw new Error("La respuesta de la API no es válida.");
@@ -185,8 +186,9 @@ const AdminDashboard = () => {
       );
       navigate(0); // Recargar la página actual
     } catch (err) {
-      console.error("Error al añadir comentario:", err);
-      alert(`Error: ${err.response.data}`);
+      if (err.response.status === 400) {
+        alert(`La solicitud de Directorio no puede ser rechazada`);
+      }
     }
   };
 
@@ -369,7 +371,9 @@ const AdminDashboard = () => {
                               )
                             ) : getEstadoSolicitud(solicitud) === "Aprobado" ? (
                               // Mostrar botón de Añadir Comentario para OPERACIONES si el estado es "Aprobado"
-                              <button onClick={() => openModal(solicitud.id)}>
+                              <button onClick={() => openModal(solicitud.id)}
+                                      disabled={solicitud.usuario.cargo.id === 36} // Deshabilitar si pertenece a DIRECTORIO
+                              >
                                 <span>Añadir comentario</span>
                               </button>
                             ) : (
