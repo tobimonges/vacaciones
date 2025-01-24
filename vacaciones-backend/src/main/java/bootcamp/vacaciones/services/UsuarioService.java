@@ -156,7 +156,7 @@ public class UsuarioService implements IUsuarioService{
         usuarioRepository.delete(usuario);
     }
 
-    @Scheduled(cron = "0 04 13 * * ?")
+    @Scheduled(cron = "0 00 00 * * ?")
     public void actualizarAntiguedadYVacaciones() {
         List<UsuarioModel> usuarios = usuarioRepository.findAll();
 
