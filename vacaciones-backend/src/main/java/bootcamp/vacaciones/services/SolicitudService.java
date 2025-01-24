@@ -135,6 +135,9 @@ public class SolicitudService implements ISolicitudService {
             nuevaSolicitud.setEstado(true);
             actualizarDiasVacaciones(nuevaSolicitud);
         }
+        if ("FUNCIONARIO_TERCERIZADO".equals(nombreRol)) {
+            nuevaSolicitud.setNumeroAprobaciones(1);
+        }
 
         notificarPorRol(nombreRol, lideres, usuario, nuevaSolicitud);
 
