@@ -10,8 +10,8 @@ import "./Home.css"; // Importa estilos CSS específicos para el componente Home
 import NavigationBar from "./NavigationBar"; // Importa componente de barra de navegación
 import Preloader from "./Preloader"; // Importa componente de preloader
 import Sidebar from "./Sidebar"; // Importa componente de barra lateral
-import "./Login.css"
-import Logogiratorio from "./logogiratorio"
+import "./Login.css";
+import Logogiratorio from "./logogiratorio";
 
 // Localización de fechas
 const locales = { es: esLocale }; // Define la localización en español
@@ -71,7 +71,6 @@ const CalendarLegend = () => (
     ))}
   </div>
 ); // Componente que muestra la leyenda del calendario con los colores de los eventos
-
 
 // Componente Principal
 const Home = () => {
@@ -194,7 +193,7 @@ const Home = () => {
 
   const dayPropGetter = (date) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); 
+    today.setHours(0, 0, 0, 0);
     const isPastDate = date < today;
 
     if (isPastDate) {
@@ -215,9 +214,8 @@ const Home = () => {
     };
   }; // Función para obtener estilos de los eventos del calendario
 
-
   useEffect(() => {
-     const timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       setIsAnimating(false);
       setTimeout(() => {
         setShowSidebar(true);
@@ -232,88 +230,116 @@ const Home = () => {
 
     return () => clearTimeout(timeout);
   }, []);
+  /* funcion de setShowsidebar para agregar y quitar clases*/
+  useEffect(() => {
+    if (showSidebar) {
+      
 
+
+      document.body.classList.add("show-sidebar");
+    } else {
+      document.body.classList.remove("show-sidebar");
+    }
+  }, [showSidebar]);
+
+  /* funcion para ocultar el sidebar */
+  useEffect(() => {
+    if (!showSidebar) {
+      document.body.classList.add("hide-sidebar");
+    } else {
+      document.body.classList.remove("hide-sidebar");
+    }
+  }, [showSidebar]);
 
   return (
     // Estructura de la página
     <div className="container home-container">
       {isAnimating ? (
-      <Logogiratorio duration={650} />
-    ) : (
-      showMainContent && (
-        <>
-      {/* **Barra lateral** */}
-      <div className="sidebar cajaLogin">        
-        <Sidebar/>
-      </div>
-
-      {/* **Área de contenido** */}
-      <div className="content-area">
-        {/* **Barra de navegación** */}
-        <div className="navbar cajaLogin">
-        <div className="navbar-content">
-            <NavigationBar/>
-          </div>
-        </div>
-
-        {/* **Contenido principal** */}
-        <div className="main">
-          <div className="main-content cajaLogin">
-            <div className="calendar-title">
-              <div className="calendar-key">
-                <span>Fecha de ingreso:</span>
-              </div>
-              <div className="calendar-value">
-                <span>
-                  {joinDate
-                    ? new Date(joinDate).toLocaleDateString("es-ES")
-                    : "Cargando..."}
-                </span>
-              </div>
-              <div className="calendar-divisor"></div>
-
-              <div className="calendar-key">
-                <span>Vacaciones disponibles:</span>
-              </div>
-              <div className="calendar-value">
-                <span>
-                  {vacationDays !== undefined ? vacationDays : "Cargando..."}
-                </span>
-              </div>
-              {error && <p className="calendar-error-message">{error}</p>}
+        <Logogiratorio duration={650} />
+      ) : (
+        showMainContent && (
+          <>
+            <div className="button-ocultar">
+              <button
+                className="ocultar"
+                onClick={() => setShowSidebar(!showSidebar)}
+              ></button>
             </div>
-            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-              <div className="calendar-big-container">
-                <Calendar
-                  localizer={localizer}
-                  events={events}
-                  startAccessor="start"
-                  endAccessor="end"
-                  style={{ height: 500, margin: "20px 0" }}
-                  messages={{
-                    today: "Hoy",
-                    previous: "Anterior",
-                    next: "Siguiente",
-                    month: "Mes",
-                    week: "Semana",
-                    day: "Día",
-                    agenda: "Agenda",
-                    showMore: (count) => `+${count} más`, // Traducción de "More"
-
-                  }}
-                  views={{ month: true }}
-                  eventPropGetter={eventStyleGetter}
-                  dayPropGetter={dayPropGetter}
-                />
-              </div>
-              <CalendarLegend />
+            {/* **Barra lateral** */}
+            <div className="sidebar">
+              <Sidebar />
             </div>
-          </div>
-        </div>
-      </div>
-      </>
-      )
-    )}
+
+            {/* **Área de contenido** */}
+            <div className="content-area">
+              {/* **Barra de navegación** */}
+              <div className="navbar cajaLogin">
+                <div className="navbar-content">
+                  <NavigationBar />
+                </div>
+              </div>
+
+              {/* **Contenido principal** */}
+              <div className="main">
+                <div className="main-content cajaLogin">
+                  <div className="calendar-title">
+                    <div className="calendar-key">
+                      <span>Fecha de ingreso:</span>
+                    </div>
+                    <div className="calendar-value">
+                      <span>
+                        {joinDate
+                          ? new Date(joinDate).toLocaleDateString("es-ES")
+                          : "Cargando..."}
+                      </span>
+                    </div>
+                    <div className="calendar-divisor"></div>
+
+                    <div className="calendar-key">
+                      <span>Vacaciones disponibles:</span>
+                    </div>
+                    <div className="calendar-value">
+                      <span>
+                        {vacationDays !== undefined
+                          ? vacationDays
+                          : "Cargando..."}
+                      </span>
+                    </div>
+                    {error && <p className="calendar-error-message">{error}</p>}
+                  </div>
+                  <div
+                    className={`calendar-card ${error ? "calendar-error" : ""}`}
+                  >
+                    <div className="calendar-big-container">
+                      <Calendar
+                        localizer={localizer}
+                        events={events}
+                        startAccessor="start"
+                        endAccessor="end"
+                        style={{ height: 500, margin: "20px 0" }}
+                        messages={{
+                          today: "Hoy",
+                          previous: "Anterior",
+                          next: "Siguiente",
+                          month: "Mes",
+                          week: "Semana",
+                          day: "Día",
+                          agenda: "Agenda",
+                          showMore: (count) => `+${count} más`, // Traducción de "More"
+                        }}
+                        views={{ month: true }}
+                        eventPropGetter={eventStyleGetter}
+                        dayPropGetter={dayPropGetter}
+                      />
+                    </div>
+                    <CalendarLegend />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      )}
     </div>
   );
 };

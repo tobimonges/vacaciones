@@ -417,3 +417,21 @@ button span {
 .rbc-row-bg {
   right: 0 !important;
 }
+
+
+.button-ocultar {
+  height: 100%; /* Altura completa del contenedor padre menos el padding */
+  color: var(--text-color); /* Color del texto en la barra lateral */
+  position: static; /* Fija la barra lateral en su posición */
+  margin: 0 10px 0 0; /* Elimina el margen y usa padding si es necesario */
+  display: flex; /* Utiliza flexbox para el diseño */
+  border-radius: 10px;
+}
+.button-ocultar button {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
