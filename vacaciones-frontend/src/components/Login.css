@@ -247,3 +247,40 @@ h3 .icon {
     transform: translateY(250px);
   }
 }
+/* Toast container */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 90%;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+  animation: fade-in 0.3s forwards;
+}
+
+/* Tipo success */
+.toast-success {
+  background-color: #4caf50; /* verde */
+}
+/* Tipo error */
+.toast-error {
+  background-color: #f44336; /* rojo */
+}
+
+/* Animación simple de entrada */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -15px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
