@@ -164,17 +164,19 @@ function UsuarioDetalle() {
         <Preloader duration={650} />
 
         <div className="content-area2">
-          {/* 📚 **Barra de navegación** */}
-          <div className="navbar">
-            <div className="navbar-content">
-              <NavigationBar onLogout={handleLogout} />
-            </div>
-          </div>
+
 
           {/* 📚 **Contenido principal** */}
           <div className="main">
             <div className="main-content">
-                <h2>Gestión de Usuarios</h2>
+              {/* 📚 **Barra de navegación** */}
+              <div className="navbar">
+                <div className="navbar-content">
+
+                  <NavigationBar onLogout={handleLogout} />
+
+                </div>
+              </div>
                 <br></br>
                 {error && <p className="err">{error}</p>}
                 {message && <p className="succ">{message}</p>}
