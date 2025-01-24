@@ -497,7 +497,7 @@ export default function NuevaSolicitud() {
                           index === selectedLideres.length - 1 &&
                           selectedLideres.length < 3
                             ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
-                            : () => handleDeleteSelector(index) // Elimina si no es el último
+                            : () => handleDeleteSelector(index) // Elimina si no es el últim
                         }
                       >
                         <img

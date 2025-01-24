@@ -222,7 +222,7 @@ export default function NuevaSolicitud() {
     disabledDates,
   ]);
 
-  // Manejo de la selección del usuario
+  // Manejo de la selección del usuario ,
   const handleUserSelection = (id, name) => {
     setSelectedUserId(id); // Actualiza el ID del usuario seleccionado
     setSelectedUserName(name); // Actualiza el nombre del usuario seleccionado
