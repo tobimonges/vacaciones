@@ -377,7 +377,6 @@ export default function NuevaSolicitud() {
                     reservedDates.some((d) => date.isSame(d, "day"))
                   );
                 }}
-                disabled={!startDate}
               />
             </div>
 

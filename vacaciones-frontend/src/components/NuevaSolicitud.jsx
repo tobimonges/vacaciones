@@ -56,7 +56,6 @@ export default function NuevaSolicitud() {
   const [showContent, setShowContent] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
-  
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
       setSelectedLideres([...selectedLideres, null]);
@@ -75,21 +74,19 @@ export default function NuevaSolicitud() {
     setSelectedLideres(newSelectedLideres);
   };
 
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShowContent(true);
-    }, 900); 
-  
+    }, 900);
+
     return () => clearTimeout(timeout);
   }, []);
 
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShowContent(true);
-    }, 900); 
-  
+    }, 900);
+
     return () => clearTimeout(timeout);
   }, []);
 
@@ -405,168 +402,176 @@ export default function NuevaSolicitud() {
       <div className="nueva-solicitud-container">
         {showContent && (
           <div className={`cajaLogin ${isExiting ? "LoginAnim" : ""}`}>
-        <div className="DatePicker">
-          <Logo />
-          <h2>Nueva Solicitud</h2>
-          {mensaje && (
-            <div className={`MensajePopuppNS ${tipoMensaje}`}>
-              <p>{mensaje}</p>
-            </div>
-          )}
-
-          <div className="info-cards" style={{ display: "flex", gap: "15px" }}>
-            <div className="info-card">
-              <p className="info-number">{diasVacacionesDisponibles}</p>
-              <h3>Días Disponibles</h3>
-            </div>
-            <div className="info-card">
-              <p className="info-number">{validDays}</p>
-              <h3>Días de Vacaciones</h3>
-            </div>
-          </div>
-          {warning && <p className="warning">{warning}</p>}
-          {error && <p className="error">{error}</p>}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <DatePicker
-                label="Fecha de inicio"
-                value={startDate}
-                onChange={(newValue) => {
-                  setStartDate(newValue);
-                  if (
-                    endDate &&
-                    newValue &&
-                    endDate.isBefore(newValue, "day")
-                  ) {
-                    setEndDate(null);
-                  }
-                }}
-                shouldDisableDate={(date) => {
-                  return (
-                    date.isBefore(today, "day") ||
-                    isWeekend(date) ||
-                    disabledDates.some((d) => date.isSame(d, "day")) ||
-                    reservedDates.some((d) => date.isSame(d, "day"))
-                  );
-                }}
-              />
-            </div>
-            <div className="mb-3">
-              <DatePicker
-                label="Fecha de fin"
-                value={endDate}
-                onChange={(newValue) => setEndDate(newValue)}
-                shouldDisableDate={(date) => {
-                  return (
-                    (startDate && date.isBefore(startDate, "day")) ||
-                    isWeekend(date) ||
-                    disabledDates.some((d) => date.isSame(d, "day")) ||
-                    reservedDates.some((d) => date.isSame(d, "day"))
-                  );
-                }}
-                disabled={!startDate}
-              />
-            </div>
-            {userRole !== "DIRECTORIO" &&
-              selectedLideres.map((selectedLider, index) => (
-                <div className={`mb-3-lideres`} key={index}>
-                  <select
-                    value={selectedLider || ""}
-                    onChange={(e) => handleLiderChange(e.target.value, index)}
-                    className="select-usuarios"
-                  >
-                    <option value="" disabled>
-                      Selecciona un líder
-                    </option>
-                    {lideres
-                      .filter(
-                        (lider) =>
-                          !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
-                          selectedLider === lider.id // Mantener el líder previamente seleccionado
-                      )
-                      .map((lider) => (
-                        <option key={lider.id} value={lider.id}>
-                          {lider.nombre} {lider.apellido}
-                        </option>
-                      ))}
-                  </select>
-                  <div
-                    className="imagenBotonMas"
-                    onClick={
-                      index === selectedLideres.length - 1 &&
-                      selectedLideres.length < 3
-                        ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
-                        : () => handleDeleteSelector(index) // Elimina si no es el último
-                    }
-                  >
-                    <img
-                      src={
-                        index === selectedLideres.length - 1 &&
-                        selectedLideres.length < 3
-                          ? "./public/agregar.svg" // Ícono para agregar en el último selector
-                          : "./public/circulo-negativo.svg" // Ícono para eliminar en otros selectores
-                      }
-                      alt={
-                        index === selectedLideres.length - 1 &&
-                        selectedLideres.length < 3
-                          ? "Añadir líder"
-                          : "Eliminar líder"
-                      }
-                      title={
-                        index === selectedLideres.length - 1 &&
-                        selectedLideres.length < 3
-                          ? "Añadir líder"
-                          : "Eliminar líder"
-                      }
-                      className="imagenBotonMas-img"
-                    />
-                  </div>
+            <div className="DatePicker">
+              <Logo />
+              <h2>Nueva Solicitud</h2>
+              {mensaje && (
+                <div className={`MensajePopuppNS ${tipoMensaje}`}>
+                  <p>{mensaje}</p>
                 </div>
-              ))}
+              )}
 
-            {userRole === "FUNCIONARIO_TERCERIZADO" && (
-              <div className="mb-3">
-                <p htmlFor="file">Adjuntar aprobación de vacación:</p>
-                <div className="file-upload-container">
-                  <label htmlFor="file" className="file-upload-label">
-                    <img
-                      src="./public/clip-vertical.svg"
-                      alt="Subir archivo"
-                      className="file-upload-image"
-                    />
-
-                    <input
-                      type="file"
-                      id="file"
-                      className="inputFile"
-                      onChange={handleFileChange}
-                      accept=".pdf,.doc,.docx,.jpg,.png"
-                    />
-                    <span id="file-name" className="file-name">
-                      Seleccionar adjunto
-                    </span>
-                  </label>
+              <div
+                className="info-cards"
+                style={{ display: "flex", gap: "15px" }}
+              >
+                <div className="info-card">
+                  <p className="info-number">{diasVacacionesDisponibles}</p>
+                  <h3>Días Disponibles</h3>
+                </div>
+                <div className="info-card">
+                  <p className="info-number">{validDays}</p>
+                  <h3>Días de Vacaciones</h3>
                 </div>
               </div>
-            )}
+              {warning && <p className="warning">{warning}</p>}
+              {error && <p className="error">{error}</p>}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <DatePicker
+                    label="Fecha de inicio"
+                    value={startDate}
+                    onChange={(newValue) => {
+                      setStartDate(newValue);
+                      if (
+                        endDate &&
+                        newValue &&
+                        endDate.isBefore(newValue, "day")
+                      ) {
+                        setEndDate(null);
+                      }
+                    }}
+                    shouldDisableDate={(date) => {
+                      return (
+                        date.isBefore(today, "day") ||
+                        isWeekend(date) ||
+                        disabledDates.some((d) => date.isSame(d, "day")) ||
+                        reservedDates.some((d) => date.isSame(d, "day"))
+                      );
+                    }}
+                  />
+                </div>
+                <div className="mb-3">
+                  <DatePicker
+                    label="Fecha de fin"
+                    value={endDate}
+                    onChange={(newValue) => setEndDate(newValue)}
+                    shouldDisableDate={(date) => {
+                      return (
+                        (startDate && date.isBefore(startDate, "day")) ||
+                        isWeekend(date) ||
+                        disabledDates.some((d) => date.isSame(d, "day")) ||
+                        reservedDates.some((d) => date.isSame(d, "day"))
+                      );
+                    }}
+                  />
+                </div>
+                {userRole !== "DIRECTORIO" &&
+                  selectedLideres.map((selectedLider, index) => (
+                    <div className={`mb-3-lideres`} key={index}>
+                      <select
+                        value={selectedLider || ""}
+                        onChange={(e) =>
+                          handleLiderChange(e.target.value, index)
+                        }
+                        className="select-usuarios"
+                      >
+                        <option value="" disabled>
+                          Selecciona un líder
+                        </option>
+                        {lideres
+                          .filter(
+                            (lider) =>
+                              !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                              selectedLider === lider.id // Mantener el líder previamente seleccionado
+                          )
+                          .map((lider) => (
+                            <option key={lider.id} value={lider.id}>
+                              {lider.nombre} {lider.apellido}
+                            </option>
+                          ))}
+                      </select>
+                      <div
+                        className="imagenBotonMas"
+                        onClick={
+                          index === selectedLideres.length - 1 &&
+                          selectedLideres.length < 3
+                            ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
+                            : () => handleDeleteSelector(index) // Elimina si no es el último
+                        }
+                      >
+                        <img
+                          src={
+                            index === selectedLideres.length - 1 &&
+                            selectedLideres.length < 3
+                              ? "./public/agregar.svg" // Ícono para agregar en el último selector
+                              : "./public/circulo-negativo.svg" // Ícono para eliminar en otros selectores
+                          }
+                          alt={
+                            index === selectedLideres.length - 1 &&
+                            selectedLideres.length < 3
+                              ? "Añadir líder"
+                              : "Eliminar líder"
+                          }
+                          title={
+                            index === selectedLideres.length - 1 &&
+                            selectedLideres.length < 3
+                              ? "Añadir líder"
+                              : "Eliminar líder"
+                          }
+                          className="imagenBotonMas-img"
+                        />
+                      </div>
+                    </div>
+                  ))}
 
-            <div className="buttons">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={
-                  validDays > diasVacacionesDisponibles || !selectedLideres
-                }
-              >
-                <span>Crear Solicitud</span>
-              </button>
-              <button type="button" className="btn" onClick={handleNavigateHome}>
-                <span>Volver a Home</span>
-              </button>
+                {userRole === "FUNCIONARIO_TERCERIZADO" && (
+                  <div className="mb-3">
+                    <p htmlFor="file">Adjuntar aprobación de vacación:</p>
+                    <div className="file-upload-container">
+                      <label htmlFor="file" className="file-upload-label">
+                        <img
+                          src="./public/clip-vertical.svg"
+                          alt="Subir archivo"
+                          className="file-upload-image"
+                        />
+
+                        <input
+                          type="file"
+                          id="file"
+                          className="inputFile"
+                          onChange={handleFileChange}
+                          accept=".pdf,.doc,.docx,.jpg,.png"
+                        />
+                        <span id="file-name" className="file-name">
+                          Seleccionar adjunto
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                <div className="buttons">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={
+                      validDays > diasVacacionesDisponibles || !selectedLideres
+                    }
+                  >
+                    <span>Crear Solicitud</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={handleNavigateHome}
+                  >
+                    <span>Volver a Home</span>
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
           </div>
-        </div>
         )}
       </div>
     </LocalizationProvider>
