@@ -181,7 +181,7 @@ button span {
 
 .sidebar-logout .logout-button {
   gap: 1rem;
-  background-color:rgb(255, 60, 60); /* Color de fondo */
+  background-color: #c94139; /* Color de fondo */
 }
 /*agregado de botonslide*/
 .sidebar-button-homeTH {
@@ -192,7 +192,9 @@ button span {
 .logout-button span {
   padding: 0;
   margin: 0;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: bold;
+  color: white
 }
 
 /* Área de contenido */
