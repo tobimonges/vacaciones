@@ -92,7 +92,8 @@ const NavigationBar = ({ logo, onLogout }) => {
 
     fetchWeather();
   }, []);
-
+  const isHomeRoute = location.pathname === "/Home" || location.pathname === "/HomeTH";
+  const isUsuarioD = location.pathname === "/UsuarioDetalle";
   return (
     <div className="nav-container">
       <nav className="navigation-bar">
@@ -102,9 +103,14 @@ const NavigationBar = ({ logo, onLogout }) => {
           </button>
         </div>
 
-        <div className="nav-logo">
-          <h1 className="saludo">Hola, {userName || "Usuario"}!</h1>
-        </div>
+        {isHomeRoute && (
+            <div className="nav-logo">
+              <h1 className="saludo">Hola {userName || "Usuario"}!</h1>
+            </div>
+        )}
+        {isUsuarioD && (
+            <h2>Gestión de Usuarios</h2>
+        )}
 
         <div className="weather nav-button-container right">
           {error ? (

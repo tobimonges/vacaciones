@@ -30,7 +30,6 @@ function UsuarioDetalle() {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [popupType, setPopupType] = useState("");
   const navigate = useNavigate();
 
   // Obtener lista de usuarios
