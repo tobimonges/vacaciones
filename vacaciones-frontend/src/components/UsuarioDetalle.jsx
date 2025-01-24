@@ -202,7 +202,6 @@ function UsuarioDetalle() {
             <div className="main">
               <div className="main-content">
                 <br></br>
-                <h2>Gestión de Usuarios</h2>
                 <br></br>
                 {error && <p className="err">{error}</p>}
                 {message && (
