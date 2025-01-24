@@ -10,8 +10,8 @@ import "./Home.css"; // Importa estilos CSS específicos para el componente Home
 import NavigationBar from "./NavigationBar"; // Importa componente de barra de navegación
 import Preloader from "./Preloader"; // Importa componente de preloader
 import Sidebar from "./Sidebar"; // Importa componente de barra lateral
-import "./Login.css"
-import Logogiratorio from "./logogiratorio"
+import "./Login.css";
+import Logogiratorio from "./logogiratorio";
 
 // Localización de fechas
 const locales = { es: esLocale }; // Define la localización en español
@@ -72,7 +72,6 @@ const CalendarLegend = () => (
   </div>
 ); // Componente que muestra la leyenda del calendario con los colores de los eventos
 
-
 // Componente Principal
 const Home = () => {
   // Estados
@@ -85,6 +84,7 @@ const Home = () => {
   const [showMainContent, setShowMainContent] = useState(false);
   const [showNavBar, setShowNavBar] = useState(false); // Estado para controlar la visibilidad de la barra de navegación
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad de la barra lateral
   const navigate = useNavigate(); // Hook para la navegación entre rutas
 
   // Obtener Datos del Usuario y Solicitudes de Vacaciones
@@ -194,7 +194,7 @@ const Home = () => {
 
   const dayPropGetter = (date) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); 
+    today.setHours(0, 0, 0, 0);
     const isPastDate = date < today;
 
     if (isPastDate) {
@@ -215,9 +215,8 @@ const Home = () => {
     };
   }; // Función para obtener estilos de los eventos del calendario
 
-
   useEffect(() => {
-     const timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       setIsAnimating(false);
       setTimeout(() => {
         setShowSidebar(true);
@@ -232,88 +231,141 @@ const Home = () => {
 
     return () => clearTimeout(timeout);
   }, []);
+  // si llega a cierto tamaño de pantalla, se oculta la barra lateral
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1085) {
+        setIsSidebarVisible(false);
+      }
+      else {
+        setIsSidebarVisible(true);
+      }
+    };
 
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  //si la pagina es menor a 750px, mostrara un mensaje y se ocultara todo
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 750) {
+        //mensaje de error en la clase container
+        setError("La pantalla es muy pequeña para mostrar el contenido");
+        document.querySelector(".container").style.display = "none";
+        
+        setShowMainContent(false);
+        return () => window.removeEventListener("resize", handleResize);
+      } else {
+        setError(""); // Limpia el mensaje de error si la pantalla es mayor
+        setShowMainContent(true);
+      }
+    };
+  
+    // Llama a la función para establecer el estado inicial
+    handleResize();
+  
+    // Escucha los eventos de redimensionamiento
+    window.addEventListener("resize", handleResize);
+  
+    // Limpia el listener al desmontar el componente
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  
 
   return (
     // Estructura de la página
     <div className="container home-container">
       {isAnimating ? (
-      <Logogiratorio duration={650} />
-    ) : (
-      showMainContent && (
-        <>
-      {/* **Barra lateral** */}
-      <div className="sidebar cajaLogin">        
-        <Sidebar/>
-      </div>
-
-      {/* **Área de contenido** */}
-      <div className="content-area">
-        {/* **Barra de navegación** */}
-        <div className="navbar cajaLogin">
-        <div className="navbar-content">
-            <NavigationBar/>
-          </div>
-        </div>
-
-        {/* **Contenido principal** */}
-        <div className="main">
-          <div className="main-content cajaLogin">
-            <div className="calendar-title">
-              <div className="calendar-key">
-                <span>Fecha de ingreso:</span>
-              </div>
-              <div className="calendar-value">
-                <span>
-                  {joinDate
-                    ? new Date(joinDate).toLocaleDateString("es-ES")
-                    : "Cargando..."}
-                </span>
-              </div>
-              <div className="calendar-divisor"></div>
-
-              <div className="calendar-key">
-                <span>Vacaciones disponibles:</span>
-              </div>
-              <div className="calendar-value">
-                <span>
-                  {vacationDays !== undefined ? vacationDays : "Cargando..."}
-                </span>
-              </div>
-              {error && <p className="calendar-error-message">{error}</p>}
+        <Logogiratorio duration={650} />
+      ) : (
+        showMainContent && (
+          <>
+            <div className="button-ocultar">
+              <button
+                className="ocultar"
+                onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+              >
+                {isSidebarVisible ? "<" : ">"}
+              </button>
             </div>
-            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-              <div className="calendar-big-container">
-                <Calendar
-                  localizer={localizer}
-                  events={events}
-                  startAccessor="start"
-                  endAccessor="end"
-                  style={{ height: 500, margin: "20px 0" }}
-                  messages={{
-                    today: "Hoy",
-                    previous: "Anterior",
-                    next: "Siguiente",
-                    month: "Mes",
-                    week: "Semana",
-                    day: "Día",
-                    agenda: "Agenda",
-                    showMore: (count) => `+${count} más`, // Traducción de "More"
-
-                  }}
-                  views={{ month: true }}
-                  eventPropGetter={eventStyleGetter}
-                  dayPropGetter={dayPropGetter}
-                />
+            {/* **Barra lateral** */}
+            {isSidebarVisible && (
+              <div className="sidebar">
+                <Sidebar />
               </div>
-              <CalendarLegend />
+            )}
+            {/* **Área de contenido** */}
+            <div className={`content-area ${isSidebarVisible ? "" : "new-content-area"}`}>
+              {/* **Barra de navegación** */}
+              <div className="navbar">
+                <div className="navbar-content">
+                  <NavigationBar />
+                </div>
+              </div>
+
+              {/* **Contenido principal** */}
+              <div className="main">
+                <div className="main-content">
+                  <div className="calendar-title">
+                    <div className="calendar-key">
+                      <span>Fecha de ingreso:</span>
+                    </div>
+                    <div className="calendar-value">
+                      <span>
+                        {joinDate
+                          ? new Date(joinDate).toLocaleDateString("es-ES")
+                          : "Cargando..."}
+                      </span>
+                    </div>
+                    <div className="calendar-divisor"></div>
+
+                    <div className="calendar-key">
+                      <span>Vacaciones disponibles:</span>
+                    </div>
+                    <div className="calendar-value">
+                      <span>
+                        {vacationDays !== undefined
+                          ? vacationDays
+                          : "Cargando..."}
+                      </span>
+                    </div>
+                    {error && <p className="calendar-error-message">{error}</p>}
+                  </div>
+                  <div
+                    className={`calendar-card ${error ? "calendar-error" : ""}`}
+                  >
+                    <div className="calendar-big-container">
+                      <Calendar
+                        localizer={localizer}
+                        events={events}
+                        startAccessor="start"
+                        endAccessor="end"
+                        style={{ height: 500, margin: "20px 0" }}
+                        messages={{
+                          today: "Hoy",
+                          previous: "Anterior",
+                          next: "Siguiente",
+                          month: "Mes",
+                          week: "Semana",
+                          day: "Día",
+                          agenda: "Agenda",
+                          showMore: (count) => `+${count} más`, // Traducción de "More"
+                        }}
+                        views={{ month: true }}
+                        eventPropGetter={eventStyleGetter}
+                        dayPropGetter={dayPropGetter}
+                      />
+                    </div>
+                    <CalendarLegend />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-      </>
-      )
-    )}
+          </>
+        )
+      )}
     </div>
   );
 };
