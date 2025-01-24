@@ -176,14 +176,15 @@ export default function NuevaSolicitud() {
   // Efecto para calcular los días válidos
   useEffect(() => {
     if (diasVacacionesDisponibles !== null) {
+      // Si los días de vacaciones disponibles son negativos
       if (diasVacacionesDisponibles < 0) {
-        // Si los días de vacaciones disponibles son negativos, no permitir solicitudes
         setMensaje("Ya cuenta con solicitudes anticipadas.");
         setTipoMensaje("Error");
         setValidDays(0); // Asegurarse de que la cantidad de días válidos sea 0
         return;
       }
 
+      // Calcular días válidos
       const days = countValidDays(
         startDate,
         endDate,
@@ -192,21 +193,23 @@ export default function NuevaSolicitud() {
       );
       setValidDays(days);
 
+      // Validación si días disponibles son 0 y se exceden 12 días
       if (diasVacacionesDisponibles === 0 && days > 12) {
-        // Permitir hasta 12 días si los días disponibles son 0
         setMensaje(
           "Puedes solicitar un máximo de 12 días de vacaciones anticipadas."
         );
         setTipoMensaje("Warning");
-      } else if (
+      }
+      // Validación si días disponibles son mayores a 0 pero exceden el límite
+      else if (
         diasVacacionesDisponibles > 0 &&
         days > diasVacacionesDisponibles
       ) {
-        // Validación normal si hay días de vacaciones disponibles
         setMensaje("No puedes seleccionar más días de los disponibles.");
         setTipoMensaje("Warning");
-      } else {
-        // Si todo está bien, limpiar mensajes de advertencia
+      }
+      // Validación si todo está correcto
+      else {
         setMensaje("");
         setTipoMensaje("");
       }
