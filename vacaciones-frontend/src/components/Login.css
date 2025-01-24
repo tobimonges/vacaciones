@@ -35,7 +35,7 @@
 }
 
 .errorPopup.error {
-  background-color: #f44336;  /* Color rojo más fuerte */
+  background-color: #f44336; /* Color rojo más fuerte */
   color: white;
   opacity: 1;
 }
@@ -89,7 +89,7 @@
 
   margin-top: 20px;
   margin-bottom: -10px;
-  
+
   width: 100%;
 }
 
@@ -132,12 +132,11 @@
 .forgotPassword {
   text-align: center;
   margin-bottom: 0px;
-  margin-top: -5px;
+  margin-top: 10px;
   width: 100%;
 }
 
 .linkLogin {
-  
   font-size: 13px;
   color: white;
   text-decoration: none;
@@ -200,7 +199,8 @@ h3 .icon {
   animation: shake 0.2s ease-in-out;
 }
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {
