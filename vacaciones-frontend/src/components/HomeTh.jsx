@@ -332,6 +332,60 @@ const HomeTh = () => {
     // Retornar el evento solo si pasa ambos filtros
     return isEquipoMatch && isBirthdayVisible && isHolidayVisible;
   });
+  useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth < 1085) {
+          setIsSidebarVisible(false);
+        }
+        else {
+          setIsSidebarVisible(true);
+        }
+      };
+  
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+      const handleResize = () => {
+        if (window.innerWidth < 750) {
+          document.querySelector(".container").style.display = "none";
+          setShowMainContent(false);
+    
+          // Crea un div con un mensaje dentro del root si no existe
+          let div = document.querySelector(".error-message");
+          if (!div) {
+            div = document.createElement("div");
+            div.className = "error-message";
+            document.querySelector("#root").appendChild(div);
+          }
+          div.textContent = "La pantalla es muy pequeña para mostrar el contenido";
+    
+          setError("La pantalla es muy pequeña para mostrar el contenido");
+        } else {
+          setError(""); // Limpia el mensaje de error si la pantalla es mayor
+          setShowMainContent(true);
+          document.querySelector(".container").style.display = "flex";
+    
+          // Elimina el div del mensaje de error si existe
+          const div = document.querySelector(".error-message");
+          if (div) {
+            div.remove();
+          }
+        }
+      };
+    
+      // Llama a la función para establecer el estado inicial
+      handleResize();
+    
+      // Escucha los eventos de redimensionamiento
+      window.addEventListener("resize", handleResize);
+    
+      // Limpia el listener al desmontar el componente
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []);
 
   //Renderizado del Componente
   return (

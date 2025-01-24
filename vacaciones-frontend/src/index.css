@@ -470,4 +470,5 @@ button span {
   color:rgb(255, 255, 255); /* Color rojo más fuerte */
   font-weight: bold; /* Texto en negrita */
   margin: 3rem auto; /* Añade un margen superior e inferior */
+  border-radius: 10px; /* Añade bordes redondeados */
 }
