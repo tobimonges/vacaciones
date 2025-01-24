@@ -370,22 +370,7 @@ const HomeTh = () => {
               {/* 📚 **Contenido principal** */}
               <div className="main">
                 <div className="main-content">
-                  <div className="calendar-title-th">
-                    {pendingCount === 0 ? (
-                      <span>No tienes solicitudes pendientes.</span>
-                    ) : (
-                      <span>
-                        Tienes&nbsp;
-                        <span className="pending-count-number">
-                          {pendingCount}
-                        </span>
-                        &nbsp;
-                        {pendingCount === 1
-                          ? "solicitud pendiente!"
-                          : "solicitudes pendientes!"}
-                      </span>
-                    )}
-                  </div>
+
 
                   <div
                     className={`calendar-card ${error ? "calendar-error" : ""}`}
