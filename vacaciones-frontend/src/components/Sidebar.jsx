@@ -106,7 +106,7 @@ const SidebarButtons = () => {
             className="sidebar-button"
             onClick={() => navigate("/SolicitudAuxiliar")}
           >
-            <span>Solicitud Auxiliar</span>
+            <span>Solicitud a Otros</span>
           </button>
         )}
 
