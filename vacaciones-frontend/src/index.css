@@ -9,7 +9,17 @@
   --font-family-secondary: "Funnel Sans", serif;
   --blur-effect: blur(5px);
   --button-bg: #fbc940;
-
+}
+html {
+  background: linear-gradient(
+      45deg,
+      rgba(99, 12, 0, 0.25),
+      rgba(30, 148, 227, 0.25)
+    ),
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1560%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%23SvgjsRadialGradient1561)'%3e%3c/rect%3e%3cpath d='M0 0L52.91 0L0 5.82z' fill='rgba(255%2c 255%2c 255%2c .1)'%3e%3c/path%3e%3cpath d='M0 5.82L52.91 0L223.41 0L0 198.10999999999999z' fill='rgba(255%2c 255%2c 255%2c .075)'%3e%3c/path%3e%3cpath d='M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z' fill='rgba(255%2c 255%2c 255%2c .05)'%3e%3c/path%3e%3cpath d='M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z' fill='rgba(255%2c 255%2c 255%2c .025)'%3e%3c/path%3e%3cpath d='M1440 560L1266.7 560L1440 289.19z' fill='rgba(0%2c 0%2c 0%2c .1)'%3e%3c/path%3e%3cpath d='M1440 289.19L1266.7 560L701.63 560L1440 233.49z' fill='rgba(0%2c 0%2c 0%2c .075)'%3e%3c/path%3e%3cpath d='M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z' fill='rgba(0%2c 0%2c 0%2c .05)'%3e%3c/path%3e%3cpath d='M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z' fill='rgba(0%2c 0%2c 0%2c .025)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1560'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx='100%25' cy='100%25' r='1545.06' gradientUnits='userSpaceOnUse' id='SvgjsRadialGradient1561'%3e%3cstop stop-color='rgba(9%2c 82%2c 158%2c 1)' offset='1'%3e%3c/stop%3e%3cstop stop-color='rgba(0%2c 69%2c 158%2c 0)' offset='1'%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e");
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: multiply; /* Opcional: color de fondo */
 }
 
 * {
@@ -29,12 +39,13 @@ body,
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 
-
-
-h1, h2, h3, p, span {
+h1,
+h2,
+h3,
+p,
+span {
   font-family: var(--font-family-primary);
 }
 
@@ -51,7 +62,6 @@ button span {
   padding: 15px;
   line-height: 1.6;
   font-size: 1.1rem;
-  
 }
 
 .container {
@@ -61,18 +71,17 @@ button span {
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
-  position:static;
+  position: static;
   padding: 20px 50px;
   background: linear-gradient(
-    45deg,
-    rgba(99, 12, 0, 0.25),
-    rgba(30, 148, 227, 0.25)
-  ),
-  url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1560%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%23SvgjsRadialGradient1561)'%3e%3c/rect%3e%3cpath d='M0 0L52.91 0L0 5.82z' fill='rgba(255%2c 255%2c 255%2c .1)'%3e%3c/path%3e%3cpath d='M0 5.82L52.91 0L223.41 0L0 198.10999999999999z' fill='rgba(255%2c 255%2c 255%2c .075)'%3e%3c/path%3e%3cpath d='M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z' fill='rgba(255%2c 255%2c 255%2c .05)'%3e%3c/path%3e%3cpath d='M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z' fill='rgba(255%2c 255%2c 255%2c .025)'%3e%3c/path%3e%3cpath d='M1440 560L1266.7 560L1440 289.19z' fill='rgba(0%2c 0%2c 0%2c .1)'%3e%3c/path%3e%3cpath d='M1440 289.19L1266.7 560L701.63 560L1440 233.49z' fill='rgba(0%2c 0%2c 0%2c .075)'%3e%3c/path%3e%3cpath d='M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z' fill='rgba(0%2c 0%2c 0%2c .05)'%3e%3c/path%3e%3cpath d='M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z' fill='rgba(0%2c 0%2c 0%2c .025)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1560'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx='100%25' cy='100%25' r='1545.06' gradientUnits='userSpaceOnUse' id='SvgjsRadialGradient1561'%3e%3cstop stop-color='rgba(9%2c 82%2c 158%2c 1)' offset='1'%3e%3c/stop%3e%3cstop stop-color='rgba(0%2c 69%2c 158%2c 0)' offset='1'%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e");
+      45deg,
+      rgba(99, 12, 0, 0.25),
+      rgba(30, 148, 227, 0.25)
+    ),
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1560%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%23SvgjsRadialGradient1561)'%3e%3c/rect%3e%3cpath d='M0 0L52.91 0L0 5.82z' fill='rgba(255%2c 255%2c 255%2c .1)'%3e%3c/path%3e%3cpath d='M0 5.82L52.91 0L223.41 0L0 198.10999999999999z' fill='rgba(255%2c 255%2c 255%2c .075)'%3e%3c/path%3e%3cpath d='M0 198.10999999999999L223.41 0L876.5699999999999 0L0 320.44z' fill='rgba(255%2c 255%2c 255%2c .05)'%3e%3c/path%3e%3cpath d='M0 320.44L876.5699999999999 0L1264.6799999999998 0L0 414.01z' fill='rgba(255%2c 255%2c 255%2c .025)'%3e%3c/path%3e%3cpath d='M1440 560L1266.7 560L1440 289.19z' fill='rgba(0%2c 0%2c 0%2c .1)'%3e%3c/path%3e%3cpath d='M1440 289.19L1266.7 560L701.63 560L1440 233.49z' fill='rgba(0%2c 0%2c 0%2c .075)'%3e%3c/path%3e%3cpath d='M1440 233.49L701.6299999999999 560L375.40999999999985 560L1440 115.81z' fill='rgba(0%2c 0%2c 0%2c .05)'%3e%3c/path%3e%3cpath d='M1440 115.81L375.40999999999985 560L223.58999999999986 560L1440 34.019999999999996z' fill='rgba(0%2c 0%2c 0%2c .025)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1560'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cradialGradient cx='100%25' cy='100%25' r='1545.06' gradientUnits='userSpaceOnUse' id='SvgjsRadialGradient1561'%3e%3cstop stop-color='rgba(9%2c 82%2c 158%2c 1)' offset='1'%3e%3c/stop%3e%3cstop stop-color='rgba(0%2c 69%2c 158%2c 0)' offset='1'%3e%3c/stop%3e%3c/radialGradient%3e%3c/defs%3e%3c/svg%3e");
   background-size: cover;
   background-attachment: fixed;
   background-blend-mode: multiply;
-
 }
 .container > * {
   box-sizing: border-box;
@@ -80,7 +89,6 @@ button span {
   max-height: 100%;
   overflow: auto;
 }
-
 
 /* Barra lateral fija */
 .sidebar {
@@ -90,7 +98,6 @@ button span {
   position: static; /* Fija la barra lateral en su posición */
   padding: 0; /* Elimina el margen y usa padding si es necesario */
   display: flex; /* Utiliza flexbox para el diseño */
-  
 }
 
 .sidebar-content {
@@ -109,7 +116,7 @@ button span {
 /* Contenedor del logo en la barra lateral */
 .sidebar-logo {
   width: 100%; /* Ancho completo */
-  flex:auto; 
+  flex: auto;
   display: flex; /* Utiliza flexbox para el diseño */
   justify-content: center; /* Centra el logo horizontalmente */
   align-items: start;
@@ -127,8 +134,8 @@ button span {
   transform: scale(1.08); /* Aumenta el tamaño de la imagen al pasar el mouse */
 }
 
-
-.sidebar-buttons, .sidebar-logout {
+.sidebar-buttons,
+.sidebar-logout {
   display: flex;
   width: 100%; /* Ancho completo */
   padding: 1rem; /* Espaciado interno */
@@ -145,7 +152,8 @@ button span {
   padding: 0;
 }
 
-.sidebar-buttons .sidebar-button, .sidebar-logout .logout-button {
+.sidebar-buttons .sidebar-button,
+.sidebar-logout .logout-button {
   margin: 0;
   display: flex;
   justify-content: center;
@@ -156,17 +164,13 @@ button span {
   border-radius: 8px;
 }
 
-
-.sidebar-buttons .sidebar-button {  
+.sidebar-buttons .sidebar-button {
   background-color: var(--button-bg); /* Color de fondo */
-
 }
-
 
 .sidebar-logout {
   justify-content: center; /* Centra los elementos horizontalmente */
   align-items: center; /* Centra los elementos verticalmente */
-  
 }
 
 .sidebar-logout .logout-button {
@@ -174,8 +178,8 @@ button span {
   background-color: #ff0000; /* Color de fondo */
 }
 /*agregado de botonslide*/
-.sidebar-button-homeTH{
-font-size: 1.2rem;
+.sidebar-button-homeTH {
+  font-size: 1.2rem;
 }
 
 .logout-button span {
@@ -183,14 +187,16 @@ font-size: 1.2rem;
   margin: 0;
 }
 
-
 /* Área de contenido */
-.content-area { /* Deja espacio para la barra lateral y el padding del contenedor */
-  width: calc(100% - var(--sidebar-width)); /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
+.content-area {
+  /* Deja espacio para la barra lateral y el padding del contenedor */
+  width: calc(
+    100% - var(--sidebar-width)
+  ); /* Ajusta el ancho restando el ancho de la barra lateral y el padding del contenedor */
   height: 100%; /* Ajusta la altura restando el padding del contenedor */
   display: flex; /* Utiliza flexbox para el diseño */
   flex-wrap: wrap; /* Coloca los elementos en una columna */
- }
+}
 
 /* Barra de navegación fija */
 .navbar {
@@ -202,34 +208,34 @@ font-size: 1.2rem;
   align-items: center; /* Centra los elementos verticalmente */
   justify-content: center; /* Centra los elementos horizontalmente */
   position: static; /* Fija la barra de navegación en su posición */
-  
 }
 
 .navbar-content {
   /* contenedor de la barra de navegacion */
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    margin-left: 20px;
-    /* Añade un sombreado a la barra de navegación */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Añade un borde redondeado a la barra de navegación */
-    border-radius: 10px;
-    background-color: #007bff3a;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-left: 20px;
+  /* Añade un sombreado a la barra de navegación */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Añade un borde redondeado a la barra de navegación */
+  border-radius: 10px;
+  background-color: #007bff3a;
 }
 .main {
   box-sizing: border-box;
-  height: calc(100% - var(--navbar-height)); /* Ajusta la altura restando la altura de la barra de navegación y el margen */
+  height: calc(
+    100% - var(--navbar-height)
+  ); /* Ajusta la altura restando la altura de la barra de navegación y el margen */
   width: 100%; /* Ajusta el ancho restando el margen */
-   /* Deja espacio para la barra de navegación */
+  /* Deja espacio para la barra de navegación */
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: static;
-  
 }
 
 /* Contenido principal con scroll */
@@ -251,46 +257,45 @@ font-size: 1.2rem;
 }
 *::-webkit-scrollbar:window-inactive {
   display: none;
-  }
+}
 *::-webkit-scrollbar {
   width: 8px;
   background-color: var(--button-bg);
   border-radius: 20px;
 }
 
-*::-webkit-scrollbar-thumb  {
-  background-color: #09C;
+*::-webkit-scrollbar-thumb {
+  background-color: #09c;
   border-radius: 6px;
 }
 
 .main::-webkit-scrollbar:window-inactive {
   display: none;
-  }
+}
 .main ::-webkit-scrollbar {
   width: 8px;
   background-color: var(--button-bg);
   border-radius: 20px;
 }
 
-.main::-webkit-scrollbar-thumb  {
-  background-color: #09C;
+.main::-webkit-scrollbar-thumb {
+  background-color: #09c;
   border-radius: 6px;
 }
 /*scroll detalles de equipos*/
 .sidebar-button-homeTH::-webkit-scrollbar:window-inactive {
   display: none;
-  }
+}
 .sidebar-button-homeTH ::-webkit-scrollbar {
   width: 8px;
   background-color: var(--button-bg);
   border-radius: 20px;
 }
 
-.sidebar-button-homeTH::-webkit-scrollbar-thumb  {
-  background-color: #09C;
+.sidebar-button-homeTH::-webkit-scrollbar-thumb {
+  background-color: #09c;
   border-radius: 6px;
 }
-
 
 /* Estilos para el calendario */
 
@@ -301,7 +306,6 @@ font-size: 1.2rem;
   color: #333; /* Personaliza el color de los números si es necesario */
   margin: 0.1rem !important; /* Añade un margen horizontal */
 }
-
 
 .rbc-toolbar {
   display: flex !important;
@@ -320,15 +324,18 @@ font-size: 1.2rem;
   display: flex !important;
 }
 
-.rbc-btn-group button:nth-child(1) { /* Primer botón (Hoy) */
+.rbc-btn-group button:nth-child(1) {
+  /* Primer botón (Hoy) */
   order: 2 !important;
 }
 
-.rbc-btn-group button:nth-child(2) { /* Segundo botón (Anterior) */
+.rbc-btn-group button:nth-child(2) {
+  /* Segundo botón (Anterior) */
   order: 1 !important;
 }
 
-.rbc-btn-group button:nth-child(3) { /* Tercer botón (Siguiente) */
+.rbc-btn-group button:nth-child(3) {
+  /* Tercer botón (Siguiente) */
   order: 3 !important;
 }
 
@@ -350,7 +357,7 @@ font-size: 1.2rem;
   font-size: 1rem !important; /* Tamaño de la fuente */
   font-weight: 500 !important; /* Peso de la fuente */
   cursor: pointer !important; /* Cambia el cursor al pasar el mouse */
-  transition: all 0.3s ease !important
+  transition: all 0.3s ease !important;
 }
 
 .rbc-btn-group button:hover {
@@ -362,26 +369,26 @@ font-size: 1.2rem;
   transition: all 0.2s ease !important;
 }
 
-
-
 .rbc-month-view {
   border-radius: 10px !important; /* Bordes redondeados generales */
   overflow: hidden !important; /* Asegura que los bordes se recorten */
   border: 1px solid #ddd !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  
 }
 
-
 .rbc-day-bg,
-.rbc-date-cell button {/* Redondea las celdas de los días y los botones */
+.rbc-date-cell button {
+  /* Redondea las celdas de los días y los botones */
   transition: background-color 0.3s ease !important;
-  
-
 }
 
 .rbc-day-bg:hover {
-  background-color: rgba(71, 156, 248, 0.2) !important; /* Color al pasar el mouse */
+  background-color: rgba(
+    71,
+    156,
+    248,
+    0.2
+  ) !important; /* Color al pasar el mouse */
 }
 
 .rbc-event {
