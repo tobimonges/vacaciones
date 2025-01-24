@@ -249,15 +249,29 @@ const Home = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 750) {
-        //mensaje de error en la clase container
-        setError("La pantalla es muy pequeña para mostrar el contenido");
         document.querySelector(".container").style.display = "none";
-        
         setShowMainContent(false);
-        return () => window.removeEventListener("resize", handleResize);
+  
+        // Crea un div con un mensaje dentro del root si no existe
+        let div = document.querySelector(".error-message");
+        if (!div) {
+          div = document.createElement("div");
+          div.className = "error-message";
+          document.querySelector("#root").appendChild(div);
+        }
+        div.textContent = "La pantalla es muy pequeña para mostrar el contenido";
+  
+        setError("La pantalla es muy pequeña para mostrar el contenido");
       } else {
         setError(""); // Limpia el mensaje de error si la pantalla es mayor
         setShowMainContent(true);
+        document.querySelector(".container").style.display = "flex";
+  
+        // Elimina el div del mensaje de error si existe
+        const div = document.querySelector(".error-message");
+        if (div) {
+          div.remove();
+        }
       }
     };
   

@@ -458,3 +458,16 @@ button span {
 
 
 
+.error-message {
+  width: 35rem; /* Ancho completo */
+  padding: 0.5rem; /* Espaciado interno */
+  height: 10rem;
+  text-align: center;
+  display: flex; /* Utiliza flexbox para el diseño */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+  background-color: #f44336;
+  color:rgb(255, 255, 255); /* Color rojo más fuerte */
+  font-weight: bold; /* Texto en negrita */
+  margin: 3rem auto; /* Añade un margen superior e inferior */
+}
