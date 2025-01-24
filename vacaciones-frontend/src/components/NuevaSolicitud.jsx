@@ -53,7 +53,10 @@ export default function NuevaSolicitud() {
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
   const [disabledDates, setDisabledDates] = useState([]);
+  const [showContent, setShowContent] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
+  
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
       setSelectedLideres([...selectedLideres, null]);
@@ -71,6 +74,16 @@ export default function NuevaSolicitud() {
     newSelectedLideres[index] = parseInt(value, 10);
     setSelectedLideres(newSelectedLideres);
   };
+
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowContent(true);
+    }, 900); 
+  
+    return () => clearTimeout(timeout);
+  }, []);
+
 
   useEffect(() => {
     const timeout = setTimeout(() => {

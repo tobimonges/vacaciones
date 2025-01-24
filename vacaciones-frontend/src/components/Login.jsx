@@ -58,10 +58,15 @@ function Login() {
       console.log(error.response);
       if(error.response.data.message === "Redirigir a cambio de contraseña") {
         setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
-        setIsAnimating(true); //agregado de animacion para ir a reset-password
+        setShowError(true);
+
         setTimeout(() => {
-          navigate(error.response.data.redirect);
-        }, 2500);
+          // Activar la animación después de 2 segundos
+          setIsAnimating(true);
+          setTimeout(() => {
+            navigate(error.response.data.redirect);
+          }, 200); // Redirige después de la animación
+        }, 2200); // Espera 2 segundos antes de la animación
         return;
       }
       console.error("Error al iniciar sesión", error);
@@ -112,7 +117,7 @@ function Login() {
       <div
       className={`loginBox cajaLogin ${
         error ? "datosIncorrectos" : "" // Aplicar la clase datosIncorrectos solo cuando error sea true
-      }`}>
+      } ${isAnimating ? "LoginAnim":""}`}>
         <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin} className="loginForm">
