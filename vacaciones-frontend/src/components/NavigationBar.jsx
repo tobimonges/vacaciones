@@ -85,6 +85,7 @@ const NavigationBar = ({ logo, onLogout }) => {
           throw new Error("Error al obtener los datos del clima");
         }
         const data = await response.json();
+        data.main.temp = Math.round(data.main.temp); // Redondear la temperatura
         setWeather(data);
       } catch (error) {
         console.error("Error fetching weather data:", error);
