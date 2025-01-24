@@ -11,7 +11,7 @@ import "./Home.css";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import Sidebar from "./Sidebar";
-import Logogiratorio from "./logogiratorio"
+import Logogiratorio from "./logogiratorio";
 import "./Login.css";
 
 //Localización de fechas
@@ -43,11 +43,11 @@ const HomeTh = () => {
   const [equipos, setEquipos] = useState([]);
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [pendingCount, setPendingCount] = useState(0);
-    const [isAnimating, setIsAnimating] = useState(true);
-    const [showMainContent, setShowMainContent] = useState(false);
-    const [showNavBar, setShowNavBar] = useState(false); // Estado para controlar la visibilidad de la barra de navegación
-    const [showSidebar, setShowSidebar] = useState(false);
-    const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad de la barra lateral
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [showMainContent, setShowMainContent] = useState(false);
+  const [showNavBar, setShowNavBar] = useState(false); // Estado para controlar la visibilidad de la barra de navegación
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad de la barra lateral
 
   //Manejo de clic en "more"
   const handleShowMore = (eventsOnDay, date) => {
@@ -55,22 +55,22 @@ const HomeTh = () => {
     setModalOpen(true); // Abre el modal
   };
 
-    useEffect(() => {
-       const timeout = setTimeout(() => {
-        setIsAnimating(false);
-        setTimeout(() => {
-          setShowSidebar(true);
-        }, 300); // Retraso para mostrar la barra lateral
-        setTimeout(() => {
-          setShowNavBar(true);
-        }, 900); // Retraso para mostrar la barra de navegación
-        setTimeout(() => {
-          setShowMainContent(true);
-        }, 100); // Retraso para mostrar la barra lateral
-      }, 650); // Duración de la animación de Logogiratorio
-  
-      return () => clearTimeout(timeout);
-    }, []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsAnimating(false);
+      setTimeout(() => {
+        setShowSidebar(true);
+      }, 300); // Retraso para mostrar la barra lateral
+      setTimeout(() => {
+        setShowNavBar(true);
+      }, 900); // Retraso para mostrar la barra de navegación
+      setTimeout(() => {
+        setShowMainContent(true);
+      }, 100); // Retraso para mostrar la barra lateral
+    }, 650); // Duración de la animación de Logogiratorio
+
+    return () => clearTimeout(timeout);
+  }, []);
   //Funcion para contar solicitudes pendientes
   useEffect(() => {
     const fetchPendingRequests = async () => {
@@ -356,7 +356,11 @@ const HomeTh = () => {
               </div>
             )}
             {/* **Área de contenido** */}
-            <div className={`content-area ${isSidebarVisible ? "" : "new-content-area"}`}>
+            <div
+              className={`content-area ${
+                isSidebarVisible ? "" : "new-content-area"
+              }`}
+            >
               {/* 📚 **Barra superior** */}
               <div className="navbar">
                 <div className="navbar-content">
@@ -371,16 +375,21 @@ const HomeTh = () => {
                       <span>No tienes solicitudes pendientes.</span>
                     ) : (
                       <span>
-                        {`Tienes `}
-                        <span className="pending-count-number">{`| ${pendingCount} |`}</span>
+                        Tienes&nbsp;
+                        <span className="pending-count-number">
+                          {pendingCount}
+                        </span>
+                        &nbsp;
                         {pendingCount === 1
-                          ? ` solicitud pendiente!`
-                          : ` solicitudes pendientes!`}
+                          ? "solicitud pendiente!"
+                          : "solicitudes pendientes!"}
                       </span>
                     )}
                   </div>
 
-                  <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+                  <div
+                    className={`calendar-card ${error ? "calendar-error" : ""}`}
+                  >
                     {/* 🛠️ Checkbox con filtros*/}
 
                     <div className=" calendar-title-final">
@@ -390,7 +399,9 @@ const HomeTh = () => {
                             <input
                               type="checkbox"
                               checked={showBirthdays}
-                              onChange={(e) => setShowBirthdays(e.target.checked)}
+                              onChange={(e) =>
+                                setShowBirthdays(e.target.checked)
+                              }
                             />
                             Mostrar cumpleaños
                           </label>
@@ -401,7 +412,9 @@ const HomeTh = () => {
                           id="equipo-select"
                           className="button-homeTH-2"
                           value={equipoSeleccionado}
-                          onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                          onChange={(e) =>
+                            setEquipoSeleccionado(e.target.value)
+                          }
                         >
                           <option value="">Todos los equipos</option>
                           {equipos.map((equipo) => (
@@ -417,7 +430,9 @@ const HomeTh = () => {
                             <input
                               type="checkbox"
                               checked={showHolidays}
-                              onChange={(e) => setShowHolidays(e.target.checked)}
+                              onChange={(e) =>
+                                setShowHolidays(e.target.checked)
+                              }
                             />
                             Mostrar feriados
                           </label>
@@ -549,8 +564,8 @@ const HomeTh = () => {
                                     </span>
                                     <br /> <br />
                                     <span>
-                                      Desde: {event.start.toLocaleDateString()} hasta:{" "}
-                                      {event.end.toLocaleDateString()}
+                                      Desde: {event.start.toLocaleDateString()}{" "}
+                                      hasta: {event.end.toLocaleDateString()}
                                     </span>
                                   </li>
                                 ))}
@@ -575,7 +590,6 @@ const HomeTh = () => {
           </>
         )
       )}
-      
     </div>
   );
 };
