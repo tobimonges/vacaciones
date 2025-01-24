@@ -243,7 +243,8 @@ const Home = () => {
       showMainContent && (
         <>
       {/* **Barra lateral** */}
-      <div className="sidebar cajaLogin">        <Sidebar/>
+      <div className="sidebar">        
+        <Sidebar/>
       </div>
 
       {/* **Área de contenido** */}

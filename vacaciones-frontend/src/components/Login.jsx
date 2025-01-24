@@ -50,28 +50,21 @@ function Login() {
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
-      const loginBox = document.querySelector(".loginBox");
-      loginBox.classList.add("LoginAnim");
       setTimeout(() => {
         navigate("/Home");
-      }, 500);
+      }, 200);
 
     } catch (error) {
+      console.log(error.response);
       if(error.response.data.message === "Redirigir a cambio de contraseña") {
         setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
-        setShowError(true);
-        setTimeout(() => {
-          setShowError(false);
-          // setIsAnimating(true);
-          const loginBox = document.querySelector(".loginBox");
-          loginBox.classList.add("LoginAnim");
-        }, 800);
         setIsAnimating(true); //agregado de animacion para ir a reset-password
         setTimeout(() => {
           navigate(error.response.data.redirect);
-        }, 1000);
+        }, 2500);
         return;
       }
+      console.error("Error al iniciar sesión", error);
       setPassword("");
       setError(true);
       setShowError(true);
@@ -93,6 +86,12 @@ function Login() {
         setErrorMessage("Error de red. Por favor, verifica tu conexión.");
       }
     }
+
+    /*   const handleLogout = () => {
+      localStorage.removeItem("isAuthenticated"); // Eliminar la sesión
+      alert("Has cerrado sesión");
+      navigate("/", { replace: true }); // Redirige al login
+    }; */
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");

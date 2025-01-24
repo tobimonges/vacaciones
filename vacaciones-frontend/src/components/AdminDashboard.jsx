@@ -39,7 +39,7 @@ const AdminDashboard = () => {
 
         // Definir el orden de prioridad de los estados
         const estadoPrioridad = {
-          "Pendiente a TH": 1,
+          "Falta aprobación de Talento Humano": 1,
           Pendiente: 2,
           "Falta aprobación del Líder": 3,
           Aprobado: 4,
@@ -240,10 +240,8 @@ const AdminDashboard = () => {
     // Lógica de estados basados en el número de aprobaciones
     if (solicitud.numeroAprobaciones === 0) {
       return "Falta aprobación del Líder"; // Si la solicitud no ha sido aprobada por el líder
-    } else if (solicitud.numeroAprobaciones === 1 && userRole === "TH") {
-      return "Pendiente a GTH"; // Si la solicitud está pendiente de aprobación de GTH
-    } else if (solicitud.numeroAprobaciones === 1) {
-      return "Pendiente a TH"; // Si está pendiente de aprobación de TH
+    } else if (solicitud.numeroAprobaciones === 1 ) {
+      return "Falta aprobación de Talento Humano";
     }
 
     // Si la solicitud está completamente aprobada
@@ -394,7 +392,7 @@ const AdminDashboard = () => {
                               <>
                                 {getEstadoSolicitud(solicitud) === "Aprobado" ||
                                 getEstadoSolicitud(solicitud) ===
-                                  "Pendiente a TH" ||
+                                  "Falta aprobación de Talento Humano" ||
                                 getEstadoSolicitud(solicitud) ===
                                   "Rechazado" ? (
                                   // Si el estado es "Aprobado", "Pendiente a TH" o "Rechazado", los botones están deshabilitados
@@ -442,7 +440,7 @@ const AdminDashboard = () => {
                           ) : userRole === "LIDER" ? (
                             <>
                               {getEstadoSolicitud(solicitud) ===
-                                "Pendiente a TH" ||
+                                "Falta aprobación de Talento Humano" ||
                               getEstadoSolicitud(solicitud) === "Rechazado" ||
                               getEstadoSolicitud(solicitud) === "Aprobado" ? (
                                 // Botones deshabilitados si el estado es "Pendiente a TH", "Rechazado" o "Aprobado"

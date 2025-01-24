@@ -15,9 +15,8 @@ import Logogiratorio from "./logogiratorio";
 
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
-const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")];
 
-function countValidDays(start, end, reservedDates = []) {
+function countValidDays(start, end, reservedDates = [], disabledDates = []) {
   if (!start || !end) return 0;
   if (end.isBefore(start, "day")) return 0;
 
@@ -53,14 +52,18 @@ export default function NuevaSolicitud() {
   const [file, setFile] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
-  const [showContent, setShowContent] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
-
+  const [disabledDates, setDisabledDates] = useState([]);
 
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
       setSelectedLideres([...selectedLideres, null]);
     }
+  };
+
+  const handleDeleteSelector = (index) => {
+    setSelectedLideres((prevSelectedLideres) =>
+      prevSelectedLideres.filter((_, i) => i !== index)
+    );
   };
 
   const handleLiderChange = (value, index) => {
@@ -246,20 +249,56 @@ export default function NuevaSolicitud() {
   }, [userRole, usuarioId]);
 
   useEffect(() => {
-    const days = countValidDays(startDate, endDate, reservedDates);
+    // Fetch disabled dates (feriados) from API
+    const fetchDisabledDates = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8080/vacaciones/feriados",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Mapear fechas a objetos `dayjs`
+        const feriados = response.data.map((feriado) => dayjs(feriado.fecha));
+
+        setDisabledDates(feriados);
+      } catch (error) {
+        console.error("Error al obtener los feriados:", error);
+        setMensaje("No se pudieron cargar los feriados.");
+        setTipoMensaje("Error");
+      }
+    };
+
+    fetchDisabledDates();
+  }, []);
+
+  useEffect(() => {
+    const days = countValidDays(
+      startDate,
+      endDate,
+      reservedDates,
+      disabledDates
+    );
     setValidDays(days);
 
     if (
       diasVacacionesDisponibles !== null &&
       days > diasVacacionesDisponibles
     ) {
-      //  setWarning("No puedes seleccionar más días de los disponibles.");
       setMensaje("No puedes seleccionar más días de los disponibles.");
       setTipoMensaje("Warning");
     } else {
-      setWarning("");
+      setMensaje("");
     }
-  }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
+  }, [
+    startDate,
+    endDate,
+    diasVacacionesDisponibles,
+    reservedDates,
+    disabledDates,
+  ]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]); // Guardar el archivo seleccionado
@@ -417,15 +456,7 @@ export default function NuevaSolicitud() {
             </div>
             {userRole !== "DIRECTORIO" &&
               selectedLideres.map((selectedLider, index) => (
-                <div
-                  className={`mb-3-lideres ${
-                    index !== selectedLideres.length - 1 ||
-                    selectedLideres.length === 3
-                      ? "flex-column"
-                      : ""
-                  }`}
-                  key={index}
-                >
+                <div className={`mb-3-lideres`} key={index}>
                   <select
                     value={selectedLider || ""}
                     onChange={(e) => handleLiderChange(e.target.value, index)}
@@ -446,20 +477,37 @@ export default function NuevaSolicitud() {
                         </option>
                       ))}
                   </select>
-                  {index === selectedLideres.length - 1 &&
-                    selectedLideres.length < 3 && (
-                      <div
-                        className="imagenBotonMas"
-                        onClick={handleAddLiderSelector}
-                      >
-                        <img
-                          src="./public/agregar.svg"
-                          alt="Añadir líder"
-                          title="Añadir líder"
-                          className="imagenBotonMas-img"
-                        />
-                      </div>
-                    )}
+                  <div
+                    className="imagenBotonMas"
+                    onClick={
+                      index === selectedLideres.length - 1 &&
+                      selectedLideres.length < 3
+                        ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
+                        : () => handleDeleteSelector(index) // Elimina si no es el último
+                    }
+                  >
+                    <img
+                      src={
+                        index === selectedLideres.length - 1 &&
+                        selectedLideres.length < 3
+                          ? "./public/agregar.svg" // Ícono para agregar en el último selector
+                          : "./public/circulo-negativo.svg" // Ícono para eliminar en otros selectores
+                      }
+                      alt={
+                        index === selectedLideres.length - 1 &&
+                        selectedLideres.length < 3
+                          ? "Añadir líder"
+                          : "Eliminar líder"
+                      }
+                      title={
+                        index === selectedLideres.length - 1 &&
+                        selectedLideres.length < 3
+                          ? "Añadir líder"
+                          : "Eliminar líder"
+                      }
+                      className="imagenBotonMas-img"
+                    />
+                  </div>
                 </div>
               ))}
 

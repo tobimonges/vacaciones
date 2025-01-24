@@ -13,7 +13,7 @@ public class UsuarioRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
-    @Pattern(regexp = "^[^0-9]*$", message = "El apellido no puede contener números")
+    @Pattern(regexp = "^[^0-9]*$", message = "El nombre no puede contener números")
     private String nombre;
 
     @NotBlank(message = "El nombre es obligatorio")

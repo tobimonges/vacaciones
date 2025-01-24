@@ -131,6 +131,7 @@ const EquipoDetalle = () => {
                   placeholder="Nombre del equipo"
                   value={filterText}
                   onChange={handleFilterChange}
+                  class="inputCreate"
                 />
               </div>
               <div className="content-section-detalle">
@@ -176,6 +177,7 @@ const EquipoDetalle = () => {
                                 </button>
                                 <button
                                   className="cancel-button"
+                                  style={{ backgroundColor: "#ff6e33" }}
                                   onClick={() => {
                                     setEditingId(null); // Salir del modo edición
                                     setNewName(""); // Opcional: Limpiar el estado del nuevo nombre
