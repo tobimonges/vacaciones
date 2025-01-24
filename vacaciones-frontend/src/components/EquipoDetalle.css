@@ -34,6 +34,12 @@
   border-radius: 5px;
   border: 2px solid #ccc;
 }
+#filter-input-detalle::placeholder {
+  color:rgb(226, 226, 226);
+}
+.filter-container-detalle h4 {
+  margin: 0;
+}
 
 .content-section-detalle {
   flex: 1;

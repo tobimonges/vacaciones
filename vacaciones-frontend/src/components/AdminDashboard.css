@@ -63,6 +63,13 @@ h4 {
   width: 200px;
   margin-right: 60px;
 }
+#filter-input::placeholder {
+  color: #ddd;
+}
+#filter-input {
+  padding: 10px 15px;
+}
+
 
 .filter-label {
   font-size: 1rem;
