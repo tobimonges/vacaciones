@@ -231,25 +231,6 @@ const Home = () => {
     return () => clearTimeout(timeout);
   }, []);
   /* funcion de setShowsidebar para agregar y quitar clases*/
-  useEffect(() => {
-    if (showSidebar) {
-      
-
-
-      document.body.classList.add("show-sidebar");
-    } else {
-      document.body.classList.remove("show-sidebar");
-    }
-  }, [showSidebar]);
-
-  /* funcion para ocultar el sidebar */
-  useEffect(() => {
-    if (!showSidebar) {
-      document.body.classList.add("hide-sidebar");
-    } else {
-      document.body.classList.remove("hide-sidebar");
-    }
-  }, [showSidebar]);
 
   return (
     // Estructura de la página
@@ -273,7 +254,7 @@ const Home = () => {
             {/* **Área de contenido** */}
             <div className="content-area">
               {/* **Barra de navegación** */}
-              <div className="navbar cajaLogin">
+              <div className="navbar">
                 <div className="navbar-content">
                   <NavigationBar />
                 </div>
@@ -281,7 +262,7 @@ const Home = () => {
 
               {/* **Contenido principal** */}
               <div className="main">
-                <div className="main-content cajaLogin">
+                <div className="main-content">
                   <div className="calendar-title">
                     <div className="calendar-key">
                       <span>Fecha de ingreso:</span>

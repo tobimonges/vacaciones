@@ -435,3 +435,17 @@ button span {
   width: 100%;
   height: 100%;
 }
+
+.hide-sidebar {
+  display: none;
+}
+
+.new-content-area {
+  width: 100%;
+  height: 100%; /* Ajusta la altura restando el padding del contenedor */
+  display: flex; /* Utiliza flexbox para el diseño */
+  flex-wrap: wrap; /* Coloca los elementos en una columna */
+}
+
+
+
