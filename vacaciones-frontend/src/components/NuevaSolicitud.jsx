@@ -463,7 +463,7 @@ export default function NuevaSolicitud() {
                     }}
                   />
                 </div>
-                {userRole !== "DIRECTORIO" ||
+                {userRole !== "DIRECTORIO" &&
                   (userRole !== "FUNCIONARIO_TERCERIZADO" &&
                     selectedLideres.map((selectedLider, index) => (
                       <div className={`mb-3-lideres`} key={index}>
