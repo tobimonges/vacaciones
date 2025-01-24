@@ -92,9 +92,12 @@ public class SolicitudService implements ISolicitudService {
 
         String nombreRol = usuario.getRol().getNombre();
 
-        if (!"DIRECTORIO".equals(nombreRol) && (solicitudRequest.getLiderIds() == null || solicitudRequest.getLiderIds().isEmpty())) {
-            throw new IllegalArgumentException("Debe seleccionar al menos un líder para este rol.");
+        if (!"DIRECTORIO".equals(nombreRol) && !"FUNCIONARIO_TERCERIZADO".equals(nombreRol)) {
+            if (solicitudRequest.getLiderIds() == null || solicitudRequest.getLiderIds().isEmpty()) {
+                throw new IllegalArgumentException("Debe seleccionar al menos un líder para este rol.");
+            }
         }
+
 
         Set<UsuarioModel> lideres = recuperarYValidarLideres(solicitudRequest.getLiderIds(), idUsuario, nombreRol);
 
@@ -645,12 +648,13 @@ public class SolicitudService implements ISolicitudService {
         }
 
         UsuarioModel usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario objetivo no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         String rolUsuario = usuario.getRol().getNombre();
-        if (!"FUNCIONARIO_FABRICA".equals(rolUsuario) && !"FUNCIONARIO_TERCERIZADO".equals(rolUsuario)) {
-            throw new RuntimeException("Solo se pueden crear solicitudes auxiliares para FUNCIONARIO_FABRICA o FUNCIONARIO_TERCERIZADO.");
+        if (!"FUNCIONARIO_FABRICA".equals(rolUsuario)) {
+            throw new RuntimeException("Solo se pueden crear solicitudes auxiliares para FUNCIONARIO_FABRICA.");
         }
+
 
         int cantidadDias = calcularDiasHabiles(solicitudRequest.getFechaInicio(), solicitudRequest.getFechaFin(), usuario.getId());
 
