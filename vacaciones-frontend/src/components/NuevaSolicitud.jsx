@@ -11,6 +11,7 @@ import { getUsuarioId, getUserRole } from "./authUtils";
 import Logo from "./Logo";
 
 import Preloader from "./Preloader";
+import Logogiratorio from "./logogiratorio";
 
 const today = dayjs();
 const isWeekend = (date) => date.day() === 0 || date.day() === 6;
@@ -52,7 +53,10 @@ export default function NuevaSolicitud() {
   const [mensaje, setMensaje] = useState("");
   const [tipoMensaje, setTipoMensaje] = useState("");
   const [disabledDates, setDisabledDates] = useState([]);
+  const [showContent, setShowContent] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
+  
   const handleAddLiderSelector = () => {
     if (selectedLideres.length < 3) {
       setSelectedLideres([...selectedLideres, null]);
@@ -70,6 +74,24 @@ export default function NuevaSolicitud() {
     newSelectedLideres[index] = parseInt(value, 10);
     setSelectedLideres(newSelectedLideres);
   };
+
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowContent(true);
+    }, 900); 
+  
+    return () => clearTimeout(timeout);
+  }, []);
+
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowContent(true);
+    }, 900); 
+  
+    return () => clearTimeout(timeout);
+  }, []);
 
   useEffect(() => {
     if (mensaje) {
@@ -371,10 +393,18 @@ export default function NuevaSolicitud() {
     }
   };
 
+  const handleNavigateHome = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      navigate("/Home");
+    }, 500); // Retraso para permitir que la animación se ejecute
+  };
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-      <Preloader duration={650} />
+      <Logogiratorio duration={650} />
       <div className="nueva-solicitud-container">
+        {showContent && (
+          <div className={`cajaLogin ${isExiting ? "LoginAnim" : ""}`}>
         <div className="DatePicker">
           <Logo />
           <h2>Nueva Solicitud</h2>
@@ -530,12 +560,14 @@ export default function NuevaSolicitud() {
               >
                 <span>Crear Solicitud</span>
               </button>
-              <button className="btn" onClick={() => navigate("/Home")}>
+              <button type="button" className="btn" onClick={handleNavigateHome}>
                 <span>Volver a Home</span>
               </button>
             </div>
           </form>
+          </div>
         </div>
+        )}
       </div>
     </LocalizationProvider>
   );

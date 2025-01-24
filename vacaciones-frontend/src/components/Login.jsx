@@ -37,7 +37,6 @@ function Login() {
     setError(false); // Ocultar el mensaje de error
     setShowError(false); // Ocultar el popup de error 
 
-
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -50,33 +49,19 @@ function Login() {
       localStorage.setItem("token", token);
       // alert("Inicio de sesión exitoso");
       setIsAnimating(true);
-      const loginBox = document.querySelector(".loginBox");
-      loginBox.classList.add("LoginAnim");
       setTimeout(() => {
         navigate("/Home");
-      }, 500);
+      }, 200);
 
     } catch (error) {
-      if(error.response.data.message === "Redirigir a cambio de contraseña") {
-        setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
-        setShowError(true);
-        setTimeout(() => {
-          setShowError(false);
-          // setIsAnimating(true);
-          const loginBox = document.querySelector(".loginBox");
-          loginBox.classList.add("LoginAnim");
-        }, 800);
-        setIsAnimating(true); //agregado de animacion para ir a reset-password
-        setTimeout(() => {
-          navigate(error.response.data.redirect);
-        }, 1000);
-        return;
-      }
+      console.log(error.response);
+      
+      console.error("Error al iniciar sesión", error);
       setPassword("");
       setError(true);
       setShowError(true);
       //  setTimeout(() => setError(false), 2100);
-    
+
       setTimeout(() => setShowError(false), 2000);
 
       if (error.response) {
@@ -92,7 +77,32 @@ function Login() {
       } else {
         setErrorMessage("Error de red. Por favor, verifica tu conexión.");
       }
+
+      if(error.response.data.message === "Redirigir a cambio de contraseña") {
+        setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
+        setShowError(true);
+
+        setTimeout(() => {
+          // Activar la animación después de 2 segundos
+          setIsAnimating(true);
+          setTimeout(() => {
+            navigate(error.response.data.redirect);
+          }, 200); // Redirige después de la animación
+        }, 2200); // Espera 2 segundos antes de la animación
+        return;
+      }
     }
+
+    setTimeout(() => {
+      setError(false); // Resetear la clase `datosIncorrectos`
+      setShowError(false); // Ocultar el popup
+    }, 2000);
+  
+    /*   const handleLogout = () => {
+      localStorage.removeItem("isAuthenticated"); // Eliminar la sesión
+      alert("Has cerrado sesión");
+      navigate("/", { replace: true }); // Redirige al login
+    }; */
   };
   const handleForgotPassword = () => {
     const loginBox = document.querySelector(".loginBox");
@@ -113,7 +123,7 @@ function Login() {
       <div
       className={`loginBox cajaLogin ${
         error ? "datosIncorrectos" : "" // Aplicar la clase datosIncorrectos solo cuando error sea true
-      }`}>
+      } ${isAnimating ? "LoginAnim":""}`}>
         <Logo />
         <h2 className="header">Sistema de Vacaciones</h2>
         <form onSubmit={handleLogin} className="loginForm">

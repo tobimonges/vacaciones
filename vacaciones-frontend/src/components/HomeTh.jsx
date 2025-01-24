@@ -11,6 +11,8 @@ import "./Home.css";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import Sidebar from "./Sidebar";
+import Logogiratorio from "./logogiratorio"
+import "./Login.css";
 
 //Localización de fechas
 const locales = { es: esLocale };
@@ -41,12 +43,33 @@ const HomeTh = () => {
   const [equipos, setEquipos] = useState([]);
   const [equipoSeleccionado, setEquipoSeleccionado] = useState("");
   const [pendingCount, setPendingCount] = useState(0);
+    const [isAnimating, setIsAnimating] = useState(true);
+    const [showMainContent, setShowMainContent] = useState(false);
+    const [showNavBar, setShowNavBar] = useState(false); // Estado para controlar la visibilidad de la barra de navegación
+    const [showSidebar, setShowSidebar] = useState(false);
 
   //Manejo de clic en "more"
   const handleShowMore = (eventsOnDay, date) => {
     setModalEvents(eventsOnDay); // Asigna los eventos de ese día al estado
     setModalOpen(true); // Abre el modal
   };
+
+    useEffect(() => {
+       const timeout = setTimeout(() => {
+        setIsAnimating(false);
+        setTimeout(() => {
+          setShowSidebar(true);
+        }, 300); // Retraso para mostrar la barra lateral
+        setTimeout(() => {
+          setShowNavBar(true);
+        }, 900); // Retraso para mostrar la barra de navegación
+        setTimeout(() => {
+          setShowMainContent(true);
+        }, 100); // Retraso para mostrar la barra lateral
+      }, 650); // Duración de la animación de Logogiratorio
+  
+      return () => clearTimeout(timeout);
+    }, []);
   //Funcion para contar solicitudes pendientes
   useEffect(() => {
     const fetchPendingRequests = async () => {
@@ -312,231 +335,240 @@ const HomeTh = () => {
   //Renderizado del Componente
   return (
     <div className="container homeTH-container">
-      {/* 📚 **Barra lateral** */}
+      {isAnimating ? (
+        <Logogiratorio duration={650} />
+      ) : (
+        showMainContent && (
+          <>
+        
+        {/* 📚 **Barra lateral** */}
       <div className="sidebar">
-        <Sidebar />
+      <Sidebar />
+    </div>
+
+    {/* **Área de contenido** */}
+    <div className="content-area">
+
+      {/* 📚 **Barra superior** */}
+      <div className="navbar">
+        <div className="navbar-content">
+          <NavigationBar onLogout={handleLogout} />
+        </div>
       </div>
 
-      {/* **Área de contenido** */}
-      <div className="content-area">
-        <Preloader duration={650} />
-
-        {/* 📚 **Barra superior** */}
-        <div className="navbar">
-          <div className="navbar-content">
-            <NavigationBar onLogout={handleLogout} />
+      {/* 📚 **Contenido principal** */}
+      <div className="main">
+        <div className="main-content">
+          <div className="calendar-title-th">
+            {pendingCount === 0 ? (
+              <span>No tienes solicitudes pendientes.</span>
+            ) : (
+              <span>
+                {`Tienes `}
+                <span className="pending-count-number">{`${pendingCount}`}</span>
+                {pendingCount === 1
+                  ? ` solicitud pendiente!`
+                  : ` solicitudes pendientes!`}
+              </span>
+            )}
           </div>
-        </div>
 
-        {/* 📚 **Contenido principal** */}
-        <div className="main">
-          <div className="main-content">
-            <div className="calendar-title-th">
-              {pendingCount === 0 ? (
-                <span>No tienes solicitudes pendientes.</span>
-              ) : (
-                <span>
-                  {`Tienes `}
-                  <span className="pending-count-number">{`${pendingCount}`}</span>
-                  {pendingCount === 1
-                    ? ` solicitud pendiente!`
-                    : ` solicitudes pendientes!`}
+          <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
+            {/* 🛠️ Checkbox con filtros*/}
+
+            <div className="calendar-title">
+              <div className="calendar-key">
+                <div className="custom-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showBirthdays}
+                      onChange={(e) => setShowBirthdays(e.target.checked)}
+                    />
+                    Mostrar cumpleaños
+                  </label>
+                </div>
+              </div>
+              <div className="calendar-key">
+                <select
+                  id="equipo-select"
+                  className="button-homeTH-2"
+                  value={equipoSeleccionado}
+                  onChange={(e) => setEquipoSeleccionado(e.target.value)}
+                >
+                  <option value="">Todos los equipos</option>
+                  {equipos.map((equipo) => (
+                    <option key={equipo.nombre} value={equipo.nombre}>
+                      {equipo.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="calendar-key">
+                <div className="custom-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showHolidays}
+                      onChange={(e) => setShowHolidays(e.target.checked)}
+                    />
+                    Mostrar feriados
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* 🚨 Mensajes de Error */}
+            {error && <p className="calendar-error-message">{error}</p>}
+            <div className="calendar-big-container">
+              <Calendar
+                localizer={localizer}
+                events={filterEventsByTeam}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 500, margin: "20px 0" }}
+                messages={{
+                  today: "Hoy",
+                  previous: "Anterior",
+                  next: "Siguiente",
+                  month: "Mes",
+                  week: "Semana",
+                  day: "Día",
+                  agenda: "Agenda",
+                  showMore: (count) => `+${count} más`, // Traducción para "More"
+                }}
+                views={{ month: true }} // Mantener solo la vista de mes
+                eventPropGetter={eventStyleGetter}
+                dayPropGetter={dayPropGetter}
+                popup // Desactivar el comportamiento predeterminado del popup
+                showMultiDayTimes={true}
+                onShowMore={(eventsOnDay, date) => {
+                  // Prevenir cambio de vista
+                  handleShowMore(eventsOnDay, date);
+                }}
+                dayLayoutAlgorithm="no-overlap"
+              />
+            </div>
+
+            {/* 🖍️ Leyenda de Colores */}
+            <div className="calendar-legend">
+              <p>
+                <span
+                  style={{
+                    backgroundColor: "#a0e2b3",
+                    color: "#000000",
+                    padding: "8px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  Aprobado
                 </span>
-              )}
+              </p>
+              <p>
+                <span
+                  style={{
+                    backgroundColor: "#ff7c70",
+                    color: "#000000",
+                    padding: "8px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  Rechazado
+                </span>
+              </p>
+              <p>
+                <span
+                  style={{
+                    backgroundColor: "#fefda6",
+                    color: "#000000",
+                    padding: "8px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  Pendiente
+                </span>
+              </p>
+              <p>
+                <span
+                  style={{
+                    backgroundColor: "#c0a4c9",
+                    color: "#000000",
+                    padding: "8px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  Feriado
+                </span>
+              </p>
             </div>
 
-            <div className={`calendar-card ${error ? "calendar-error" : ""}`}>
-              {/* 🛠️ Checkbox con filtros*/}
-
-              <div className="calendar-title">
-                <div className="calendar-key">
-                  <div className="custom-checkbox">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={showBirthdays}
-                        onChange={(e) => setShowBirthdays(e.target.checked)}
-                      />
-                      Mostrar cumpleaños
-                    </label>
-                  </div>
-                </div>
-                <div className="calendar-key">
-                  <select
-                    id="equipo-select"
-                    className="button-homeTH-2"
-                    value={equipoSeleccionado}
-                    onChange={(e) => setEquipoSeleccionado(e.target.value)}
+            {/* 🔲 Modal para Solicitudes del Día */}
+            {modalOpen && (
+              <div className="modal-overlay">
+                <div className="modal-contentTh">
+                  <h4>Solicitudes en esta fecha:</h4> <br />
+                  {modalEvents.length > 0 ? (
+                    <div className="modal-events-list">
+                      <ul>
+                        {modalEvents.map((event, index) => (
+                          <li key={index}>
+                            <strong>{event.title}</strong> <br /> <br />
+                            <span
+                              style={{
+                                color: "#000000",
+                                backgroundColor:
+                                  event.type === "aprobado"
+                                    ? "#a0e2b3" // Verde pastel para aprobado
+                                    : event.type === "rechazado"
+                                    ? "#ff7c70" // Rojo pastel para rechazado
+                                    : event.type === "pendiente"
+                                    ? "#fefda6" // Amarillo pastel para pendiente
+                                    : event.type === "feriado"
+                                    ? "#c0a4c9" // Morado pastel para feriado
+                                    : "", // Si no es ninguno de los tipos, no aplica color
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                              }}
+                            >
+                              {event.type === "aprobado"
+                                ? "Aprobado"
+                                : event.type === "rechazado"
+                                ? "Rechazado"
+                                : event.type === "pendiente"
+                                ? "Pendiente"
+                                : event.type === "feriado"
+                                ? "Feriado"
+                                : ""}
+                            </span>
+                            <br /> <br />
+                            <span>
+                              Desde: {event.start.toLocaleDateString()} hasta:{" "}
+                              {event.end.toLocaleDateString()}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p>No hay solicitudes para esta fecha.</p>
+                  )}
+                  <button
+                    className="close-modal-btn"
+                    onClick={() => setModalOpen(false)}
                   >
-                    <option value="">Todos los equipos</option>
-                    {equipos.map((equipo) => (
-                      <option key={equipo.nombre} value={equipo.nombre}>
-                        {equipo.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="calendar-key">
-                  <div className="custom-checkbox">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={showHolidays}
-                        onChange={(e) => setShowHolidays(e.target.checked)}
-                      />
-                      Mostrar feriados
-                    </label>
-                  </div>
+                    <span>Cerrar</span>
+                  </button>
                 </div>
               </div>
-
-              {/* 🚨 Mensajes de Error */}
-              {error && <p className="calendar-error-message">{error}</p>}
-              <div className="calendar-big-container">
-                <Calendar
-                  localizer={localizer}
-                  events={filterEventsByTeam}
-                  startAccessor="start"
-                  endAccessor="end"
-                  style={{ height: 500, margin: "20px 0" }}
-                  messages={{
-                    today: "Hoy",
-                    previous: "Anterior",
-                    next: "Siguiente",
-                    month: "Mes",
-                    week: "Semana",
-                    day: "Día",
-                    agenda: "Agenda",
-                    showMore: (count) => `+${count} más`, // Traducción para "More"
-                  }}
-                  views={{ month: true }} // Mantener solo la vista de mes
-                  eventPropGetter={eventStyleGetter}
-                  dayPropGetter={dayPropGetter}
-                  popup // Desactivar el comportamiento predeterminado del popup
-                  showMultiDayTimes={true}
-                  onShowMore={(eventsOnDay, date) => {
-                    // Prevenir cambio de vista
-                    handleShowMore(eventsOnDay, date);
-                  }}
-                  dayLayoutAlgorithm="no-overlap"
-                />
-              </div>
-
-              {/* 🖍️ Leyenda de Colores */}
-              <div className="calendar-legend">
-                <p>
-                  <span
-                    style={{
-                      backgroundColor: "#a0e2b3",
-                      color: "#000000",
-                      padding: "8px",
-                      borderRadius: "6px",
-                    }}
-                  >
-                    Aprobado
-                  </span>
-                </p>
-                <p>
-                  <span
-                    style={{
-                      backgroundColor: "#ff7c70",
-                      color: "#000000",
-                      padding: "8px",
-                      borderRadius: "6px",
-                    }}
-                  >
-                    Rechazado
-                  </span>
-                </p>
-                <p>
-                  <span
-                    style={{
-                      backgroundColor: "#fefda6",
-                      color: "#000000",
-                      padding: "8px",
-                      borderRadius: "6px",
-                    }}
-                  >
-                    Pendiente
-                  </span>
-                </p>
-                <p>
-                  <span
-                    style={{
-                      backgroundColor: "#c0a4c9",
-                      color: "#000000",
-                      padding: "8px",
-                      borderRadius: "6px",
-                    }}
-                  >
-                    Feriado
-                  </span>
-                </p>
-              </div>
-
-              {/* 🔲 Modal para Solicitudes del Día */}
-              {modalOpen && (
-                <div className="modal-overlay">
-                  <div className="modal-contentTh">
-                    <h4>Solicitudes en esta fecha:</h4> <br />
-                    {modalEvents.length > 0 ? (
-                      <div className="modal-events-list">
-                        <ul>
-                          {modalEvents.map((event, index) => (
-                            <li key={index}>
-                              <strong>{event.title}</strong> <br /> <br />
-                              <span
-                                style={{
-                                  color: "#000000",
-                                  backgroundColor:
-                                    event.type === "aprobado"
-                                      ? "#a0e2b3" // Verde pastel para aprobado
-                                      : event.type === "rechazado"
-                                      ? "#ff7c70" // Rojo pastel para rechazado
-                                      : event.type === "pendiente"
-                                      ? "#fefda6" // Amarillo pastel para pendiente
-                                      : event.type === "feriado"
-                                      ? "#c0a4c9" // Morado pastel para feriado
-                                      : "", // Si no es ninguno de los tipos, no aplica color
-                                  padding: "4px 8px",
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                {event.type === "aprobado"
-                                  ? "Aprobado"
-                                  : event.type === "rechazado"
-                                  ? "Rechazado"
-                                  : event.type === "pendiente"
-                                  ? "Pendiente"
-                                  : event.type === "feriado"
-                                  ? "Feriado"
-                                  : ""}
-                              </span>
-                              <br /> <br />
-                              <span>
-                                Desde: {event.start.toLocaleDateString()} hasta:{" "}
-                                {event.end.toLocaleDateString()}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : (
-                      <p>No hay solicitudes para esta fecha.</p>
-                    )}
-                    <button
-                      className="close-modal-btn"
-                      onClick={() => setModalOpen(false)}
-                    >
-                      <span>Cerrar</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
+    </div>
+    </>
+        )
+      )}
+      
     </div>
   );
 };
