@@ -96,6 +96,7 @@ const NavigationBar = ({ logo, onLogout }) => {
   }, []);
   const isHomeRoute = location.pathname === "/Home" || location.pathname === "/HomeTH";
   const isUsuarioD = location.pathname === "/UsuarioDetalle";
+  const isCargoD = location.pathname === "/CargoDetalle";
 
   const handleBackButtonClick = () => {
     if (location.pathname === "/NuevaSolicitud" || location.pathname === "/SolicitudDetalle" || location.pathname === "/Home") {
@@ -104,6 +105,8 @@ const NavigationBar = ({ logo, onLogout }) => {
       navigate("/HomeTH");
     }
   };
+
+
 
   return (
     <div className="nav-container">
@@ -121,6 +124,10 @@ const NavigationBar = ({ logo, onLogout }) => {
         )}
         {isUsuarioD && (
             <h2>Gestión de Usuarios</h2>
+        )}
+
+        {isCargoD && (
+            <h2>Lista de Cargos</h2>
         )}
 
         <div className="weather nav-button-container right">

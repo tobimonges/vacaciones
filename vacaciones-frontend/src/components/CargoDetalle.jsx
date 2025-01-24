@@ -3,7 +3,7 @@ import axios from "axios";
 import Preloader from "./Preloader";
 import NavigationBar from "./NavigationBar";
 import { useNavigate } from "react-router-dom";
-import "./EquipoDetalle.css"; // Reusing the same CSS
+import "./CreaCargo.css"; // Reusing the same CSS
 
 const CargoDetalle = () => {
   const [cargos, setCargos] = useState([]);
@@ -102,12 +102,10 @@ const CargoDetalle = () => {
   return (
     <div className="container">
       <Preloader duration={650} />
-      <div className="container-detalle">
-        <NavigationBar onLogout={handleLogout} />
+      <div className="new-content-area">
+      <NavigationBar onLogout={handleLogout} />
+      <div className=" main-content">
         <div className="header-section-detalle">
-          <div className="header-title-container-detalle">
-            <h4 className="title">Lista de Cargos</h4>
-          </div>
           <div className="filter-container-detalle">
             <h4>
               <label htmlFor="filter-input">Buscar:</label>
@@ -118,6 +116,7 @@ const CargoDetalle = () => {
               placeholder="Nombre del cargo"
               value={filterText}
               onChange={handleFilterChange}
+              className="inputCreateCargo"
             />
           </div>
         </div>
@@ -183,6 +182,7 @@ const CargoDetalle = () => {
             </table>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
