@@ -10,6 +10,7 @@ import "dayjs/locale/es";
 import "./Solicitud.css";
 import Logo from "./Logo";
 import Logogiratorio from "./logogiratorio";
+import "./Login.css"
 
 function isWeekend(date) {
   return date.day() === 0 || date.day() === 6;
@@ -63,6 +64,7 @@ export default function SolicitudDetalle() {
   const userRole = getUserRole();
   const [mensaje, setMensaje] = useState(""); // Mensaje de notificación
   const [tipoMensaje, setTipoMensaje] = useState(""); // Tipo de notificación
+  const [showContainer, setShowContainer] = useState(false);
 
 
   const disabledDates = [dayjs("2024-12-25"), dayjs("2025-01-01")]; 
@@ -124,6 +126,15 @@ export default function SolicitudDetalle() {
 
     fetchSolicitudes();
   }, [id, navigate]);
+
+  useEffect(() => {
+    // Configura el temporizador para esperar 900ms antes de mostrar el contenedor
+    const timer = setTimeout(() => {
+      setShowContainer(true);
+    }, 900); // Esperar 900ms antes de mostrar
+
+    return () => clearTimeout(timer); // Limpiar el temporizador en caso de que el componente se desmonte
+  }, []);
 
   useEffect(() => {
     const fetchLideres = async () => {
@@ -413,6 +424,7 @@ export default function SolicitudDetalle() {
       <Notificacion mensaje={mensaje} tipo={tipoMensaje} />
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es" >
         <Logogiratorio duration={650} />
+        {showContainer && (
         <div className="container-solicitudes">
           <Logo />
           <h4>Solicitudes del Usuario</h4>
@@ -594,6 +606,7 @@ export default function SolicitudDetalle() {
             <span>Volver al Home</span>
           </button>
         </div>
+        )}
       </LocalizationProvider>
 
     </div>

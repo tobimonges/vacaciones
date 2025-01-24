@@ -171,9 +171,7 @@ public class UsuarioService implements IUsuarioService{
 
             if (cumpleAniversario(months, days)) {
                 int nuevosDiasVacaciones = calcularDiasVacaciones(years);
-                if (usuarioActualizado.getDiasVacaciones()>0){
-                    usuarioActualizado.setDiasVacacionesRestante(usuarioActualizado.getDiasVacaciones()+usuarioActualizado.getDiasVacacionesRestante());
-                }
+                usuarioActualizado.setDiasVacacionesRestante(usuarioActualizado.getDiasVacaciones()+usuarioActualizado.getDiasVacacionesRestante());
                 usuarioActualizado.setDiasVacaciones(nuevosDiasVacaciones );
             }
             usuarioRepository.save(usuarioActualizado);

@@ -51,7 +51,7 @@ function Login() {
 
       // Si hay callback (ej. para navegar), lo ejecutamos aquí
       if (callback) callback();
-    }, 2000);
+    }, 800);
   };
 
   // Manejo de submit (login)
