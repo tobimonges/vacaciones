@@ -37,7 +37,6 @@ function Login() {
     setError(false); // Ocultar el mensaje de error
     setShowError(false); // Ocultar el popup de error 
 
-
     try {
       const respuesta = await axios.post(
         "http://localhost:8080/api/auth/login",
@@ -56,25 +55,13 @@ function Login() {
 
     } catch (error) {
       console.log(error.response);
-      if(error.response.data.message === "Redirigir a cambio de contraseña") {
-        setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
-        setShowError(true);
-
-        setTimeout(() => {
-          // Activar la animación después de 2 segundos
-          setIsAnimating(true);
-          setTimeout(() => {
-            navigate(error.response.data.redirect);
-          }, 200); // Redirige después de la animación
-        }, 2200); // Espera 2 segundos antes de la animación
-        return;
-      }
+      
       console.error("Error al iniciar sesión", error);
       setPassword("");
       setError(true);
       setShowError(true);
       //  setTimeout(() => setError(false), 2100);
-    
+
       setTimeout(() => setShowError(false), 2000);
 
       if (error.response) {
@@ -90,8 +77,27 @@ function Login() {
       } else {
         setErrorMessage("Error de red. Por favor, verifica tu conexión.");
       }
+
+      if(error.response.data.message === "Redirigir a cambio de contraseña") {
+        setErrorMessage("Debes cambiar tu contraseña antes de continuar.");
+        setShowError(true);
+
+        setTimeout(() => {
+          // Activar la animación después de 2 segundos
+          setIsAnimating(true);
+          setTimeout(() => {
+            navigate(error.response.data.redirect);
+          }, 200); // Redirige después de la animación
+        }, 2200); // Espera 2 segundos antes de la animación
+        return;
+      }
     }
 
+    setTimeout(() => {
+      setError(false); // Resetear la clase `datosIncorrectos`
+      setShowError(false); // Ocultar el popup
+    }, 2000);
+  
     /*   const handleLogout = () => {
       localStorage.removeItem("isAuthenticated"); // Eliminar la sesión
       alert("Has cerrado sesión");
