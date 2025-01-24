@@ -131,7 +131,7 @@ const EquipoDetalle = () => {
                   placeholder="Nombre del equipo"
                   value={filterText}
                   onChange={handleFilterChange}
-                  className="inputCreate"
+                  className="inputCreateDetalle"
                 />
               </div>
               <div className="content-section-detalle">
