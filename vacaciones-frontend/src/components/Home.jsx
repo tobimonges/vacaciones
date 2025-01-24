@@ -84,6 +84,7 @@ const Home = () => {
   const [showMainContent, setShowMainContent] = useState(false);
   const [showNavBar, setShowNavBar] = useState(false); // Estado para controlar la visibilidad de la barra de navegación
   const [showSidebar, setShowSidebar] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Nuevo estado para controlar la visibilidad de la barra lateral
   const navigate = useNavigate(); // Hook para la navegación entre rutas
 
   // Obtener Datos del Usuario y Solicitudes de Vacaciones
@@ -230,7 +231,48 @@ const Home = () => {
 
     return () => clearTimeout(timeout);
   }, []);
-  /* funcion de setShowsidebar para agregar y quitar clases*/
+  // si llega a cierto tamaño de pantalla, se oculta la barra lateral
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1085) {
+        setIsSidebarVisible(false);
+      }
+      else {
+        setIsSidebarVisible(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  //si la pagina es menor a 750px, mostrara un mensaje y se ocultara todo
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 750) {
+        //mensaje de error en la clase container
+        setError("La pantalla es muy pequeña para mostrar el contenido");
+        document.querySelector(".container").style.display = "none";
+        
+        setShowMainContent(false);
+        return () => window.removeEventListener("resize", handleResize);
+      } else {
+        setError(""); // Limpia el mensaje de error si la pantalla es mayor
+        setShowMainContent(true);
+      }
+    };
+  
+    // Llama a la función para establecer el estado inicial
+    handleResize();
+  
+    // Escucha los eventos de redimensionamiento
+    window.addEventListener("resize", handleResize);
+  
+    // Limpia el listener al desmontar el componente
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  
 
   return (
     // Estructura de la página
@@ -243,16 +285,19 @@ const Home = () => {
             <div className="button-ocultar">
               <button
                 className="ocultar"
-                onClick={() => setShowSidebar(!showSidebar)}
-              ></button>
+                onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+              >
+                {isSidebarVisible ? "<" : ">"}
+              </button>
             </div>
             {/* **Barra lateral** */}
-            <div className="sidebar">
-              <Sidebar />
-            </div>
-
+            {isSidebarVisible && (
+              <div className="sidebar">
+                <Sidebar />
+              </div>
+            )}
             {/* **Área de contenido** */}
-            <div className="content-area">
+            <div className={`content-area ${isSidebarVisible ? "" : "new-content-area"}`}>
               {/* **Barra de navegación** */}
               <div className="navbar">
                 <div className="navbar-content">

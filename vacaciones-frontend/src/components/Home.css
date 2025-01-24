@@ -15,14 +15,14 @@
 /* 📝 Tarjeta del calendario */
 .calendar-card {
     width: 93%;
-    height: auto;
+    height: auto ;
 
     background-color: #007bff3a;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
 
     border-radius: 12px;
-    padding: 30px;
+    padding: 10px 10px 30px 10px;
     text-align: center;
     box-sizing: border-box;
 }
@@ -42,6 +42,20 @@
     padding: 15px 20px;
     margin: 8px auto 18px auto; /* Centra el título horizontalmente */
 }
+.calendar-title-final {
+    color: var(--primary-color);
+    display: flex; /* Diseño flexible para acomodar las columnas */
+    justify-content: space-between; /* Espacia las columnas uniformemente */
+    align-items: center; /* Centra los elementos verticalmente */
+    gap: 10px; /* Espacio entre columnas */
+    box-sizing: border-box;
+    background-color: #007bff3a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    width: 93%;
+    padding: 10px 10px;
+    margin: 8px auto 18px auto; /* Centra el título horizontalmente */
+}
 
 .calendar-title-th {
     width: 93%;
@@ -56,11 +70,13 @@
     margin: 8px auto 18px auto; /* Centra el título horizontalmente */
     display: flex;
     justify-content: center;
+    height: 50px;
 }
 .calendar-title-th span {
     /*alinear al centro*/
     display: flex;
     align-items: center;
+    font-size: 1.2rem;
 
 }
 
@@ -120,7 +136,7 @@
     border-radius: 15px;
     padding: 0 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
-    height: 30rem;
+    height: 37rem;
     width: 80%;
     margin: 10px auto;
     overflow-y: auto;
@@ -194,7 +210,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 1.2rem; /*cambie este para la funete de Todos los equipos*/
+    font-size: 1rem; /*cambie este para la funete de Todos los equipos*/
     font-weight: 500;
     position: relative;
     color: var(--primary-color);
@@ -212,7 +228,7 @@
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     color: var(--primary-color);
     font-weight: 500;
 }
