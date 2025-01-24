@@ -188,7 +188,10 @@ export default function NuevaSolicitud() {
 
         const usuarios = response.data;
 
-        if (userRole === "DIRECTORIO") {
+        if (
+          userRole === "DIRECTORIO" ||
+          userRole === "FUNCIONARIO_TERCERIZADO"
+        ) {
           setLideres(null); // Configurar lideres como null
           return; // Finalizar la función
         }
@@ -202,12 +205,6 @@ export default function NuevaSolicitud() {
               ["LIDER", "OPERACIONES", "DIRECTORIO"].includes(
                 usuario.rol.nombre
               )
-            );
-            break;
-
-          case "FUNCIONARIO_TERCERIZADO":
-            usuariosFiltrados = usuarios.filter((usuario) =>
-              ["OPERACIONES", "DIRECTORIO"].includes(usuario.rol.nombre)
             );
             break;
 
@@ -466,64 +463,65 @@ export default function NuevaSolicitud() {
                     }}
                   />
                 </div>
-                {userRole !== "DIRECTORIO" &&
-                  selectedLideres.map((selectedLider, index) => (
-                    <div className={`mb-3-lideres`} key={index}>
-                      <select
-                        value={selectedLider || ""}
-                        onChange={(e) =>
-                          handleLiderChange(e.target.value, index)
-                        }
-                        className="select-usuarios"
-                      >
-                        <option value="" disabled>
-                          Selecciona un líder
-                        </option>
-                        {lideres
-                          .filter(
-                            (lider) =>
-                              !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
-                              selectedLider === lider.id // Mantener el líder previamente seleccionado
-                          )
-                          .map((lider) => (
-                            <option key={lider.id} value={lider.id}>
-                              {lider.nombre} {lider.apellido}
-                            </option>
-                          ))}
-                      </select>
-                      <div
-                        className="imagenBotonMas"
-                        onClick={
-                          index === selectedLideres.length - 1 &&
-                          selectedLideres.length < 3
-                            ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
-                            : () => handleDeleteSelector(index) // Elimina si no es el últim
-                        }
-                      >
-                        <img
-                          src={
+                {userRole !== "DIRECTORIO" ||
+                  (userRole !== "FUNCIONARIO_TERCERIZADO" &&
+                    selectedLideres.map((selectedLider, index) => (
+                      <div className={`mb-3-lideres`} key={index}>
+                        <select
+                          value={selectedLider || ""}
+                          onChange={(e) =>
+                            handleLiderChange(e.target.value, index)
+                          }
+                          className="select-usuarios"
+                        >
+                          <option value="" disabled>
+                            Selecciona un líder
+                          </option>
+                          {lideres
+                            .filter(
+                              (lider) =>
+                                !selectedLideres.includes(lider.id) || // Permitir líderes no seleccionados
+                                selectedLider === lider.id // Mantener el líder previamente seleccionado
+                            )
+                            .map((lider) => (
+                              <option key={lider.id} value={lider.id}>
+                                {lider.nombre} {lider.apellido}
+                              </option>
+                            ))}
+                        </select>
+                        <div
+                          className="imagenBotonMas"
+                          onClick={
                             index === selectedLideres.length - 1 &&
                             selectedLideres.length < 3
-                              ? "./public/agregar.svg" // Ícono para agregar en el último selector
-                              : "./public/circulo-negativo.svg" // Ícono para eliminar en otros selectores
+                              ? handleAddLiderSelector // Agrega un nuevo selector si es el último y hay menos de 3
+                              : () => handleDeleteSelector(index) // Elimina si no es el últim
                           }
-                          alt={
-                            index === selectedLideres.length - 1 &&
-                            selectedLideres.length < 3
-                              ? "Añadir líder"
-                              : "Eliminar líder"
-                          }
-                          title={
-                            index === selectedLideres.length - 1 &&
-                            selectedLideres.length < 3
-                              ? "Añadir líder"
-                              : "Eliminar líder"
-                          }
-                          className="imagenBotonMas-img"
-                        />
+                        >
+                          <img
+                            src={
+                              index === selectedLideres.length - 1 &&
+                              selectedLideres.length < 3
+                                ? "./public/agregar.svg" // Ícono para agregar en el último selector
+                                : "./public/circulo-negativo.svg" // Ícono para eliminar en otros selectores
+                            }
+                            alt={
+                              index === selectedLideres.length - 1 &&
+                              selectedLideres.length < 3
+                                ? "Añadir líder"
+                                : "Eliminar líder"
+                            }
+                            title={
+                              index === selectedLideres.length - 1 &&
+                              selectedLideres.length < 3
+                                ? "Añadir líder"
+                                : "Eliminar líder"
+                            }
+                            className="imagenBotonMas-img"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )))}
 
                 {userRole === "FUNCIONARIO_TERCERIZADO" && (
                   <div className="mb-3">
