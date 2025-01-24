@@ -175,19 +175,49 @@ export default function NuevaSolicitud() {
 
   // Efecto para calcular los días válidos
   useEffect(() => {
-    const days = countValidDays(startDate, endDate, reservedDates);
-    setValidDays(days);
+    if (diasVacacionesDisponibles !== null) {
+      if (diasVacacionesDisponibles < 0) {
+        // Si los días de vacaciones disponibles son negativos, no permitir solicitudes
+        setMensaje("Ya cuenta con solicitudes anticipadas.");
+        setTipoMensaje("Error");
+        setValidDays(0); // Asegurarse de que la cantidad de días válidos sea 0
+        return;
+      }
 
-    if (
-      diasVacacionesDisponibles !== null &&
-      days > diasVacacionesDisponibles
-    ) {
-      setMensaje("No puedes seleccionar más días de los disponibles.");
-      setTipoMensaje("Warning");
-    } else {
-      setWarning("");
+      const days = countValidDays(
+        startDate,
+        endDate,
+        reservedDates,
+        disabledDates
+      );
+      setValidDays(days);
+
+      if (diasVacacionesDisponibles === 0 && days > 12) {
+        // Permitir hasta 12 días si los días disponibles son 0
+        setMensaje(
+          "Puedes solicitar un máximo de 12 días de vacaciones anticipadas."
+        );
+        setTipoMensaje("Warning");
+      } else if (
+        diasVacacionesDisponibles > 0 &&
+        days > diasVacacionesDisponibles
+      ) {
+        // Validación normal si hay días de vacaciones disponibles
+        setMensaje("No puedes seleccionar más días de los disponibles.");
+        setTipoMensaje("Warning");
+      } else {
+        // Si todo está bien, limpiar mensajes de advertencia
+        setMensaje("");
+        setTipoMensaje("");
+      }
     }
-  }, [startDate, endDate, diasVacacionesDisponibles, reservedDates]);
+  }, [
+    startDate,
+    endDate,
+    diasVacacionesDisponibles,
+    reservedDates,
+    disabledDates,
+  ]);
 
   // Manejo de la selección del usuario
   const handleUserSelection = (id, name) => {
@@ -273,7 +303,7 @@ export default function NuevaSolicitud() {
       <div className="nueva-solicitud-container">
         <div className="DatePicker">
           <Logo />
-          <h2>Solicitud Auxiliar</h2>
+          <h2>Solicitud a otros</h2>
           {mensaje && (
             <div className={`MensajePopuppNS ${tipoMensaje}`}>
               <p>{mensaje}</p>
@@ -352,7 +382,12 @@ export default function NuevaSolicitud() {
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={validDays > diasVacacionesDisponibles}
+                disabled={
+                  diasVacacionesDisponibles < 0 || // No permitir si los días disponibles son negativos
+                  (diasVacacionesDisponibles === 0 && validDays > 12) || // No permitir si los días disponibles son 0 y se exceden 12 días
+                  (diasVacacionesDisponibles > 0 &&
+                    validDays > diasVacacionesDisponibles) // No permitir si los días válidos exceden los días disponibles
+                }
               >
                 <span>Crear Solicitud</span>
               </button>
