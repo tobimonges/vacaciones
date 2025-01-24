@@ -221,10 +221,10 @@ const Home = () => {
       setIsAnimating(false);
       setTimeout(() => {
         setShowSidebar(true);
-      }, 300); // Retraso para mostrar la barra lateral
+      }, 800); // Retraso para mostrar la barra lateral
       setTimeout(() => {
         setShowNavBar(true);
-      }, 900); // Retraso para mostrar la barra de navegación
+      }, 300); // Retraso para mostrar la barra de navegación
       setTimeout(() => {
         setShowMainContent(true);
       }, 100); // Retraso para mostrar la barra lateral
@@ -243,7 +243,7 @@ const Home = () => {
       showMainContent && (
         <>
       {/* **Barra lateral** */}
-      <div className="sidebar">        
+      <div className="sidebar cajaLogin">        
         <Sidebar/>
       </div>
 
