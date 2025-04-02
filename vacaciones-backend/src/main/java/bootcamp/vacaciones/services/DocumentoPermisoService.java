@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DocumentoPermisoService {
+public class DocumentoPermisoService{
 
     private final DocumentoPermisoRepository documentoPermisoRepository;
 

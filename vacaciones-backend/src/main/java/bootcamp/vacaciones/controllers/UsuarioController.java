@@ -11,6 +11,7 @@ import bootcamp.vacaciones.security.JwtUtils;
 import bootcamp.vacaciones.services.EmailService;
 import bootcamp.vacaciones.services.IUsuarioService;
 import bootcamp.vacaciones.services.RolService;
+import bootcamp.vacaciones.utils.PasswordValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,8 @@ import bootcamp.vacaciones.security.JwtBlacklist;
 
 
 @RestController
-@RequestMapping("/vacaciones")
-
-@CrossOrigin(value = "http://localhost:5173") //para recibir peticiones del front
+@RequestMapping("/usuarios")
+@CrossOrigin(value = "${app.frontend-url}")
 public class UsuarioController {
 
     private static final ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
@@ -46,9 +46,13 @@ public class UsuarioController {
     @Value("${app.reset-password-url}")
     private String baseUrl;
 
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
+
     private final JwtBlacklist jwtBlacklist;
     private final JwtUtils jwtUtils;
     private final EmailService emailService;
+    private final PasswordValidator passwordValidator;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -59,58 +63,22 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public UsuarioController(JwtUtils jwtUtils, EmailService emailService, JwtBlacklist jwtBlacklist) {
+    public UsuarioController(JwtUtils jwtUtils, EmailService emailService, JwtBlacklist jwtBlacklist, PasswordValidator passwordValidator) {
         this.jwtUtils = jwtUtils;
         this.emailService = emailService;
         this.jwtBlacklist = jwtBlacklist;
+        this.passwordValidator = passwordValidator;
     }
 
-
-    @GetMapping("/listarusuarios")
-    public List<UsuarioModel> obtenerUsuarios() {
-        return usuarioService.listarUsuarios();
-    }
-
-
-    @GetMapping("/buscarcedula/{nroCedula}")
-    public ResponseEntity<Optional<UsuarioModel>> obtenerUsuarioPorCedula(@PathVariable("nroCedula")  int nroCedula){
-        Optional<UsuarioModel> usuario = Optional.ofNullable(usuarioService.buscarUsuarioPorCedula(nroCedula));
-        return usuario.isPresent()
-                ? ResponseEntity.ok(usuario)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
-    }
-
-    @GetMapping("/lideres")
-    public ResponseEntity<List<UsuarioModel>> listarLideres() {
-        List<UsuarioModel> lideres = usuarioRepository.findAll().stream()
-                .filter(usuario -> usuario.getRol().getNombre().equalsIgnoreCase("LIDER"))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(lideres);
-    }
-
-    @GetMapping("/listar-TH")
-    public ResponseEntity<List<UsuarioModel>> listarTH() {
-        List<UsuarioModel> lideres = usuarioRepository.findAll().stream()
-                .filter(usuario -> usuario.getRol().getNombre().equalsIgnoreCase("TH"))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(lideres);
-    }
-
-    @GetMapping("/diasdisponiblesid/{idUsuario}")
-    public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("idUsuario") Long idUsuario) {
-        int diasVacaciones = usuarioService.obtenerDiasVacacionesPorIdUsuario(idUsuario);
-        return ResponseEntity.ok(diasVacaciones);
-    }
-
-    @GetMapping("/diasdisponiblescedula/{nroCedula}")
-    public ResponseEntity<Integer> obtenerDiasDisponibles(@PathVariable("nroCedula") int nroCedula) {
-        int diasVacaciones = usuarioService.obtenerDiasVacacionesPorCedula(nroCedula);
-        return ResponseEntity.ok(diasVacaciones);
-    }
-
-    @PostMapping("/crea/usuarios")
-    public ResponseEntity<?> guardarUsuario(@RequestBody @Valid UsuarioRequest usuarioRequest) {
+    // ========== OPERACIONES CRUD BÁSICAS ==========
+    
+    @PostMapping
+    public ResponseEntity<?> crearUsuario(@RequestBody @Valid UsuarioRequest usuarioRequest) {
         try {
+            if (!passwordValidator.isValid(usuarioRequest.getContrasena())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "La contraseña no cumple con los requisitos de seguridad"));
+            }
+            
             UsuarioModel nuevoUsuario = usuarioService.guardarUsuario(usuarioRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                     "message", "Usuario creado exitosamente",
@@ -119,6 +87,7 @@ public class UsuarioController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            logger.error("Error al crear usuario: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "error", "Error interno del servidor.",
                     "detalle", e.getMessage()
@@ -126,22 +95,37 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/buscarid/{id}")
-    public ResponseEntity<UsuarioModel> obtenerUsuarioPorId(@PathVariable("id") Long id) {
-        UsuarioModel usuario = usuarioService.buscarUsuarioPorId(id);
-        if (usuario == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return ResponseEntity.ok(usuario);
+    @GetMapping
+    public ResponseEntity<List<UsuarioModel>> listarUsuarios() {
+        try {
+            return ResponseEntity.ok(usuarioService.listarUsuarios());
+        } catch (Exception e) {
+            logger.error("Error al obtener usuarios: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PutMapping("/modificar/{idUsuario}")
-    public ResponseEntity<?> actualizarUsuario(
-            @PathVariable Long idUsuario,
-            @RequestBody @Valid UsuarioRequest usuarioRecibido ) {
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioModel> obtenerUsuarioPorId(@PathVariable("id") Long id) {
         try {
-            UsuarioModel usuarioActualizado = usuarioService.actualizarUsuario(idUsuario, usuarioRecibido);
+            UsuarioModel usuario = usuarioService.buscarUsuarioPorId(id);
+            return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error al buscar usuario por ID: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarUsuario(
+            @PathVariable Long id,
+            @RequestBody @Valid UsuarioRequest usuarioRequest) {
+        try {
+            if (usuarioRequest.getContrasena() != null && !passwordValidator.isValid(usuarioRequest.getContrasena())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "La contraseña no cumple con los requisitos de seguridad"));
+            }
+
+            UsuarioModel usuarioActualizado = usuarioService.actualizarUsuario(id, usuarioRequest);
             return ResponseEntity.ok(Map.of(
                     "mensaje", "Usuario actualizado con éxito.",
                     "usuario", usuarioActualizado
@@ -149,6 +133,7 @@ public class UsuarioController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            logger.error("Error al actualizar usuario: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "error", "Ocurrió un error al actualizar el usuario.",
                     "detalle", e.getMessage()
@@ -156,38 +141,95 @@ public class UsuarioController {
         }
     }
 
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<UsuarioModel> eliminarUsuario(@PathVariable Long id) {
-        UsuarioModel usuario = usuarioService.buscarUsuarioPorId(id);
-        if (usuario == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
+        try {
+            UsuarioModel usuario = usuarioService.buscarUsuarioPorId(id);
+            if (usuario == null) {
+                return ResponseEntity.notFound().build();
+            }
             usuarioService.eliminarUsuario(usuario);
-            return ResponseEntity.ok(usuario);
+            return ResponseEntity.ok(Map.of("mensaje", "Usuario eliminado exitosamente"));
+        } catch (Exception e) {
+            logger.error("Error al eliminar usuario: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @PostMapping("/usuarios/reset-password")
+    // ========== BÚSQUEDAS ESPECÍFICAS ==========
+
+    @GetMapping("/cedula/{nroCedula}")
+    public ResponseEntity<UsuarioModel> obtenerUsuarioPorCedula(@PathVariable("nroCedula") int nroCedula) {
+        try {
+            UsuarioModel usuario = usuarioService.buscarUsuarioPorCedula(nroCedula);
+            return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error al buscar usuario por cédula: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/rol/lideres")
+    public ResponseEntity<List<UsuarioModel>> listarLideres() {
+        try {
+            return ResponseEntity.ok(usuarioRepository.findByRolNombreIgnoreCase("LIDER"));
+        } catch (Exception e) {
+            logger.error("Error al listar líderes: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/rol/th")
+    public ResponseEntity<List<UsuarioModel>> listarTH() {
+        try {
+            return ResponseEntity.ok(usuarioRepository.findByRolNombreIgnoreCase("TH"));
+        } catch (Exception e) {
+            logger.error("Error al listar TH: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // ========== GESTIÓN DE VACACIONES ==========
+
+    @GetMapping("/{id}/dias-disponibles")
+    public ResponseEntity<Integer> obtenerDiasDisponiblesPorId(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(usuarioService.obtenerDiasVacacionesPorIdUsuario(id));
+        } catch (Exception e) {
+            logger.error("Error al obtener días disponibles por ID: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/cedula/{nroCedula}/dias-disponibles")
+    public ResponseEntity<Integer> obtenerDiasDisponiblesPorCedula(@PathVariable("nroCedula") int nroCedula) {
+        try {
+            return ResponseEntity.ok(usuarioService.obtenerDiasVacacionesPorCedula(nroCedula));
+        } catch (Exception e) {
+            logger.error("Error al obtener días disponibles por cédula: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // ========== GESTIÓN DE CONTRASEÑAS ==========
+
+    @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestParam String email, HttpServletRequest request) {
         String clientIp = request.getRemoteAddr();
         String key = clientIp + ":" + email;
 
         logger.info("Solicitud recibida para reset-password desde IP: {} con correo: {}", clientIp, email);
 
-        // Configuración del bucket para rate limiting
         Bucket bucket = buckets.computeIfAbsent(key, k -> {
             Bandwidth limit = Bandwidth.classic(3, Refill.greedy(3, Duration.ofMinutes(1)));
             return Bucket4j.builder().addLimit(limit).build();
         });
 
-        // Verificar si hay capacidad disponible en el bucket
         if (!bucket.tryConsume(1)) {
             logger.warn("Límite de solicitudes excedido para la clave: {}", key);
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Demasiadas solicitudes recientes.");
         }
 
-        // Lógica de reset-password
         if (!emailService.esCorreoValido(email)) {
             logger.warn("Correo inválido recibido: {}", email);
             return ResponseEntity.badRequest().body("Correo inválido.");
@@ -218,56 +260,38 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/usuarios/update-password")
+    @PostMapping("/update-password")
     public ResponseEntity<?> updatePassword(@RequestHeader("Authorization") String authHeader, @RequestParam String newPassword) {
         try {
-            // Validar que el token esté presente
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "El encabezado Authorization es requerido."));
             }
 
             String token = authHeader.substring(7);
 
-            // Validar el token y extraer el correo
             if (!jwtUtils.validateJwtToken(token)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "El token es inválido o ha expirado."));
             }
 
-            String email = jwtUtils.getUsernameFromJwtToken(token);
-
-            // Validar formato de la contraseña
-            if (newPassword.length() < 8 || !newPassword.matches(".*\\d.*") || !newPassword.matches(".*[A-Z].*")) {
-                return ResponseEntity.badRequest().body(Map.of("message", "La contraseña debe tener al menos 8 caracteres, incluir una mayúscula y un número."));
+            if (!passwordValidator.isValid(newPassword)) {
+                return ResponseEntity.badRequest().body(Map.of("message", "La contraseña no cumple con los requisitos de seguridad"));
             }
 
-            // Buscar al usuario por correo
+            String email = jwtUtils.getUsernameFromJwtToken(token);
             UsuarioModel usuario = usuarioRepository.findByCorreo(email)
                     .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado."));
 
-            // Encriptar y actualizar la contraseña
             usuario.setContrasena(passwordEncoder.encode(newPassword));
             usuario.setRequiereCambioContrasena(false);
             usuarioRepository.save(usuario);
 
-
-            // Invalida el token después del uso
-            jwtBlacklist.addToBlacklist(token);
-
-            emailService.enviarCorreo(
-                    email,
-                    "Contraseña Actualizada",
-                    "<p>Tu contraseña ha sido actualizada exitosamente. Si no realizaste este cambio, contacta a soporte inmediatamente.</p>"
-            );
-
-            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada con éxito."));
-
+            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada exitosamente"));
         } catch (UsuarioNoEncontradoException e) {
+            logger.error("Error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al actualizar la contraseña."));
+            logger.error("Error al actualizar contraseña: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al actualizar la contraseña"));
         }
     }
-
-
-
 }

@@ -6,6 +6,7 @@ import bootcamp.vacaciones.payload.SolicitudRequest;
 import bootcamp.vacaciones.repositories.SolicitudRepository;
 import bootcamp.vacaciones.repositories.UsuarioRepository;
 import bootcamp.vacaciones.utils.CalendarioUtil;
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -212,34 +213,48 @@ public class SolicitudService implements ISolicitudService {
     }
 
     private void notificarLider(UsuarioModel lider, UsuarioModel usuario, SolicitudModel solicitud) {
-        String url = baseUrl+"/AdminDashboard";
-        emailService.enviarCorreo(
-                lider.getCorreo(),
-                "Nueva Solicitud de Vacaciones (Líder)",
-                "<p>El usuario " + usuario.getNombre() + " " + usuario.getApellido() +
-                        " ha creado una solicitud de vacaciones para las fechas " +
-                        solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>" +
-                        "<a href='" + baseUrl + "/AdminDashboard'>Verificar Solicitud</a>"
-        );
+        try {
+            String mensajeHtml = "<p>Nueva solicitud de vacaciones:</p>" +
+                "<ul>" +
+                "<li>Solicitante: " + usuario.getNombre() + "</li>" +
+                "<li>Fecha de inicio: " + solicitud.getFechaInicio() + "</li>" +
+                "<li>Fecha de fin: " + solicitud.getFechaFin() + "</li>" +
+                "<li>Días solicitados: " + solicitud.getCantidadDias() + "</li>" +
+                "</ul>" +
+                "<p>Por favor, revise la solicitud en el sistema.</p>";
+
+            emailService.enviarCorreo(lider.getCorreo(), "Nueva solicitud de vacaciones", mensajeHtml);
+        } catch (MessagingException e) {
+            logger.error("Error al enviar correo al líder {}: {}", lider.getCorreo(), e.getMessage());
+            throw new RuntimeException("Error al enviar correo al líder", e);
+        }
     }
 
     private void notificarDirectorio(UsuarioModel usuario, SolicitudModel solicitud) {
-        emailService.enviarCorreo(
-                usuario.getCorreo(),
-                "Solicitud de Vacaciones Aprobada (DIRECTORIO)",
-                "<p>Tu solicitud de vacaciones ha sido aprobada automáticamente.</p>" +
-                        "<p>Fechas: " + solicitud.getFechaInicio() + " a " + solicitud.getFechaFin() + ".</p>"
-        );
+        try {
+            String mensajeHtml = "<p>Su solicitud de vacaciones ha sido aprobada automáticamente:</p>" +
+                "<ul>" +
+                "<li>Fecha de inicio: " + solicitud.getFechaInicio() + "</li>" +
+                "<li>Fecha de fin: " + solicitud.getFechaFin() + "</li>" +
+                "<li>Días solicitados: " + solicitud.getCantidadDias() + "</li>" +
+                "</ul>";
+
+            emailService.enviarCorreo(usuario.getCorreo(), "Solicitud de vacaciones aprobada", mensajeHtml);
+        } catch (MessagingException e) {
+            logger.error("Error al enviar correo al directorio {}: {}", usuario.getCorreo(), e.getMessage());
+            throw new RuntimeException("Error al enviar correo al directorio", e);
+        }
     }
 
     private void notificarTH(String asunto, String mensaje) {
-        List<UsuarioModel> usuariosTh = usuarioRepository.findByRolNombre("TH");
-        for (UsuarioModel thUsuario : usuariosTh) {
-            try {
-                emailService.enviarCorreo(thUsuario.getCorreo(), asunto, mensaje);
-            } catch (Exception e) {
-                logger.error("Error al enviar correo a TH con email {}: {}", thUsuario.getCorreo(), e.getMessage());
+        try {
+            List<UsuarioModel> usuariosTH = usuarioRepository.findByRolNombreIgnoreCase("TH");
+            for (UsuarioModel usuarioTH : usuariosTH) {
+                emailService.enviarCorreo(usuarioTH.getCorreo(), asunto, mensaje);
             }
+        } catch (MessagingException e) {
+            logger.error("Error al enviar correo a TH: {}", e.getMessage());
+            throw new RuntimeException("Error al enviar correo a TH", e);
         }
     }
 
@@ -451,8 +466,9 @@ public class SolicitudService implements ISolicitudService {
     private void notificarUsuario(String correoDestino, String asunto, String mensajeHtml) {
         try {
             emailService.enviarCorreo(correoDestino, asunto, mensajeHtml);
-        } catch (Exception e) {
-            logger.error("Error al enviar correo al usuario {}: {}", correoDestino, e.getMessage());
+        } catch (MessagingException e) {
+            logger.error("Error al enviar correo a {}: {}", correoDestino, e.getMessage());
+            throw new RuntimeException("Error al enviar correo", e);
         }
     }
 
@@ -559,28 +575,30 @@ public class SolicitudService implements ISolicitudService {
 
 
     private void procesarRechazoSinComentario(SolicitudModel solicitud, String mensajeCorreo) {
-        solicitud.setEstado(false);
-        solicitud.setRechazado(true);
-        solicitud.setNumeroAprobaciones(0);
-
-        emailService.enviarCorreo(
+        try {
+            emailService.enviarCorreo(
                 solicitud.getUsuario().getCorreo(),
-                "Solicitud Rechazada",
-                "<p>" + mensajeCorreo + "</p>"
-        );
+                "Solicitud de vacaciones rechazada",
+                mensajeCorreo
+            );
+        } catch (MessagingException e) {
+            logger.error("Error al enviar correo de rechazo sin comentario: {}", e.getMessage());
+            throw new RuntimeException("Error al enviar correo de rechazo", e);
+        }
     }
 
     private void procesarRechazoConComentario(SolicitudModel solicitud, String comentario) {
-        solicitud.setEstado(false);
-        solicitud.setRechazado(true);
-        solicitud.setNumeroAprobaciones(0);
-        solicitud.setComentario(comentario);
-
-        emailService.enviarCorreo(
+        try {
+            emailService.enviarCorreo(
                 solicitud.getUsuario().getCorreo(),
-                "Solicitud Rechazada",
-                "<p>Tu solicitud de vacaciones ha sido rechazada. <br> Motivo: " + comentario + "</p>"
-        );
+                "Solicitud de vacaciones rechazada",
+                "<p>Su solicitud de vacaciones ha sido rechazada.</p>" +
+                "<p>Comentario: " + comentario + "</p>"
+            );
+        } catch (MessagingException e) {
+            logger.error("Error al enviar correo de rechazo con comentario: {}", e.getMessage());
+            throw new RuntimeException("Error al enviar correo de rechazo", e);
+        }
     }
 
     private boolean esLiderDeSolicitud(SolicitudModel solicitud, UsuarioModel usuario) {

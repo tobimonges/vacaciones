@@ -32,6 +32,23 @@ build/
 ### VS Code ###
 .vscode/
 
+### Archivos de configuración local ###
+.env
+application-local.properties
+credentials.json
+
+### Logs ###
+*.log
+logs/
+
+### Archivos temporales ###
+*.tmp
+*.temp
+*.swp
+
+### Archivos de sistema ###
+.DS_Store
+Thumbs.db
 
 # Local configuration file
 src/main/resources/application.properties

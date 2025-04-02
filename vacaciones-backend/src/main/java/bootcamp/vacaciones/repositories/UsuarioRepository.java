@@ -5,13 +5,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
-    Optional<UsuarioModel> findByNroCedula(int nroCedula);
     Optional<UsuarioModel> findByCorreo(String correo);
+    Optional<UsuarioModel> findByNroCedula(int nroCedula);
+    List<UsuarioModel> findByRolNombreIgnoreCase(String rolNombre);
+    List<UsuarioModel> findByRolNombre(String nombreRol);
 
     @Query("SELECT u FROM UsuarioModel u WHERE u.rol.nombre = 'LIDER'")
     List<UsuarioModel> listarLideres();
@@ -29,7 +33,4 @@ public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
     @Transactional
     @Query(value = "UPDATE usuarios u SET antiguedad = AGE(CURRENT_DATE, u.fecha_ingreso) WHERE u.id_usuario = :id", nativeQuery = true)
     void actualizarAntiguedad(@Param("id") Long id);
-    List<UsuarioModel> findByRolNombre(String rolNombre);
-
-
 }

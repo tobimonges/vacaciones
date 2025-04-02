@@ -1,12 +1,14 @@
 package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.SolicitudModel;
+import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.SolicitudRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ISolicitudService {
 

@@ -14,6 +14,9 @@ public class EquipoModel {
     @Column(nullable = false, name = "nombre")
     private String nombre;
 
+    @Column(name = "lider_id")
+    private Long liderId;
+
     public EquipoModel() {
     }
 
@@ -36,5 +39,13 @@ public class EquipoModel {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Long getLiderId() {
+        return liderId;
+    }
+
+    public void setLiderId(Long liderId) {
+        this.liderId = liderId;
     }
 }

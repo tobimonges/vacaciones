@@ -10,12 +10,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UsuarioService implements IUsuarioService{
+    private static final Logger log = LoggerFactory.getLogger(UsuarioService.class);
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -29,6 +37,9 @@ public class UsuarioService implements IUsuarioService{
     private final EmailService emailService;
     @Autowired
     private RolRepository rolRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
@@ -73,7 +84,7 @@ public class UsuarioService implements IUsuarioService{
     }
 
 
-    public UsuarioModel guardarUsuario(UsuarioRequest usuarioRequest) {
+    public UsuarioModel guardarUsuario(UsuarioRequest usuarioRequest) throws MessagingException {
         if (usuarioRepository.findByCorreo(usuarioRequest.getCorreo()).isPresent()) {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
@@ -96,8 +107,6 @@ public class UsuarioService implements IUsuarioService{
         usuario.setEquipo(usuarioRequest.getEquipo());
         usuario.setRequiereCambioContrasena(true);
 
-
-
         if (usuarioRequest.getContrasena() == null || usuarioRequest.getContrasena().isEmpty()) {
             String passwordAleatoria = GeneradorContraseña.generarContraseñaAleatoria();
             String url= baseUrl+"/";
@@ -113,6 +122,8 @@ public class UsuarioService implements IUsuarioService{
             );
 
             usuario.setContrasena(passwordEncoder.encode(passwordAleatoria));
+        } else {
+            usuario.setContrasena(passwordEncoder.encode(usuarioRequest.getContrasena()));
         }
 
         return usuarioRepository.save(usuario);
@@ -191,5 +202,19 @@ public class UsuarioService implements IUsuarioService{
 
     public boolean cumpleAniversario(int months, int days) {
         return months == 0 && days == 0;
+    }
+
+    private void enviarCorreo(String destinatario, String asunto, String cuerpo) {
+        try {
+            MimeMessage mensaje = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mensaje, true);
+            helper.setTo(destinatario);
+            helper.setSubject(asunto);
+            helper.setText(cuerpo, true);
+            javaMailSender.send(mensaje);
+        } catch (MessagingException e) {
+            log.error("Error al enviar correo: {}", e.getMessage());
+            throw new RuntimeException("Error al enviar correo", e);
+        }
     }
 }

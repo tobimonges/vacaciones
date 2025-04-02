@@ -61,7 +61,7 @@ public class SecurityConfig {
 
                 // Configurar reglas de autorización
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/vacaciones/usuarios/reset-password", "/vacaciones/usuarios/update-password").permitAll() // Permitir estas rutas públicas
+                        .requestMatchers("/auth/**", "/usuarios/reset-password", "/usuarios/update-password").permitAll() // Permitir estas rutas públicas
                         .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
                 )
 

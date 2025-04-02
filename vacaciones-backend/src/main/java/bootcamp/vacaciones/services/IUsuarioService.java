@@ -2,6 +2,7 @@ package bootcamp.vacaciones.services;
 
 import bootcamp.vacaciones.models.UsuarioModel;
 import bootcamp.vacaciones.payload.UsuarioRequest;
+import jakarta.mail.MessagingException;
 
 import java.util.List;
 
@@ -16,10 +17,16 @@ public interface IUsuarioService {
 
     int obtenerDiasVacacionesPorCedula(int nroCedula);
 
-    UsuarioModel guardarUsuario(UsuarioRequest usuarioRequest);
+    UsuarioModel guardarUsuario(UsuarioRequest usuarioRequest) throws MessagingException;
 
     void eliminarUsuario(UsuarioModel usuario);
 
     UsuarioModel actualizarUsuario(Long idUsuario, UsuarioRequest usuarioRequest);
+
+    void actualizarAntiguedadYVacaciones();
+
+    int calcularDiasVacaciones(int years);
+
+    boolean cumpleAniversario(int months, int days);
 
 }

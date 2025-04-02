@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 @RestController
-@RequestMapping("/vacaciones")
+@RequestMapping("/solicitudes")
+@CrossOrigin(value = "${app.frontend-url}")
 public class SolicitudController {
 
     private static final Logger logger = LoggerFactory.getLogger(SolicitudController.class);
@@ -30,193 +31,301 @@ public class SolicitudController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/solicitudes")
-    public List<SolicitudModel> obtenerSolicitudes() {
-        return solicitudService.listarSolicitudes();
-    }
+    // ========== OPERACIONES CRUD BASICAS ==========
 
-    @PostMapping("/solicitudes/{idUsuario}")
-    public ResponseEntity<SolicitudModel> guardarSolicitud(@PathVariable Long idUsuario, @RequestBody SolicitudModel solicitud) {
+    /**
+     * Obtiene todas las solicitudes de vacaciones
+     */
+    @GetMapping
+    public ResponseEntity<?> obtenerSolicitudes() {
         try {
-            SolicitudModel newSolicitud = solicitudService.guardarSolicitud(idUsuario, solicitud);
-            return ResponseEntity.ok(newSolicitud);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
-
-    @PostMapping("/solicitudes/dto/{idUsuario}")
-    public ResponseEntity<Object> procesarSolicitudConDTO(
-            @PathVariable Long idUsuario,
-            @RequestBody SolicitudRequest solicitudRequest) {
-        System.out.println(solicitudRequest.toString());
-        try {
-            // Llamamos al servicio que maneja la solicitud
-            SolicitudModel nuevaSolicitud = solicitudService.procesarSolicitudConDTO(idUsuario, solicitudRequest);
-            return ResponseEntity.ok(nuevaSolicitud);
-        } catch (IllegalArgumentException e) {
-            // Enviar una respuesta de error detallada
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());  // Mensaje del error capturado
-            return ResponseEntity.badRequest().body(errorResponse);  // Respuesta con un cuerpo que contiene el error
-        }
-    }
-
-
-    @GetMapping("/solicitudes/{id}")
-    public ResponseEntity<SolicitudModel> obtenerSolicitudPorId(@PathVariable Long id) {
-        SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(id);
-        if (solicitud == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(solicitud);
-        }
-    }
-
-    @DeleteMapping("solicitudes/{id}")
-    public ResponseEntity<String> eliminarSolicitud(@PathVariable Long id) {
-        try {
-            solicitudService.eliminarSolicitud(id);
-            return ResponseEntity.ok("Solicitud cancelada exitosamente.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            List<SolicitudModel> solicitudes = solicitudService.listarSolicitudes();
+            return ResponseEntity.ok(solicitudes);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la solicitud.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener las solicitudes",
+                    "detalle", e.getMessage()
+            ));
         }
     }
 
-    @PutMapping("/solicitudes/{id}")
-    public ResponseEntity<Object> actualizarSolicitud(
-            @PathVariable Long id,
-            @RequestBody SolicitudRequest solicitudRequest) {
+    /**
+     * Obtiene una solicitud por id
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerSolicitudPorId(@PathVariable Long id) {
         try {
-            // Llamar al servicio para procesar la solicitud existente
-            SolicitudModel solicitudActualizada = solicitudService.actualizarSolicitudConDTO(id, solicitudRequest);
-            return ResponseEntity.ok(solicitudActualizada);
+            SolicitudModel solicitud = solicitudService.buscarSolicitudPorId(id);
+            if (solicitud == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "error", "No se encontró la solicitud con ID " + id
+                ));
+            }
+            return ResponseEntity.ok(solicitud);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Crea una nueva solicitud de vacaciones
+     */
+    @PostMapping("/usuario/{idUsuario}")
+    public ResponseEntity<?> crearSolicitud(@PathVariable Long idUsuario, @RequestBody SolicitudRequest solicitudRequest) {
+        try {
+            SolicitudModel nuevaSolicitud = solicitudService.procesarSolicitudConDTO(idUsuario, solicitudRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                    "mensaje", "Solicitud creada con éxito",
+                    "solicitud", nuevaSolicitud
+            ));
         } catch (IllegalArgumentException e) {
-            // Manejar excepciones de argumentos inválidos
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                     "error", "Solicitud inválida",
-                    "message", e.getMessage()
+                    "detalle", e.getMessage()
             ));
         } catch (Exception e) {
-            // Manejar excepciones generales
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "error", "Error interno del servidor",
-                    "message", e.getMessage()
+                    "error", "Error al crear la solicitud",
+                    "detalle", e.getMessage()
             ));
         }
     }
 
+    /**
+     * Actualiza una solicitud existente
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarSolicitud(@PathVariable Long id, @RequestBody SolicitudRequest solicitudRequest) {
+        try {
+            SolicitudModel solicitudActualizada = solicitudService.actualizarSolicitudConDTO(id, solicitudRequest);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Solicitud actualizada con éxito",
+                    "solicitud", solicitudActualizada
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", "Solicitud inválida",
+                    "detalle", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al actualizar la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Elimina una solicitud existente
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarSolicitud(@PathVariable Long id) {
+        try {
+            solicitudService.eliminarSolicitud(id);
+            return ResponseEntity.ok(Map.of("mensaje", "Solicitud eliminada con éxito"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "error", "No se encontró la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al eliminar la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    // ========== GESTION DE SOLICITUDES POR USUARIO ==========
+
+    /**
+     * Obtiene todas las solicitudes de un usuario específico
+     */
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<?> obtenerSolicitudesPorUsuario(@PathVariable Long usuarioId) {
         try {
             List<SolicitudModel> solicitudes = solicitudService.obtenerSolicitudesPorUsuario(usuarioId);
             return ResponseEntity.ok(solicitudes);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al obtener las solicitudes del usuario.");
-        }
-    }
-
-    @PutMapping("/{id}/aprobar")
-    public ResponseEntity<Object> aprobarSolicitud(
-            @PathVariable Long id,
-            @RequestParam Long usuarioId) {
-        logger.info("Recibiendo solicitud de aprobación: idSolicitud={}, usuarioId={}", id, usuarioId);
-        try {
-            SolicitudModel solicitudActualizada = solicitudService.aprobarSolicitud(id, usuarioId);
-            return ResponseEntity.ok(solicitudActualizada);
-        } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
-    }
-
-
-
-    @PutMapping("/{id}/rechazar")
-    public ResponseEntity<?> rechazarSolicitud(
-            @PathVariable Long id,
-            @RequestParam Long usuarioId, // Obligatorio para identificar quién rechaza
-            @RequestBody(required = false) Map<String, String> body) { // Body opcional
-        try {
-            // Extraer comentario solo si está presente
-            String comentario = body != null ? body.get("comentario") : null;
-
-            // Llamar al servicio unificado
-            SolicitudModel solicitudActualizada = solicitudService.rechazarSolicitud(id, usuarioId, comentario);
-
-            return ResponseEntity.ok(solicitudActualizada);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al procesar la solicitud."));
-        }
-    }
-
-
-
-    @GetMapping("/feriados")
-    public ResponseEntity<List<Map<String, String>>> obtenerFeriados() {
-        return ResponseEntity.ok(solicitudService.obtenerFeriados());
-    }
-
-
-    @GetMapping("/cumpleanos/{idUsuario}")
-    public ResponseEntity<Map<String, String>> obtenerCumpleanoPorIdUsuario(@PathVariable Long idUsuario) {
-        try {
-            Map<String, String> cumpleano = solicitudService.obtenerCumpleanoPorIdUsuario(idUsuario);
-            return ResponseEntity.ok(cumpleano);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-        }
-    }
-
-
-    @GetMapping("/obtenercumpleanos")
-    public ResponseEntity<List<Map<String, String>>> obtenerLosCumpleaños() {
-        return ResponseEntity.ok(solicitudService.obtenerTodosLosCumpleaños());
-    }
-
-    @GetMapping("/{liderId}/solicitudes")
-    public ResponseEntity<?> obtenerSolicitudesPorLider(@PathVariable Long liderId) {
-        try {
-            UsuarioModel lider = usuarioService.buscarUsuarioPorId(liderId);
-            if (lider == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensaje", "Líder no encontrado"));
-            }
-
-            // Accede a las solicitudes del líder
-            Set<SolicitudModel> solicitudes = lider.getSolicitudesComoLider();
-
-            return ResponseEntity.ok(solicitudes);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "error", "Usuario no encontrado",
+                    "detalle", e.getMessage()
+            ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "error", "Error al obtener solicitudes del líder.",
+                    "error", "Error al obtener las solicitudes del usuario",
                     "detalle", e.getMessage()
             ));
         }
     }
 
-    @PostMapping("/solicitudes/auxiliar")
-    public ResponseEntity<?> crearSolicitudAuxiliar(
-            @RequestParam Long usuarioId, // ID del usuario para el cual se crea la solicitud
-            @RequestParam Long solicitanteId, // ID del usuario que realiza la solicitud auxiliar
-            @RequestBody SolicitudRequest solicitudRequest) {
+    /**
+     * Obtiene todas las solicitudes que debe aprobar un líder
+     */
+    @GetMapping("/lider/{liderId}")
+    public ResponseEntity<?> obtenerSolicitudesPorLider(@PathVariable Long liderId) {
         try {
-            // Llamar al servicio que maneja la lógica auxiliar
-            SolicitudModel nuevaSolicitud = solicitudService.crearSolicitudAuxiliar(usuarioId, solicitanteId, solicitudRequest);
-            return ResponseEntity.ok(nuevaSolicitud);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+            UsuarioModel lider = usuarioService.buscarUsuarioPorId(liderId);
+            if (lider == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                        "error", "Líder no encontrado"
+                ));
+            }
+            Set<SolicitudModel> solicitudes = lider.getSolicitudesComoLider();
+            return ResponseEntity.ok(solicitudes);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error al procesar la solicitud auxiliar."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener solicitudes del líder",
+                    "detalle", e.getMessage()
+            ));
         }
     }
 
+    // ========== PROCESAMIENTO DE SOLICITUDES ==========
 
+    /**
+     * Crea una solicitud auxiliar en nombre de otro usuario
+     */
+    @PostMapping("/auxiliar")
+    public ResponseEntity<?> crearSolicitudAuxiliar(
+            @RequestParam Long usuarioId,
+            @RequestParam Long solicitanteId,
+            @RequestBody SolicitudRequest solicitudRequest) {
+        try {
+            SolicitudModel nuevaSolicitud = solicitudService.crearSolicitudAuxiliar(usuarioId, solicitanteId, solicitudRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                    "mensaje", "Solicitud auxiliar creada con éxito",
+                    "solicitud", nuevaSolicitud
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", "Error en la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al procesar la solicitud auxiliar",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
 
+    // ========== APROBACIÓN Y RECHAZO DE SOLICITUDES ==========
+
+    /**
+     * Aprueba una solicitud de vacaciones
+     */
+    @PutMapping("/{id}/aprobar")
+    public ResponseEntity<?> aprobarSolicitud(@PathVariable Long id, @RequestParam Long usuarioId) {
+        logger.info("Recibiendo solicitud de aprobación: idSolicitud={}, usuarioId={}", id, usuarioId);
+        try {
+            SolicitudModel solicitudActualizada = solicitudService.aprobarSolicitud(id, usuarioId);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Solicitud aprobada con éxito",
+                    "solicitud", solicitudActualizada
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", "Error al aprobar la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error interno del servidor",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Rechaza una solicitud de vacaciones
+     */
+    @PutMapping("/{id}/rechazar")
+    public ResponseEntity<?> rechazarSolicitud(
+            @PathVariable Long id,
+            @RequestParam Long usuarioId,
+            @RequestBody(required = false) Map<String, String> body) {
+        try {
+            String comentario = body != null ? body.get("comentario") : null;
+            SolicitudModel solicitudActualizada = solicitudService.rechazarSolicitud(id, usuarioId, comentario);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Solicitud rechazada con éxito",
+                    "solicitud", solicitudActualizada
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", "Error al rechazar la solicitud",
+                    "detalle", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error interno del servidor",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    // ========== INFORMACIÓN DE FERIADOS Y CUMPLEAÑOS ==========
+
+    /**
+     * Obtiene la lista de feriados
+     */
+    @GetMapping("/feriados")
+    public ResponseEntity<?> obtenerFeriados() {
+        try {
+            List<Map<String, String>> feriados = solicitudService.obtenerFeriados();
+            return ResponseEntity.ok(Map.of(
+                    "feriados", feriados
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener los feriados",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Obtiene el cumpleaños de un usuario específico
+     */
+    @GetMapping("/cumpleanos/{idUsuario}")
+    public ResponseEntity<?> obtenerCumpleanoPorIdUsuario(@PathVariable Long idUsuario) {
+        try {
+            Map<String, String> cumpleano = solicitudService.obtenerCumpleanoPorIdUsuario(idUsuario);
+            return ResponseEntity.ok(Map.of(
+                    "cumpleano", cumpleano
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", "Usuario no encontrado",
+                    "detalle", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener el cumpleaños",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Obtiene todos los cumpleaños
+     */
+    @GetMapping("/cumpleanos")
+    public ResponseEntity<?> obtenerTodosLosCumpleanos() {
+        try {
+            List<Map<String, String>> cumpleanos = solicitudService.obtenerTodosLosCumpleaños();
+            return ResponseEntity.ok(Map.of(
+                    "cumpleanos", cumpleanos
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Error al obtener los cumpleaños",
+                    "detalle", e.getMessage()
+            ));
+        }
+    }
 }
